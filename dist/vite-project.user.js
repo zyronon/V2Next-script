@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         V2EX - 超级增强
 // @namespace    http://tampermonkey.net/
-// @version      7.8
+// @version      7.8.1
 // @author       zyronon
 // @description  让V2EX现代化。支持楼中楼、简洁模式、高赞回复排序、发送图片和表情、base64 解码等功能
 // @license      GPL License
@@ -4619,7 +4619,9 @@
         let href = a.href;
         let id;
         if (href.includes("/t/")) {
-          if (href.includes("#")) {
+          if (href.includes("?")) {
+            id = href.substring(href.indexOf("/t/") + 3, href.indexOf("?"));
+          } else if (href.includes("#")) {
             id = href.substring(href.indexOf("/t/") + 3, href.indexOf("#"));
           } else {
             id = href.substring(href.indexOf("/t/") + 3, href.indexOf("/t/") + 10);

@@ -596,7 +596,6 @@ export default {
         <div class="switch light" :class="{active:config.autoOpenDetail}"
              @click="config.autoOpenDetail = !config.autoOpenDetail"/>
       </div>
-      {{stopMe}}
       <div class="button light" @click="showPost" :class="{loading,isNight}">
         点击显示楼中楼
       </div>
