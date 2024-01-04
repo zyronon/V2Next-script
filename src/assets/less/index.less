@@ -2,6 +2,42 @@
 @import "anim";
 @import "user";
 
+:root {
+  --color-background: #E6E8EB;
+  --color-main-bg: #E6E8EB;
+  --color-second-bg: rgb(240, 242, 244);
+  --color-third-bg: rgb(213, 215, 217);
+
+  --color-item-bg: rgb(228, 230, 232);
+  --color-item-hover: white;
+  //--color-item-active: rgb(75, 110, 175);
+  --color-item-active: rgb(253, 246, 236);
+  --color-item-border: rgb(226, 226, 226);
+
+  --color-header-bg: white;
+  --color-tooltip-bg: white;
+  --color-tooltip-shadow: #bbbbbb;
+  --color-font-1: rgb(91, 91, 91);
+  --color-font-2: rgb(46, 46, 46);
+  --color-font-3: rgb(75, 85, 99);
+  --color-font-active-1: white;
+  --color-font-active-2: whitesmoke;
+  --color-main-active: rgb(12, 140, 233);
+  --color-scrollbar: rgb(147, 173, 227);
+  --color-gray: gray;
+  --color-sub-gray: #c0bfbf;
+
+  --space: 2rem;
+  --radius: .8rem;
+  --shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
+  --anim-time: 0.5s;
+
+  --color-input-bg: white;
+  --color-input-icon: #d3d4d7;
+
+  --color-textarea-bg: white;
+}
+
 html, body {
   font-size: 62.5%;
 }
@@ -305,7 +341,7 @@ a {
 
 .my-box {
   box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
-  box-shadow:rgba(0, 0, 0, 0.08) 0px 4px 12px;
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
   border-radius: var(--box-border-radius);
   background: white;
   margin-bottom: 2rem;
@@ -315,7 +351,7 @@ a {
 }
 
 .my-cell {
-  padding: 0.6rem 1rem;
+  padding: 0.8rem 1rem;
   font-size: 1.4rem;
   line-height: 150%;
   text-align: left;
@@ -326,79 +362,6 @@ a {
   font-size: 1.4rem;
 }
 
-.switch {
-  width: 4.5rem;
-  height: 2rem;
-  border-radius: 2rem;
-  position: relative;
-  display: flex;
-  align-items: center;
-  transition: all .3s;
-
-  &.light {
-    border: 1px solid @bg-color;
-
-    &.active {
-      background: @bg-color;
-
-      &::before {
-        right: .2rem;
-        background: white;
-      }
-    }
-
-    &::before {
-      background: @bg-color;
-    }
-  }
-
-  &.gray {
-    border: 1px solid @date-color;
-
-    &.active {
-      background: @date-color;
-
-      &::before {
-        right: .2rem;
-        background: white;
-      }
-    }
-
-    &::before {
-      background: @date-color;
-    }
-  }
-
-  &.isNight {
-    @night-color: rgb(49, 71, 94);
-    border: 1px solid @night-color;
-
-    &.active {
-      background: @night-color;
-
-      &::before {
-        right: .2rem;
-        background: gray;
-      }
-    }
-
-    &::before {
-      background: @night-color;
-    }
-  }
-
-  &::before {
-    position: absolute;
-    content: ' ';
-    transition: all .3s;
-    @w: 1.8rem;
-    right: calc(100% - @w - .2rem);
-    //left: .2rem;
-    width: @w;
-    height: @w;
-    border-radius: 50%;
-  }
-}
 
 .modal {
   position: fixed;
@@ -423,7 +386,7 @@ a {
     align-items: center;
     padding: .6rem 0;
 
-    >span{
+    > span {
       position: relative;
     }
   }
@@ -448,10 +411,10 @@ a {
   .radio {
     cursor: pointer;
     background: transparent;
-    padding: 0.3rem 1rem;
+    padding: 0.5rem 1.4rem;
     border-left: 1px solid @border;
     color: #9ca1a4;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
 
     &:first-child {
       border-left: none;
@@ -504,4 +467,8 @@ input {
   padding: 0 .5rem;
   border-radius: 5px;
   box-sizing: border-box;
+}
+
+.danger {
+  color: red;
 }

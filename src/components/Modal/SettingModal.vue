@@ -2,214 +2,270 @@
   <Transition>
     <div v-if="show" class="setting-modal modal" :class="{isNight}">
       <div class="mask" @click="close"></div>
-      <div class="wrapper">
-        <div class="title">
-          脚本设置
-        </div>
-        <div class="sub-title">
-          设置自动保存到本地，下次打开依然生效
+      <div class="modal-root">
+        <div class="modal-header">
+          <div class="title">
+            脚本设置
+          </div>
         </div>
         <div class="body">
-          <div class="option-list">
-            <div class="option-title">列表:</div>
-            <div class="option">
-              <span>列表帖子展示方式：</span>
-              <div class="radio-group2" :class="{isNight}">
-                <div class="radio"
-                     @click="config.viewType = 'table'"
-                     :class="config.viewType === 'table'?'active':''">表格
-                </div>
-                <div class="radio"
-                     @click="config.viewType = 'card'"
-                     :class="config.viewType === 'card'?'active':''">卡片
-                </div>
+          <div class="left">
+            <div class="tabs">
+              <div class="tab" :class="tabIndex === 0 && 'active'" @click="tabIndex = 0">
+                <span>列表设置</span>
               </div>
-            </div>
-            <div class="option">
-              <span>列表hover时显示预览按钮：</span>
-              <div class="switch gray" :class="{active:config.showPreviewBtn,isNight}"
-                   @click="config.showPreviewBtn = !config.showPreviewBtn"/>
-            </div>
-            <div class="notice">
-              此项需要刷新页面才能生效
-            </div>
-            <div class="option">
-              <span>点击列表的帖子，打开详情弹框 ：</span>
-              <div class="switch gray" :class="{active:config.clickPostItemOpenDetail,isNight}"
-                   @click="config.clickPostItemOpenDetail = !config.clickPostItemOpenDetail;config.newTabOpen = !config.clickPostItemOpenDetail"/>
-            </div>
-            <div class="notice">
-              若关闭此项，点击列表的帖子时，不会打开弹框，会跳转网页
-            </div>
-            <div class="option-title">帖子:</div>
-            <div class="option">
-              <span :class="isNew && 'new'">回复展示方式：</span>
-              <div class="radio-group2" :class="{isNight}">
-                <Tooltip title="不隐藏@用户">
-                  <div class="radio"
-                       @click="config.commentDisplayType = CommentDisplayType.FloorInFloor"
-                       :class="config.commentDisplayType === CommentDisplayType.FloorInFloor?'active':''">楼中楼(@)
-                  </div>
-                </Tooltip>
-                <Tooltip title="隐藏第一个@用户，双击内容可显示原文">
-                  <div class="radio"
-                       @click="config.commentDisplayType = CommentDisplayType.FloorInFloorNoCallUser"
-                       :class="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser?'active':''">楼中楼
-                  </div>
-                </Tooltip>
-                <Tooltip title="重复显示楼中楼的回复">
-                  <div class="radio"
-                       @click="config.commentDisplayType = CommentDisplayType.FloorInFloorNested"
-                       :class="config.commentDisplayType === CommentDisplayType.FloorInFloorNested?'active':''">冗余楼中楼
-                  </div>
-                </Tooltip>
-                <div class="radio"
-                     @click="config.commentDisplayType = CommentDisplayType.Like"
-                     :class="config.commentDisplayType === CommentDisplayType.Like?'active':''">感谢
-                </div>
-                <div class="radio"
-                     @click="config.commentDisplayType = CommentDisplayType.OnlyOp"
-                     :class="config.commentDisplayType === CommentDisplayType.OnlyOp?'active':''">只看楼主
-                </div>
-                <div class="radio"
-                     @click="config.commentDisplayType = CommentDisplayType.V2exOrigin"
-                     :class="config.commentDisplayType === CommentDisplayType.V2exOrigin?'active':''">V2原版
-                </div>
+              <div class="tab" :class="tabIndex === 1 && 'active'" @click="tabIndex = 1">
+                <span>帖子设置</span>
               </div>
-            </div>
-            <div class="option">
-              <span>单独打开帖子时默认显示楼中楼 ：</span>
-              <div class="switch gray" :class="{active:config.autoOpenDetail,isNight}"
-                   @click="config.autoOpenDetail = !config.autoOpenDetail"/>
-            </div>
-            <div class="notice">
-              单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼
-            </div>
-            <div class="option">
-              <span>点击左右两侧透明处关闭帖子详情弹框：</span>
-              <div class="switch gray" :class="{active:config.closePostDetailBySpace,isNight}"
-                   @click="config.closePostDetailBySpace = !config.closePostDetailBySpace"/>
-            </div>
-            <div class="option-title">点赞:</div>
-            <div class="option">
-              <span>显示高赞回复：</span>
-              <div class="switch gray" :class="{active:config.showTopReply,isNight}"
-                   @click="config.showTopReply = !config.showTopReply"/>
-            </div>
-            <div class="option">
-              <span>最多显示多少个高赞回复：</span>
-              <input type="number" min="1" v-model="config.topReplyCount">
-            </div>
-            <div class="option">
-              <span>最少需要多少赞才能被判定为高赞：</span>
-              <input type="number" min="1" v-model="config.topReplyLoveMinCount">
-            </div>
-            <div class="option-title">记忆阅读:</div>
-            <div class="option">
-              <span>记录上次阅读楼层（误差1层左右）：</span>
-              <div class="switch gray" :class="{active:config.rememberLastReadFloor,isNight}"
-                   @click="config.rememberLastReadFloor = !config.rememberLastReadFloor;config.autoJumpLastReadFloor = false"/>
-            </div>
-            <div class="option">
-              <span>打开帖子自动跳转到上次阅读楼层：</span>
-              <div class="switch gray" :class="{active:config.autoJumpLastReadFloor,isNight}"
-                   @click="config.autoJumpLastReadFloor = !config.autoJumpLastReadFloor"/>
+              <div class="tab" :class="tabIndex === 2 && 'active'" @click="tabIndex = 2">
+                <span>其他设置</span>
+              </div>
             </div>
           </div>
+          <div class="modal-content">
+            <div class="scroll">
+              <div v-if="tabIndex === 0">
+                <div class="row">
+                  <label class="item-title">列表帖子展示方式</label>
+                  <div class="wrapper">
+                    <div class="radio-group2" :class="{isNight}">
+                      <div class="radio"
+                           @click="config.viewType = 'table'"
+                           :class="config.viewType === 'table'?'active':''">表格
+                      </div>
+                      <div class="radio"
+                           @click="config.viewType = 'card'"
+                           :class="config.viewType === 'card'?'active':''">卡片
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="item-title">列表hover时显示预览按钮</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.showPreviewBtn"/>
+                  </div>
+                </div>
+                <div class="desc">
+                  此项需要刷新页面才能生效
+                </div>
 
-          <div class="option-list">
-            <div class="option-title">其他:</div>
-            <div class="option">
-              <span>显示工具栏：</span>
-              <div class="switch gray" :class="{active:config.showToolbar,isNight}"
-                   @click="config.showToolbar = !config.showToolbar"/>
-            </div>
-            <div class="notice">
-              关闭此项会隐藏以下三个工具栏
-              <div>
-                1. 首页”卡片/表格“
+                <div class="row">
+                  <label class="item-title">点击列表帖子，打开详情弹框</label>
+                  <div class="wrapper">
+                    <BaseSwitch :model-value="config.clickPostItemOpenDetail"
+                                @update:modelValue="config.clickPostItemOpenDetail = !config.clickPostItemOpenDetail;
+                                config.clickPostItemOpenDetail && (config.newTabOpen = false)"
+                    />
+                  </div>
+                </div>
+                <div class="desc">
+                  若关闭此项，点击列表的帖子时，不会打开弹框，会跳转网页
+                </div>
+                <div class="row">
+                  <label class="item-title">新标签页打开链接</label>
+                  <div class="wrapper">
+                    <BaseSwitch :model-value="config.newTabOpen"
+                                @update:modelValue="config.newTabOpen = !config.newTabOpen;
+                                config.newTabOpen && (config.clickPostItemOpenDetail = false)"
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
-                2. 详情页”楼中楼/只看楼主/感谢/V2原版“
-              </div>
-              <div>
-                3. 单独打开帖子时”点击显示楼中楼“
-              </div>
-            </div>
-            <div class="option">
-              <span>新标签页打开链接 ：</span>
-              <div class="switch gray" :class="{active:config.newTabOpen,isNight}"
-                   @click="config.newTabOpen = !config.newTabOpen;config.clickPostItemOpenDetail = !config.newTabOpen"/>
-            </div>
-            <div class="option">
-              <span>用户打标签(跨平台，数据保存在自己的记事本)：</span>
-              <div class="switch gray" :class="{active:config.openTag,isNight}"
-                   @click="config.openTag = !config.openTag"/>
-            </div>
-            <div class="option">
-              <span>正文超长自动折叠：</span>
-              <div class="switch gray" :class="{active:config.contentAutoCollapse,isNight}"
-                   @click="config.contentAutoCollapse = !config.contentAutoCollapse"/>
-            </div>
-            <div class="option">
-              <span>划词显示Base64解码框：</span>
-              <div class="switch gray" :class="{active:config.base64,isNight}"
-                   @click="config.base64 = !config.base64"/>
-            </div>
-            <div class="option">
-              <span>使用 SOV2EX 搜索：</span>
-              <div class="switch gray" :class="{active:config.sov2ex,isNight}"
-                   @click="config.sov2ex = !config.sov2ex"/>
-            </div>
-            <div class="notice">
-              此项需要刷新页面才能生效
-            </div>
-            <div class="option">
-              <span>帖子宽度：</span>
-              <input type="text" v-model="config.postWidth">
-            </div>
-            <div class="notice">
-              默认为77rem。接受合法的width值：
-              <a href="https://vue3js.cn/interview/css/em_px_rem_vh_vw.html#%E4%BA%8C%E3%80%81%E5%8D%95%E4%BD%8D"
-                 target="_blank">rem、px、vw、vh</a>。
-              vw代表屏幕百分比，如想要屏幕的66%，请填写66vw
-            </div>
-            <div class="notice">
-              提示：此项设置以后，单独打开详情页时会出现帖子突然变宽（窄）的问题，暂时无解
-            </div>
-            <div class="option">
-              <span>自动签到：</span>
-              <div class="switch gray" :class="{active:config.autoSignin,isNight}"
-                   @click="config.autoSignin = !config.autoSignin"/>
-            </div>
+              <div v-if="tabIndex === 1">
+                <div class="row">
+                  <label class="item-title">回复展示方式</label>
+                  <div class="wrapper">
+                    <div class="radio-group2" :class="{isNight}">
+                      <Tooltip title="不隐藏@用户">
+                        <div class="radio"
+                             @click="config.commentDisplayType = CommentDisplayType.FloorInFloor"
+                             :class="config.commentDisplayType === CommentDisplayType.FloorInFloor?'active':''">楼中楼(@)
+                        </div>
+                      </Tooltip>
+                      <Tooltip title="隐藏第一个@用户，双击内容可显示原文">
+                        <div class="radio"
+                             @click="config.commentDisplayType = CommentDisplayType.FloorInFloorNoCallUser"
+                             :class="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser?'active':''">
+                          楼中楼
+                        </div>
+                      </Tooltip>
+                      <Tooltip title="重复显示楼中楼的回复">
+                        <div class="radio"
+                             @click="config.commentDisplayType = CommentDisplayType.FloorInFloorNested"
+                             :class="config.commentDisplayType === CommentDisplayType.FloorInFloorNested?'active':''">
+                          冗余楼中楼
+                        </div>
+                      </Tooltip>
+                      <div class="radio"
+                           @click="config.commentDisplayType = CommentDisplayType.Like"
+                           :class="config.commentDisplayType === CommentDisplayType.Like?'active':''">感谢
+                      </div>
+                      <div class="radio"
+                           @click="config.commentDisplayType = CommentDisplayType.OnlyOp"
+                           :class="config.commentDisplayType === CommentDisplayType.OnlyOp?'active':''">只看楼主
+                      </div>
+                      <div class="radio"
+                           @click="config.commentDisplayType = CommentDisplayType.V2exOrigin"
+                           :class="config.commentDisplayType === CommentDisplayType.V2exOrigin?'active':''">V2原版
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="item-title">单独打开帖子时默认显示楼中楼</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.autoOpenDetail"/>
+                  </div>
+                </div>
+                <div class="desc">
+                  单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼
+                </div>
+                <div class="row">
+                  <label class="item-title">点击左右两侧透明处关闭帖子详情弹框</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.closePostDetailBySpace"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="item-title">正文超长自动折叠</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.contentAutoCollapse"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="item-title">帖子宽度</label>
+                  <div class="wrapper">
+                    <input type="text" v-model="config.postWidth">
+                  </div>
+                </div>
+                <div class="desc">
+                  未设定此值时，则默认宽度为77rem。接受合法的width值：
+                  <a href="https://vue3js.cn/interview/css/em_px_rem_vh_vw.html#%E4%BA%8C%E3%80%81%E5%8D%95%E4%BD%8D"
+                     target="_blank">rem、px、vw、vh(点此查看)</a>。
+                  vw代表屏幕百分比，如想要屏幕的66%，请填写66vw
+                </div>
+                <div class="desc">
+                  提示：此项设置以后，单独打开详情页时会出现帖子突然变宽（窄）的问题，暂时无解
+                </div>
 
-            <div class="option">
-              <span>自定义背景：</span>
-              <input type="text" v-model="config.customBgColor">
-            </div>
-            <div class="notice">
-              接受一个合法的css color值：例如<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value"
-                                               target="_blank">red、#ffffff、rgb(222,222,22)</a>等等。
-              没图片时的背景默认为 #e2e2e2。
-            </div>
-            <div class="notice">
-              此项需要刷新页面才能生效
-            </div>
-            <div class="option">
-              <span>收藏时提醒添加到书签：</span>
-              <div class="switch gray" :class="{active:config.collectBrowserNotice,isNight}"
-                   @click="config.collectBrowserNotice = !config.collectBrowserNotice"/>
-            </div>
-            <div class="notice">
-              V站的帐号一旦被封了，就无法登录了，账号里的收藏也就看不到了
-            </div>
-            <div class="option">
-              <span :class="isNew && 'new'">简洁模式：</span>
-              <div class="switch gray" :class="{active:config.simple,isNight}"
-                   @click="config.simple = !config.simple"/>
-            </div>
-            <div class="notice">
-              此项需要刷新页面才能生效
+                <div class="row">
+                  <label class="main-title">高赞回复</label>
+                </div>
+                <div class="row">
+                  <label class="item-title">显示高赞回复</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.showTopReply"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="item-title">最多显示多少个高赞回复</label>
+                  <div class="wrapper">
+                    <input type="number" min="1" v-model="config.topReplyCount">
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="item-title">最少需要多少赞才能被判定为高赞</label>
+                  <div class="wrapper">
+                    <input type="number" min="1" v-model="config.topReplyLoveMinCount">
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="main-title">记忆阅读</label>
+                </div>
+                <div class="row">
+                  <label class="item-title">记录上次阅读楼层（误差1层左右）：</label>
+                  <div class="wrapper">
+                    <BaseSwitch :model-value="config.rememberLastReadFloor"
+                                @update:modelValue="config.rememberLastReadFloor = !config.rememberLastReadFloor;
+                                config.autoJumpLastReadFloor = false"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="item-title">打开帖子自动跳转到上次阅读楼层</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.autoJumpLastReadFloor"/>
+                  </div>
+                </div>
+              </div>
+              <div v-if="tabIndex === 2">
+                <div class="row">
+                  <label class="item-title">显示工具栏</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.showToolbar"/>
+                  </div>
+                </div>
+                <div class="desc">
+                  关闭此项会隐藏以下三个工具栏
+                  <div>
+                    1. 首页”卡片/表格“
+                  </div>
+                  <div>
+                    2. 详情页”楼中楼/只看楼主/感谢/V2原版“
+                  </div>
+                  <div>
+                    3. 单独打开帖子时”点击显示楼中楼“
+                  </div>
+                </div>
+
+                <div class="row">
+                  <label class="item-title">用户打标签(跨平台，数据保存在自己的记事本)：</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.openTag"/>
+                  </div>
+                </div>
+
+
+                <div class="row">
+                  <label class="item-title">划词显示Base64解码框</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.base64"/>
+                  </div>
+                </div>
+
+
+                <div class="row">
+                  <label class="item-title">自动签到</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.autoSignin"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="item-title">自定义背景</label>
+                  <div class="wrapper">
+                    <input type="text" v-model="config.customBgColor">
+                  </div>
+                </div>
+                <div class="desc">
+                  未设定此值时，则背景颜色默认为 #e2e2e2。接受一个合法的css color值：例如<a
+                    href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value"
+                    target="_blank">red、#ffffff、rgb(222,222,22)(点此查看)</a>等等。
+
+                </div>
+                <div class="desc">
+                  此项需要刷新页面才能生效
+                </div>
+                <div class="row">
+                  <label class="item-title">收藏时提醒添加到书签</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.collectBrowserNotice"/>
+                  </div>
+                </div>
+                <div class="desc">
+                  V站帐号一旦被封禁，则无法登录，无法查看账号收藏了
+                </div>
+
+                <div class="row">
+                  <label class="item-title">简洁模式</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.simple"/>
+                  </div>
+                </div>
+                <div class="desc">
+                  此项需要刷新页面才能生效
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -221,10 +277,12 @@
 <script>
 import Tooltip from "@/components/Tooltip.vue";
 import {CommentDisplayType} from "@/types.ts";
+import BaseSwitch from "@/components/BaseSwitch.vue";
 
 export default {
   name: "Setting",
   components: {
+    BaseSwitch,
     Tooltip
   },
   inject: ['isNight'],
@@ -244,6 +302,7 @@ export default {
   },
   data() {
     return {
+      tabIndex: 0,
       config: window.clone(this.modelValue),
     }
   },
@@ -292,48 +351,140 @@ export default {
   }
 }
 
+
 .setting-modal {
-  .wrapper {
+  .modal-root {
     z-index: 9;
     background: #f1f1f1;
-    border-radius: .8rem;
+    border-radius: 1.6rem;
     font-size: 1.4rem;
+    overflow: hidden;
     //box-shadow: 0 0 6px 4px gainsboro;
-    padding: 2rem;
-    max-height: 80vh;
-    max-width: 83vw;
-    overflow: auto;
 
-    .sub-title {
-      color: gray;
-      font-size: 1.4rem;
-    }
+    .modal-header {
+      padding: 2.4rem;
+      text-align: left;
 
-    .option-title {
-      text-align: start;
-      font-size: 1.6rem;
-      font-weight: bold;
-      margin-top: 1.5rem;
+      .title {
+        color: var(--color-font-1);
+        font-size: 2.6rem;
+        font-weight: bold;
+        text-align: left;
+        margin-bottom: 0;
+      }
     }
 
     .body {
+      width: 40vw;
+      height: 70vh;
       display: flex;
-      gap: 3rem;
 
-      .option-list {
-        width: 50rem;
+      .left {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.8rem;
+
+        .tabs {
+          padding: 1rem 2rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+
+          .tab {
+            cursor: pointer;
+            padding: 1rem 1.5rem;
+            border-radius: .8rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+
+            &.active {
+              background: var(--color-item-bg);
+            }
+          }
+        }
       }
-    }
 
-    .notice {
-      font-size: 12px;
-      padding-left: 3rem;
-      text-align: left;
+      .modal-content {
+        background: var(--color-header-bg);
+        flex: 1;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 1rem 2rem;
+        padding-right: 1rem;
+        @d: 1.6rem;
+        border-radius: 1.6rem;
+        display: flex;
 
-      a {
-        color: blue;
+        .scroll {
+          flex: 1;
+          padding-right: 1rem;
+          overflow: auto;
+
+          .row {
+            min-height: 5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .wrapper {
+              height: 3rem;
+              flex: 1;
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              gap: var(--space);
+
+              span {
+                text-align: right;
+                //width: 30rem;
+                font-size: 1.4rem;
+                color: gray;
+              }
+
+              .set-key {
+                align-items: center;
+
+                input {
+                  width: 15rem;
+                  box-sizing: border-box;
+                  margin-right: 1rem;
+                  height: 2.8rem;
+                  outline: none;
+                  font-size: 1.6rem;
+                  border: 1px solid gray;
+                  border-radius: .3rem;
+                  padding: 0 .5rem;
+                  background: var(--color-second-bg);
+                  color: var(--color-font-1);
+                }
+              }
+            }
+
+            .main-title {
+              font-size: 2.2rem;
+              font-weight: bold;
+            }
+
+            .item-title {
+              font-size: 1.8rem;
+            }
+
+          }
+
+          .desc {
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            text-align: left;
+          }
+
+          .line {
+            border-bottom: 1px solid #c4c3c3;
+          }
+        }
       }
-
     }
   }
 }

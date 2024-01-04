@@ -779,6 +779,21 @@ function run() {
        html, body {
             font-size: 62.5%;
         }
+        
+::-webkit-scrollbar {
+  width: 1rem;
+  height: 1rem;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: .2rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(147, 173, 227);
+  border-radius: 1rem;
+}
         :root{
           --box-border-radius:8px;
             .Night{
@@ -1141,34 +1156,6 @@ function run() {
     })
   }
 
-  // 替换为 sov2ex 搜索，代码来自 v2ex-plus 扩展：https://github.com/sciooga/v2ex-plus （懒得重复造轮子了~）
-  function initSoV2ex() {
-    var $search = $('#search')
-    // @ts-ignore
-    var searchEvents = $._data($search[0], "events")
-    console.log($search, searchEvents)
-    var oKeydownEvent = searchEvents['keydown'][0]['handler']
-    var oInputEvent = searchEvents['input'][0]['handler']
-    $search.attr("placeholder", "sov2ex")
-    $search.unbind('keydown', oKeydownEvent)
-    $search.unbind('input', oInputEvent)
-    $search.on('input', function (e) {
-      oInputEvent(e)
-      $('.search-item:last').attr('href', 'https://www.sov2ex.com/?q=' + $search.val()).text('sov2ex ' + $search.val());
-    })
-    $search.keydown(function (e) {
-      if (e.code == 'Enter' || e.code == 'NumpadEnter' || e.keyCode === 13) {
-        if ($('.search-item:last').is('.active')) {
-          // @ts-ignore
-          $(this).val($(this).val().replace(/[#%&]/g, ""));//用户输入不能包含特殊字符#%&
-          window.open("https://www.sov2ex.com/?q=" + $(this).val());
-          return 0
-        }
-      }
-      oKeydownEvent(e)
-    })
-  }
-
   function addSettingText() {
     let setting = $(`<a href="javascript:void 0;" class="top ${window.config.version < window.currentVersion ? 'new' : ''}">脚本设置</a>`)
     setting.on('click', function () {
@@ -1210,9 +1197,6 @@ function run() {
 
       initStyle()
 
-      if (window.config.sov2ex) {
-        setTimeout(initSoV2ex, 1000)
-      }
       try {
         if (window.config.autoSignin && window.user.username) {
           qianDao()

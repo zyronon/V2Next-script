@@ -784,7 +784,7 @@ export default {
       .post-wrapper {
         .toolbar-wrapper {
           border-top: 1px solid #e2e2e2;
-          height: 3.4rem;
+          height: 3.6rem;
           padding-left: .6rem;
           display: flex;
           align-items: center;

@@ -11,9 +11,10 @@ import Tooltip from "@/components/Tooltip.vue";
 import TagModal from "@/components/Modal/TagModal.vue";
 import MsgModal from "@/components/Modal/MsgModal.vue";
 import {decodeEmail} from "@/utils/email-decode.js";
+import BaseSwitch from "@/components/BaseSwitch.vue";
 
 export default {
-  components: {MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
+  components: {BaseSwitch, MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
   provide() {
     return {
       isLogin: computed(() => this.isLogin),
@@ -545,7 +546,39 @@ export default {
           this.$refs.postDetail.jumpLastRead(this.current.read.floor)
         })
       }
-      console.log('当前帖子', this.current)
+
+      // id=669181
+      if (!this.current.member.id) {
+        let userRes = await fetch(window.baseUrl + '/api/members/show.json?username=' + this.current.member.username)
+        if (userRes.status === 200) {
+          this.current.member = await userRes.json()
+        }
+      }
+
+      let userStr = `<a href="/member/${this.current.member.username}">${this.current.member.username}</a>`
+      if (this.current.member.id) {
+        // console.log('userStr', userStr)
+        let date = new Date(this.current.member.created * 1000)
+        let createStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+        date.setHours(0)
+        date.setMinutes(0)
+        date.setSeconds(0)
+        date.setMilliseconds(0)
+        let now = new Date()
+        now.setHours(0)
+        now.setMinutes(0)
+        now.setSeconds(0)
+        now.setMilliseconds(0)
+        let d = now.getTime() - date.getTime()
+        let danger = d <= 1000 * 60 * 60 * 24 * 7
+        // console.log('d', d, 'danger', danger, 'now.getTime()', now.getTime(), ' date.getTime() * 1000', date.getTime())
+        this.current.headerTemplate = this.current.headerTemplate.replace(userStr,
+            `${userStr} · <span class="${danger ? 'danger' : ''}">${createStr} 注册</span>`)
+      } else {
+        this.current.headerTemplate = this.current.headerTemplate.replace(userStr,
+            `${userStr} · <span class="danger">用户已被注销/封禁</span>`)
+      }
+      console.log('当前帖子', this.current, this.current.member.id)
     },
     addTargetUserTag() {
       eventBus.emit(CMD.ADD_TAG, window.targetUserName)
@@ -593,8 +626,7 @@ export default {
     <div v-if="isPost && !show" class="my-box flex f14 open-post" style="margin: 2rem 0 0 0;padding: 1rem;">
       <div class="flex">
         默认显示楼中楼 ：
-        <div class="switch light" :class="{active:config.autoOpenDetail}"
-             @click="config.autoOpenDetail = !config.autoOpenDetail"/>
+        <BaseSwitch v-model="config.autoOpenDetail"/>
       </div>
       <div class="button light" @click="showPost" :class="{loading,isNight}">
         点击显示楼中楼
