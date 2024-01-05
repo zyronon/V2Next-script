@@ -7,7 +7,7 @@
           <div class="title">
             脚本设置
           </div>
-          <i class="fa fa-times"  @click="close"/>
+          <i class="fa fa-times" @click="close"/>
         </div>
         <div class="body">
           <div class="left">
@@ -81,6 +81,13 @@
                 </div>
               </div>
               <div v-if="tabIndex === 1">
+                <div class="row">
+                  <label class="item-title">显示回复展示方式</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.showToolbar"/>
+                  </div>
+                </div>
+
                 <div class="row">
                   <label class="item-title">回复展示方式</label>
                   <div class="wrapper">
@@ -198,22 +205,6 @@
                 </div>
               </div>
               <div v-if="tabIndex === 2">
-                <div class="row">
-                  <label class="item-title">显示工具栏</label>
-                  <div class="wrapper">
-                    <BaseSwitch v-model="config.showToolbar"/>
-                  </div>
-                </div>
-                <div class="desc">
-                  关闭此项会隐藏以下两个工具栏
-                  <div>
-                    1. 详情页”楼中楼/只看楼主/感谢/V2原版“
-                  </div>
-                  <div>
-                    2. 单独打开帖子时”点击显示楼中楼“
-                  </div>
-                </div>
-
                 <div class="row">
                   <label class="item-title">用户打标签(跨平台，数据保存在自己的记事本)：</label>
                   <div class="wrapper">

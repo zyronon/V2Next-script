@@ -258,6 +258,7 @@ export default {
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
           e.preventDefault()
+          e.stopPropagation()
           let index = this.list.findIndex(v => v.id == id)
           let postItem = this.clone(window.initPost)
           if (index > -1) {
@@ -318,6 +319,7 @@ export default {
         }
         if (this.config.newTabOpen) {
           e.preventDefault()
+          e.stopPropagation()
           window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1`)
         }
       }
@@ -374,6 +376,9 @@ export default {
         this.current = Object.assign(this.clone(this.current), this.clone(value))
         console.log('当前帖子', this.current)
         this.loading = false
+      }
+      if (type === 'postOp') {
+        this.current = Object.assign(this.clone(this.current), this.clone(value))
       }
     },
     clone(val) {
@@ -557,29 +562,8 @@ export default {
         }
       }
 
-      let userStr = `<a href="/member/${this.current.member.username}">${this.current.member.username}</a>`
-      if (this.current.member.id) {
-        // console.log('userStr', userStr)
-        let date = new Date(this.current.member.created * 1000)
-        let createStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-        date.setHours(0)
-        date.setMinutes(0)
-        date.setSeconds(0)
-        date.setMilliseconds(0)
-        let now = new Date()
-        now.setHours(0)
-        now.setMinutes(0)
-        now.setSeconds(0)
-        now.setMilliseconds(0)
-        let d = now.getTime() - date.getTime()
-        let danger = d <= 1000 * 60 * 60 * 24 * 7
-        // console.log('d', d, 'danger', danger, 'now.getTime()', now.getTime(), ' date.getTime() * 1000', date.getTime())
-        this.current.headerTemplate = this.current.headerTemplate.replace(userStr,
-            `${userStr} · <span class="${danger ? 'danger' : ''}">${createStr} 注册</span>`)
-      } else {
-        this.current.headerTemplate = this.current.headerTemplate.replace(userStr,
-            `${userStr} · <span class="danger">用户已被注销/封禁</span>`)
-      }
+      this.current = await window.parse.parseOp(this.current)
+
       console.log('当前帖子', this.current, this.current.member.id)
     },
     addTargetUserTag() {
@@ -604,7 +588,7 @@ export default {
   <Base64Tooltip/>
   <MsgModal/>
 
-  <div class="toolbar" v-if="!stopMe && config.showToolbar" :class="[isNight?'isNight':'',config['viewType']]">
+  <div class="toolbar" v-if="!stopMe" :class="[isNight?'isNight':'',config['viewType']]">
     <div class="target-user-tags" v-if="isMember && isLogin && config.openTag">
       <span>标签：</span>
       <span class="my-tag" v-for="i in targetUserTags">
@@ -614,13 +598,9 @@ export default {
             </span>
       <span class="add-tag ago" @click="addTargetUserTag" title="添加标签">+</span>
     </div>
-    <div v-if="isPost && !show" class="my-box flex f14 open-post" style="margin: 2rem 0 0 0;padding: 1rem;">
-      <div class="flex">
-        默认显示楼中楼 ：
-        <BaseSwitch v-model="config.autoOpenDetail"/>
-      </div>
-      <div class="button light" @click="showPost" :class="{loading,isNight}">
-        点击显示楼中楼
+    <div v-if="isPost && !show && config.autoOpenDetail"  class="my-box flex flex-center" style="margin: 2rem 0 0 0;padding: 2rem;">
+      <div class="loading-wrapper">
+        <div :class="[isNight?'loading-b':'loading-c']"></div>
       </div>
     </div>
   </div>

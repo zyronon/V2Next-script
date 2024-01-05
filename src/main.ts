@@ -171,6 +171,40 @@ function run() {
       post.headerTemplate = html
       return post
     },
+    async parseOp(post: Post) {
+      // id=669181
+      if (!post.member.id) {
+        let userRes = await fetch(window.baseUrl + '/api/members/show.json?username=' + post.member.username)
+        if (userRes.status === 200) {
+          post.member = await userRes.json()
+        }
+      }
+
+      let userStr = `<a href="/member/${post.member.username}">${post.member.username}</a>`
+      if (post.member.id) {
+        // console.log('userStr', userStr)
+        let date = new Date(post.member.created * 1000)
+        let createStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+        date.setHours(0)
+        date.setMinutes(0)
+        date.setSeconds(0)
+        date.setMilliseconds(0)
+        let now = new Date()
+        now.setHours(0)
+        now.setMinutes(0)
+        now.setSeconds(0)
+        now.setMilliseconds(0)
+        let d = now.getTime() - date.getTime()
+        let danger = d <= 1000 * 60 * 60 * 24 * 7
+        // console.log('d', d, 'danger', danger, 'now.getTime()', now.getTime(), ' date.getTime() * 1000', date.getTime())
+        post.headerTemplate = post.headerTemplate.replace(userStr,
+          `${userStr} · <span class="${danger ? 'danger' : ''}">${createStr} 注册</span>`)
+      } else {
+        post.headerTemplate = post.headerTemplate.replace(userStr,
+          `${userStr} · <span class="danger">用户已被注销/封禁</span>`)
+      }
+      return post
+    },
     //获取帖子所有回复
     async getPostAllReplies(post: Post, body: JQuery, htmlText: string, pageNo = 1) {
       if (body.find('#no-comments-yet').length) {
@@ -1262,8 +1296,12 @@ function run() {
           body,
           htmlText
         ).then(async (res: any) => {
-          // console.log('详情页-基本信息解析完成', new Date())
+          console.log('详情页-基本信息解析完成', Date.now())
           await cbChecker({type: 'postContent', value: res}, 0)
+
+          let opRes = await window.parse.parseOp(res)
+          console.log('详情页-OP信息解析完成', Date.now())
+          await cbChecker({type: 'postOp', value: opRes}, 0)
         })
 
         window.parse.getPostAllReplies(
@@ -1272,7 +1310,7 @@ function run() {
           htmlText,
           window.pageData.pageNo
         ).then(async (res: any) => {
-          // console.log('详情页-回复解析完成', new Date())
+          console.log('详情页-回复解析完成', Date.now())
           await cbChecker({type: 'postReplies', value: res}, 0)
         })
         break

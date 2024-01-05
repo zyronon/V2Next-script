@@ -16,6 +16,7 @@ declare global {
     postList: any[]
     parse: {
       parsePostContent: Function,
+      parseOp: Function,
       getPostAllReplies: Function,
       fetchPostOtherPageReplies: Function,
       parsePageReplies: Function,
