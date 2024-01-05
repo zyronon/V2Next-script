@@ -9,7 +9,7 @@
         <div class="option">
           <span>用户：</span>
           <div>
-            {{ tagModal.currentUsername }}
+            <b>{{ tagModal.currentUsername }}</b>
           </div>
         </div>
         <input type="text"
@@ -102,10 +102,9 @@ async function addTag() {
   .wrapper {
     z-index: 9;
     background: #f1f1f1;
-    border-radius: .8rem;
+    border-radius: 1.6rem;
     font-size: 1.4rem;
-    //box-shadow: 0 0 6px 4px gainsboro;
-    padding: 2rem 6rem 4rem 6rem;
+    padding: 2rem 4rem;
     width: 25rem;
 
     .btns {
@@ -114,17 +113,31 @@ async function addTag() {
       justify-content: flex-end;
       align-items: center;
       gap: 1.5rem;
-      font-size: 1rem;
+      font-size: 1.4rem;
 
       div {
         cursor: pointer;
       }
 
-      .main {
+      .white {
         color: gray;
-        background: @bg-color;
+        border-bottom: 1px solid transparent;
+        transition: all .3s;
+
+        &:hover {
+          border-bottom: 1px solid gray;
+        }
+      }
+
+      .main {
+        color: white;
+        background: var(--color-main-active);
         padding: .5rem 1.2rem;
         border-radius: .4rem;
+
+        &:hover {
+          opacity: .8;
+        }
       }
     }
   }

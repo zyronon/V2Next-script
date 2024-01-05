@@ -325,15 +325,6 @@ export default {
 .isNight {
   .wrapper {
     background: #22303f !important;
-    //background: rgb(24,34,45) !important;
-
-    .title, .option-title, .option > span {
-      color: darkgrey;
-    }
-
-    .notice {
-      color: gray !important;
-    }
   }
 }
 
