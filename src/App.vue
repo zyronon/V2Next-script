@@ -125,6 +125,7 @@ export default {
     },
   },
   created() {
+    let that = this
     window.cb = this.winCb
     if (window.win().canParseV2exPage) {
       if (this.isList) {
@@ -186,16 +187,17 @@ export default {
     $(document).on('click', 'a', (e) => {
       //有handle表示是脚本生成的a标签用于新开页面的
       if (e.currentTarget.getAttribute('script')) return
-      if (this.stopMe) return true
+      if (that.stopMe) return true
       let {href, id, title} = window.parse.parseA(e.currentTarget)
       if (id) {
-        this.clickPost(e, id, href, title)
+        console.log('click-a')
+        that.clickPost(e, id, href, title)
       }
     })
     //帖子的
     $(document).on('click', '.post-item', function (e) {
       if (e.currentTarget.getAttribute('script')) return
-      if (this.stopMe) return true
+      if (that.stopMe) return true
       //只有预览时，才响应点击
       if (this.classList.contains('preview')) {
         //A标签，要么上面的on事件已经处理了，要么就是不需要处理
@@ -207,11 +209,11 @@ export default {
             &&
             !e.target.classList.contains('toggle')
         ) {
-          console.log('点空白处')
+          console.log('点空白处',this)
           let id = this.dataset['id']
           let href = this.dataset['href']
           if (id) {
-            this.clickPost(e, id, href)
+            that.clickPost(e, id, href)
           } else {
             if (href) location.href = href
           }
