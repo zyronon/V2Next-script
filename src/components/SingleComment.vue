@@ -1,5 +1,5 @@
 <template>
-  <div class="comment" :class="{isSimple:config.simple}" ref="comment">
+  <div class="comment" :class="{isSimple:config.viewType === 'simple'}" ref="comment">
     <a class="avatar" v-if="!isRight" :href="`/member/${comment.username}`">
       <img :src="comment.avatar" alt="">
     </a>

@@ -52,7 +52,6 @@ export interface Config {
   customBgColor: string
   version: number
   collectBrowserNotice: boolean// 收藏时，浏览器提醒
-  simple: boolean// 简洁模式
 }
 
 export enum PageType {

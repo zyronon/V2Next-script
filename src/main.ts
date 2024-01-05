@@ -83,7 +83,6 @@ function run() {
     customBgColor: '',
     version: 1,
     collectBrowserNotice: false,
-    simple: false,
   }
   window.currentVersion = 1
   window.isNight = $('.Night').length === 1
@@ -842,7 +841,7 @@ function run() {
 
       .toggle {
           position: absolute;
-          right: ${window.config.simple ? '5rem' : 0};
+          right: ${window.config.viewType === 'simple' ? '5rem' : 0};
           top: 0.5rem;
           width: 9rem;
           height: 100%;
@@ -935,7 +934,7 @@ function run() {
       }
       
       ${
-      window.config.simple ? `
+      window.config.viewType === 'simple' ? `
       ${window.pageType !== PageType.Member ? `
       .item table tr td:first-child{display:none;}
       #Rightbar .cell table:first-child tr td:first-child{display:none;}

@@ -123,7 +123,7 @@ export default {
     myClass() {
       return {
         isOp: this.modelValue.isOp,
-        isSimple: this.config.simple,
+        isSimple: this.config.viewType === 'simple',
         ding: this.ding,
         isLevelOne: this.modelValue.level === 0,
         ['c_' + this.floor]: this.type !== 'top'

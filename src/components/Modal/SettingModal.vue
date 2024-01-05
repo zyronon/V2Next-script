@@ -7,6 +7,7 @@
           <div class="title">
             脚本设置
           </div>
+          <i class="fa fa-times"  @click="close"/>
         </div>
         <div class="body">
           <div class="left">
@@ -30,6 +31,10 @@
                   <div class="wrapper">
                     <div class="radio-group2" :class="{isNight}">
                       <div class="radio"
+                           @click="config.viewType = 'simple'"
+                           :class="config.viewType === 'simple'?'active':''">简洁
+                      </div>
+                      <div class="radio"
                            @click="config.viewType = 'table'"
                            :class="config.viewType === 'table'?'active':''">表格
                       </div>
@@ -40,14 +45,17 @@
                     </div>
                   </div>
                 </div>
+                <div class="desc danger">
+                  提示：此项需要刷新页面才能生效
+                </div>
                 <div class="row">
                   <label class="item-title">列表hover时显示预览按钮</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.showPreviewBtn"/>
                   </div>
                 </div>
-                <div class="desc">
-                  此项需要刷新页面才能生效
+                <div class="desc danger">
+                  提示：此项需要刷新页面才能生效
                 </div>
 
                 <div class="row">
@@ -197,15 +205,12 @@
                   </div>
                 </div>
                 <div class="desc">
-                  关闭此项会隐藏以下三个工具栏
+                  关闭此项会隐藏以下两个工具栏
                   <div>
-                    1. 首页”卡片/表格“
+                    1. 详情页”楼中楼/只看楼主/感谢/V2原版“
                   </div>
                   <div>
-                    2. 详情页”楼中楼/只看楼主/感谢/V2原版“
-                  </div>
-                  <div>
-                    3. 单独打开帖子时”点击显示楼中楼“
+                    2. 单独打开帖子时”点击显示楼中楼“
                   </div>
                 </div>
 
@@ -243,8 +248,8 @@
                     target="_blank">red、#ffffff、rgb(222,222,22)(点此查看)</a>等等。
 
                 </div>
-                <div class="desc">
-                  此项需要刷新页面才能生效
+                <div class="desc danger">
+                  提示：此项需要刷新页面才能生效
                 </div>
                 <div class="row">
                   <label class="item-title">收藏时提醒添加到书签</label>
@@ -254,16 +259,6 @@
                 </div>
                 <div class="desc">
                   V站帐号一旦被封禁，则无法登录，无法查看账号收藏了
-                </div>
-
-                <div class="row">
-                  <label class="item-title">简洁模式</label>
-                  <div class="wrapper">
-                    <BaseSwitch v-model="config.simple"/>
-                  </div>
-                </div>
-                <div class="desc">
-                  此项需要刷新页面才能生效
                 </div>
               </div>
             </div>
@@ -363,14 +358,20 @@ export default {
 
     .modal-header {
       padding: 2.4rem;
-      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      color: var(--color-font-1);
 
       .title {
-        color: var(--color-font-1);
         font-size: 2.6rem;
         font-weight: bold;
         text-align: left;
         margin-bottom: 0;
+      }
+
+      i {
+        cursor: pointer;
+        font-size: 2.2rem;
       }
     }
 

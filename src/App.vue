@@ -586,6 +586,7 @@ export default {
     removeTargetUserTag(tag) {
       eventBus.emit(CMD.REMOVE_TAG, {username: window.targetUserName, tag})
     },
+
   },
 }
 </script>
@@ -602,18 +603,6 @@ export default {
   <MsgModal/>
 
   <div class="toolbar" v-if="!stopMe && config.showToolbar" :class="[isNight?'isNight':'',config['viewType']]">
-    <div class="nav flex flex-end" v-if="isList">
-      <div class="radio-group2" :class="{isNight}">
-        <div class="radio"
-             @click="config.viewType = 'table'"
-             :class="config.viewType === 'table'?'active':''">表格
-        </div>
-        <div class="radio"
-             @click="config.viewType = 'card'"
-             :class="config.viewType === 'card'?'active':''">卡片
-        </div>
-      </div>
-    </div>
     <div class="target-user-tags" v-if="isMember && isLogin && config.openTag">
       <span>标签：</span>
       <span class="my-tag" v-for="i in targetUserTags">
