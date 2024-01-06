@@ -202,6 +202,12 @@ export default {
 
       //未读提醒
       if (href.includes('/notifications')) {
+        let clientWidth = window.document.body.clientWidth
+        let windowWidth = 1200
+        let left = clientWidth / 2 - windowWidth / 2
+        let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
+        // newWin.document.write('123');
+
         return that.stopEvent(e)
       }
 
