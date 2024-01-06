@@ -5,13 +5,17 @@ export interface Post {
   allReplyUsers: any[],
   username: string,
   member: any,
-  node: any,
+  node: {
+    title: string,
+    url: string
+  },
   headerTemplate: string,
   content_rendered: string,
   title: string,
   fr: string,
   id: string,
   createDate: string,
+  createDateAgo: string,
   type: string,
   once: string,
   replyCount: number,
@@ -87,5 +91,7 @@ export interface Reply {
   username: string
   avatar: string
   floor: number
-
 }
+
+//最大回复限制，超出脚本停止运行
+export const MAX_REPLY_LIMIT = 300

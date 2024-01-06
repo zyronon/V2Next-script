@@ -27,7 +27,7 @@
             <div class="scroll">
               <div v-if="tabIndex === 0">
                 <div class="row">
-                  <label class="item-title">列表帖子展示方式</label>
+                  <label class="item-title">列表展示方式</label>
                   <div class="wrapper">
                     <div class="radio-group2" :class="{isNight}">
                       <div class="radio"
@@ -59,25 +59,22 @@
                 </div>
 
                 <div class="row">
-                  <label class="item-title">点击列表帖子，打开详情弹框</label>
+                  <label class="item-title">帖子弹框显示</label>
                   <div class="wrapper">
-                    <BaseSwitch :model-value="config.clickPostItemOpenDetail"
-                                @update:modelValue="config.clickPostItemOpenDetail = !config.clickPostItemOpenDetail;
-                                config.clickPostItemOpenDetail && (config.newTabOpen = false)"
-                    />
+                    <BaseSwitch v-model="config.clickPostItemOpenDetail"/>
                   </div>
                 </div>
                 <div class="desc">
-                  若关闭此项，点击列表的帖子时，不会打开弹框，会跳转网页
+                  开启此选项后，帖子始终会以弹框的方式显示。优先级大于“新标签页打开链接”
                 </div>
                 <div class="row">
                   <label class="item-title">新标签页打开链接</label>
                   <div class="wrapper">
-                    <BaseSwitch :model-value="config.newTabOpen"
-                                @update:modelValue="config.newTabOpen = !config.newTabOpen;
-                                config.newTabOpen && (config.clickPostItemOpenDetail = false)"
-                    />
+                    <BaseSwitch v-model="config.newTabOpen"/>
                   </div>
+                </div>
+                <div class="desc">
+                  网页上所有链接通过新标签页打开
                 </div>
               </div>
               <div v-if="tabIndex === 1">
@@ -358,7 +355,7 @@ export default {
     }
 
     .body {
-      width: 40vw;
+      width: 45vw;
       height: 70vh;
       display: flex;
 

@@ -4,7 +4,7 @@ import './assets/less/index.less'
 import App from './App.vue';
 import {GM_notification, GM_openInTab, GM_registerMenuCommand} from "$"
 import './global.d.ts'
-import {CommentDisplayType, PageType, Post, Reply} from "./types"
+import {CommentDisplayType, MAX_REPLY_LIMIT, PageType, Post, Reply} from "./types"
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -15,13 +15,17 @@ function run() {
     allReplyUsers: [],
     content_rendered: "",
     createDate: "",
+    createDateAgo: '',
     fr: "",
     replyList: [],
     nestedReplies: [],
     nestedRedundReplies: [],
     username: '',
     member: {},
-    node: {},
+    node: {
+      title: '',
+      url: ''
+    },
     headerTemplate: '',
     title: '',
     id: '',
@@ -37,12 +41,15 @@ function run() {
     isThanked: false,
     isReport: false
   }
+  //历史遗留属性
   window.win = function () {
     return window
   }
   window.win().doc = window.win().document
   window.win().query = (v: any) => window.win().document.querySelector(v)
   window.query = (v: any) => window.win().document.querySelector(v)
+  //历史遗留属性
+
   window.clone = (val: any) => JSON.parse(JSON.stringify(val))
   window.user = {
     tagPrefix: '--用户标签--',
@@ -84,6 +91,10 @@ function run() {
     version: 1,
     collectBrowserNotice: false,
   }
+  window.const = {
+    git: 'https://github.com/zyronon/v2ex-script',
+    issue: 'https://github.com/zyronon/v2ex-script/issues'
+  }
   window.currentVersion = 1
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -100,14 +111,36 @@ function run() {
 
       post.isReport = htmlText.includes('你已对本主题进行了报告')
 
+      let main = body.find('#Main')
       //如果没有正文（点的本站的a标签），才会解析正文
       if (!post.title || !post.content_rendered) {
-        let main = body.find('#Main')
-        let aName = main.find('.header small.gray a:nth-child(1)')
-        if (aName) {
-          post.member.username = aName[0].innerText
+        let h1 = main.find('h1')
+        if (h1) {
+          post.title = h1[0].innerText
         }
       }
+
+      let as: any = main.find('.header > a')
+      if (as.length) {
+        console.log('as[1].innerText', as[1])
+        post.node.title = as[1].innerText
+        post.node.url = as[1].href
+      }
+      let aName = main.find('.header small.gray a:nth-child(1)')
+      if (aName) {
+        post.member.username = aName[0].innerText
+      }
+      let spanEl = main.find('.header small.gray span')
+      if (spanEl) {
+        post.createDateAgo = spanEl[0].innerText
+      }
+
+      let avatarEl: any = main.find('.header .avatar')
+      console.log('avatarEl', avatarEl[0].src)
+      if (avatarEl) {
+        post.member.avatar_large = avatarEl[0].src
+      }
+
 
       let topic_buttons = body.find('.topic_buttons')
       if (topic_buttons.length) {
@@ -165,12 +198,14 @@ function run() {
       let header = body.find('#Main .box').first()
       let temp = header.clone()
       temp.find('.topic_buttons').remove()
+      temp.find('.header').remove()
       let html = temp.html()
       html = this.checkPhotoLink2Img(html)
       // console.log('html', html)
       post.headerTemplate = html
       return post
     },
+    //解析OP信息
     async parseOp(post: Post) {
       // id=669181
       if (!post.member.id) {
@@ -180,7 +215,6 @@ function run() {
         }
       }
 
-      let userStr = `<a href="/member/${post.member.username}">${post.member.username}</a>`
       if (post.member.id) {
         // console.log('userStr', userStr)
         let date = new Date(post.member.created * 1000)
@@ -195,13 +229,13 @@ function run() {
         now.setSeconds(0)
         now.setMilliseconds(0)
         let d = now.getTime() - date.getTime()
-        let danger = d <= 1000 * 60 * 60 * 24 * 7
+        let isNew = d <= 1000 * 60 * 60 * 24 * 7
         // console.log('d', d, 'danger', danger, 'now.getTime()', now.getTime(), ' date.getTime() * 1000', date.getTime())
-        post.headerTemplate = post.headerTemplate.replace(userStr,
-          `${userStr} · <span class="${danger ? 'danger' : ''}">${createStr} 注册</span>`)
+        post.member.createDate = createStr + ' 注册'
+        post.member.isNew = isNew
       } else {
-        post.headerTemplate = post.headerTemplate.replace(userStr,
-          `${userStr} · <span class="danger">用户已被注销/封禁</span>`)
+        post.member.createDate = '用户已被注销/封禁'
+        post.member.isNew = true
       }
       return post
     },
@@ -390,6 +424,7 @@ function run() {
       post = await this.parsePostContent(post, body, htmlText)
       return await this.getPostAllReplies(post, body, htmlText, pageNo)
     },
+    //获取所有回复
     getAllReply(repliesMap = []) {
       return repliesMap.sort((a: any, b: any) => a.i - b.i).reduce((pre, i: any) => {
         pre = pre.concat(i.replyList)
@@ -649,6 +684,7 @@ function run() {
         cbChecker({type: 'syncData'})
       })
     },
+    //解析A标签
     parseA(a: HTMLAnchorElement) {
       let href = a.href
       let id
@@ -724,7 +760,7 @@ function run() {
               } else {
                 src = p + '.png'
               }
-              str = str.replace(r[0], `<img src="${src}" data-originUrl="${p}" data-notice="这个img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`)
+              str = str.replace(r[0], `<img src="${src}" data-originUrl="${p}" data-notice="此img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`)
             }
           })
         })
@@ -733,6 +769,7 @@ function run() {
       }
       return str
     },
+    //检测帖子回复长度
     async checkPostReplies(id: string, needOpen: boolean = true) {
       return new Promise(async resolve => {
         let showJsonUrl = `${location.origin}/api/topics/show.json?id=${id}`
@@ -740,7 +777,7 @@ function run() {
         if (r) {
           let res = await r.json()
           if (res) {
-            if (res[0]?.replies > 300) {
+            if (res[0]?.replies > MAX_REPLY_LIMIT) {
               if (needOpen) {
                 window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1&script=1`)
               }
@@ -751,18 +788,25 @@ function run() {
         resolve(false)
       })
     },
+    //打开新标签页
     openNewTab(href: string) {
-      let tempId = 'a_blank_' + Date.now()
-      let a = document.createElement("a");
-      a.setAttribute("href", href);
-      a.setAttribute("target", "_blank");
-      a.setAttribute("id", tempId);
-      a.setAttribute("script", '1');
-      // 防止反复添加
-      if (!document.getElementById(tempId)) {
-        document.body.appendChild(a);
-      }
-      a.click();
+      GM_openInTab(href, {active: true});
+      // let tempId = 'a_blank_' + Date.now()
+      // let a = document.createElement("a");
+      // a.setAttribute("href", href);
+      // a.setAttribute("target", "_blank");
+      // a.setAttribute("id", tempId);
+      // a.setAttribute("script", '1');
+      // // 防止反复添加
+      // if (!document.getElementById(tempId)) {
+      //   document.body.appendChild(a);
+      // }
+      // a.click();
+    }
+  }
+  window.functions = {
+    feedback() {
+      window.parse.openNewTab(window.const.issue)
     }
   }
 
@@ -785,21 +829,16 @@ function run() {
     }
   }
 
-  function feedback() {
-    GM_openInTab('https://github.com/zyronon/v2ex-script/issues', {
-      active: true,
-      insert: true,
-      setParent: true
-    });
-  }
-
   //初始化脚本菜单
   function initMonkeyMenu() {
     try {
-      GM_registerMenuCommand("脚本设置", function (event) {
+      GM_registerMenuCommand("脚本设置", () => {
         cbChecker({type: 'openSetting'})
       });
-      GM_registerMenuCommand('💬 反馈 & 建议', feedback);
+      GM_registerMenuCommand('仓库地址', () => {
+        window.parse.openNewTab(window.const.git)
+      });
+      GM_registerMenuCommand('反馈 & 建议', window.functions.feedback);
     } catch (e) {
       console.error('无法使用Tampermonkey')
     }
@@ -1013,7 +1052,7 @@ function run() {
     addStyle2.rel = "stylesheet";
     addStyle2.type = "text/css";
     addStyle2.innerHTML = style2
-    $(window.win().doc.head).append(addStyle2)
+    window.document.head.append(addStyle2)
   }
 
   // 自动签到（后台）
@@ -1064,7 +1103,7 @@ function run() {
           text: '自动签到失败！请关闭其他插件或脚本。\n如果连续几天都签到失败，请联系作者解决！',
           timeout: 4000,
           onclick() {
-            feedback()
+            window.functions.feedback()
           }
         });
         console.warn('[V2EX 增强] 自动签到失败！请关闭其他插件或脚本。如果连续几天都签到失败，请联系作者解决！')
@@ -1087,33 +1126,35 @@ function run() {
     })
   }
 
+  //检测页面类型
   function checkPageType() {
-    let location2 = window.win().location
-    if (location2.pathname === '/') {
+    let l = window.location
+    if (l.pathname === '/') {
       window.pageType = PageType.Home
-    } else if (location2.href.match(/.com\/?tab=/)) {
+    } else if (l.href.match(/.com\/?tab=/)) {
       window.pageType = PageType.Home
-    } else if (location2.href.match(/.com\/go\//)) {
-      if (!location2.href.includes('/links')) {
+    } else if (l.href.match(/.com\/go\//)) {
+      if (!l.href.includes('/links')) {
         window.pageType = PageType.Node
       }
-    } else if (location2.href.match(/.com\/recent/)) {
+    } else if (l.href.match(/.com\/recent/)) {
       window.pageType = PageType.Home
-    } else if (location2.href.match(/.com\/member/)) {
+    } else if (l.href.match(/.com\/member/)) {
       window.pageType = PageType.Member
     } else {
-      let r = location2.href.match(/.com\/t\/([\d]+)/)
+      let r = l.href.match(/.com\/t\/([\d]+)/)
       if (r) {
         window.pageType = PageType.Post
         window.pageData.id = r[1]
-        if (location2.search) {
-          let pr = location2.href.match(/\?p=([\d]+)/)
+        if (l.search) {
+          let pr = l.href.match(/\?p=([\d]+)/)
           if (pr) window.pageData.pageNo = Number(pr[1])
         }
       }
     }
   }
 
+  //获取记事本条目内容
   function getNoteItemContent(id: string, prefix: string) {
     return new Promise((resolve, reject) => {
       $.get(window.baseUrl + '/notes/edit/' + id).then(r2 => {
@@ -1174,10 +1215,11 @@ function run() {
     })
   }
 
+  //从本地读取配置
   function initConfig() {
     return new Promise(resolve => {
       //获取默认配置
-      let configStr = window.win().localStorage.getItem('v2ex-config')
+      let configStr = window.localStorage.getItem('v2ex-config')
       if (configStr) {
         let configObj = JSON.parse(configStr)
         configObj = configObj[window.user.username ?? 'default']
@@ -1207,7 +1249,7 @@ function run() {
       if (originImgUrl) {
         let a = document.createElement('a')
         a.href = originImgUrl
-        a.setAttribute('notice', '以标签由v2ex超级增强脚本因转换图片失败后生成')
+        a.setAttribute('notice', '此标签由v2ex超级增强脚本转换图片失败后恢复')
         a.innerText = originImgUrl
         dom.parentNode!.replaceChild(a, dom,)
       }
@@ -1296,11 +1338,11 @@ function run() {
           body,
           htmlText
         ).then(async (res: any) => {
-          console.log('详情页-基本信息解析完成', Date.now())
+          // console.log('详情页-基本信息解析完成', Date.now())
           await cbChecker({type: 'postContent', value: res}, 0)
 
           let opRes = await window.parse.parseOp(res)
-          console.log('详情页-OP信息解析完成', Date.now())
+          // console.log('详情页-OP信息解析完成', Date.now())
           await cbChecker({type: 'postOp', value: opRes}, 0)
         })
 
@@ -1310,7 +1352,7 @@ function run() {
           htmlText,
           window.pageData.pageNo
         ).then(async (res: any) => {
-          console.log('详情页-回复解析完成', Date.now())
+          // console.log('详情页-回复解析完成', Date.now())
           await cbChecker({type: 'postReplies', value: res}, 0)
         })
         break
@@ -1329,6 +1371,8 @@ function run() {
         }
         break
       default:
+        window.stopMe = true
+        cbChecker({type: 'syncData'})
         console.error('未知页面')
         break
     }

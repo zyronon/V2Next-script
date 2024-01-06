@@ -9,6 +9,48 @@
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
       <div class="main-wrapper" ref="mainWrapper" :style="{width:config.postWidth}">
         <div class="my-box post-wrapper">
+          <div class="header">
+            <div class="fr">
+              <a :href="`/member/${post.member.username}`"
+                 v-if="post.member.avatar_large">
+                <img :src="post.member.avatar_large"
+                     class="avatar"
+                     style="width: 73px;height: 73px;"
+                     border="0" align="default" :alt="post.member.username"></a>
+            </div>
+            <a href="/">V2EX</a>
+            <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
+            <a :href="post.node.url">{{ post.node.title }}</a>
+            <div class="sep10"></div>
+            <h1>{{ post.title }}</h1>
+            <div :id="`topic_${post.id}_votes`" class="votes">
+              <a href="javascript:" :onclick="`upVoteTopic(${post.id});`" class="vote">
+                <li class="fa fa-chevron-up"></li> &nbsp;
+              </a>
+              &nbsp;
+              <a href="javascript:" :onclick="`downVoteTopic(${post.id});`" class="vote">
+                <li class="fa fa-chevron-down"></li>
+              </a>
+            </div> &nbsp;
+            <small class="gray">
+              <a :href="`/member/${post.member.username}`">{{ post.member.username }}</a> ·
+              <template v-if="post.member.createDate">
+                <span :class="post.member.isNew && 'danger'">{{ post.member.createDate }}</span> ·
+              </template>
+              <template v-if="post.createDateAgo">
+                <span :title="post.createDate">{{ post.createDateAgo }}</span> ·
+              </template>
+              {{ post.clickCount }} 次点击
+            </small>
+            <template v-if="isLogin && config.openTag ">
+              <span class="my-tag" v-for="i in myTags">
+                <i class="fa fa-tag"></i>
+                <span>{{ i }}</span>
+                <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
+              </span>
+              <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
+            </template>
+          </div>
           <BaseHtmlRender :html="post.headerTemplate"/>
           <div class="toolbar-wrapper">
             <Point
@@ -203,7 +245,7 @@ export default {
     BaseHtmlRender,
     Tooltip
   },
-  inject: ['allReplyUsers', 'post', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
+  inject: ['allReplyUsers', 'post', 'tags', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
   provide() {
     return {
       postDetailWidth: computed(() => this.postDetailWidth)
@@ -247,10 +289,14 @@ export default {
         floor: 0,
         total: 0
       },
-      currentFloor: 1
+      currentFloor: 1,
+      showOpTag: false
     }
   },
   computed: {
+    myTags() {
+      return this.tags[this.post.member.username] ?? []
+    },
     CommentDisplayType() {
       return CommentDisplayType
     },
@@ -317,9 +363,18 @@ export default {
         })
       }
     },
+    'post.headerTemplate'(n, o) {
+      let mountEl = document.querySelector('.main-wrapper .post-wrapper .html-wrapper .header')
+      if (mountEl) {
+        this.showOpTag = true
+      }
+    },
     modelValue: {
       handler(newVal) {
-        if (this.isPost) return
+        if (this.isPost) {
+
+          return
+        }
         if (newVal) {
           document.body.style.overflow = 'hidden'
           this.read = this.post.read
@@ -393,6 +448,12 @@ export default {
     eventBus.off(CMD.SHOW_CALL)
   },
   methods: {
+    addTag() {
+      eventBus.emit(CMD.ADD_TAG, this.post.member.username)
+    },
+    removeTag(tag) {
+      eventBus.emit(CMD.REMOVE_TAG, {username: this.post.member.username, tag})
+    },
     scroll() {
       if (!this.config.rememberLastReadFloor) return
       let height = window.innerHeight * 0.3
@@ -589,7 +650,7 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
 
-  :deep(.subtle){
+  :deep(.subtle) {
     background-color: rgb(236 253 245 / 90%);
     border-left: 4px solid #a7f3d0;
   }
@@ -640,7 +701,7 @@ export default {
       }
 
       :deep(.subtle) {
-        background-color: rgb(26,51,50);
+        background-color: rgb(26, 51, 50);
         border-left: 4px solid #047857;
 
       }
@@ -790,6 +851,15 @@ export default {
           align-items: center;
           //background: linear-gradient(to bottom, #eee 0, #ccc 100%);
         }
+
+        .header {
+          &:hover {
+            .add-tag {
+              display: inline-block;
+            }
+          }
+        }
+
       }
 
       .editor-wrapper {

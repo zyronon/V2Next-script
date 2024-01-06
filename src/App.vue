@@ -1,5 +1,5 @@
 <script>
-import {PageType} from "./types"
+import {MAX_REPLY_LIMIT, PageType} from "./types"
 import {computed, nextTick} from "vue";
 import Setting from "./components/Modal/SettingModal.vue";
 import eventBus from "@/utils/eventBus.js";
@@ -185,17 +185,38 @@ export default {
     }
     //A标签的
     $(document).on('click', 'a', (e) => {
-      //有handle表示是脚本生成的a标签用于新开页面的
+      //有script表示是脚本生成的a标签用于新开页面的
       if (e.currentTarget.getAttribute('script')) return
       if (that.stopMe) return true
       let {href, id, title} = window.parse.parseA(e.currentTarget)
+
+      console.log('click-a', e.currentTarget, e, href)
+      //夜间模式切换
+      if (href.includes('/settings/night/toggle')) return
+      if (href.includes('/?tab=')) return
+      if (href.includes('/go')) return
+      //清除最近记录
+      if (href === window.origin + '/#;') return
+      //主页
+      if (href === window.origin + '/') return
+
+      //未读提醒
+      if (href.includes('/notifications')) {
+        return that.stopEvent(e)
+      }
+
       if (id) {
-        console.log('click-a')
         that.clickPost(e, id, href, title)
+      } else {
+        if (that.config.newTabOpen) {
+          that.stopEvent(e)
+          window.parse.openNewTab(href)
+        }
       }
     })
     //帖子的
     $(document).on('click', '.post-item', function (e) {
+      // console.log('click-post-item')
       if (e.currentTarget.getAttribute('script')) return
       if (that.stopMe) return true
       //只有预览时，才响应点击
@@ -209,7 +230,7 @@ export default {
             &&
             !e.target.classList.contains('toggle')
         ) {
-          console.log('点空白处',this)
+          console.log('点空白处', this)
           let id = this.dataset['id']
           let href = this.dataset['href']
           if (id) {
@@ -250,6 +271,10 @@ export default {
     eventBus.clear()
   },
   methods: {
+    stopEvent(e) {
+      e.preventDefault()
+      e.stopPropagation()
+    },
     saveReadList() {
       window.parse.saveReadList(this.readList)
     },
@@ -257,54 +282,29 @@ export default {
       // id = '976890'
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
-          e.preventDefault()
-          e.stopPropagation()
+          this.stopEvent(e)
           let index = this.list.findIndex(v => v.id == id)
           let postItem = this.clone(window.initPost)
+
           if (index > -1) {
             postItem = this.list[index]
           } else {
             postItem.title = title ?? '加载中'
           }
-          //如果有评论数量，那就取来判断，没有则调接口判断
-          if (postItem.replies) {
-            if (postItem.replies > 300) {
+          postItem.inList = index > -1
+
+          //如果在列表里面，一定有replies这个值，直接判断大小即可
+          if (postItem.inList) {
+            if (postItem.replies > MAX_REPLY_LIMIT) {
               return window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1&script=1`)
             }
-          } else {
-            let r = await window.parse.checkPostReplies(id, true)
-            if (r) return true
           }
+
           // console.log('postItem', postItem)
           postItem.id = id
           postItem.href = href
           if (!postItem.headerTemplate) {
             let template = `
-            <div class="header">
-              <div class="fr">
-                <a href="/member/${postItem?.member?.username ?? ''}">
-                  <img src="${postItem?.member?.avatar_large ?? ''}" class="avatar"
-                       border="0"
-                       align="default" width="73" style="width: 73px; max-height: 73px;" alt="${postItem?.member?.username ?? ''}">
-                </a>
-              </div>
-              <a href="/public">V2EX</a> <span class="chevron">&nbsp;›&nbsp;</span> <a href="${postItem?.node?.url ?? ''}">${postItem?.node?.title ?? ''}</a>
-              <div class="sep10"></div>
-              <h1>${postItem?.title || '加载中...'}</h1>
-              <div id="topic_930514_votes" class="votes">
-                <a href="javascript:" onclick="null" class="vote">
-                  <li class="fa fa-chevron-up"></li>
-                  &nbsp;
-                </a> &nbsp;
-                <a href="javascript:" onclick="null" class="vote">
-                  <li class="fa fa-chevron-down"></li>
-                </a>
-              </div> &nbsp;
-              <small class="gray">
-                <a href="/member/zyronon">${postItem?.member?.username ?? ''}</a> ·
-                <span title="2023-04-07 11:32:28 +08:00">1 天前</span> · 0 次点击
-              </small>
-            </div>
             <div class="cell">
               <div class="topic_content">
                 <div class="markdown_body">
@@ -316,10 +316,10 @@ export default {
             postItem.headerTemplate = template
           }
           this.getPostDetail(postItem)
+          return
         }
         if (this.config.newTabOpen) {
-          e.preventDefault()
-          e.stopPropagation()
+          this.stopEvent(e)
           window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1`)
         }
       }
@@ -493,6 +493,18 @@ export default {
       this.current = Object.assign({}, window.initPost, post)
       this.current.read = this.readList[this.current.id] ?? {floor: 0, total: 0}
       this.show = true
+
+      //如果不在列表里面，则调用接口判断,调接口比请求html正则判断来得快，他接口有缓存的
+      if (!this.current.inList) {
+        this.loading = true
+        let r = await window.parse.checkPostReplies(post.id, true)
+        if (r) {
+          eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '由于回复数量较多，已为您单独打开此主题'})
+          this.loading = this.show = false
+          return
+        }
+      }
+
       let url = window.baseUrl + '/t/' + post.id
       document.body.style.overflow = 'hidden'
       window.history.pushState({}, 0, post.href ?? url);
@@ -554,14 +566,6 @@ export default {
         })
       }
 
-      // id=669181
-      if (!this.current.member.id) {
-        let userRes = await fetch(window.baseUrl + '/api/members/show.json?username=' + this.current.member.username)
-        if (userRes.status === 200) {
-          this.current.member = await userRes.json()
-        }
-      }
-
       this.current = await window.parse.parseOp(this.current)
 
       console.log('当前帖子', this.current, this.current.member.id)
@@ -572,7 +576,6 @@ export default {
     removeTargetUserTag(tag) {
       eventBus.emit(CMD.REMOVE_TAG, {username: window.targetUserName, tag})
     },
-
   },
 }
 </script>
@@ -598,7 +601,8 @@ export default {
             </span>
       <span class="add-tag ago" @click="addTargetUserTag" title="添加标签">+</span>
     </div>
-    <div v-if="isPost && !show && config.autoOpenDetail"  class="my-box flex flex-center" style="margin: 2rem 0 0 0;padding: 2rem;">
+    <div v-if="isPost && !show && config.autoOpenDetail" class="my-box flex flex-center"
+         style="margin: 2rem 0 0 0;padding: 2rem;">
       <div class="loading-wrapper">
         <div :class="[isNight?'loading-b':'loading-c']"></div>
       </div>
