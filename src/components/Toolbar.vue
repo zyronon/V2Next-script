@@ -194,12 +194,12 @@ export default {
 @import "@/assets/less/variable";
 
 .toolbar {
-  border-top: 1px solid var(--color-main-bg);
+  border-top: 1px solid var(--color-line);
   height: 3.8rem;
   padding-left: .6rem;
   display: flex;
   align-items: center;
-  color: var(--color-font);
+  color: var(--color-gray);
   font-size: 1.2rem;
   font-weight: bold;
   gap: 1rem;

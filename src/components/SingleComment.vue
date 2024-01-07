@@ -12,7 +12,7 @@
                 fill="#E02A2A" stroke="#E02A2A" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round"/>
           </svg>
-          <div class="num">{{ comment.thankCount }}</div>
+          <div class="link-num">{{ comment.thankCount }}</div>
         </div>
         <template v-if="isLogin && config.openTag  && isRight">
             <span class="my-tag" v-for="i in myTags">
@@ -40,7 +40,7 @@
                 fill="#E02A2A" stroke="#E02A2A" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round"/>
           </svg>
-          <div class="num">{{ comment.thankCount }}</div>
+          <div class="link-num">{{ comment.thankCount }}</div>
         </div>
       </div>
       <BaseHtmlRender class="reply_content" :html="comment.reply_content"/>

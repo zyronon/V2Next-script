@@ -68,7 +68,7 @@
 
         <div class="my-box" v-if="topReply.length && config.showTopReply">
           <div class="my-cell flex ">
-            <span class="gray">高赞回复</span>
+            <span class=" ">高赞回复</span>
             <div class="top-reply">
               <Tooltip :title="`统计点赞数大于等于${config.topReplyLoveMinCount}个的回复，可在设置中调整`">
                 <i class="fa fa-info" @click="showConfig()"/>
@@ -140,7 +140,7 @@
               </div>
             </div>
             <div class="my-cell flex">
-                <span class="gray">{{ post.replyCount }} 条回复
+                <span>{{ post.replyCount }} 条回复
                  <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
                 </span>
               <div class="fr" v-html="post.fr"></div>
@@ -149,7 +149,7 @@
 
           <template v-if="replyList.length || loading">
             <div class="loading-wrapper" v-if="loading">
-              <BaseLoading size="large" />
+              <BaseLoading size="large"/>
             </div>
             <div class="comments" v-else>
               <template v-if="modelValue">
@@ -163,15 +163,15 @@
 
         <div v-if="!(replyList.length || loading)" id="no-comments-yet">目前尚无回复</div>
 
-        <div v-if="isLogin" class="my-box editor-wrapper" ref="replyBox" :class="{'sticky':isSticky}">
+        <div v-if="isLogin" class="my-box" ref="replyBox" :class="{'sticky':isSticky}">
           <div class="my-cell flex">
             <span>添加一条新回复</span>
-            <div class="notice-right">
-              <a class="float" v-if="isSticky" @click="isSticky = false">取消回复框停靠</a>
+            <div class="notice-right gray">
+              <a style="margin-right: 2rem;" v-if="isSticky" @click="isSticky = false">取消回复框停靠</a>
               <a @click="scrollTop">回到顶部</a>
             </div>
           </div>
-          <div class="w">
+          <div class="p1">
             <PostEditor
                 @close="goBottom"
                 ref="post-editor"
@@ -200,19 +200,21 @@
         <div class="call-item"
              @click="setCall(item)"
              :class="{select:index === selectCallIndex}"
-             v-for="(item,index) in filterCallList.slice(0,10)">
+             v-for="(item,index) in filterCallList">
           <a>{{ item }}</a>
         </div>
       </div>
       <div class="close-btn" v-if="config.closePostDetailBySpace" @click="close('btn')">
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="scroll-top" @click.stop="scrollTop">
+      <div class="scroll-top gray" @click.stop="scrollTop">
         <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
       </div>
-      <div class="scroll-to" @click.stop="jump(currentFloor)">
+      <div class="scroll-to gray" @click.stop="jump(currentFloor)">
         <i class="fa fa-long-arrow-down"/>
-        <input type="text" v-model="currentFloor" @click.stop="stop">
+        <input type="text" v-model="currentFloor"
+               @click.stop="stop"
+               @keydown.enter="jump(currentFloor)">
       </div>
     </div>
   </div>
@@ -608,6 +610,7 @@ export default {
   position: sticky;
   bottom: -2px;
   z-index: 2;
+  background: var(--box-background-hover-color) !important;
 }
 
 .sticky[stuck] {
@@ -662,9 +665,6 @@ export default {
       border-left: 4px solid #047857;
     }
 
-    .scroll-to, .close-btn, .scroll-top, .top-reply {
-      color: #9caec7;
-    }
   }
 
   @width: 77rem;
@@ -699,25 +699,6 @@ export default {
         }
       }
 
-      .editor-wrapper {
-        background: var(--color-editor-bg) !important;
-
-        .float {
-          margin-right: 2rem;
-        }
-
-        .w {
-          padding: @space;
-        }
-      }
-
-      .comment-wrapper {
-        .comments {
-          width: 100%;
-          box-sizing: border-box;
-        }
-      }
-
       .loading-wrapper {
         height: 20rem;
         display: flex;
@@ -740,16 +721,20 @@ export default {
       width: 25vw;
       top: 6.5rem;
       bottom: 15rem;
-      z-index: 99;
+      z-index: 100;
       transform: translateX(calc(100% + 2rem));
       font-size: 2rem;
       overflow: hidden;
-      background: var(--color-second-bg);
-      border-radius: var(--border-radius);
 
+      .my-cell{
+        background: var(--color-second-bg);
+        border-radius: var(--box-border-radius) var(--box-border-radius) 0 0 ;
+      }
       .comments {
         max-height: calc(100% - 4.2rem);
         overflow: auto;
+        background: var(--color-second-bg);
+        border-radius: 0 0 var(--box-border-radius) var(--box-border-radius);
       }
     }
 
@@ -758,11 +743,11 @@ export default {
       position: absolute;
       top: 12rem;
       border: 1px solid var(--color-main-bg);
-      background: var(--color-third-bg);
+      background: var(--color-call-list-bg);
       box-shadow: 0 5px 15px rgb(0 0 0 / 10%);
-      overflow: hidden;
+      overflow: auto;
       max-height: 30rem;
-      border-radius: var(--border-radius);
+      border-radius: var(--box-border-radius);
       min-width: 8rem;
       box-sizing: content-box;
 
@@ -823,7 +808,7 @@ export default {
     width: 4.5rem;
     transform: translateX(6rem);
     font-size: 2rem;
-    background: var(--color-third-bg);
+    background: var(--color-sp-btn-bg);
   }
 
   .scroll-to {
@@ -835,7 +820,7 @@ export default {
     input {
       height: 2.6rem;
       width: 3.6rem;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       text-align: center;
       color: gray;
     }
@@ -866,7 +851,7 @@ export default {
   }
 
   .top-reply {
-    color: @bg-color;
+    color: var(--color-font-3);
     cursor: pointer;
     font-size: 2rem;
     display: flex;

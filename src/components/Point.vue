@@ -10,7 +10,7 @@
             :fill="getIsFull()" :stroke="getColor()" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round"/>
       </svg>
-      <div class="num" v-if="item.thankCount">{{ item.thankCount }}</div>
+      <div class="link-num" v-if="item.thankCount">{{ item.thankCount }}</div>
       <div v-else>感谢</div>
     </div>
   </PopConfirm>
@@ -84,10 +84,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="less">
-.num {
-  font-weight: 700;
-  color: var(--color-font);
-}
-</style>

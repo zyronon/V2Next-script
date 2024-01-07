@@ -820,46 +820,48 @@ onBeforeUnmount(() => {
   overflow: hidden;
   transition: all .3s;
   color: var(--color-font);
-  background: #393f4e !important;
 
   &.reply-post {
     .post-editor {
-      border: 1px solid transparent;
+      border: 1px solid var(--color-line);
     }
 
     &.isFocus {
       .post-editor {
-        border: 1px solid var(--color-font);
+        border: 1px solid var(--color-active);
       }
     }
   }
 
   &.reply-comment {
-    border-radius: .4rem;
+    border-radius: var(--box-border-radius);
     overflow: hidden;
-    border: 1px solid var(--color-font-3);
+    border: 1px solid var(--color-line);
 
     &.isFocus {
-      border: 1px solid var(--color-font);
+      border: 1px solid var(--color-active);
+    }
+
+    .toolbar {
+      background: var(--color-editor-toolbar);
     }
   }
 
   .post-editor {
-    border-radius: .4rem;
+    border-radius: var(--box-border-radius);
     transition: border .3s;
     width: 100%;
     max-width: 100%;
     padding: .6rem 1.4rem;
     box-sizing: border-box;
-    border: none;
     outline: none;
     font-family: Avenir, Helvetica, Arial, sans-serif;
     font-size: 1.4rem;
     min-height: 13rem;
     resize: none;
-    background: var(--color-second-bg);
+    background: var(--box-background-color);
     color: var(--color-font-pure);
-    border: transparent;
+    border: 1px solid transparent;
   }
 
   .toolbar {

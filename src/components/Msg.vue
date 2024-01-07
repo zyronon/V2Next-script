@@ -34,7 +34,7 @@ export default {
   font-size: 1.4rem;
   box-sizing: border-box;
   color: var(--color-font);
-  border-radius: var(--border-radius);
+  border-radius: var(--box-border-radius);
 
   &.success {
     .left {
@@ -55,7 +55,7 @@ export default {
   }
 
   .left {
-    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    border-radius: var(--box-border-radius) 0 0 var(--box-border-radius);
     display: flex;
     align-items: center;
     background: var(--color-active);

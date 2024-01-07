@@ -160,6 +160,9 @@
                 <div class="desc">
                   提示：此项设置以后，单独打开详情页时会出现帖子突然变宽（窄）的问题，暂时无解
                 </div>
+                <div class="desc danger">
+                  提示：此项需要刷新页面才能生效
+                </div>
 
                 <div class="row">
                   <label class="main-title">高赞回复</label>
@@ -327,7 +330,7 @@ export default {
     font-size: 1.4rem;
     overflow: hidden;
     //box-shadow: 0 0 6px 4px gainsboro;
-    color: var(--color-font);
+    color: var(--color-font-pure);
 
     .modal-header {
       padding: 2.4rem;
@@ -445,14 +448,13 @@ export default {
             .item-title {
               font-size: 1.8rem;
             }
-
           }
 
           .desc {
             margin-bottom: 1rem;
             font-size: 1.4rem;
             text-align: left;
-            color: var(--color-font-3);
+            color: var(--color-font);
           }
 
           .line {

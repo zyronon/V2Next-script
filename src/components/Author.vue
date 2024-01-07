@@ -13,7 +13,7 @@
       </a>
       <span class="texts">
         <strong>
-          <a :href="`/member/${comment.username}`" class="username">{{ comment.username }}</a>
+          <a :href="`/member/${comment.username}`" class="username" :class="{'dark':isNight}">{{ comment.username }}</a>
         </strong>
         <div v-if="comment.isOp" class="op">OP</div>
         <div v-if="comment.isDup" class="dup">DUP</div>
@@ -25,7 +25,7 @@
               <span>{{ i }}</span>
               <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
             </span>
-            <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
+             <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
         </template>
       </span>
     </div>
@@ -82,7 +82,7 @@ import PopConfirm from "@/components/PopConfirm.vue";
 export default {
   name: "Author",
   components: {PopConfirm, Point},
-  inject: ['isLogin', 'tags', 'config'],
+  inject: ['isLogin', 'tags', 'config', 'isNight'],
   props: {
     modelValue: false,
     comment: {
@@ -193,7 +193,7 @@ export default {
       display: flex;
 
       img {
-        @w:2.8rem;
+        @w: 2.8rem;
         width: @w;
         height: @w;
         border-radius: 0.4rem;
@@ -261,7 +261,7 @@ export default {
     .toolbar {
       display: flex;
       align-items: center;
-      color: #929596;
+      color: var(--color-gray);
       opacity: 0;
       font-weight: bold;
       gap: 1rem;

@@ -465,7 +465,7 @@ function run() {
               isOneLevelReply = true
             }
             if (isOneLevelReply) {
-              item.level === 0
+              item.level = 0
               nestedList.push(this.findChildren(item, endList, list))
             }
           }
@@ -509,7 +509,7 @@ function run() {
               isOneLevelReply = true
             }
             if (isOneLevelReply) {
-              item.level === 0
+              item.level = 0
               nestedList.push(this.findChildren(item, endList, list))
             }
           } else {
@@ -530,6 +530,7 @@ function run() {
     findChildren(item: any, endList: any[], all: any[]) {
       const fn = (child: any, endList2: any[], parent: any) => {
         child.level = parent.level + 1
+        //用于标记为已使用，直接标记源数据靠谱点，标记child可能会有问题
         let rIndex = all.findIndex(v => v.floor === child.floor)
         if (rIndex > -1) {
           all[rIndex].isUse = true
@@ -852,25 +853,9 @@ function run() {
             font-size: 62.5%;
         }
         
-::-webkit-scrollbar {
-  width: 1rem;
-  height: 1rem;
-}
 
-::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: .2rem;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgb(147, 173, 227);
-  border-radius: 1rem;
-}
         :root{
           --box-border-radius:8px;
-            .Night{
-               --box-foreground-color:rgb(173, 186, 199);
-            }
         }
         
         .box{
@@ -897,6 +882,7 @@ function run() {
        #Wrapper > .content {
         height: unset !important;
         width: unset !important;
+          max-width:1100px !important;
       }
 
       .post-item {

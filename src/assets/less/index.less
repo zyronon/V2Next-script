@@ -5,38 +5,42 @@
 :root {
   --color-main-bg: rgb(226, 226, 226);
   --color-second-bg: white;
-  --color-third-bg: rgb(49, 71, 94);
+  --color-third-bg: rgb(226, 226, 226);
 
-  --color-item-bg: rgb(24, 34, 45);
+  --color-item-bg: white;
 
-  --color-swtich-bg: rgb(76, 77, 79);
+  --color-swtich-bg: rgb(220, 223, 230);
 
   --color-active: rgb(64, 158, 255);
-  --color-font: rgba(0, 0, 0, 0.5);
+  --color-font: #999;
   --color-font-8: rgba(0, 0, 0, 0.8);
   --color-font-3: rgba(0, 0, 0, 0.3);
   --color-font-pure: black;
 
-  --color-input-bg: rgb(51, 51, 51);
-  --color-input-border: #6c6e72;
+  --color-input-bg: white;
+  --color-input-border: rgb(226, 226, 226);
   --color-input-border-hover: #a3a6ad;
 
-  --color-radio-border: rgb(69, 72, 71);
+  --color-radio-border: rgb(226, 226, 226);
 
-  --color-tooltip-bg: #252525;
-  --color-tooltip-shadow: #3b3b3b;
+  --color-tooltip-bg: white;
+  --color-tooltip-shadow: #bbbbbb;
 
-  --color-scrollbar: rgb(92, 93, 94);
-  --color-textarea-bg: rgb(43, 45, 48);
+  --color-scrollbar: rgb(147, 173, 227);
 
   --color-line: rgb(226, 226, 226);
-
-  --color-editor-bg: #393f4e;
 
   --color-loading-1: #00000033;
   --color-loading-2: #000;
 
-  --border-radius: 8px;
+  --color-floor: #f0f0f0;
+  --color-floor-font: #bdbdbd;
+
+  --color-editor-toolbar: #f6f7f8;
+
+  --color-sp-btn-bg: #f1f1f1;
+
+  --color-call-list-bg: white;
 }
 
 html.dark {
@@ -60,24 +64,44 @@ html.dark {
 
   --color-radio-border: rgb(69, 72, 71);
 
-  --color-tooltip-bg: #252525;
+  --color-tooltip-bg: rgb(49, 71, 94);
   --color-tooltip-shadow: #3b3b3b;
 
   --color-scrollbar: rgb(92, 93, 94);
-  --color-textarea-bg: rgb(43, 45, 48);
 
-  --color-line: #22303f;
-
-  --color-editor-bg: #393f4e;
+  --color-line: var(--box-border-color);
 
   --color-loading-1: rgba(178, 177, 177, 0.2);
   --color-loading-2: #ffffff;
 
-  --border-radius: 8px;
+  --color-floor: rgb(49, 71, 94);
+  --color-floor-font: rgba(255, 255, 255, 0.5);
+
+  --color-editor-toolbar: var(--box-background-hover-color);
+
+  --color-sp-btn-bg: rgb(49, 71, 94);
+
+  --color-call-list-bg: rgb(49, 71, 94);
+
 }
 
 html, body {
   font-size: 62.5%;
+}
+
+::-webkit-scrollbar {
+  width: 1rem;
+  height: 1rem;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: .2rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar);
+  border-radius: 1rem;
 }
 
 .flex {
@@ -117,17 +141,9 @@ html, body {
   }
 }
 
-.sticky {
-  position: sticky;
-  bottom: 0;
-}
-
-.sticky[stuck] {
-  box-shadow: 0 2px 20px rgb(0 0 0 / 35%);
-}
 
 a {
-  color: @link-color;
+  //color: @link-color;
   text-decoration: none;
   cursor: pointer;
 
@@ -200,22 +216,22 @@ a {
 .my-box {
   box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
   box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
-  border-radius: var(--border-radius);
-  background: var(--color-second-bg);
-  color: var(--color-font);
+  border-radius: var(--box-border-radius);
+  background: var(--box-background-color);
   margin-bottom: 2rem;
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
+  transition: background-color .3s;
 }
 
 .my-cell {
+  color: var(--color-font);
   padding: 0.8rem 1rem;
   font-size: 1.4rem;
   line-height: 150%;
   text-align: left;
   border-bottom: 1px solid var(--color-line);
-  color: var(--color-font);
 }
 
 .modal {
@@ -251,7 +267,7 @@ a {
     height: 100vh;
     left: 0;
     top: 0;
-    background: rgba(black, .3);
+    background-color: rgb(29 28 28 / 28%);
   }
 }
 
@@ -278,7 +294,6 @@ a {
   .active {
     background: var(--color-third-bg);
     color: var(--color-font);
-
   }
 }
 
@@ -309,5 +324,5 @@ input {
 }
 
 .danger {
-  color: red;
+  color: red !important;
 }

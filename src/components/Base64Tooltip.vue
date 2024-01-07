@@ -115,6 +115,7 @@ function decode() {
   }
 
   :deep(.base-button) {
+    margin-left: 1rem;
     margin-top: 1rem;
   }
 }

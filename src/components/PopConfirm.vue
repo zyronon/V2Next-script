@@ -66,10 +66,10 @@ export default {
 
 .pop-confirm-content {
   position: fixed;
-  background: var(--color-third-bg);
+  background: var(--color-tooltip-bg);
+  box-shadow: 0 0 6px 1px var(--color-tooltip-shadow);
   color: var(--color-font);
   padding: 1.5rem;
-  box-shadow: 0px 0px 12px rgba(0, 0, 0, .2);
   border-radius: .8rem;
   transform: translate(-50%, calc(-100% - 1rem));
   z-index: 999;

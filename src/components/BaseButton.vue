@@ -99,7 +99,7 @@ defineEmits(['click'])
     background: var(--color-active);
 
     & > span {
-      color: var(--color-font-8);
+      color: white;
     }
   }
 
