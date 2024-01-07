@@ -1,6 +1,6 @@
 <template>
   <Transition>
-    <div v-if="show" class="setting-modal modal" :class="{isNight}">
+    <div v-if="show" class="setting-modal modal">
       <div class="mask" @click="close"></div>
       <div class="modal-root">
         <div class="modal-header">
@@ -29,7 +29,7 @@
                 <div class="row">
                   <label class="item-title">列表展示方式</label>
                   <div class="wrapper">
-                    <div class="radio-group2" :class="{isNight}">
+                    <div class="radio-group2">
                       <div class="radio"
                            @click="config.viewType = 'simple'"
                            :class="config.viewType === 'simple'?'active':''">简洁
@@ -88,7 +88,7 @@
                 <div class="row">
                   <label class="item-title">回复展示方式</label>
                   <div class="wrapper">
-                    <div class="radio-group2" :class="{isNight}">
+                    <div class="radio-group2">
                       <Tooltip title="不隐藏@用户">
                         <div class="radio"
                              @click="config.commentDisplayType = CommentDisplayType.FloorInFloor"
@@ -319,27 +319,20 @@ export default {
 </script>
 
 <style scoped lang="less">
-.isNight {
-  .wrapper {
-    background: #22303f !important;
-  }
-}
-
-
 .setting-modal {
   .modal-root {
     z-index: 9;
-    background: #f1f1f1;
+    background: var(--color-main-bg);
     border-radius: 1.6rem;
     font-size: 1.4rem;
     overflow: hidden;
     //box-shadow: 0 0 6px 4px gainsboro;
+    color: var(--color-font);
 
     .modal-header {
       padding: 2.4rem;
       display: flex;
       justify-content: space-between;
-      color: var(--color-font-1);
 
       .title {
         font-size: 2.6rem;
@@ -388,7 +381,7 @@ export default {
       }
 
       .modal-content {
-        background: var(--color-header-bg);
+        background: var(--color-second-bg);
         flex: 1;
         height: 100%;
         box-sizing: border-box;
@@ -446,6 +439,7 @@ export default {
             .main-title {
               font-size: 2.2rem;
               font-weight: bold;
+              color: var(--color-font-8);
             }
 
             .item-title {
@@ -458,6 +452,7 @@ export default {
             margin-bottom: 1rem;
             font-size: 1.4rem;
             text-align: left;
+            color: var(--color-font-3);
           }
 
           .line {

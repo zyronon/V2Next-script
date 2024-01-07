@@ -43,12 +43,19 @@
         <span v-if="uploadLoading" style="color: black;font-size: 1.4rem">上传中.....</span>
       </div>
       <div class="right">
-        <span v-if="useType === 'reply-comment'" style="margin-right: 1rem;cursor: pointer;"
-              @click="emits('close')">关闭</span>
-        <div class="button"
-             :class="{disabled,loading}"
-             @click="submit">回复
-        </div>
+        <BaseButton
+            type="link"
+            size="small"
+            v-if="useType === 'reply-comment'" style="margin-right: 1rem;cursor: pointer;"
+            @click="emits('close')">
+          关闭
+        </BaseButton>
+        <BaseButton
+            size="small"
+            :disabled="disabled"
+            :loading="loading"
+            @click="submit">回复
+        </BaseButton>
       </div>
     </div>
 
@@ -74,6 +81,7 @@
 import {computed, h, inject, onBeforeUnmount, onMounted, ref, toRef, watch} from "vue";
 import eventBus from "@/utils/eventBus.js";
 import {CMD} from "../utils/type";
+import BaseButton from "./BaseButton.vue";
 
 const props = defineProps({
   replyUser: null,
@@ -811,35 +819,33 @@ onBeforeUnmount(() => {
   position: relative;
   overflow: hidden;
   transition: all .3s;
+  color: var(--color-font);
+  background: #393f4e !important;
 
   &.reply-post {
     .post-editor {
-      border: 1px solid @border;
-      border-radius: .4rem;
+      border: 1px solid transparent;
     }
 
     &.isFocus {
       .post-editor {
-        border: 1px solid @border-hover;
+        border: 1px solid var(--color-font);
       }
     }
   }
 
   &.reply-comment {
-    border: 1px solid @border;
     border-radius: .4rem;
     overflow: hidden;
+    border: 1px solid var(--color-font-3);
 
     &.isFocus {
-      border: 1px solid @border-hover;
-    }
-
-    .toolbar {
-      background: rgb(246, 247, 248);
+      border: 1px solid var(--color-font);
     }
   }
 
   .post-editor {
+    border-radius: .4rem;
     transition: border .3s;
     width: 100%;
     max-width: 100%;
@@ -851,6 +857,9 @@ onBeforeUnmount(() => {
     font-size: 1.4rem;
     min-height: 13rem;
     resize: none;
+    background: var(--color-second-bg);
+    color: var(--color-font-pure);
+    border: transparent;
   }
 
   .toolbar {
@@ -903,8 +912,8 @@ onBeforeUnmount(() => {
     height: 30rem;
     max-height: 30rem;
     overflow: auto;
-    background: white;
-    border: 1px solid #e2e8f0;
+    background: var(--color-third-bg);
+    border: 1px solid var(--color-font-3);
     box-shadow: 0 9px 24px -3px rgb(0 0 0 / 6%), 0 4px 8px -1px rgb(0 0 0 /12%);
     position: fixed;
     bottom: 11rem;
@@ -940,13 +949,6 @@ onBeforeUnmount(() => {
       font-size: 2.3rem;
       padding: .5rem;
     }
-  }
-}
-
-.isNight {
-  .emoticon-pack {
-    background: @night-bg;
-    border: 1px solid #737373;
   }
 }
 

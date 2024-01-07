@@ -52,7 +52,7 @@
             </template>
           </div>
           <BaseHtmlRender :html="post.headerTemplate"/>
-          <div class="toolbar-wrapper">
+          <Toolbar @reply="isSticky = !isSticky">
             <Point
                 @addThank="addThank"
                 @recallThank="recallThank"
@@ -63,12 +63,11 @@
                 username:post.username
               }"
                 :api-url="'topic/'+post.id"/>
-            <Toolbar @reply="isSticky = !isSticky"/>
-          </div>
+          </Toolbar>
         </div>
 
         <div class="my-box" v-if="topReply.length && config.showTopReply">
-          <div class="my-cell flex">
+          <div class="my-cell flex ">
             <span class="gray">高赞回复</span>
             <div class="top-reply">
               <Tooltip :title="`统计点赞数大于等于${config.topReplyLoveMinCount}个的回复，可在设置中调整`">
@@ -94,7 +93,7 @@
         <div class="my-box comment-wrapper">
           <template v-if="post.replyList.length ||loading">
             <div class="my-cell flex" v-if="config.showToolbar">
-              <div class="radio-group2" :class="{isNight}">
+              <div class="radio-group2">
                 <Tooltip title="不隐藏@用户">
                   <div class="radio"
                        @click="changeOption(CommentDisplayType.FloorInFloor)"
@@ -150,7 +149,7 @@
 
           <template v-if="replyList.length || loading">
             <div class="loading-wrapper" v-if="loading">
-              <div :class="[isNight?'loading-b':'loading-c']"></div>
+              <BaseLoading size="large" />
             </div>
             <div class="comments" v-else>
               <template v-if="modelValue">
@@ -208,10 +207,10 @@
       <div class="close-btn" v-if="config.closePostDetailBySpace" @click="close('btn')">
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="scroll-top button" @click.stop="scrollTop">
+      <div class="scroll-top" @click.stop="scrollTop">
         <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
       </div>
-      <div class="scroll-to button" @click.stop="jump(currentFloor)">
+      <div class="scroll-to" @click.stop="jump(currentFloor)">
         <i class="fa fa-long-arrow-down"/>
         <input type="text" v-model="currentFloor" @click.stop="stop">
       </div>
@@ -232,6 +231,7 @@ import Tooltip from "@/components/Tooltip.vue";
 import PopConfirm from "@/components/PopConfirm.vue";
 import SingleComment from "@/components/SingleComment.vue";
 import {debounce} from "@/utils/index.js";
+import BaseLoading from "./BaseLoading.vue";
 
 export default {
   name: "detail",
@@ -243,7 +243,8 @@ export default {
     Point,
     Toolbar,
     BaseHtmlRender,
-    Tooltip
+    Tooltip,
+    BaseLoading
   },
   inject: ['allReplyUsers', 'post', 'tags', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
   provide() {
@@ -656,168 +657,13 @@ export default {
   }
 
   &.isNight {
-    background: rgba(46, 47, 48, .8);
+    :deep(.subtle) {
+      background-color: rgb(26, 51, 50);
+      border-left: 4px solid #047857;
+    }
 
-    .main {
-      background: #22303f;
-
-      @bg: #18222d;
-      @bg1: #22303f;
-      @line: #22303f;
-      @text: #d1d5d9;
-
-      .toolbar-wrapper {
-        border-top: unset !important;
-      }
-
-      .button.gray {
-        background: @bg !important;
-        border: 1px solid @bg !important;
-      }
-
-      .relationReply {
-        .comments, .my-cell {
-          background: @bg;
-        }
-
-        .comment {
-          border-bottom: 1px solid @line-color;
-        }
-
-        color: white;
-      }
-
-      .my-box {
-        color: white;
-        background: @bg;
-
-        .title, .content {
-          color: @text !important;
-        }
-
-        .base-info, .content {
-          border: 1px solid @line !important;
-        }
-      }
-
-      :deep(.subtle) {
-        background-color: rgb(26, 51, 50);
-        border-left: 4px solid #047857;
-
-      }
-
-      .my-cell {
-        border-bottom: 1px solid @line !important;
-      }
-
-      @line-color: #22303f;
-
-      :deep(.isLevelOne) {
-        border-bottom: 1px solid @line-color;
-      }
-
-      :deep(.comment) {
-
-        .expand-line {
-          &:after {
-            border-right: 1px solid @line-color !important;
-          }
-
-          &:hover {
-            &:after {
-              border-right: 2px solid #0079D3 !important;
-            }
-          }
-        }
-
-        .comment-content {
-
-          .w > .text {
-            color: #d1d5d9 !important;
-          }
-        }
-      }
-
-      :deep(.Author-right) {
-
-        .toolbar {
-          &:hover {
-            background: @bg !important;
-          }
-        }
-
-        .tool {
-          background: @bg1 !important;
-        }
-      }
-
-      :deep(.point) {
-        svg {
-          &:hover {
-            background: @bg1;
-          }
-        }
-
-        .num {
-          color: #d1d5d9 !important;
-        }
-      }
-
-      :deep(.floor) {
-        background: #393f4e !important;
-        color: #d1d5d9 !important;
-      }
-
-      .editor-wrapper {
-        background: #393f4e !important;
-      }
-
-      :deep(.post-editor-wrapper) {
-        //border: 1px solid #507092;
-        .post-editor {
-          background: @bg;
-          border: transparent;
-          color: white;
-        }
-
-        .toolbar {
-          background: #393f4e !important;
-        }
-      }
-
-      .call-list {
-        background: @bg1;
-
-        .call-item {
-          border-top: 1px solid @bg;
-
-          .select {
-            background-color: #393f4e;
-            text-decoration: none;
-          }
-
-          &:hover {
-            .select();
-          }
-
-          &.select {
-            .select();
-          }
-
-        }
-      }
-
-      .scroll-to, .close-btn, .scroll-top, .top-reply {
-        //color: rgb(72, 98, 126);
-        color: #9caec7;
-      }
-
-      :deep(.tool) {
-        &:hover {
-          background-color: #22303f !important;
-        }
-      }
-
+    .scroll-to, .close-btn, .scroll-top, .top-reply {
+      color: #9caec7;
     }
   }
 
@@ -830,7 +676,8 @@ export default {
     //margin: auto;
     //box-sizing: border-box;
     //min-height: 100%;
-    background: #e2e2e2;
+    //background: #e2e2e2;
+    background: var(--color-main-bg);
     position: relative;
     outline: none;
 
@@ -843,15 +690,6 @@ export default {
       position: relative;
 
       .post-wrapper {
-        .toolbar-wrapper {
-          border-top: 1px solid #e2e2e2;
-          height: 3.6rem;
-          padding-left: .6rem;
-          display: flex;
-          align-items: center;
-          //background: linear-gradient(to bottom, #eee 0, #ccc 100%);
-        }
-
         .header {
           &:hover {
             .add-tag {
@@ -859,10 +697,11 @@ export default {
             }
           }
         }
-
       }
 
       .editor-wrapper {
+        background: var(--color-editor-bg) !important;
+
         .float {
           margin-right: 2rem;
         }
@@ -904,20 +743,13 @@ export default {
       z-index: 99;
       transform: translateX(calc(100% + 2rem));
       font-size: 2rem;
-      @r: 0.5rem;
       overflow: hidden;
-
-      .my-cell {
-        background: white;
-        border-radius: @r @r 0 0;
-      }
+      background: var(--color-second-bg);
+      border-radius: var(--border-radius);
 
       .comments {
         max-height: calc(100% - 4.2rem);
         overflow: auto;
-        background: white;
-        border-radius: 0 0 @r @r;
-        //box-shadow: 0 0 10px 0 #c7c7c7;
       }
     }
 
@@ -925,16 +757,17 @@ export default {
       z-index: 9;
       position: absolute;
       top: 12rem;
-      border: 1px solid #ccc;
-      background-color: #fff;
+      border: 1px solid var(--color-main-bg);
+      background: var(--color-third-bg);
       box-shadow: 0 5px 15px rgb(0 0 0 / 10%);
       overflow: hidden;
       max-height: 30rem;
+      border-radius: var(--border-radius);
       min-width: 8rem;
       box-sizing: content-box;
 
       .call-item {
-        border-top: 1px solid #ccc;
+        border-top: 1px solid var(--color-main-bg);
         height: 3rem;
         display: flex;
         padding: 0 1rem;
@@ -944,7 +777,8 @@ export default {
         box-sizing: border-box;
 
         .select {
-          background-color: #f0f0f0;
+          //background: #f0f0f0;
+          background: var(--color-main-bg);
           text-decoration: none;
         }
 
@@ -978,15 +812,18 @@ export default {
 
   .scroll-top {
     position: fixed;
+    border-radius: .6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     bottom: 10rem;
     z-index: 99;
-    padding: .6rem .2rem;
-    width: 3.5rem;
+    padding: .8rem 0;
+    gap: 1rem;
+    width: 4.5rem;
     transform: translateX(6rem);
     font-size: 2rem;
-    background: #f1f1f1;
-    border: none;
-    color: darkgrey;
+    background: var(--color-third-bg);
   }
 
   .scroll-to {
@@ -996,10 +833,9 @@ export default {
     flex-direction: column;
 
     input {
-      margin-top: .5rem;
-      height: 2rem;
-      width: 3.3rem;
-      font-size: 1.4rem;
+      height: 2.6rem;
+      width: 3.6rem;
+      font-size: 1.6rem;
       text-align: center;
       color: gray;
     }
@@ -1011,7 +847,7 @@ export default {
     color: gray;
 
     .jump {
-      background: #f1f1f1;
+      background: var(--color-third-bg);
       color: gray;
       padding: 0.3rem 1rem;
       border-radius: .4rem;

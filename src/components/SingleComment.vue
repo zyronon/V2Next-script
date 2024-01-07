@@ -95,7 +95,7 @@ function jump() {
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  border-bottom: 1px solid #e2e2e2;
+  border-bottom: 1px solid var(--color-line);
 
   &.isSimple {
     .avatar {
@@ -153,7 +153,8 @@ function jump() {
 
     .jump {
       color: #929596;
-      margin-left: 0;
+      margin-top: .4rem;
+      font-size: 1.4rem;
     }
   }
 

@@ -19,7 +19,7 @@
     </template>
     <div v-else>
       <span>{{ decodeText }}</span>
-      <div class="button" @click="copy">点击复制</div>
+      <BaseButton class="btn" size="small" @click="copy">点击复制</BaseButton>
     </div>
   </div>
 </template>
@@ -28,6 +28,7 @@
 import {onMounted, reactive, ref} from "vue";
 import eventBus from "@/utils/eventBus.js";
 import {CMD} from "@/utils/type";
+import BaseButton from "./BaseButton.vue";
 
 const tooltip = ref(null)
 const show = ref(false)
@@ -91,18 +92,13 @@ function decode() {
 <style scoped lang="less">
 @import "src/assets/less/variable";
 
-.isNight {
-  background: #22303f !important;
-  color: #ccc !important;
-}
-
 .base64_tooltip {
   //box-shadow: 0 0 0 3px gray;
   box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014, 0 9px 28px 8px #0000000d;
-  background: white;
+  background: var(--color-third-bg);
   min-height: 2.2rem;
   max-width: 20rem;
-  padding: .8rem;
+  padding: 1rem;
   position: fixed;
   z-index: 9998;
   display: flex;
@@ -111,16 +107,15 @@ function decode() {
   cursor: pointer;
   line-break: anywhere;
   font-size: 1.4rem;
-  color: black;
+  color: var(--color-font-8);
 
   svg {
     margin-left: 1rem;
     min-width: 1.8rem;
   }
 
-  .button {
+  :deep(.base-button) {
     margin-top: 1rem;
-    margin-left: 2rem;
   }
 }
 </style>

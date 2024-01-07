@@ -192,7 +192,7 @@ export default {
   @line-color: #ececec;
 
   &.isLevelOne {
-    border-bottom: 1px solid @line-color;
+    border-bottom: 1px solid var(--color-line);
     padding: .8rem 1rem;
     //padding: 1rem 1rem;
     margin-top: 0;
@@ -244,12 +244,12 @@ export default {
         content: " ";
         height: 100%;
         width: 0;
-        border-right: 1px solid @line-color;
+        border-right: 1px solid var(--color-line);
       }
 
       &:hover {
         &:after {
-          border-right: 2px solid #0079D3;
+          border-right: 2px solid var(--color-active);
         }
       }
     }

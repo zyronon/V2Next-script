@@ -1,5 +1,6 @@
 <template>
   <div class="toolbar">
+    <slot></slot>
     <div class="tool" @click="checkIsLogin('reply')">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
@@ -10,8 +11,9 @@
       </svg>
       <span>回复</span>
     </div>
-    <div v-if="post.once" class="tool" :class="{loading}" @click="toggleFavorite">
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div v-if="post.once" class="tool" :class="{disabled:loading}" @click="toggleFavorite">
+      <BaseLoading v-if="loading" size="small"/>
+      <svg v-else viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
             d="M23.9986 5L17.8856 17.4776L4 19.4911L14.0589 29.3251L11.6544 43L23.9986 36.4192L36.3454 43L33.9586 29.3251L44 19.4911L30.1913 17.4776L23.9986 5Z"
             :fill="getIsFull(post.isFavorite)" :stroke="getColor(post.isFavorite)" stroke-width="2"
@@ -35,8 +37,9 @@
       </svg>
       <span>Tweet</span>
     </div>
-    <div v-if="post.once" class="tool" :class="{'loading':loading2}" @click="toggleIgnore">
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div v-if="post.once" class="tool" :class="{'disabled':loading2}" @click="toggleIgnore">
+      <BaseLoading v-if="loading2" size="small"/>
+      <svg v-else viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
             :fill="getIsFull(post.isIgnore)"
             :stroke="getColor(post.isIgnore)"
@@ -55,9 +58,11 @@
       </svg>
       <span>{{ post.isIgnore ? '取消忽略' : '忽略主题' }}</span>
     </div>
-    <div v-if="post.once && post.isLogin" class="tool" :class="{'loading':loading3,'no-hover':post.isLogin}"
+<!--    TODO -->
+    <div v-if="post.once && isLogin && false" class="tool" :class="{'disabled':loading3,'no-hover':post.isLogin}"
          @click="report">
-      <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <BaseLoading v-if="loading3" size="small"/>
+      <svg v-else width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M36 35H12V21C12 14.3726 17.3726 9 24 9C30.6274 9 36 14.3726 36 21V35Z" fill="#929596" stroke="#929596"
               stroke-width="4" stroke-linejoin="round"/>
         <path d="M8 42H40" stroke="#929596" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -75,9 +80,12 @@
 <script>
 import eventBus from "@/utils/eventBus.js";
 import {CMD} from "@/utils/type";
+import BaseLoading from "./BaseLoading.vue";
+import {PageType} from "../types.ts";
 
 export default {
   name: "Toolbar",
+  components: {BaseLoading},
   inject: [
     'isLogin',
     'post',
@@ -124,7 +132,7 @@ export default {
       if (!this.checkIsLogin()) return
       let url = `${window.baseUrl}/${this.post.isIgnore ? 'unignore' : 'ignore'}/topic/${this.post.id}?once=${this.post.once}`
       //如果是帖子详情页，那么直接跳转到首页
-      if (this.pageType === 'post') {
+      if (this.pageType === PageType.Post) {
         this.loading2 = true
         let apiRes = await window.win().fetch(url)
         if (apiRes.redirected) {
@@ -186,9 +194,15 @@ export default {
 @import "@/assets/less/variable";
 
 .toolbar {
+  border-top: 1px solid var(--color-main-bg);
+  height: 3.8rem;
+  padding-left: .6rem;
   display: flex;
   align-items: center;
-  color: @tool-color;
+  color: var(--color-font);
+  font-size: 1.2rem;
+  font-weight: bold;
+  gap: 1rem;
 }
 
 </style>

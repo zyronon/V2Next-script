@@ -7,8 +7,8 @@
             {{ title }}
           </div>
           <div class="options">
-            <div @click="show = false">取消</div>
-            <div class="main" @click="confirm">确认</div>
+            <BaseButton type="link" size="small" @click="show = false">取消</BaseButton>
+            <BaseButton size="small" @click="confirm">确认</BaseButton>
           </div>
         </div>
       </Transition>
@@ -20,9 +20,11 @@
 </template>
 <script>
 import {nextTick} from "vue";
+import BaseButton from "./BaseButton.vue";
 
 export default {
   name: "PopConfirm",
+  components: {BaseButton},
   props: {
     title: {
       type: String,
@@ -64,17 +66,17 @@ export default {
 
 .pop-confirm-content {
   position: fixed;
-  background: white;
+  background: var(--color-third-bg);
+  color: var(--color-font);
   padding: 1.5rem;
   box-shadow: 0px 0px 12px rgba(0, 0, 0, .2);
-  border-radius: .4rem;
+  border-radius: .8rem;
   transform: translate(-50%, calc(-100% - 1rem));
   z-index: 999;
 
   .text {
-    color: black;
     text-align: start;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     width: 15rem;
     min-width: 15rem;
   }
@@ -85,18 +87,6 @@ export default {
     justify-content: flex-end;
     align-items: center;
     gap: 1rem;
-    font-size: 1rem;
-
-    div {
-      cursor: pointer;
-    }
-
-    .main {
-      color: gray;
-      background: @bg-color;
-      padding: .3rem .8rem;
-      border-radius: .2rem;
-    }
   }
 }
 

@@ -12,9 +12,10 @@ import TagModal from "@/components/Modal/TagModal.vue";
 import MsgModal from "@/components/Modal/MsgModal.vue";
 import {decodeEmail} from "@/utils/email-decode.js";
 import BaseSwitch from "@/components/BaseSwitch.vue";
+import BaseLoading from "./components/BaseLoading.vue";
 
 export default {
-  components: {BaseSwitch, MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
+  components: {BaseLoading, BaseSwitch, MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
   provide() {
     return {
       isLogin: computed(() => this.isLogin),
@@ -597,8 +598,8 @@ export default {
   <Base64Tooltip/>
   <MsgModal/>
 
-  <div class="toolbar" v-if="!stopMe" :class="[isNight?'isNight':'',config['viewType']]">
-    <div class="target-user-tags" v-if="isMember && isLogin && config.openTag">
+  <template v-if="!stopMe">
+    <div class=" target-user-tags p1" v-if="isMember && isLogin && config.openTag">
       <span>标签：</span>
       <span class="my-tag" v-for="i in targetUserTags">
               <i class="fa fa-tag"></i>
@@ -607,43 +608,18 @@ export default {
             </span>
       <span class="add-tag ago" @click="addTargetUserTag" title="添加标签">+</span>
     </div>
-    <div v-if="isPost && !show && config.autoOpenDetail" class="my-box flex flex-center"
-         style="margin: 2rem 0 0 0;padding: 2rem;">
-      <div class="loading-wrapper">
-        <div :class="[isNight?'loading-b':'loading-c']"></div>
-      </div>
+    <div v-if="isPost && !show && config.autoOpenDetail" class="my-box flex flex-center p2">
+      <BaseLoading size="large"/>
     </div>
-  </div>
+  </template>
 </template>
 
 <style scoped lang="less">
 @import "./assets/less/variable";
 
-.isNight {
-  //background: #22303f;
-  @border: rgb(69, 72, 71);
-
-  .open-post, .nav {
-    color: white;
-    background: #18222d;
-    border-bottom: 1px solid #22303f;
-  }
-}
-
-.card {
-  border-radius: 0 0 var(--box-border-radius) var(--box-border-radius);
-  overflow: hidden;
-}
-
-.nav {
-  font-size: 1.4rem;
-  background: white;
-  padding: 1rem;
-  border-bottom: 1px solid @border;
-}
-
 .target-user-tags {
-  .nav;
+  background: var(--color-second-bg);
+  color: var(--color-font);
   word-break: break-all;
   text-align: start;
   box-shadow: 0 2px 3px rgba(0, 0, 0, .1);

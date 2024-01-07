@@ -2,6 +2,7 @@ import {defineConfig} from 'vite';
 import vue from '@vitejs/plugin-vue';
 import monkey, {cdn} from 'vite-plugin-monkey';
 import {resolve} from 'path'
+import vueJsx from "@vitejs/plugin-vue-jsx";
 
 function pathResolve(dir) {
   return resolve(__dirname, ".", dir)
@@ -10,6 +11,7 @@ function pathResolve(dir) {
 export default defineConfig({
   plugins: [
     vue(),
+    vueJsx(),
     monkey({
       entry: 'src/main.ts',
       userscript: {

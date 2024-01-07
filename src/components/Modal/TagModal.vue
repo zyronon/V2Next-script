@@ -1,6 +1,6 @@
 <template>
   <Transition>
-    <div class="tag-modal modal" v-if="tagModal.show" :class="{isNight}">
+    <div class="tag-modal modal" v-if="tagModal.show">
       <div class="mask" @click.stop="tagModal.show = false"></div>
       <div class="wrapper">
         <div class="title">
@@ -17,8 +17,8 @@
                style="width: 100%;"
                v-model="tagModal.tag" @keydown.enter="addTag">
         <div class="btns">
-          <div class="white" @click="tagModal.show = false">取消</div>
-          <div class="main" @click="addTag">确定</div>
+          <BaseButton type="link" @click="tagModal.show = false">取消</BaseButton>
+          <BaseButton @click="addTag">确定</BaseButton>
         </div>
       </div>
     </div>
@@ -29,6 +29,7 @@
 import {inject, nextTick, onMounted, reactive, ref} from "vue"
 import {CMD} from "@/utils/type"
 import eventBus from "@/utils/eventBus.js";
+import BaseButton from "../BaseButton.vue";
 
 const tagModal = reactive({
   show: false,
@@ -51,6 +52,10 @@ onMounted(() => {
 })
 
 async function addTag() {
+  if (!tagModal.tag) {
+    eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请输入标签'})
+    return
+  }
   let oldTag = window.clone(props.tags)
   let tempTag = window.clone(props.tags)
   let userTags = tempTag[tagModal.currentUsername] ?? []
@@ -76,36 +81,19 @@ async function addTag() {
 <style scoped lang="less">
 @import "src/assets/less/variable";
 
-.isNight {
-  .wrapper {
-    background: #22303f !important;
-
-    .title {
-      color: gray;
-    }
-
-    .option {
-      color: white !important;
-
-      span {
-        color: gray !important;
-      }
-    }
-
-    .white {
-      color: white !important;
-    }
-  }
-}
-
 .tag-modal {
   .wrapper {
     z-index: 9;
-    background: #f1f1f1;
+    background: var(--color-main-bg);
+    color: var(--color-font);
     border-radius: 1.6rem;
     font-size: 1.4rem;
     padding: 2rem 4rem;
     width: 25rem;
+
+    .title{
+      font-weight: bold;
+    }
 
     .btns {
       margin-top: 1.5rem;
@@ -114,31 +102,6 @@ async function addTag() {
       align-items: center;
       gap: 1.5rem;
       font-size: 1.4rem;
-
-      div {
-        cursor: pointer;
-      }
-
-      .white {
-        color: gray;
-        border-bottom: 1px solid transparent;
-        transition: all .3s;
-
-        &:hover {
-          border-bottom: 1px solid gray;
-        }
-      }
-
-      .main {
-        color: white;
-        background: var(--color-main-active);
-        padding: .5rem 1.2rem;
-        border-radius: .4rem;
-
-        &:hover {
-          opacity: .8;
-        }
-      }
     }
   }
 }

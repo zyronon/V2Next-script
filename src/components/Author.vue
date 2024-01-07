@@ -62,6 +62,7 @@
         />
       </div>
       <Point
+          style="margin-left: 1rem;"
           v-show="comment.thankCount"
           :item="pointInfo"
           @addThank="addThank"
@@ -262,15 +263,16 @@ export default {
       align-items: center;
       color: #929596;
       opacity: 0;
+      font-weight: bold;
+      gap: 1rem;
 
       &:hover {
-        background: white;
         opacity: 1;
       }
     }
 
     .isDev {
-      color: black !important;
+      //color: black !important;
     }
   }
 }

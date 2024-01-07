@@ -1255,6 +1255,10 @@ function run() {
       }
     }, true)
 
+    if (window.isNight) {
+      document.documentElement.classList.add('dark')
+    }
+
     checkPageType()
     initMonkeyMenu()
 
@@ -1265,6 +1269,8 @@ function run() {
 
       initNoteData()
     }
+
+
 
     initConfig().then(r => {
       //这个要放后面，不然前面查找会出错

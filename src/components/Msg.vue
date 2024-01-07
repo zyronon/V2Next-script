@@ -25,6 +25,54 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.msg {
+  cursor: default;
+  margin-bottom: 2rem;
+  background: var(--color-third-bg);
+  display: flex;
+  font-size: 1.4rem;
+  box-sizing: border-box;
+  color: var(--color-font);
+  border-radius: var(--border-radius);
+
+  &.success {
+    .left {
+      background: var(--color-active);
+    }
+  }
+
+  &.warning {
+    .left {
+      background: #c8c002;
+    }
+  }
+
+  &.error {
+    .left {
+      background: red;
+    }
+  }
+
+  .left {
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    display: flex;
+    align-items: center;
+    background: var(--color-active);
+
+    svg {
+      margin: 0 .3rem;
+      cursor: pointer;
+    }
+  }
+
+  .right {
+    flex: 1;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
 
 </style>
