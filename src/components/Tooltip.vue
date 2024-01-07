@@ -77,7 +77,7 @@ export default {
   max-width: 10rem;
   border-radius: 0.5rem;
   padding: 1rem;
-  color: var(--color-font);
+  color: var(--color-font-8);
   background: var(--color-tooltip-bg);
   box-shadow: 0 0 6px 1px var(--color-tooltip-shadow);
 }
