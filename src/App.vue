@@ -13,9 +13,13 @@ import MsgModal from "@/components/Modal/MsgModal.vue";
 import {decodeEmail} from "@/utils/email-decode.js";
 import BaseSwitch from "@/components/BaseSwitch.vue";
 import BaseLoading from "./components/BaseLoading.vue";
+import NotificationModal from "@/components/Modal/NotificationModal.vue";
 
 export default {
-  components: {BaseLoading, BaseSwitch, MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
+  components: {
+    NotificationModal,
+    BaseLoading, BaseSwitch, MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg
+  },
   provide() {
     return {
       isLogin: computed(() => this.isLogin),
@@ -51,10 +55,9 @@ export default {
       configModal: {
         show: false
       },
-      tagModal: {
+      notificationModal: {
         show: false,
-        currentUsername: '',
-        tag: '',
+        h: ''
       },
     }
   },
@@ -128,62 +131,10 @@ export default {
   created() {
     let that = this
     window.cb = this.winCb
-    if (window.win().canParseV2exPage) {
-      if (this.isList) {
-        // let lastItem = window.win().appNode.nextElementSibling
-        // let maxPage = 1000
-        // if (this.pageType !== 'home') {
-        //   let navs = lastItem.querySelectorAll('a')
-        //   maxPage = Number(navs[navs.length - 1].innerText)
-        // }
+    if (!window.canParseV2exPage) return
 
-        // let ob = window.win().IntersectionObserver
-        // const observer = new ob(async (e) => {
-        //   if (e[0].isIntersecting) {
-        //     if (this.loadMore) return
-        //     console.log('加载更多')
-        //     this.loadMore = true
-        //     let url
-        //
-        //     if (this.pageType === 'home') {
-        //       url = window.baseUrl + `/recent?p=1`
-        //       this.pageType = 'recent'
-        //     } else {
-        //       let {href, search, origin, pathname} = window.win().location
-        //       url = href + `?p=2`
-        //       let r = search.match(/p=([\d]+)/)
-        //       if (r) {
-        //         if (Number(r[1]) >= maxPage) {
-        //           eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '已经是最后一页了'})
-        //           return this.loadMore = false
-        //         }
-        //         url = origin + pathname + search.replace(r[1], Number(r[1]) + 1)
-        //       }
-        //     }
-        //     // console.log('url', url)
-        //     window.win().history.pushState({}, 0, url);
-        //     let apiRes = await window.win().fetch(url)
-        //     let htmlText = await apiRes.text()
-        //     let res = window.parse.parseOtherPage(htmlText, this.pageType)
-        //     console.log('res', res)
-        //     lastItem.innerHTML = res.page
-        //     this.list.push({type: 'page', innerHTML: lastItem.innerHTML})
-        //     //不同页数之单，会有重复的数据
-        //     res.postList.map(v => {
-        //       let rIndex = this.list.findIndex(i => i.id == v.id)
-        //       if (rIndex === -1) this.list.push(v)
-        //     })
-        //     this.loadMore = false
-        //     // console.log(htmlText)
-        //     Promise.allSettled(res.apiList.map(v => $.get(v))).then(async (results) => {
-        //       let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
-        //       this.winCb({type: 'list', value: res})
-        //     });
-        //   }
-        // })
-        // observer.observe(lastItem)
-      }
-    }
+    // fetch(location.origin)
+
     //A标签的
     $(document).on('click', 'a', (e) => {
       //有script表示是脚本生成的a标签用于新开页面的
@@ -203,13 +154,27 @@ export default {
 
       //未读提醒
       if (href.includes('/notifications')) {
-        // let clientWidth = window.document.body.clientWidth
-        // let windowWidth = 1200
-        // let left = clientWidth / 2 - windowWidth / 2
+        let clientWidth = window.document.body.clientWidth
+        let windowWidth = 1200
+        let left = clientWidth / 2 - windowWidth / 2
         // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
-        // // newWin.document.write('123');
-        //
-        // return that.stopEvent(e)
+        // newWin.document.write('123');
+
+        fetch("https://v2ex.com/notifications").then(async r => {
+          let htmlText = await r.text()
+          let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+          let body = $(bodyText[0])
+          let h = body.find('#notifications').html()
+
+          // let newWin = window.open("about:blank", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
+          // newWin.document.write(h);
+          console.log('h', h)
+          this.notificationModal.h = h
+          this.notificationModal.show = true
+        })
+
+
+        return that.stopEvent(e)
       }
 
       if (id) {
@@ -271,6 +236,7 @@ export default {
     window.onbeforeunload = () => {
       this.saveReadList()
     }
+
     this.initEvent()
   },
   beforeUnmount() {
@@ -535,7 +501,7 @@ export default {
       if (apiRes.status === 403) {
         this.loading = false
         this.show = false
-        window.open(`https://www.v2ex.com/t/${post.id}?p=1&script=0`, '_black')
+        window.parse.openNewTab(`https://www.v2ex.com/t/${post.id}?p=1&script=0`)
         return
       }
       //如果是重定向了，那么就是没权限
@@ -597,6 +563,11 @@ export default {
               :loading="loading"/>
   <Base64Tooltip/>
   <MsgModal/>
+
+  <NotificationModal
+      v-model="notificationModal.show"
+      :h="notificationModal.h"
+  />
 
   <template v-if="!stopMe">
     <div class=" target-user-tags p1" v-if="isMember && isLogin && config.openTag">

@@ -36,7 +36,6 @@ const tagModal = reactive({
   currentUsername: '',
   tag: '',
 })
-const isNight = inject('isNight')
 const props = defineProps(['tags'])
 const emit = defineEmits(['update:tags'])
 const inputRef = ref()
