@@ -85,7 +85,7 @@ async function addTag() {
   .wrapper {
     z-index: 9;
     background: var(--color-main-bg);
-    color: var(--color-font);
+    color: var(--color-font-8);
     border-radius: 1.6rem;
     font-size: 1.4rem;
     padding: 2rem 4rem;

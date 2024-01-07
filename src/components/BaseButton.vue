@@ -86,12 +86,7 @@ defineEmits(['click'])
     }
   }
 
-  & > span {
-    font-size: 1.6rem;
-    color: var(--color-font);
-  }
-
-  &:hover {
+  &:hover:not(.link) {
     opacity: .7;
   }
 
@@ -111,8 +106,12 @@ defineEmits(['click'])
     border-radius: 0;
     border-bottom: 2px solid transparent;
 
+    & > span {
+      color: var(--color-font-8);
+    }
+
     &:hover {
-      border-bottom: 2px solid var(--color-font);
+      border-bottom: 2px solid var(--color-font-8);
     }
   }
 
