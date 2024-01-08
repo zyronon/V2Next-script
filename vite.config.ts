@@ -33,7 +33,7 @@ export default defineConfig({
           'https://*.v2ex.com/go/*',
           'https://*.v2ex.com/member/*'
         ],
-        description: '让V2EX现代化。支持楼中楼、简洁模式、高赞回复排序、发送图片和表情、base64 解码等功能',
+        description: '让V2EX现代化。支持楼中楼、简洁模式、高赞回复排序、查看回复上下文、发送图片和表情、base64 解码等功能',
         author: 'zyronon',
         license: 'GPL License',
         updateURL: 'https://github.com/zyronon/v2ex-script/raw/master/dist/vite-project.user.js',
