@@ -142,7 +142,7 @@ export default {
       if (that.stopMe) return true
       let {href, id, title} = window.parse.parseA(e.currentTarget)
 
-      console.log('click-a', e.currentTarget, e, href)
+      // console.log('click-a', e.currentTarget, e, href)
       //夜间模式切换
       if (href.includes('/settings/night/toggle')) return
       if (href.includes('/?tab=')) return

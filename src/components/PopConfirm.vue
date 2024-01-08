@@ -68,7 +68,7 @@ export default {
   position: fixed;
   background: var(--color-tooltip-bg);
   box-shadow: 0 0 6px 1px var(--color-tooltip-shadow);
-  color: var(--color-font);
+  color: var(--color-font-8);
   padding: 1.5rem;
   border-radius: .8rem;
   transform: translate(-50%, calc(-100% - 1rem));
