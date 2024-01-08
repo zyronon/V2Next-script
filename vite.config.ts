@@ -15,8 +15,8 @@ export default defineConfig({
     monkey({
       entry: 'src/main.ts',
       userscript: {
-        version: '7.8.3',
-        name: 'V2EX - 超级增强',
+        version: '7.8.5',
+        name: 'V2EX Next',
         icon: 'https://www.google.com/s2/favicons?sz=64&domain=v2ex.com',
         namespace: 'http://tampermonkey.net/',
         match: [

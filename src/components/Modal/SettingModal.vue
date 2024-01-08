@@ -21,6 +21,9 @@
               <div class="tab" :class="tabIndex === 2 && 'active'" @click="tabIndex = 2">
                 <span>其他设置</span>
               </div>
+              <div class="tab" :class="tabIndex === 3 && 'active'" @click="tabIndex = 3">
+                <span>关于脚本</span>
+              </div>
             </div>
           </div>
           <div class="modal-content">
@@ -252,6 +255,63 @@
                   V站帐号一旦被封禁，则无法登录，无法查看账号收藏了
                 </div>
               </div>
+              <div v-if="tabIndex === 3">
+                <h1>V2EX Next</h1>
+                <div class="project-desc">
+                  <div>
+                    本项目完全开源，项目地址：<a :href="windowConst.git" target="_blank">{{ windowConst.git }}</a>，目前由我一个人维护，如果您觉得好用，<b>请帮我点一个Star，您的Star是对我最大的鼓励</b>
+                  </div>
+                  <div>
+                    <h2>为什么选择这个，而不是其他？</h2>
+                    <h3>其他脚本：</h3>
+                    大多只是对V2EX修修补补、美化UI，在使用体验上依旧是10年前的网站，太多脚本年久失修无人维护。楼中楼只能解析当前页，如果有多页回复，楼中楼就会前言不搭后语莫名其妙的
+                    <h3>本脚本：</h3>
+                    <b>最好用的楼中楼、查看回复上下文、高赞回复、简洁模式等特色功能。</b>
+                    对V2EX进行了整体改造，如预览、点赞、回复、屏蔽等等都走异步请求，使用体验上已和现代网站无异，同时也集成了市面上常见的增强（辅助）功能，
+
+                    <h2>特色功能</h2>
+                    <ul>
+                      <li>楼中楼
+                        <ol>
+                          <li>可按高赞排序显示</li>
+                          <li>可只看楼主</li>
+                        </ol>
+                      </li>
+                      <li>简洁模式</li>
+                      <li>查看回复上下文</li>
+                      <li>高赞回复</li>
+                    </ul>
+
+                    <h2>增强（辅助）功能</h2>
+                    <ul>
+                      <li>预览帖子正文</li>
+                      <li>弹框显示帖子正文和回复</li>
+                      <li>帖子显示OP注册时间</li>
+                      <li>链接自动转图片</li>
+                      <li>快捷发送贴吧表情、emoji、图片</li>
+                      <li>新标签页打开链接，默认打开，可单独关闭</li>
+                      <li>对用户打标签</li>
+                      <li>划词 base64 解码，支持解码中文</li>
+                      <li>一键@所有人，@管理员：回复时，可一键@所有人和@管理员</li>
+                      <li>自适应屏幕宽度，支持黑暗模式</li>
+                      <li>记忆上次阅读位置</li>
+                      <li>按钮异步请求：操作按钮（感谢、收藏、回复、隐藏）异步请求，不会刷新页面</li>
+                      <li>收藏时提醒添加到浏览器书签，防止账号被封无法查看收藏</li>
+                      <li>自动签到</li>
+                      <li>正文超长自动折叠</li>
+                    </ul>
+
+
+                    <h2>如何帮助我</h2>
+                    这个项目花了我很多精力，如果对您有用：
+                    点个 <a :href="windowConst.git">Star ⭐️</a> 或分享给他人，让更多的人知道我的存在。
+                    <div>提供反馈，帮助我改进，以持续完善脚本。在 <a :href="windowConst.issue">这里</a> 提出。</div>
+                    <div>
+                      更新日志：<a href="https://greasyfork.org/zh-CN/scripts/458024/versions" target="_blank">https://greasyfork.org/zh-CN/scripts/458024/versions</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -293,6 +353,9 @@ export default {
     }
   },
   computed: {
+    windowConst() {
+      return window.const
+    },
     CommentDisplayType() {
       return CommentDisplayType
     },
@@ -455,6 +518,12 @@ export default {
             font-size: 1.4rem;
             text-align: left;
             color: var(--color-font);
+          }
+
+          .project-desc {
+            text-align: start;
+            font-size: 1.6rem;
+            padding-bottom: 10rem;
           }
 
           .line {

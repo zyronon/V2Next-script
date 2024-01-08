@@ -29,12 +29,13 @@ export default {
 .msg {
   cursor: default;
   margin-bottom: 2rem;
-  background: var(--color-third-bg);
   display: flex;
   font-size: 1.4rem;
   box-sizing: border-box;
-  color: var(--color-font);
   border-radius: var(--box-border-radius);
+  color: var(--color-font-8);
+  background: var(--color-tooltip-bg);
+  box-shadow: 0 0 6px 1px var(--color-tooltip-shadow);
 
   &.success {
     .left {
