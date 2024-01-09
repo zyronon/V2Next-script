@@ -41,6 +41,10 @@
                 <span :title="post.createDate">{{ post.createDateAgo }}</span> ·
               </template>
               {{ post.clickCount }} 次点击
+              <template v-if="isMy">&nbsp;&nbsp;
+                <a :href="`/t/${post.id}/info`"><li class="fa fa-info-circle"></li></a>&nbsp;&nbsp;
+                <a :href="`/append/topic/${post.id}`" class="op">APPEND</a>
+              </template>
             </small>
             <template v-if="isLogin && config.openTag ">
               <span class="my-tag" v-for="i in myTags">
@@ -180,6 +184,7 @@
           </div>
         </div>
       </div>
+
       <div class="relationReply" v-if="showRelationReply" @click="close('space')">
         <div class="my-cell flex" @click.stop="stop">
           <span class="gray">上下文</span>
@@ -194,6 +199,7 @@
                          :comment="item"/>
         </div>
       </div>
+
       <div class="call-list"
            :style="callStyle"
            v-if="showCallList && filterCallList.length">
@@ -234,10 +240,12 @@ import PopConfirm from "@/components/PopConfirm.vue";
 import SingleComment from "@/components/SingleComment.vue";
 import {debounce} from "@/utils/index.js";
 import BaseLoading from "./BaseLoading.vue";
+import BaseButton from "@/components/BaseButton.vue";
 
 export default {
   name: "detail",
   components: {
+    BaseButton,
     SingleComment,
     PopConfirm,
     Comment,
@@ -297,6 +305,9 @@ export default {
     }
   },
   computed: {
+    isMy(){
+      return this.post.member.username === window.user.username
+    },
     myTags() {
       return this.tags[this.post.member.username] ?? []
     },

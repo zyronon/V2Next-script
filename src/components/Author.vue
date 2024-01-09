@@ -15,7 +15,7 @@
         <strong>
           <a :href="`/member/${comment.username}`" class="username" :class="{'dark':isNight}">{{ comment.username }}</a>
         </strong>
-        <div v-if="comment.isOp" class="op">OP</div>
+        <div v-if="comment.isOp" class="owner">OP</div>
         <div v-if="comment.isDup" class="dup">DUP</div>
         <div v-if="comment.isMod" class="mod">MOD</div>
         <span class="ago">{{ comment.date }}</span>
@@ -209,7 +209,7 @@ export default {
       flex: 1;
     }
 
-    .op {
+    .owner {
       display: inline-block;
       background-color: transparent;
       color: @color;
@@ -238,7 +238,7 @@ export default {
     }
 
     .mod {
-      .op;
+      .owner;
       background: @color;
       color: white;
       margin-right: 1rem;

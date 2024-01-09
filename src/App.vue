@@ -566,7 +566,7 @@ export default {
   />
 
   <template v-if="!stopMe">
-    <div class=" target-user-tags p1" v-if="isMember && isLogin && config.openTag">
+    <div class="target-user-tags p1" v-if="isMember && isLogin && config.openTag">
       <span>标签：</span>
       <span class="my-tag" v-for="i in targetUserTags">
               <i class="fa fa-tag"></i>
@@ -575,7 +575,8 @@ export default {
             </span>
       <span class="add-tag ago" @click="addTargetUserTag" title="添加标签">+</span>
     </div>
-    <div v-if="isPost && !show && config.autoOpenDetail" class="my-box flex flex-center p2">
+    <div v-if="isPost && !show && config.autoOpenDetail" class="my-box flex flex-center p2"
+         style="margin-top: 2rem;">
       <BaseLoading size="large"/>
     </div>
   </template>

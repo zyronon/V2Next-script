@@ -22,9 +22,9 @@
         </template>
         <span class="ago" v-if="isRight">{{ comment.date }}</span>
         <div v-if="comment.isMod && isRight" class="mod">MOD</div>
-        <div v-if="comment.isOp && isRight" class="op">OP</div>
+        <div v-if="comment.isOp && isRight" class="owner">OP</div>
         <a :href="`/member/${comment.username}`" class="username">{{ comment.username }}</a>
-        <div v-if="comment.isOp && !isRight" class="op">OP</div>
+        <div v-if="comment.isOp && !isRight" class="owner">OP</div>
         <div v-if="comment.isMod && !isRight" class="mod">MOD</div>
         <span class="ago" v-if="!isRight">{{ comment.date }}</span>
         <template v-if="isLogin && config.openTag && !isRight">
@@ -137,7 +137,7 @@ function jump() {
   .isRight {
     align-items: flex-end;
 
-    .op, .mod, .username {
+    .owner, .mod, .username {
       margin: 0 0 0 1rem;
     }
   }
