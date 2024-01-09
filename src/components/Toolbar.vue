@@ -166,7 +166,7 @@ export default {
     },
     async toggleFavorite() {
       if (!this.post.isFavorite && config.collectBrowserNotice) {
-        alert('请按Command/Cmd/CTRL + D添加到书签')
+        eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '别忘记按Command/Cmd/CTRL + D添加到书签哦'})
       }
       if (!this.checkIsLogin()) return
       // return eventBus.emit('merge', 'isFavorite')

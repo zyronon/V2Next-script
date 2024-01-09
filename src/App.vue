@@ -130,6 +130,7 @@ export default {
   },
   created() {
     let that = this
+    this.initEvent()
     window.cb = this.winCb
     if (!window.canParseV2exPage) return
 
@@ -234,8 +235,6 @@ export default {
     window.onbeforeunload = () => {
       this.saveReadList()
     }
-
-    this.initEvent()
   },
   beforeUnmount() {
     // console.log('unmounted')
@@ -327,7 +326,12 @@ export default {
         // console.log(this.tags)
       }
 
+      if (type === 'warningNotice') {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: value})
+      }
+
       if (this.stopMe) return
+
       if (type === 'restorePost') {
         this.show = false
         this.loading = false

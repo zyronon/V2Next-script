@@ -1,10 +1,10 @@
-import {createApp} from 'vue';
+import { createApp } from 'vue';
 import './assets/less/index.less'
 
 import App from './App.vue';
-import {GM_notification, GM_openInTab, GM_registerMenuCommand} from "$"
+import { GM_notification, GM_openInTab, GM_registerMenuCommand } from "$"
 import './global.d.ts'
-import {CommentDisplayType, MAX_REPLY_LIMIT, PageType, Post, Reply} from "./types"
+import { CommentDisplayType, MAX_REPLY_LIMIT, PageType, Post, Reply } from "./types"
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -1271,7 +1271,7 @@ function run() {
         console.log('签到失败')
       }
 
-      if (window.user.username){
+      if (window.user.username) {
 
       }
     })
@@ -1302,8 +1302,9 @@ function run() {
         let r = await window.parse.checkPostReplies(window.pageData.id, false)
         if (r) {
           window.stopMe = true
-          alert('由于回复数量较多，脚本已停止解析楼中楼')
-          return cbChecker({type: 'syncData'})
+          cbChecker({type: 'syncData'})
+          cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
+          return
         }
 
         //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面突然变宽或变窄
@@ -1377,13 +1378,15 @@ function run() {
   if (window.canParseV2exPage) {
     init()
   } else {
+    let box: any = document.querySelector('#Wrapper #Main .box')
+    box.after($section)
     window.stopMe = true
     cbChecker({type: 'syncData'})
     if (window.location.search.includes('script=0')) {
-      alert('脚本无法查看此主题，已为您单独打开此主题')
+      cbChecker({type: 'warningNotice', value: '脚本无法查看此主题，已为您单独打开此主题'})
     }
     if (window.location.search.includes('script=1')) {
-      alert('由于回复数量较多，已为您单独打开此主题并停止解析楼中楼')
+      cbChecker({type: 'warningNotice', value: '由于回复数量较多，已为您单独打开此主题并停止解析楼中楼'})
     }
   }
 }
