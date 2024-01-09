@@ -154,27 +154,25 @@ export default {
 
       //未读提醒
       if (href.includes('/notifications')) {
-        let clientWidth = window.document.body.clientWidth
-        let windowWidth = 1200
-        let left = clientWidth / 2 - windowWidth / 2
-        // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
-        // newWin.document.write('123');
-
-        fetch("https://v2ex.com/notifications").then(async r => {
-          let htmlText = await r.text()
-          let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-          let body = $(bodyText[0])
-          let h = body.find('#notifications').html()
-
-          // let newWin = window.open("about:blank", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
-          // newWin.document.write(h);
-          console.log('h', h)
-          this.notificationModal.h = h
-          this.notificationModal.show = true
-        })
-
-
-        return that.stopEvent(e)
+        // let clientWidth = window.document.body.clientWidth
+        // let windowWidth = 1200
+        // let left = clientWidth / 2 - windowWidth / 2
+        // // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
+        // // newWin.document.write('123');
+        //
+        // fetch("https://v2ex.com/notifications").then(async r => {
+        //   let htmlText = await r.text()
+        //   let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+        //   let body = $(bodyText[0])
+        //   let h = body.find('#notifications').html()
+        //
+        //   // let newWin = window.open("about:blank", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
+        //   // newWin.document.write(h);
+        //   console.log('h', h)
+        //   this.notificationModal.h = h
+        //   this.notificationModal.show = true
+        // })
+        // return that.stopEvent(e)
       }
 
       if (id) {
@@ -479,9 +477,7 @@ export default {
       }
 
       let url = window.baseUrl + '/t/' + post.id
-      document.body.style.overflow = 'hidden'
-      window.history.pushState({}, 0, post.href ?? url);
-      window.document.title = post.title ?? 'V2EX'
+      this.current.url = url
 
       let alreadyHasReply = this.current.replyList.length
       //如果，有数据，不显示loading,默默更新即可

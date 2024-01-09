@@ -4,6 +4,7 @@ export interface Post {
   nestedRedundReplies: any[],
   allReplyUsers: any[],
   username: string,
+  url: string,
   member: any,
   node: {
     title: string,

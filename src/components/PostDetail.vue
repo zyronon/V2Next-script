@@ -375,11 +375,13 @@ export default {
     modelValue: {
       handler(newVal) {
         if (this.isPost) {
-
           return
         }
         if (newVal) {
           document.body.style.overflow = 'hidden'
+          window.history.pushState({}, 0, this.post.url);
+          window.document.title = this.post.title ?? 'V2EX'
+
           this.read = this.post.read
           this.currentFloor = 1
           nextTick(() => {
@@ -397,6 +399,7 @@ export default {
               window.location.pathname !== '/'
           ) {
             window.history.back();
+            window.document.title = 'V2EX'
           }
         }
       },
@@ -726,10 +729,11 @@ export default {
       font-size: 2rem;
       overflow: hidden;
 
-      .my-cell{
+      .my-cell {
         background: var(--color-second-bg);
-        border-radius: var(--box-border-radius) var(--box-border-radius) 0 0 ;
+        border-radius: var(--box-border-radius) var(--box-border-radius) 0 0;
       }
+
       .comments {
         max-height: calc(100% - 4.2rem);
         overflow: auto;

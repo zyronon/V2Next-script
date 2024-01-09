@@ -21,6 +21,7 @@ function run() {
     nestedReplies: [],
     nestedRedundReplies: [],
     username: '',
+    url: '',
     member: {},
     node: {
       title: '',

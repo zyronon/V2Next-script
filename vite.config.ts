@@ -15,8 +15,8 @@ export default defineConfig({
     monkey({
       entry: 'src/main.ts',
       userscript: {
-        version: '7.8.7',
-        name: 'V2EX Next',
+        version: '7.8.8',
+        name: 'V2Next',
         icon: 'https://www.google.com/s2/favicons?sz=64&domain=v2ex.com',
         namespace: 'http://tampermonkey.net/',
         match: [
@@ -33,7 +33,7 @@ export default defineConfig({
           'https://*.v2ex.com/go/*',
           'https://*.v2ex.com/member/*'
         ],
-        description: '让V2EX现代化。支持楼中楼、简洁模式、高赞回复排序、查看回复上下文、发送图片和表情、base64 解码等功能',
+        description: '楼中楼、简洁模式、高赞回复排序、查看回复上下文、发送图片和表情、UI美化、base64 解码等功能',
         author: 'zyronon',
         license: 'GPL License',
         updateURL: 'https://github.com/zyronon/v2ex-script/raw/master/dist/vite-project.user.js',
