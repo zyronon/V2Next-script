@@ -536,7 +536,7 @@ async function submit() {
   show_content = show_content.replaceAll('\n', '<br/>')
 
   // loading.value = false
-  console.log('show_content', show_content)
+  // console.log('show_content', show_content)
 
   let item = {
     thankCount: 0,
@@ -559,8 +559,9 @@ async function submit() {
   if (item.replyUsers.length === 1) {
     item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => '')
   }
+  console.log('回复',item)
   // loading.value = false
-  // return console.log(item)
+  // return
 
   // loading.value = false
   // content.value = replyInfo
@@ -607,7 +608,7 @@ async function submit() {
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
       }
   ).catch(r => {
-    console.log('cathc', r)
+    console.log('catch', r)
   })
 }
 

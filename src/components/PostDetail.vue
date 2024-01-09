@@ -42,7 +42,9 @@
               </template>
               {{ post.clickCount }} 次点击
               <template v-if="isMy">&nbsp;&nbsp;
-                <a :href="`/t/${post.id}/info`"><li class="fa fa-info-circle"></li></a>&nbsp;&nbsp;
+                <a :href="`/t/${post.id}/info`">
+                  <li class="fa fa-info-circle"></li>
+                </a>&nbsp;&nbsp;
                 <a :href="`/append/topic/${post.id}`" class="op">APPEND</a>
               </template>
             </small>
@@ -216,12 +218,18 @@
       <div class="scroll-top gray" @click.stop="scrollTop">
         <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
       </div>
-      <div class="scroll-to gray" @click.stop="jump(currentFloor)">
-        <i class="fa fa-long-arrow-down"/>
-        <input type="text" v-model="currentFloor"
-               @click.stop="stop"
-               @keydown.enter="jump(currentFloor)">
+      <div class="refresh gray" @click.stop="$emit('refresh')">
+        <BaseLoading v-if="refreshLoading"/>
+        <i v-else class="fa fa-refresh" aria-hidden="true"></i>
       </div>
+      <Tooltip title="跳转到指定回复，空或者大于最大回复数量跳转到最后一条">
+        <div class="scroll-to gray" @click.stop="jump(currentFloor)">
+          <i class="fa fa-long-arrow-down"/>
+          <input type="text" v-model="currentFloor"
+                 @click.stop="stop"
+                 @keydown.enter="jump(currentFloor)">
+        </div>
+      </Tooltip>
     </div>
   </div>
 </template>
@@ -275,6 +283,12 @@ export default {
         return false
       }
     },
+    refreshLoading: {
+      type: Boolean,
+      default() {
+        return false
+      }
+    },
     displayType: CommentDisplayType.FloorInFloorNoCallUser,
   },
   data() {
@@ -300,12 +314,12 @@ export default {
         floor: 0,
         total: 0
       },
-      currentFloor: 1,
+      currentFloor: '',
       showOpTag: false
     }
   },
   computed: {
-    isMy(){
+    isMy() {
       return this.post.member.username === window.user.username
     },
     myTags() {
@@ -385,32 +399,32 @@ export default {
     },
     modelValue: {
       handler(newVal) {
+        // console.log('modelValue', newVal, window.history.state)
         if (this.isPost) {
           return
         }
         if (newVal) {
           document.body.style.overflow = 'hidden'
-          window.history.pushState({}, 0, this.post.url);
-          window.document.title = this.post.title ?? 'V2EX'
+          if (!window.history.state) {
+            // console.log('执行了pushState')
+            window.history.pushState({}, 0, this.post.url);
+          }
 
           this.read = this.post.read
-          this.currentFloor = 1
+          this.currentFloor = ''
           nextTick(() => {
+            window.document.title = this.post.title ?? 'V2EX'
             this.$refs?.main?.focus()
           })
         } else {
           this.$emit('saveReadList')
           document.body.style.overflow = 'unset'
+          window.document.title = 'V2EX'
           this.isSticky = false
           this.showRelationReply = false
-          if ((this.pageType === PageType.Home
-                  || this.pageType === PageType.Node
-                  || this.pageType === PageType.Member
-              ) &&
-              window.location.pathname !== '/'
-          ) {
+          if (window.history.state) {
+            // console.log('执行了back')
             window.history.back();
-            window.document.title = 'V2EX'
           }
         }
       },
@@ -504,11 +518,21 @@ export default {
     stop(e) {
     },
     jump(floor) {
-      try {
-        floor = Number(floor)
-      } catch (e) {
+      let lastItem = this.replyList[this.replyList.length - 1]
+      if (floor === '') {
+        floor = lastItem.floor
+      } else {
+        try {
+          floor = Number(floor)
+        } catch (e) {
+          floor = lastItem.floor
+        }
+        if (floor === 0) {
+          floor = 1
+        }
+        if (floor > lastItem.floor) floor = lastItem.floor
       }
-      if (!floor) return;
+
       if (!this.post.replyList.length) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '没有回复可跳转！'})
         this.read.floor = 0
@@ -811,6 +835,7 @@ export default {
   }
 
   .scroll-top {
+    cursor: pointer;
     position: fixed;
     border-radius: .6rem;
     display: flex;
@@ -824,6 +849,11 @@ export default {
     transform: translateX(6rem);
     font-size: 2rem;
     background: var(--color-sp-btn-bg);
+  }
+
+  .refresh {
+    .scroll-top;
+    bottom: 23.5rem;
   }
 
   .scroll-to {

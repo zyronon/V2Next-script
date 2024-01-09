@@ -123,7 +123,7 @@ function run() {
 
       let as: any = main.find('.header > a')
       if (as.length) {
-        console.log('as[1].innerText', as[1])
+        // console.log('as[1].innerText', as[1])
         post.node.title = as[1].innerText
         post.node.url = as[1].href
       }
@@ -137,7 +137,7 @@ function run() {
       }
 
       let avatarEl: any = main.find('.header .avatar')
-      console.log('avatarEl', avatarEl[0].src)
+      // console.log('avatarEl', avatarEl[0].src)
       if (avatarEl) {
         post.member.avatar_large = avatarEl[0].src
       }

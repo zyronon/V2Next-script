@@ -41,6 +41,7 @@ export default {
   data() {
     return {
       loading: window.pageType === PageType.Post,
+      refreshLoading: false,
       loadMore: false,
       isLogin: !!window.user.username,
       pageType: window.pageType,
@@ -463,11 +464,15 @@ export default {
         }
       })
     },
-    async getPostDetail(post, event) {
-      console.log('getPostDetail')
+    async getPostDetail(post, isRefresh = false) {
+      // console.log('getPostDetail')
       this.current = Object.assign({}, window.initPost, post)
       this.current.read = this.readList[this.current.id] ?? {floor: 0, total: 0}
       this.show = true
+      if (isRefresh) {
+        if (this.refreshLoading) return
+        this.refreshLoading = true
+      }
 
       //如果不在列表里面，则调用接口判断,调接口比请求html正则判断来得快，他接口有缓存的
       if (!this.current.inList) {
@@ -496,24 +501,23 @@ export default {
       let apiRes = await window.fetch(url + '?p=1')
       if (apiRes.status === 404) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '主题未找到'})
-        return this.loading = false
+        return this.refreshLoading = this.loading = false
       }
       if (apiRes.status === 403) {
-        this.loading = false
-        this.show = false
+        this.refreshLoading = this.show = this.loading = false
         window.parse.openNewTab(`https://www.v2ex.com/t/${post.id}?p=1&script=0`)
         return
       }
       //如果是重定向了，那么就是没权限
       if (apiRes.redirected) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '没有权限'})
-        return this.loading = false
+        return this.refreshLoading = this.loading = false
       }
       let htmlText = await apiRes.text()
       let hasPermission = htmlText.search('你要查看的页面需要先登录')
       if (hasPermission > -1) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '你要查看的页面需要先登录'})
-        return this.loading = false
+        return this.refreshLoading = this.loading = false
       }
       let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let body = $(bodyText[0])
@@ -532,7 +536,7 @@ export default {
           this.list.push(this.clone(this.current))
         }
       }
-      this.loading = false
+      this.refreshLoading = this.loading = false
       if (!alreadyHasReply) {
         nextTick(() => {
           this.$refs.postDetail.jumpLastRead(this.current.read.floor)
@@ -560,7 +564,10 @@ export default {
               ref="postDetail"
               v-model:displayType="config.commentDisplayType"
               @saveReadList="saveReadList"
-              :loading="loading"/>
+              @refresh="getPostDetail(current,true)"
+              :loading="loading"
+              :refreshLoading="refreshLoading"
+  />
   <Base64Tooltip/>
   <MsgModal/>
 
@@ -594,6 +601,7 @@ export default {
   color: var(--color-font);
   word-break: break-all;
   text-align: start;
+  font-size: 1.4rem;
   box-shadow: 0 2px 3px rgba(0, 0, 0, .1);
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
