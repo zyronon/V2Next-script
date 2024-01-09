@@ -15,4 +15,5 @@ export const CMD = {
     RELATION_REPLY:'RELATION_REPLY',
     JUMP:'JUMP',
     ADD_READ:'ADD_READ',
+    REFRESH_POST:'REFRESH_POST',
 }

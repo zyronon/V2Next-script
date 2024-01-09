@@ -559,7 +559,7 @@ async function submit() {
   if (item.replyUsers.length === 1) {
     item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => '')
   }
-  console.log('回复',item)
+  console.log('回复', item)
   // loading.value = false
   // return
 
@@ -572,7 +572,8 @@ async function submit() {
   // return console.log('item', item)
 
   let url = `${window.baseUrl}/t/${post.value.id}`
-  $.post(url, {content: submit_content, once: post.value.once}).then(
+  // $.post(url, {content: submit_content, once: post.value.once}).then(
+  $.post(url, {content: submit_content, once: 123}).then(
       res => {
         // console.log('回复', res)
         loading.value = false
@@ -588,12 +589,19 @@ async function submit() {
         let r2 = res.search('创建新回复')
         if (r2 > -1) {
           eventBus.emit(CMD.REFRESH_ONCE, res)
-          eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
-          let clientWidth = window.win().document.body.clientWidth
+          eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复出现了问题，请使用原版进行回复'})
+          let clientWidth = window.document.body.clientWidth
           let windowWidth = 1200
           let left = clientWidth / 2 - windowWidth / 2
-          let newWin = window.win().open("about:blank", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
+          let newWin = window.open("创建新回复", "", `width=${windowWidth},height=600,left=${left},top=100`);
           newWin.document.write(res);
+
+          let loop = setInterval(function () {//监听子页面关闭事件,轮询时间1000毫秒
+            if (newWin.closed) {
+              clearInterval(loop);
+              eventBus.emit(CMD.REFRESH_POST)
+            }
+          }, 1000);
           return
         }
         content.value = replyInfo

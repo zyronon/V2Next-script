@@ -28,6 +28,7 @@ export interface Post {
   isThanked: boolean,
   isReport: boolean,
   lastReadFloor: number
+  inList: boolean,
 }
 
 export interface User {

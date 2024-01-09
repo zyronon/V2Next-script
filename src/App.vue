@@ -14,9 +14,11 @@ import {decodeEmail} from "@/utils/email-decode.js";
 import BaseSwitch from "@/components/BaseSwitch.vue";
 import BaseLoading from "./components/BaseLoading.vue";
 import NotificationModal from "@/components/Modal/NotificationModal.vue";
+import BaseButton from "@/components/BaseButton.vue";
 
 export default {
   components: {
+    BaseButton,
     NotificationModal,
     BaseLoading, BaseSwitch, MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg
   },
@@ -77,34 +79,6 @@ export default {
     },
   },
   watch: {
-    'current.replyList': {
-      handler(newVal, oldVal) {
-        // console.log('watch', newVal.length, oldVal.length)
-        if (newVal.length) {
-          this.current.replyCount = newVal.length
-          let res = window.parse.createNestedList(newVal, this.current.allReplyUsers)
-          if (res) {
-            this.current.nestedReplies = res
-          }
-          let dup_res = window.parse.createNestedRedundantList(newVal, this.current.allReplyUsers)
-          if (dup_res) {
-            this.current.nestedRedundReplies = dup_res
-          }
-          // console.log('this.current.nestedReplies',this.current.nestedReplies)
-        } else {
-          this.current.replyCount = 0
-          this.current.nestedReplies = []
-          this.current.nestedRedundReplies = []
-        }
-        if (this.list) {
-          let rIndex = this.list.findIndex(i => i.id === this.current.id)
-          if (rIndex > -1) {
-            this.list[rIndex].replyCount = newVal.length
-          }
-        }
-      },
-      deep: true
-    },
     config: {
       handler(newVal) {
         let config = {[window.user.username ?? 'default']: newVal}
@@ -144,7 +118,7 @@ export default {
       if (that.stopMe) return true
       let {href, id, title} = window.parse.parseA(e.currentTarget)
 
-      // console.log('click-a', e.currentTarget, e, href)
+      console.log('click-a', e.currentTarget, e, href, id, title)
       //夜间模式切换
       if (href.includes('/settings/night/toggle')) return
       if (href.includes('/?tab=')) return
@@ -259,14 +233,15 @@ export default {
 
           if (index > -1) {
             postItem = this.list[index]
-          } else {
+          }
+          if (!postItem.title) {
             postItem.title = title ?? '加载中'
           }
           postItem.inList = index > -1
 
-          //如果在列表里面，一定有replies这个值，直接判断大小即可
+          //如果在列表里面，直接判断大小即可
           if (postItem.inList) {
-            if (postItem.replies > MAX_REPLY_LIMIT) {
+            if (postItem.replyCount > MAX_REPLY_LIMIT) {
               return window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1&script=1`)
             }
           }
@@ -341,24 +316,48 @@ export default {
           $(this).show()
         })
       }
+
       if (type === 'postContent') {
-        this.current = Object.assign(this.clone(this.current), this.clone(value))
+        this.current = value
+        this.current.inList = true
         //这时有正文了，再打开，体验比较好
         if (this.config.autoOpenDetail) {
           this.showPost()
         }
       }
       if (type === 'postReplies') {
-        this.current = Object.assign(this.clone(this.current), this.clone(value))
         console.log('当前帖子', this.current)
+        this.list.push(this.clone(this.current))
         this.loading = false
-      }
-      if (type === 'postOp') {
-        this.current = Object.assign(this.clone(this.current), this.clone(value))
       }
     },
     clone(val) {
       return window.clone(val)
+    },
+    regenerateReplyList() {
+      // console.log('重新生成列表')
+      if (this.current.replyList.length) {
+        this.current.replyCount = this.current.replyList.length
+        let res = window.parse.createNestedList(this.current.replyList)
+        if (res) {
+          this.current.nestedReplies = res
+        }
+        let dup_res = window.parse.createNestedRedundantList(this.current.replyList)
+        if (dup_res) {
+          this.current.nestedRedundReplies = dup_res
+        }
+      } else {
+        this.current.replyCount = 0
+        this.current.nestedReplies = []
+        this.current.nestedRedundReplies = []
+      }
+
+      if (this.list.length) {
+        let rIndex = this.list.findIndex(i => i.id === this.current.id)
+        if (rIndex > -1) {
+          this.list[rIndex] = this.clone(this.current)
+        }
+      }
     },
     initEvent() {
       eventBus.on(CMD.CHANGE_COMMENT_THANK, (val) => {
@@ -372,6 +371,7 @@ export default {
           } else {
             this.current.replyList[currentI].thankCount--
           }
+          this.regenerateReplyList()
         }
       })
       eventBus.on(CMD.CHANGE_POST_THANK, (val) => {
@@ -400,10 +400,8 @@ export default {
           this.current.replyList.splice(removeIndex, 1)
         }
         // console.log('removeIndex',this.current.replyList)
-        let rIndex = this.list.findIndex(i => i.id === this.current.id)
-        if (rIndex > -1) {
-          this.list[rIndex] = Object.assign(this.list[rIndex], val)
-        }
+
+        this.regenerateReplyList()
         // this.msgList.push({...val, id: Date.now()})
       })
       eventBus.on(CMD.IGNORE, () => {
@@ -418,7 +416,7 @@ export default {
         this.current = Object.assign(this.current, val)
         let rIndex = this.list.findIndex(i => i.id === this.current.id)
         if (rIndex > -1) {
-          this.list[rIndex] = Object.assign(this.list[rIndex], val)
+          this.list[rIndex] = this.clone(this.current)
         }
       })
       eventBus.on(CMD.ADD_READ, (val) => {
@@ -426,6 +424,7 @@ export default {
       })
       eventBus.on(CMD.ADD_REPLY, (item) => {
         this.current.replyList.push(item)
+        this.regenerateReplyList()
       })
       eventBus.on(CMD.REFRESH_ONCE, async (once) => {
         if (once) {
@@ -463,16 +462,13 @@ export default {
           this.tags = oldTag
         }
       })
+      eventBus.on(CMD.REFRESH_POST, () => this.getPostDetail(this.current))
     },
-    async getPostDetail(post, isRefresh = false) {
+    async getPostDetail(post) {
       // console.log('getPostDetail')
-      this.current = Object.assign({}, window.initPost, post)
+      this.current = post
       this.current.read = this.readList[this.current.id] ?? {floor: 0, total: 0}
       this.show = true
-      if (isRefresh) {
-        if (this.refreshLoading) return
-        this.refreshLoading = true
-      }
 
       //如果不在列表里面，则调用接口判断,调接口比请求html正则判断来得快，他接口有缓存的
       if (!this.current.inList) {
@@ -489,8 +485,9 @@ export default {
       this.current.url = url
 
       let alreadyHasReply = this.current.replyList.length
-      //如果，有数据，不显示loading,默默更新即可
+      //如果有数据，显示右侧的loading
       if (alreadyHasReply) {
+        this.refreshLoading = true
         this.$refs.postDetail.jumpLastRead(this.current.read.floor)
       } else {
         this.loading = true
@@ -524,17 +521,12 @@ export default {
 
       decodeEmail(body)
 
-      this.current = await window.parse.getPostDetail(this.current, body, htmlText)
-      if (this.current.replyList.length) {
-        let index = this.list.findIndex(v => v.id == post.id)
-        if (index > -1) {
-          this.list[index].replyList = this.current.replyList
-          this.list[index].nestedReplies = this.current.nestedReplies
-          this.list[index].once = this.current.once
-          this.list[index].createDate = this.current.createDate
-        } else {
-          this.list.push(this.clone(this.current))
-        }
+      await window.parse.getPostDetail(this.current, body, htmlText)
+      let index = this.list.findIndex(v => v.id == this.current.id)
+      if (index > -1) {
+        this.list[index] = this.clone(this.current)
+      } else {
+        this.list.push(this.clone(this.current))
       }
       this.refreshLoading = this.loading = false
       if (!alreadyHasReply) {
@@ -542,10 +534,8 @@ export default {
           this.$refs.postDetail.jumpLastRead(this.current.read.floor)
         })
       }
-
-      this.current = await window.parse.parseOp(this.current)
-
-      console.log('当前帖子', this.current, this.current.member.id)
+      await window.parse.parseOp(this.current)
+      console.log('当前帖子', this.current)
     },
     addTargetUserTag() {
       eventBus.emit(CMD.ADD_TAG, window.targetUserName)
@@ -564,7 +554,7 @@ export default {
               ref="postDetail"
               v-model:displayType="config.commentDisplayType"
               @saveReadList="saveReadList"
-              @refresh="getPostDetail(current,true)"
+              @refresh="getPostDetail(current)"
               :loading="loading"
               :refreshLoading="refreshLoading"
   />
@@ -586,9 +576,15 @@ export default {
             </span>
       <span class="add-tag ago" @click="addTargetUserTag" title="添加标签">+</span>
     </div>
-    <div v-if="isPost && !show && config.autoOpenDetail" class="my-box flex flex-center p2"
+    <div v-if="isPost && !show && config.autoOpenDetail" class="my-box p2"
          style="margin-top: 2rem;">
-      <BaseLoading size="large"/>
+      <div class="flex flex-center" v-if="loading">
+        <BaseLoading/>
+      </div>
+      <div v-else class="loaded">
+        <span>楼中楼解析完成</span>
+        <BaseButton size="small" @click="showPost">点击显示</BaseButton>
+      </div>
     </div>
   </template>
 </template>
@@ -609,6 +605,13 @@ export default {
   .add-tag {
     display: inline-block;
   }
+}
+
+.loaded {
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 </style>
 

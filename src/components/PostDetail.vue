@@ -222,14 +222,12 @@
         <BaseLoading v-if="refreshLoading"/>
         <i v-else class="fa fa-refresh" aria-hidden="true"></i>
       </div>
-      <Tooltip title="跳转到指定回复，空或者大于最大回复数量跳转到最后一条">
-        <div class="scroll-to gray" @click.stop="jump(currentFloor)">
-          <i class="fa fa-long-arrow-down"/>
-          <input type="text" v-model="currentFloor"
-                 @click.stop="stop"
-                 @keydown.enter="jump(currentFloor)">
-        </div>
-      </Tooltip>
+      <div class="scroll-to gray" @click.stop="jump(currentFloor)">
+        <i class="fa fa-long-arrow-down"/>
+        <input type="text" v-model="currentFloor"
+               @click.stop="stop"
+               @keydown.enter="jump(currentFloor)">
+      </div>
     </div>
   </div>
 </template>
