@@ -1,0 +1,74 @@
+.username {
+  font-weight: bold;
+  font-size: 1.4rem;
+  margin-right: 1rem;
+}
+
+.link-num {
+  font-weight: 700;
+  color: var(--color-font-8);
+}
+
+@color: #1484cd;
+
+.owner {
+  display: inline-block;
+  background-color: transparent;
+  color: @color;
+  border-radius: .3rem;
+  padding: 0 .3rem;
+  cursor: default;
+  border: 2px solid @color;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-right: 1rem;
+  transform: scale(.8);
+}
+
+.mod {
+  .owner;
+  background: @color;
+  color: white;
+  margin-right: 1rem;
+}
+
+.my-tag {
+  font-size: 1.4rem;
+  color: red;
+  margin-left: 1rem;
+
+  &:hover {
+    .remove {
+      display: inline;
+    }
+  }
+
+  .remove {
+    cursor: pointer;
+    margin-left: .5rem;
+    display: none;
+  }
+}
+
+.add-tag {
+  font-size: 2.4rem;
+  transform: translateY(.2rem);
+  line-height: 1rem;
+  display: inline-block;
+  margin-left: 1rem;
+  cursor: pointer;
+  position: absolute;
+  display: none;
+}
+
+.floor {
+  margin-left: 1rem;
+  font-size: 1.1rem;
+  line-height: 1rem;
+  border-radius: .5rem;
+  display: inline-block;
+  background-color: var(--color-floor);
+  color: var(--color-floor-font);
+  padding: 3px 9px;
+  cursor: default;
+}
