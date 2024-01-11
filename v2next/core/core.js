@@ -610,7 +610,7 @@ export default function () {
               } else {
                 src = p + '.png';
               }
-              str = str.replace(r[0], `<img src="${src}" data-originUrl="${p}" data-notice="这个img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`);
+              str = str.replace(r[0], `<img ${src}="../pc/src" data-originUrl="${p}" data-notice="这个img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`);
             }
           });
         });

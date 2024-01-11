@@ -20,7 +20,7 @@
                      style="width: 73px;height: 73px;"
                      border="0" align="default" :alt="post.member.username"></a>
             </div>
-            <a href="/">V2EX</a>
+            <a href="/v2next/pc/public">V2EX</a>
             <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
             <a :href="post.node.url">{{ post.node.title }}</a>
             <div class="sep10"></div>
@@ -238,21 +238,21 @@
   </div>
 </template>
 <script>
-import Comment from './Comment'
-import PostEditor from './PostEditor'
-import Point from "./Point";
-import Toolbar from "./Toolbar";
-import BaseHtmlRender from "@/components/BaseHtmlRender";
-import eventBus from "@/utils/eventBus.js";
-import {CMD} from "@/utils/type";
+import Comment from './Comment.vue'
+import PostEditor from './PostEditor.vue'
+import Point from "./Point.vue";
+import Toolbar from "./Toolbar.vue";
+import BaseHtmlRender from "./BaseHtmlRender.vue";
+import eventBus from "../utils/eventBus.js";
+import {CMD} from "../utils/type.js";
 import {computed, nextTick} from "vue";
-import {CommentDisplayType, PageType} from "@/types";
-import Tooltip from "@/components/Tooltip.vue";
-import PopConfirm from "@/components/PopConfirm.vue";
-import SingleComment from "@/components/SingleComment.vue";
-import {debounce} from "@/utils/index.js";
+import {CommentDisplayType, PageType} from "../types.js";
+import Tooltip from "./Tooltip.vue";
+import PopConfirm from "./PopConfirm.vue";
+import SingleComment from "./SingleComment.vue";
+import {debounce} from "../utils/index.js";
 import BaseLoading from "./BaseLoading.vue";
-import BaseButton from "@/components/BaseButton.vue";
+import BaseButton from "./BaseButton.vue";
 
 export default {
   name: "detail",

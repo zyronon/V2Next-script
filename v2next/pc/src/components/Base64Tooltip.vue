@@ -26,8 +26,8 @@
 
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import eventBus from "@/utils/eventBus.js";
-import {CMD} from "@/utils/type";
+import eventBus from "../utils/eventBus.js";
+import {CMD} from "../utils/type.js";
 import BaseButton from "./BaseButton.vue";
 
 const tooltip = ref(null)

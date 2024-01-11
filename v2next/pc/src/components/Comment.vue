@@ -71,13 +71,13 @@
   </div>
 </template>
 <script>
-import Author from "./Author";
-import PostEditor from "./PostEditor";
-import Point from "./Point";
-import eventBus from "@/utils/eventBus.js";
-import BaseHtmlRender from "@/components/BaseHtmlRender";
-import {CMD} from "@/utils/type";
-import {CommentDisplayType} from "@/types.ts";
+import Author from "./Author.vue";
+import PostEditor from "./PostEditor.vue";
+import Point from "./Point.vue";
+import eventBus from "../utils/eventBus.js";
+import BaseHtmlRender from "./BaseHtmlRender.vue";
+import {CMD} from "../utils/type.js";
+import {CommentDisplayType} from "../types.ts";
 
 export default {
   name: "Comment",
@@ -182,7 +182,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-@import "@/assets/less/variable";
+@import "../assets/less/variable";
 
 .comment {
   width: 100%;

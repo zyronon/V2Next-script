@@ -79,8 +79,8 @@
 
 <script setup>
 import {computed, h, inject, onBeforeUnmount, onMounted, ref, toRef, watch} from "vue";
-import eventBus from "@/utils/eventBus.js";
-import {CMD} from "../utils/type";
+import eventBus from "../utils/eventBus.js";
+import {CMD} from "../utils/type.js";
 import BaseButton from "./BaseButton.vue";
 
 const props = defineProps({
@@ -820,7 +820,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="less">
-@import "@/assets/less/variable.less";
+@import "../assets/less/variable.less";
 
 .post-editor-wrapper {
   width: 100%;

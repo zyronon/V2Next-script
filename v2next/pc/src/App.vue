@@ -1,20 +1,20 @@
 <script>
-import {MAX_REPLY_LIMIT, PageType} from "./types"
+import {MAX_REPLY_LIMIT, PageType} from "./types.js"
 import {computed, nextTick} from "vue";
 import Setting from "./components/Modal/SettingModal.vue";
-import eventBus from "@/utils/eventBus.js";
-import {CMD} from "@/utils/type.js";
+import eventBus from "./utils/eventBus.js";
+import {CMD} from "./utils/type.js";
 import PostDetail from "./components/PostDetail.vue";
 import Base64Tooltip from "./components/Base64Tooltip.vue";
-import Msg from '@/components/Msg.vue';
-import Tooltip from "@/components/Tooltip.vue";
-import TagModal from "@/components/Modal/TagModal.vue";
-import MsgModal from "@/components/Modal/MsgModal.vue";
-import {decodeEmail} from "@/utils/email-decode.js";
-import BaseSwitch from "@/components/BaseSwitch.vue";
+import Msg from './components/Msg.vue';
+import Tooltip from "./components/Tooltip.vue";
+import TagModal from "./components/Modal/TagModal.vue";
+import MsgModal from "./components/Modal/MsgModal.vue";
+import {decodeEmail} from "./utils/email-decode.js";
+import BaseSwitch from "./components/BaseSwitch.vue";
 import BaseLoading from "./components/BaseLoading.vue";
-import NotificationModal from "@/components/Modal/NotificationModal.vue";
-import BaseButton from "@/components/BaseButton.vue";
+import NotificationModal from "./components/Modal/NotificationModal.vue";
+import BaseButton from "./components/BaseButton.vue";
 
 export default {
   components: {
@@ -646,7 +646,7 @@ export default {
 </template>
 
 <style scoped lang="less">
-@import "./assets/less/variable";
+@import "assets/less/variable";
 
 .target-user-tags {
   background: var(--color-second-bg);

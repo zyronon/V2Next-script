@@ -1,4 +1,4 @@
-import core from "../../core.js";
+import core from "../../core/core.js";
 
 core()
 let Channel = {

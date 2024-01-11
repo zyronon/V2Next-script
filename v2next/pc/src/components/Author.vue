@@ -74,10 +74,10 @@
   </div>
 </template>
 <script>
-import Point from "./Point";
-import eventBus from "@/utils/eventBus.js";
-import {CMD} from "../utils/type";
-import PopConfirm from "@/components/PopConfirm.vue";
+import Point from "./Point.vue";
+import eventBus from "../utils/eventBus.js";
+import {CMD} from "../utils/type.js";
+import PopConfirm from "./PopConfirm.vue";
 
 export default {
   name: "Author",
@@ -156,7 +156,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-@import "@/assets/less/variable";
+@import "../assets/less/variable";
 
 .Author {
   display: flex;

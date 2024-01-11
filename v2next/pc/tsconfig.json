@@ -14,7 +14,12 @@
     "noEmit": true,
     "allowJs": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": [
+    "pc/src/**/*.ts",
+    "pc/src/**/*.d.ts",
+    "pc/src/**/*.tsx",
+    "pc/src/**/*.vue"
+  ],
   "references": [
     {
       "path": "./tsconfig.node.json"

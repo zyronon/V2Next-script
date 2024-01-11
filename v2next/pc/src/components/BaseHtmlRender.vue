@@ -1,6 +1,6 @@
 <script setup>
-import eventBus from "@/utils/eventBus.js";
-import {CMD} from "@/utils/type";
+import eventBus from "../utils/eventBus.js";
+import {CMD} from "../utils/type.js";
 import {onMounted, ref, watch} from "vue";
 import {inject} from 'vue'
 
@@ -61,7 +61,7 @@ function checkContentHeight() {
   </div>
 </template>
 <style lang="less" scoped>
-@import "@/assets/less/index.less";
+@import "../assets/less/index.less";
 
 .html-wrapper {
   position: relative;

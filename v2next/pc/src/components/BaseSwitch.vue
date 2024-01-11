@@ -15,7 +15,7 @@ const emit = defineEmits<{
 </template>
 
 <style scoped lang="less">
-@import "@/assets/less/index";
+@import "../assets/less/index";
 
 .switch {
   width: 4.5rem;

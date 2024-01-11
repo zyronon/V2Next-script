@@ -5,10 +5,10 @@
 </template>
 
 <script setup>
-import Msg from "@/components/Msg.vue";
+import Msg from "../Msg.vue";
 import {onMounted, reactive} from "vue"
-import {CMD} from "@/utils/type"
-import eventBus from "@/utils/eventBus.js";
+import {CMD} from "../../utils/type.js"
+import eventBus from "../../utils/eventBus.js";
 
 const msgList = reactive([
   // {type: 'success', text: '123', id: Date.now()}

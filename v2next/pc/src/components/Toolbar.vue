@@ -78,8 +78,8 @@
 </template>
 
 <script>
-import eventBus from "@/utils/eventBus.js";
-import {CMD} from "@/utils/type";
+import eventBus from "../utils/eventBus.js";
+import {CMD} from "../utils/type.js";
 import BaseLoading from "./BaseLoading.vue";
 import {PageType} from "../types.ts";
 
@@ -191,7 +191,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-@import "@/assets/less/variable";
+@import "../assets/less/variable";
 
 .toolbar {
   border-top: 1px solid var(--color-line);

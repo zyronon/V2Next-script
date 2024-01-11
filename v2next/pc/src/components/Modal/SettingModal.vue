@@ -321,9 +321,9 @@
 </template>
 
 <script>
-import Tooltip from "@/components/Tooltip.vue";
-import {CommentDisplayType} from "@/types.ts";
-import BaseSwitch from "@/components/BaseSwitch.vue";
+import Tooltip from "../Tooltip.vue";
+import {CommentDisplayType} from "../../types.ts";
+import BaseSwitch from "../BaseSwitch.vue";
 
 export default {
   name: "Setting",

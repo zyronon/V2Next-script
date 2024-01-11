@@ -58,10 +58,10 @@
   </div>
 </template>
 <script setup>
-import BaseHtmlRender from "@/components/BaseHtmlRender";
+import BaseHtmlRender from "./BaseHtmlRender.vue";
 import {computed, inject} from "vue";
-import eventBus from "@/utils/eventBus.js";
-import {CMD} from "@/utils/type.js";
+import eventBus from "../utils/eventBus.js";
+import {CMD} from "../utils/type.js";
 
 const config = inject('config')
 const isLogin = inject('isLogin')
@@ -87,7 +87,7 @@ function jump() {
 </script>
 
 <style scoped lang="less">
-@import "@/assets/less/variable.less";
+@import "../assets/less/variable.less";
 
 .comment {
   width: 100%;

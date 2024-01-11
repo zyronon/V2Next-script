@@ -16,9 +16,9 @@
   </PopConfirm>
 </template>
 <script>
-import eventBus from "@/utils/eventBus.js";
-import {CMD} from "@/utils/type";
-import PopConfirm from "@/components/PopConfirm.vue";
+import eventBus from "../utils/eventBus.js";
+import {CMD} from "../utils/type.js";
+import PopConfirm from "./PopConfirm.vue";
 
 const loveColor = 'rgb(224,42,42)'
 export default {
