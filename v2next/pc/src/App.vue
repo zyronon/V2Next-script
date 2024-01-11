@@ -1,5 +1,5 @@
 <script>
-import {MAX_REPLY_LIMIT, PageType} from "./types.js"
+import {MAX_REPLY_LIMIT, PageType} from "./types.ts"
 import {computed, nextTick} from "vue";
 import Setting from "./components/Modal/SettingModal.vue";
 import eventBus from "./utils/eventBus.js";

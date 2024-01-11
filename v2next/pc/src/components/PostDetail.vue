@@ -246,7 +246,7 @@ import BaseHtmlRender from "./BaseHtmlRender.vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import {computed, nextTick} from "vue";
-import {CommentDisplayType, PageType} from "../types.js";
+import {CommentDisplayType, PageType} from "../types.ts";
 import Tooltip from "./Tooltip.vue";
 import PopConfirm from "./PopConfirm.vue";
 import SingleComment from "./SingleComment.vue";
