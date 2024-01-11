@@ -344,6 +344,7 @@ export default {
           .slice(0, this.config.topReplyCount)
     },
     replyList() {
+      console.log('this.post.nestedReplies',this.post.nestedReplies)
       if ([CommentDisplayType.FloorInFloor, CommentDisplayType.FloorInFloorNoCallUser].includes(this.displayType)) return this.post.nestedReplies
       if (this.displayType === CommentDisplayType.Like) {
         return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)

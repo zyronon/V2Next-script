@@ -1,4 +1,4 @@
-import {Config, PageType, Post} from "./types"
+import { Config, PageType, Post } from "./types"
 
 declare global {
   interface Window {
@@ -49,6 +49,7 @@ declare global {
     query: any
     stopMe: boolean
     vals: {
+      isMobile: boolean
     }
   }
 }
