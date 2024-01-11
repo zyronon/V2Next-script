@@ -3,11 +3,13 @@
        ref="detail"
        @keydown.esc="close()"
        v-show="modelValue"
-       :class="[isNight?'isNight':'',pageType]"
+       :class="[isNight?'isNight':'',pageType,isMobile?'mobile':'']"
        @scroll="debounceScroll"
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
-      <div class="main-wrapper" ref="mainWrapper" :style="{width:config.postWidth}">
+      <div class="main-wrapper" ref="mainWrapper"
+           @click="close('space')"
+           :style="{width:config.postWidth}">
         <div class="my-box post-wrapper">
           <div class="header">
             <div class="fr">
@@ -23,7 +25,7 @@
             <a :href="post.node.url">{{ post.node.title }}</a>
             <div class="sep10"></div>
             <h1>{{ post.title }}</h1>
-            <div :id="`topic_${post.id}_votes`" class="votes">
+            <div :id="`topic_${post.id}_votes`" class="votes" v-if="!isMobile">
               <a href="javascript:" :onclick="`upVoteTopic(${post.id});`" class="vote">
                 <li class="fa fa-chevron-up"></li> &nbsp;
               </a>
@@ -96,6 +98,10 @@
           </div>
         </div>
 
+        <div class="my-box my-cell" v-if="isMobile">
+          <div class="inner" v-html="post.fr"></div>
+        </div>
+
         <div class="my-box comment-wrapper">
           <template v-if="post.replyList.length ||loading">
             <div class="my-cell flex" v-if="config.showToolbar">
@@ -149,7 +155,7 @@
                 <span>{{ post.replyCount }} 条回复
                  <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
                 </span>
-              <div class="fr" v-html="post.fr"></div>
+              <div class="fr" v-html="post.fr" v-if="!isMobile"></div>
             </div>
           </template>
 
@@ -262,7 +268,7 @@ export default {
     Tooltip,
     BaseLoading
   },
-  inject: ['allReplyUsers', 'post', 'tags', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
+  inject: ['allReplyUsers', 'post', 'isMobile', 'tags', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
   provide() {
     return {
       postDetailWidth: computed(() => this.postDetailWidth)
@@ -344,7 +350,7 @@ export default {
           .slice(0, this.config.topReplyCount)
     },
     replyList() {
-      console.log('this.post.nestedReplies',this.post.nestedReplies)
+      console.log('this.post.nestedReplies', this.post.nestedReplies)
       if ([CommentDisplayType.FloorInFloor, CommentDisplayType.FloorInFloorNoCallUser].includes(this.displayType)) return this.post.nestedReplies
       if (this.displayType === CommentDisplayType.Like) {
         return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
@@ -675,6 +681,13 @@ export default {
   }
 }
 
+.mobile {
+  .main {
+    padding: unset !important;
+    width: 100% !important;
+  }
+}
+
 .post-detail {
   text-align: start;
   position: fixed;
@@ -828,6 +841,12 @@ export default {
   }
   @media screen and (max-width: 1280px) {
     @width: 75vw;
+    .main-wrapper {
+      width: @width !important;
+    }
+  }
+  @media screen and (max-width: 960px) {
+    @width: 100vw;
     .main-wrapper {
       width: @width !important;
     }

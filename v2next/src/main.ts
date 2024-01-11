@@ -1,10 +1,10 @@
-import { createApp } from 'vue';
+import {createApp} from 'vue';
 import './assets/less/index.less'
 
 import App from './App.vue';
-import { GM_notification, GM_openInTab, GM_registerMenuCommand } from "$"
+import {GM_notification, GM_openInTab, GM_registerMenuCommand} from "$"
 import './global.d.ts'
-import { CommentDisplayType, MAX_REPLY_LIMIT, PageType, Post, Reply } from "./types"
+import {CommentDisplayType, MAX_REPLY_LIMIT, PageType, Post, Reply} from "./types"
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -113,6 +113,7 @@ function run() {
 
       post.isReport = htmlText.includes('你已对本主题进行了报告')
 
+      let wrapperClass = window.vals.isMobile ? 'Wrapper' : 'Main'
       let wrapper = body.find('#Main')
 
       if (window.vals.isMobile) {
@@ -226,9 +227,10 @@ function run() {
 
       // console.log('基本信息', post)
 
-      let header = body.find('#Main .box').first()
+      let header = body.find(`#${wrapperClass} .box`).first()
       let temp = header.clone()
       temp.find('.topic_buttons').remove()
+      temp.find('.inner').remove()
       temp.find('.header').remove()
       let html = temp.html()
       html = this.checkPhotoLink2Img(html)
@@ -276,12 +278,20 @@ function run() {
         return post
       }
 
-      let wrapperClass = window.vals.isMobile ? '#Wrapper' : '#Main'
-      let boxs = body.find(`${wrapperClass} .box`)
-      let box
-      if (window.vals.isMobile) {
-        box = boxs[2]
+      console.log('body', body)
+
+      let wrapperClass = window.vals.isMobile ? 'Wrapper' : 'Main'
+      let boxs
+      let box: any
+      if (window.vals.isMobile && body.length > 1) {
+        body.each(function () {
+          if (this.id === wrapperClass) {
+            boxs = this.querySelectorAll('.box')
+            box = boxs[2]
+          }
+        })
       } else {
+        boxs = body.find(`#${wrapperClass} .box`)
         box = boxs[1]
       }
 
@@ -397,9 +407,11 @@ function run() {
         item.replyUsers = users
         item.replyFloor = floor
 
+        let spans
         let ago
         if (window.vals.isMobile) {
-          ago = node.querySelector('.fade,.small')
+          spans = node.querySelectorAll('span')
+          ago = spans[1]
         } else {
           ago = node.querySelector('.ago')
         }
@@ -417,7 +429,12 @@ function run() {
         if (thank_area) {
           item.isThanked = thank_area.classList.contains('thanked')
         }
-        let small = node.querySelector('.small')
+        let small
+        if (window.vals.isMobile) {
+          small = spans[2]
+        } else {
+          small = node.querySelector('.small')
+        }
         if (small) {
           item.thankCount = Number(small.textContent)
         }
