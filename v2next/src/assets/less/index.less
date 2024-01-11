@@ -130,17 +130,11 @@ html, body {
   padding: 0 !important;
 }
 
-.post-author {
-  display: flex;
-  align-items: center;
-  position: relative;
-  color: @date-color !important;
-
-  > .username {
-    font-size: 1.2rem;
-  }
+body :is(.topic_content, .reply_content) a[href^="http"] {
+  text-underline-offset: 0.46ex;
+  color: currentcolor;
+  text-decoration: underline 1.5px;
 }
-
 
 a {
   //color: @link-color;

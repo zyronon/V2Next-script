@@ -113,54 +113,7 @@ export default {
     // fetch(location.origin)
 
     //A标签的
-    $(document).on('click', 'a', (e) => {
-      //有script表示是脚本生成的a标签用于新开页面的
-      if (e.currentTarget.getAttribute('script')) return
-      if (that.stopMe) return true
-      let {href, id, title} = window.parse.parseA(e.currentTarget)
-
-      console.log('click-a', e.currentTarget, e, href, id, title)
-      //夜间模式切换
-      if (href.includes('/settings/night/toggle')) return
-      if (href.includes('/?tab=')) return
-      if (href.includes('/go')) return
-      //清除最近记录
-      if (href === window.origin + '/#;') return
-      //主页
-      if (href === window.origin + '/') return
-
-      //未读提醒
-      if (href.includes('/notifications')) {
-        // let clientWidth = window.document.body.clientWidth
-        // let windowWidth = 1200
-        // let left = clientWidth / 2 - windowWidth / 2
-        // // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
-        // // newWin.document.write('123');
-        //
-        // fetch("https://v2ex.com/notifications").then(async r => {
-        //   let htmlText = await r.text()
-        //   let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-        //   let body = $(bodyText[0])
-        //   let h = body.find('#notifications').html()
-        //
-        //   // let newWin = window.open("about:blank", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
-        //   // newWin.document.write(h);
-        //   console.log('h', h)
-        //   this.notificationModal.h = h
-        //   this.notificationModal.show = true
-        // })
-        // return that.stopEvent(e)
-      }
-
-      if (id) {
-        that.clickPost(e, id, href, title)
-      } else {
-        if (that.config.newTabOpen) {
-          that.stopEvent(e)
-          window.parse.openNewTab(href)
-        }
-      }
-    })
+    $(document).on('click', 'a', this.clickA)
     //帖子的
     $(document).on('click', '.post-item', function (e) {
       // console.log('click-post-item')
@@ -211,12 +164,114 @@ export default {
     window.onbeforeunload = () => {
       this.saveReadList()
     }
+
+    window.deleteNotification = (nId, token) => {
+      console.log('deleteNotification', nId, token)
+      let item = $("#n_" + nId)
+      item.slideUp('fast');
+      $.post({
+        url: '/delete/notification/' + nId + '?once=' + token,
+        success() {
+          // $.get('/notifications/below/' + window.notificationBottom || nId, (data, status, request) => {
+          //   $('#notifications').append(data);
+          //   window.notificationBottom = request.getResponseHeader('X-V2EX-New-Notification-Bottom');
+          // })
+          // if (!window.notificationBottom) window.notificationBottom = nId
+          $.get({
+            url: '/notifications/below/' + window.notificationBottom,
+            success(data, status, request) {
+              item.remove()
+              $('#notifications').append(data);
+              window.notificationBottom = request.getResponseHeader('X-V2EX-New-Notification-Bottom');
+            },
+            error() {
+              item.slideDown('fast');
+            }
+          })
+        },
+        error() {
+          item.slideDown('fast');
+        }
+      })
+    }
   },
   beforeUnmount() {
     // console.log('unmounted')
     eventBus.clear()
+    $(document).off('click', 'a', this.clickA)
+
   },
   methods: {
+    async getUnreadMessagesCount() {
+      const res = await fetch(`${location.origin}/mission`)
+      const htmlText = await res.text()
+      const $page = $(htmlText)
+      const text = $page.find('#Rightbar a[href^="/notifications"]').text()
+
+      if (text.includes('未读提醒')) {
+        const countStr = text.match(/\d+/)?.at(0)
+
+        if (countStr) {
+          return Number(text.match(/\d+/)?.at(0))
+        }
+      } else {
+        return 0
+      }
+      throw new Error('无法获取未读消息数量')
+    },
+    clickA(e) {
+      let that = this
+      //有script表示是脚本生成的a标签用于新开页面的
+      if (e.currentTarget.getAttribute('script')) return
+      if (that.stopMe) return true
+      let {href, id, title} = window.parse.parseA(e.currentTarget)
+
+      console.log('click-a', e.currentTarget, e, href, id, title)
+      //夜间模式切换
+      if (href.includes('/settings/night/toggle')) return
+      if (href.includes('/?tab=')) return
+      if (href.includes('/go')) return
+      //清除最近记录
+      if (href === window.origin + '/#;') return
+      //主页
+      if (href === window.origin + '/') return
+
+      //未读提醒
+      if (href.includes('/notifications')) {
+        // this.notificationModal.show = true
+        //
+        // let clientWidth = window.document.body.clientWidth
+        // let windowWidth = 1200
+        // let left = clientWidth / 2 - windowWidth / 2
+        // // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
+        // // newWin.document.write('123');
+        //
+        // fetch(href).then(async r => {
+        //   let htmlText = await r.text()
+        //   let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+        //   let res = htmlText.match(/var notificationBottom = ([\d]+);/)
+        //   if (res && res[1]) {
+        //     window.notificationBottom = Number(res[1])
+        //     console.log(' window.notificationBottom', window.notificationBottom)
+        //   }
+        //
+        //   let body = $(bodyText[0])
+        //   let h = body.find('#notifications').parent().html()
+        //   this.notificationModal.h = h
+        //
+        // })
+        // that.stopEvent(e)
+      }
+
+      if (id) {
+        that.clickPost(e, id, href, title)
+      } else {
+        if (that.config.newTabOpen) {
+          that.stopEvent(e)
+          window.parse.openNewTab(href)
+        }
+      }
+    },
     stopEvent(e) {
       e.preventDefault()
       e.stopPropagation()
@@ -243,7 +298,7 @@ export default {
           //如果在列表里面，直接判断大小即可
           if (postItem.inList) {
             if (postItem.replyCount > MAX_REPLY_LIMIT) {
-              return window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1&script=1`)
+              return window.parse.openNewTab(`${location.origin}/t/${id}?p=1&script=1`)
             }
           }
 
@@ -503,7 +558,7 @@ export default {
       }
       if (apiRes.status === 403) {
         this.refreshLoading = this.show = this.loading = false
-        window.parse.openNewTab(`https://www.v2ex.com/t/${post.id}?p=1&script=0`)
+        window.parse.openNewTab(`${location.origin}/t/${post.id}?p=1&script=0`)
         return
       }
       //如果是重定向了，那么就是没权限

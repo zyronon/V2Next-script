@@ -1,12 +1,15 @@
 <template>
   <Transition>
     <div class="tag-modal modal" v-if="modelValue">
-      <div class="mask" @click.stop="emit('update:modelValue',false)"></div>
-      <div class="wrapper">
-        <div class="title">
-          添加标签
+      <div class="mask" @click.stop="close"></div>
+      <div class="modal-root">
+        <div class="modal-header">
+          <div class="title">
+            提醒系统
+          </div>
+          <i class="fa fa-times" @click="close"/>
         </div>
-        <div v-html="h"></div>
+        <div v-html="h" class="modal-body"></div>
       </div>
     </div>
   </Transition>
@@ -21,34 +24,54 @@ const emit = defineEmits(['update:modelValue'])
 onMounted(() => {
 })
 
+function close() {
+  emit('update:modelValue', false)
+}
+
 </script>
 
 <style scoped lang="less">
 @import "src/assets/less/variable";
 
 .tag-modal {
-  .wrapper {
+  .modal-root {
     z-index: 9;
-    background: var(--color-main-bg);
+    background: var(--color-second-bg);
     color: var(--color-font-8);
     border-radius: 1.6rem;
     font-size: 1.4rem;
-    padding: 2rem 4rem;
     width: 50vw;
     height: 70vh;
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
 
-    .title {
-      font-weight: bold;
+    .modal-header {
+      padding: 2.4rem;
+      display: flex;
+      justify-content: space-between;
+
+      .title {
+        font-size: 2.6rem;
+        font-weight: bold;
+        text-align: left;
+        margin-bottom: 0;
+      }
+
+      i {
+        cursor: pointer;
+        font-size: 2.2rem;
+      }
     }
 
-    .btns {
-      margin-top: 1.5rem;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 1.5rem;
-      font-size: 1.4rem;
+    .modal-body {
+      padding: 2rem;
+      padding-top: 0;
+      flex: 1;
+      overflow: auto;
+
+      :deep(.cell){
+        padding: 2rem;
+      }
     }
   }
 }
