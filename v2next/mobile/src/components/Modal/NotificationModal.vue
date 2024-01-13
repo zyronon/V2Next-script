@@ -58,7 +58,7 @@ function close() {
       }
 
       i {
-        cursor: pointer;
+
         font-size: 2.2rem;
       }
     }

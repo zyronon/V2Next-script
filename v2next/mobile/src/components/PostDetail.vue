@@ -14,20 +14,19 @@
             <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                   d="M20 12H4m0 0l6-6m-6 6l6 6"/>
           </svg>
-          <a href="/v2next/pc/public">V2EX</a>
+          <a href="/">V2EX</a>
           <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
           <a :href="post.node.url">{{ post.node.title }}</a>
-
         </div>
         <div class="right">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="m20 20l-4.05-4.05m0 0a7 7 0 1 0-9.9-9.9a7 7 0 0 0 9.9 9.9"/>
-          </svg>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
-                  d="M41.5 10h-6m-8-4v8m0-4h-22m8 14h-8m16-4v8m22-4h-22m20 14h-6m-8-4v8m0-4h-22"/>
-          </svg>
+<!--          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">-->
+<!--            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"-->
+<!--                  d="m20 20l-4.05-4.05m0 0a7 7 0 1 0-9.9-9.9a7 7 0 0 0 9.9 9.9"/>-->
+<!--          </svg>-->
+          <img v-if="user.avatar"
+               @click="clickAvatar"
+               style="margin-right: 0;"
+               class="avatar mobile" :src="user.avatar">
           <MoreIcon/>
         </div>
       </div>
@@ -94,16 +93,7 @@
           <div class="my-cell flex ">
             <span class=" ">高赞回复</span>
             <div class="top-reply">
-              <Tooltip :title="`统计点赞数大于等于${config.topReplyLoveMinCount}个的回复，可在设置中调整`">
-                <i class="fa fa-info" @click="showConfig()"/>
-              </Tooltip>
-              <PopConfirm title="关闭后不再默认显示，可在设置里重新打开，确认关闭？"
-                          @confirm="config.showTopReply = false">
-                <i class="fa fa-times"/>
-              </PopConfirm>
-              <Tooltip title="收起高赞回复">
-                <i class="fa fa-compress" @click="collapseTopReplyList"/>
-              </Tooltip>
+              <i class="fa fa-compress" @click="collapseTopReplyList"/>
             </div>
           </div>
           <div ref="topReply">
@@ -119,72 +109,55 @@
         </div>
 
         <div class="my-box comment-wrapper">
-          <div class="my-cell flex">
-            <span>{{ post.replyCount }} 条回复</span>
-            <div class="display-type">
-              <div>最新</div>
-              <div>最热</div>
-              <div class="active">
-                <span>楼中楼</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-                  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="4" d="M36 18L24 30L12 18"/>
-                </svg>
-                <div class="list">
-                  <div class="item">楼中楼</div>
-                  <div class="item">楼中楼(@)</div>
-                  <div class="item">冗余楼中楼</div>
-                  <div class="item">只看楼主</div>
-                  <div class="item">V2原版</div>
-                </div>
-              </div>
-            </div>
-          </div>
           <template v-if="post.replyList.length ||loading">
-            <div class="my-cell flex" v-if="config.showToolbar">
-              <div class="radio-group2">
-                <Tooltip title="不隐藏@用户">
-                  <div class="radio"
-                       @click="changeOption(CommentDisplayType.FloorInFloor)"
-                       :class="displayType === CommentDisplayType.FloorInFloor?'active':''">楼中楼(@)
-                  </div>
-                </Tooltip>
-                <Tooltip title="隐藏第一个@用户，双击内容可显示原文">
-                  <div class="radio"
-                       @click="changeOption(CommentDisplayType.FloorInFloorNoCallUser)"
-                       :class="displayType === CommentDisplayType.FloorInFloorNoCallUser?'active':''">楼中楼
-                  </div>
-                </Tooltip>
-                <Tooltip title="重复显示楼中楼的回复">
-                  <div class="radio"
-                       @click="changeOption(CommentDisplayType.FloorInFloorNested)"
-                       :class="displayType === CommentDisplayType.FloorInFloorNested?'active':''">冗余楼中楼
-                  </div>
-                </Tooltip>
-                <div class="radio"
+            <div class="my-cell flex">
+              <span>{{ post.replyCount }} 条回复</span>
+              <div class="display-type">
+                <!--              <div class="type">最新</div>-->
+                <div class="type"
                      @click="changeOption(CommentDisplayType.Like)"
-                     :class="displayType ===CommentDisplayType.Like?'active':''">感谢
+                     :class="displayType === CommentDisplayType.Like && 'active'"
+                >最热
                 </div>
-                <div class="radio"
-                     @click="changeOption(CommentDisplayType.OnlyOp)"
-                     :class="displayType === CommentDisplayType.OnlyOp?'active':''">只看楼主
-                </div>
-                <div class="radio"
-                     @click="changeOption(CommentDisplayType.V2exOrigin)"
-                     :class="displayType === CommentDisplayType.V2exOrigin?'active':''">V2原版
-                </div>
-              </div>
-              <div class="read-notice" v-if="read.floor || read.total">
-                <span>上次打开：</span>
-                <template v-if="read.floor">
-                  <span>阅读到<b>{{ read.floor }}</b>楼</span>
-                  <div class="jump jump1" @click="jump(read.floor)">
-                    <i class="fa fa-long-arrow-down"/>
+                <div style="position: relative">
+                  <div class="type"
+                       @click="clickDisplayType"
+                       :class="![CommentDisplayType.New,CommentDisplayType.Like].includes(displayType)  && 'active'"
+                  >
+                    <span>{{ currentDisplayType }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+                      <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="4" d="M36 18L24 30L12 18"/>
+                    </svg>
                   </div>
-                </template>
-                <span>总楼层<b>{{ read.total }}</b></span>
-                <div class="jump" @click="jump(read.total)">
-                  <i class="fa fa-long-arrow-down"/>
+
+                  <div class="type-list" v-if="showChangeDisplayType">
+                    <div class="item"
+                         @click.stop="changeOption(CommentDisplayType.FloorInFloorNoCallUser)"
+                         :class="displayType === CommentDisplayType.FloorInFloorNoCallUser && 'active'"
+                    >楼中楼
+                    </div>
+                    <div class="item"
+                         @click.stop="changeOption(CommentDisplayType.FloorInFloor)"
+                         :class="displayType === CommentDisplayType.FloorInFloor && 'active'"
+                    >楼中楼(@)
+                    </div>
+                    <div class="item"
+                         @click.stop="changeOption(CommentDisplayType.FloorInFloorNested)"
+                         :class="displayType === CommentDisplayType.FloorInFloorNested && 'active'"
+                    >冗余楼中楼
+                    </div>
+                    <div class="item"
+                         @click.stop="changeOption(CommentDisplayType.OnlyOp)"
+                         :class="displayType === CommentDisplayType.OnlyOp && 'active'"
+                    >只看楼主
+                    </div>
+                    <div class="item"
+                         @click.stop="changeOption(CommentDisplayType.V2exOrigin)"
+                         :class="displayType === CommentDisplayType.V2exOrigin && 'active'"
+                    >V2原版
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -298,7 +271,7 @@ export default {
     Tooltip,
     BaseLoading
   },
-  inject: ['allReplyUsers', 'post', 'isMobile', 'tags', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
+  inject: ['allReplyUsers', 'user', 'post', 'isMobile', 'tags', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
   provide() {
     return {
       postDetailWidth: computed(() => this.postDetailWidth)
@@ -349,10 +322,31 @@ export default {
         total: 0
       },
       currentFloor: '',
-      showOpTag: false
+      showOpTag: false,
+      showChangeDisplayType: false,
+      lastDisplayType: CommentDisplayType.FloorInFloorNoCallUser,
     }
   },
   computed: {
+    currentDisplayType() {
+      let judge = this.displayType
+      if ([CommentDisplayType.New, CommentDisplayType.Like].includes(this.displayType)) {
+        judge = this.lastDisplayType
+      }
+      switch (judge) {
+        case CommentDisplayType.FloorInFloorNoCallUser:
+          return '楼中楼'
+        case CommentDisplayType.FloorInFloor:
+          return '楼中楼(@)'
+        case CommentDisplayType.FloorInFloorNested:
+          return '冗余楼中楼'
+        case CommentDisplayType.V2exOrigin:
+          return 'V2原版'
+        case CommentDisplayType.OnlyOp:
+          return '只看楼主'
+      }
+      return ''
+    },
     isMy() {
       return this.post.member.username === window.user.username
     },
@@ -514,6 +508,20 @@ export default {
     eventBus.off(CMD.SHOW_CALL)
   },
   methods: {
+    clickAvatar() {
+      let menu = $('#menu-body')
+      if (menu.css('--show-dropdown') === 'block') {
+        menu.css('--show-dropdown','none')
+      }else {
+        menu.css('--show-dropdown','block')
+      }
+    },
+    clickDisplayType() {
+      if ([CommentDisplayType.New, CommentDisplayType.Like].includes(this.displayType)) {
+        return this.changeOption(this.lastDisplayType)
+      }
+      this.showChangeDisplayType = !this.showChangeDisplayType
+    },
     addTag() {
       eventBus.emit(CMD.ADD_TAG, this.post.member.username)
     },
@@ -658,7 +666,11 @@ export default {
       }
     },
     changeOption(item) {
+      if (![CommentDisplayType.New, CommentDisplayType.Like].includes(this.displayType)) {
+        this.lastDisplayType = this.displayType
+      }
       this.$emit('update:displayType', item)
+      this.showChangeDisplayType = false
     },
     addThank() {
       eventBus.emit(CMD.CHANGE_POST_THANK, {id: this.post.id, type: 'add'})
@@ -761,7 +773,7 @@ export default {
     position: relative;
     outline: none;
 
-    @nav-height: 4rem;
+    @nav-height: 4.6rem;
 
     .nav-bar {
       position: fixed;
@@ -828,37 +840,50 @@ export default {
       }
 
       .display-type {
-        height: 2.8rem;
-        padding: 0 .4rem;
+        height: 3rem;
+        padding: 0 .3rem;
         //gap: .5rem;
         background: #f1f1f1;
         border-radius: 1rem;
         display: flex;
-        font-size: 1.2rem;
+        font-size: 1.4rem;
         align-items: center;
         @sw: 1.5rem;
 
-        & > div {
+        .type {
           border-radius: .8rem;
           padding: 0 1.3rem;
-          height: 2.3rem;
+          height: 2.5rem;
           align-items: center;
           display: flex;
           position: relative;
 
-          .list {
-            position: absolute;
-            background: red;
-            right: 0;
-            top: 0;
-
+          &.active {
+            background: white;
+            color: black;
+            box-shadow: 0 0 6px 0px var(--color-tooltip-shadow);
           }
         }
 
-        .active {
+        .type-list {
+          position: absolute;
           background: white;
-          color: black;
+          right: 0rem;
+          top: 3rem;
+          font-size: 1.4rem;
           box-shadow: 0 0 6px 0px var(--color-tooltip-shadow);
+          border-radius: .6rem;
+          z-index: 9;
+          color: var(--color-font);
+
+          .item {
+            word-break: keep-all;
+            padding: .8rem 1rem;
+
+            &.active {
+              color: var(--color-font-pure);
+            }
+          }
         }
 
         svg {
@@ -918,7 +943,7 @@ export default {
         display: flex;
         padding: 0 1rem;
         align-items: center;
-        cursor: pointer;
+
         font-size: 14px;
         box-sizing: border-box;
 
@@ -926,10 +951,6 @@ export default {
           //background: #f0f0f0;
           background: var(--color-main-bg);
           text-decoration: none;
-        }
-
-        &:hover {
-          .select();
         }
 
         &.select {
@@ -963,7 +984,7 @@ export default {
   }
 
   .scroll-top {
-    cursor: pointer;
+
     position: fixed;
     border-radius: .6rem;
     display: flex;
@@ -1009,19 +1030,13 @@ export default {
       padding: 0.3rem 1rem;
       border-radius: .4rem;
       margin: 0 1rem;
-      cursor: pointer;
     }
   }
 
   .top-reply {
     color: var(--color-font-3);
-    cursor: pointer;
     font-size: 2rem;
-    display: flex;
-
-    i {
-      padding: 0 1rem;
-    }
+    margin-right: 1rem;
   }
 }
 </style>

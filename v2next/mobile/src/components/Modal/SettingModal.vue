@@ -408,7 +408,7 @@ export default {
       }
 
       i {
-        cursor: pointer;
+
         font-size: 2.2rem;
       }
     }
@@ -432,7 +432,7 @@ export default {
           gap: 1rem;
 
           .tab {
-            cursor: pointer;
+
             padding: 1rem 1.5rem;
             border-radius: .8rem;
             display: flex;

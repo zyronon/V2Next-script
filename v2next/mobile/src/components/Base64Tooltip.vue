@@ -104,7 +104,7 @@ function decode() {
   display: flex;
   align-items: center;
   border-radius: .5rem;
-  cursor: pointer;
+
   line-break: anywhere;
   font-size: 1.4rem;
   color: var(--color-font-8);

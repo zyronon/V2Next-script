@@ -231,7 +231,6 @@ export default {
     position: relative;
 
     .expand-line {
-      cursor: pointer;
       margin-top: .6rem;
       @w: 2.8rem;
       width: @w;
@@ -245,12 +244,6 @@ export default {
         height: 100%;
         width: 0;
         border-right: 1px solid var(--color-line);
-      }
-
-      &:hover {
-        &:after {
-          border-right: 2px solid var(--color-active);
-        }
       }
     }
 
@@ -274,7 +267,7 @@ export default {
   margin-bottom: 1rem;
 
   span {
-    cursor: pointer;
+
   }
 
   .del-line {

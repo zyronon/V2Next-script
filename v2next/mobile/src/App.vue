@@ -25,6 +25,7 @@ export default {
   },
   provide() {
     return {
+      user: computed(() => window.user),
       isMobile: computed(() => window.vals.isMobile),
       isLogin: computed(() => this.isLogin),
       isNight: computed(() => this.isNight),
@@ -163,7 +164,8 @@ export default {
     };
 
     window.onbeforeunload = () => {
-      this.saveReadList()
+      //TODO
+      // this.saveReadList()
     }
 
     window.deleteNotification = (nId, token) => {
@@ -329,6 +331,7 @@ export default {
     },
     showPost() {
       this.show = true
+      $('#site-header').hide()
       $(`#Wrapper .box:lt(3)`).each(function () {
         $(this).hide()
       })

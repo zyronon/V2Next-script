@@ -63,7 +63,6 @@ export default {
 
     svg {
       margin: 0 .3rem;
-      cursor: pointer;
     }
   }
 

@@ -1,14 +1,10 @@
 <template>
   <div class="toolbar">
     <div class="left">
-<!--      <span>{{ post.replyCount }} 条回复</span>-->
+      <!--      <span>{{ post.replyCount }} 条回复</span>-->
       <div>{{ post.createDate.substring(0, 16) }}</div>
     </div>
     <div class="right">
-      <div v-if="post.once && post.collectCount!==0" class="tool no-hover">
-        <span>{{ post.collectCount + '人收藏' }}</span>
-      </div>
-
       <div class="tool" @click="tweet">
         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M28 6H42V20" stroke="#929596" stroke-width="2" stroke-linecap="round"
@@ -41,7 +37,7 @@
         </svg>
       </div>
       <!--    TODO -->
-      <div v-if="post.once && isLogin && false" class="tool" :class="{'disabled':loading3,'no-hover':post.isLogin}"
+      <div v-if="post.once && isLogin && false" class="tool" :class="{'disabled':loading3}"
            @click="report">
         <BaseLoading v-if="loading3" size="small"/>
         <svg v-else width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,6 +61,7 @@
               :fill="getIsFull(post.isFavorite)" :stroke="getColor(post.isFavorite)" stroke-width="2"
               stroke-linejoin="round"/>
         </svg>
+        <span v-if="post.collectCount!==0">{{ post.collectCount }}</span>
       </div>
       <div class="tool" @click="checkIsLogin('reply')">
         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -210,7 +207,8 @@ export default {
     gap: 1rem;
     display: flex;
   }
-  .right{
+
+  .right {
     gap: .6rem;
   }
 }

@@ -47,6 +47,7 @@ https://www.v2ex.com/poll_once 好像是换once的
 - 高赞回复，显示有无子回复
 - [-]可以在帖子列表看帖的浮层中添加一个无缝刷新按钮吗？
 - 可调整字体大小
+- 关闭时，去掉saveReadList
 
  
 

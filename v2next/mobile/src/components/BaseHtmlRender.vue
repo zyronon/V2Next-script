@@ -83,7 +83,7 @@ function checkContentHeight() {
     color: gray;
     left: 50%;
     transform: translateX(-50%);
-    cursor: pointer;
+
   }
 }
 </style>

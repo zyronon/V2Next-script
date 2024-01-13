@@ -44,7 +44,7 @@ defineEmits(['click'])
 <style scoped lang="less">
 
 .base-button {
-  cursor: pointer;
+
   border-radius: .6rem;
   padding: 0 1.5rem;
   display: inline-flex;
@@ -86,10 +86,6 @@ defineEmits(['click'])
     }
   }
 
-  &:hover:not(.link) {
-    opacity: .7;
-  }
-
   &.primary {
     background: var(--color-active);
 
@@ -108,10 +104,6 @@ defineEmits(['click'])
 
     & > span {
       color: var(--color-font-8);
-    }
-
-    &:hover {
-      border-bottom: 2px solid var(--color-font-8);
     }
   }
 

@@ -198,7 +198,6 @@ export default {
     }
 
     .expand-icon {
-      cursor: pointer;
       margin-right: .8rem;
       width: 2rem;
       height: 2rem;
@@ -249,12 +248,6 @@ export default {
 
   }
 
-  &:hover {
-    .add-tag {
-      display: inline-block;
-    }
-  }
-
   .Author-right {
     position: absolute;
     right: 0;
@@ -268,10 +261,6 @@ export default {
       opacity: 0;
       font-weight: bold;
       gap: 1rem;
-
-      &:hover {
-        opacity: 1;
-      }
     }
   }
 }

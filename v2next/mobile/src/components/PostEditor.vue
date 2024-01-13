@@ -46,7 +46,7 @@
         <BaseButton
             type="link"
             size="small"
-            v-if="useType === 'reply-comment'" style="margin-right: 1rem;cursor: pointer;"
+            v-if="useType === 'reply-comment'" style="margin-right: 1rem;"
             @click="emits('close')">
           关闭
         </BaseButton>
@@ -887,12 +887,12 @@ onBeforeUnmount(() => {
       gap: 1rem;
 
       svg {
-        cursor: pointer;
+
       }
 
       .upload {
         input {
-          cursor: pointer;
+
           position: absolute;
           width: 20px;
           height: 20px;
@@ -931,7 +931,6 @@ onBeforeUnmount(() => {
     left: 14rem;
 
     i {
-      cursor: pointer;
       position: absolute;
       right: 2rem;
       font-size: 2rem;
@@ -947,7 +946,6 @@ onBeforeUnmount(() => {
     }
 
     img {
-      cursor: pointer;
       @w: 3rem;
       width: @w;
       height: @w;
@@ -956,7 +954,6 @@ onBeforeUnmount(() => {
 
     span {
       display: inline-block;
-      cursor: pointer;
       font-size: 2.3rem;
       padding: .5rem;
     }

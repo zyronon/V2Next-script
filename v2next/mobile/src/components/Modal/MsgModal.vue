@@ -32,8 +32,8 @@ function removeMsg(id) {
 <style scoped lang="less">
 .msgs {
   position: fixed;
-  margin-left: calc(50% - 25rem);
-  width: 50rem;
+  margin-left: calc(50% - 40vw);
+  width: 80vw;
   z-index: 9999;
   bottom: 0;
   left: 0;
