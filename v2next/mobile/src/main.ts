@@ -2,10 +2,10 @@ import {createApp} from 'vue';
 import './assets/less/index.less'
 
 import App from './App.vue';
-import {GM_notification, GM_openInTab, GM_registerMenuCommand} from "$"
+import {GM_notification} from "$"
 import './global.d.ts'
-import {CommentDisplayType, MAX_REPLY_LIMIT, PageType, Post, Reply} from "./types"
-import {DefaultConfig, DefaultPost, DefaultUser, functions} from "../../core/core";
+import {PageType, Post, Reply} from "./types"
+import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core";
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -48,12 +48,23 @@ function run() {
 
             post.isReport = htmlText.includes('你已对本主题进行了报告')
 
-            let wrapperClass = window.vals.isMobile ? 'Wrapper' : 'Main'
-            let wrapper = body.find('#Main')
+            let wrapperClass = 'Wrapper'
+            let wrapper
+            let boxs
 
-            if (window.vals.isMobile) {
+            if (body.length > 1) {
+                body.each(function () {
+                    if (this.id === wrapperClass) {
+                        wrapper = $(this)
+                        boxs = this.querySelectorAll('.box')
+                    }
+                })
+            } else {
                 wrapper = body
+                boxs = body.find(`#${wrapperClass} .box`)
             }
+
+
             //如果没有正文（点的本站的a标签），才会解析正文
             if (!post.title || !post.content_rendered) {
                 let h1 = wrapper.find('h1')
@@ -162,8 +173,9 @@ function run() {
 
             // console.log('基本信息', post)
 
-            let header = body.find(`#${wrapperClass} .box`).first()
+            let header = $(boxs[0])
             let temp = header.clone()
+            console.log('temp', temp)
             temp.find('.topic_buttons').remove()
             temp.find('.inner').remove()
             temp.find('.header').remove()
@@ -213,24 +225,25 @@ function run() {
                 return post
             }
 
-            console.log('body', body)
-
             let wrapperClass = window.vals.isMobile ? 'Wrapper' : 'Main'
             let boxs
             let box: any
-            if (window.vals.isMobile && body.length > 1) {
-                body.each(function () {
-                    if (this.id === wrapperClass) {
-                        boxs = this.querySelectorAll('.box')
-                        box = boxs[2]
-                    }
-                })
+            if (window.vals.isMobile) {
+                if (body.length > 1) {
+                    body.each(function () {
+                        if (this.id === wrapperClass) {
+                            boxs = this.querySelectorAll('.box')
+                            box = boxs[2]
+                        }
+                    })
+                } else {
+                    boxs = body.find(`#${wrapperClass} .box`)
+                    box = boxs[2]
+                }
             } else {
                 boxs = body.find(`#${wrapperClass} .box`)
                 box = boxs[1]
             }
-
-            console.log('box', box)
 
             let cells: any = box.querySelectorAll('.cell')
             if (cells && cells.length) {
@@ -570,21 +583,6 @@ function run() {
         }
     }
 
-    //初始化脚本菜单
-    function initMonkeyMenu() {
-        try {
-            GM_registerMenuCommand("脚本设置", () => {
-                cbChecker({type: 'openSetting'})
-            });
-            GM_registerMenuCommand('仓库地址', () => {
-                functions.openNewTab(window.const.git)
-            });
-            GM_registerMenuCommand('反馈 & 建议', window.functions.feedback);
-        } catch (e) {
-            console.error('无法使用Tampermonkey')
-        }
-    }
-
     //初始化样式表
     function initStyle() {
         //给Wrapper和content取消宽高，是因为好像是v2的屏蔽机制，时不时会v2会修改这两个div的宽高，让网页变形
@@ -596,6 +594,10 @@ function run() {
 
         :root{
           --box-border-radius:8px;
+        }
+        
+        #Wrapper .content{
+        padding:0;
         }
         
         .box{
@@ -986,7 +988,7 @@ function run() {
         }
 
         checkPageType()
-        initMonkeyMenu()
+        functions.initMonkeyMenu()
 
         let top2 = document.querySelector('.tools .top:nth-child(2)')
         if (top2 && top2.textContent !== '注册') {
@@ -1017,7 +1019,7 @@ function run() {
 
         let box: any
         let list
-        console.log(window.pageType)
+        // console.log(window.pageType)
         // window.pageType = PageType.Post
         // window.pageData.id = 1007682
 

@@ -1,19 +1,13 @@
 <template>
-  <PopConfirm
-      :disabled="disabled"
-      :title="`确认花费 10 个铜币向 @${item.username} 的这条回复发送感谢？`"
-      @confirm="thank">
-    <div class="tool" :class="disabled?'disabled':''" @click="thankError">
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-            d="M15 8C8.92487 8 4 12.9249 4 19C4 30 17 40 24 42.3262C31 40 44 30 44 19C44 12.9249 39.0751 8 33 8C29.2797 8 25.9907 9.8469 24 12.6738C22.0093 9.8469 18.7203 8 15 8Z"
-            :fill="getIsFull()" :stroke="getColor()" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round"/>
-      </svg>
-      <div class="link-num" v-if="item.thankCount">{{ item.thankCount }}</div>
-      <div v-else>感谢</div>
-    </div>
-  </PopConfirm>
+  <div class="tool" :class="disabled?'disabled':''" @click="thankError">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+          d="M15 8C8.92487 8 4 12.9249 4 19C4 30 17 40 24 42.3262C31 40 44 30 44 19C44 12.9249 39.0751 8 33 8C29.2797 8 25.9907 9.8469 24 12.6738C22.0093 9.8469 18.7203 8 15 8Z"
+          :fill="getIsFull()" :stroke="getColor()" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round"/>
+    </svg>
+    <div class="link-num" v-if="item.thankCount">{{ item.thankCount }}</div>
+  </div>
 </template>
 <script>
 import eventBus from "../utils/eventBus.js";
@@ -55,15 +49,16 @@ export default {
       return this.full ? loveColor : 'none'
     },
     thankError() {
+      if (!this.isLogin) {
+        return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
+      }
       if (this.item.username === window.user.username) {
         return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '不能感谢自己'})
       }
       if (this.item.isThanked) {
         return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '已经感谢过了'})
       }
-      if (!this.isLogin) {
-        return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
-      }
+      this.thank()
     },
     async thank() {
       this.$emit('addThank')

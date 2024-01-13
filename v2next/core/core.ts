@@ -1,5 +1,5 @@
 import {Config, Post, User, CommentDisplayType, Reply, MAX_REPLY_LIMIT} from "./types";
-import {GM_openInTab} from "$";
+import {GM_openInTab, GM_registerMenuCommand} from "$";
 
 export const DefaultPost: Post = {
     allReplyUsers: [],
@@ -354,6 +354,31 @@ export const functions = {
         //   document.body.appendChild(a);
         // }
         // a.click();
+    },
+    async cbChecker(val: any, count = 0) {
+        if (window.cb) {
+            window.cb(val)
+        } else {
+            while ((!window.cb) && count < 30) {
+                await functions.sleep(500)
+                count++
+            }
+            window.cb && window.cb(val)
+        }
+    },
+    //初始化脚本菜单
+    initMonkeyMenu() {
+        try {
+            GM_registerMenuCommand("脚本设置", () => {
+                functions.cbChecker({type: 'openSetting'})
+            });
+            GM_registerMenuCommand('仓库地址', () => {
+                functions.openNewTab(window.const.git)
+            });
+            GM_registerMenuCommand('反馈 & 建议', window.functions.feedback);
+        } catch (e) {
+            console.error('无法使用Tampermonkey')
+        }
     }
 
 }

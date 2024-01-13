@@ -11,14 +11,15 @@
       <a class="avatar" v-if="config.viewType !== 'simple'" :href="`/member/${comment.username}`">
         <img :src="comment.avatar" alt="">
       </a>
-      <span class="texts">
+      <div class="info">
+        <div class="top">
+        <span class="texts">
         <strong>
           <a :href="`/member/${comment.username}`" class="username" :class="{'dark':isNight}">{{ comment.username }}</a>
         </strong>
         <div v-if="comment.isOp" class="owner">OP</div>
         <div v-if="comment.isDup" class="dup">DUP</div>
         <div v-if="comment.isMod" class="mod">MOD</div>
-        <span class="ago">{{ comment.date }}</span>
         <template v-if="isLogin && config.openTag">
             <span class="my-tag" v-for="i in myTags">
               <i class="fa fa-tag"></i>
@@ -28,6 +29,12 @@
              <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
         </template>
       </span>
+        </div>
+        <div>
+          <div class="floor">{{ comment.floor }}楼</div>
+          <span class="ago">{{ comment.date }}</span>
+        </div>
+      </div>
     </div>
     <div class="Author-right">
       <div class="toolbar" v-if="isLogin">
@@ -69,7 +76,7 @@
           @recallThank="recallThank"
           :api-url="'reply/'+comment.id"
       />
-      <div class="floor" :class="{isDev}">{{ (false ? `a${comment.floor}-` : comment.floor) }}</div>
+      <MoreIcon/>
     </div>
   </div>
 </template>
@@ -78,10 +85,11 @@ import Point from "./Point.vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import PopConfirm from "./PopConfirm.vue";
+import MoreIcon from "@/components/MoreIcon.vue";
 
 export default {
   name: "Author",
-  components: {PopConfirm, Point},
+  components: {MoreIcon, PopConfirm, Point},
   inject: ['isLogin', 'tags', 'config', 'isNight'],
   props: {
     modelValue: false,
@@ -175,6 +183,15 @@ export default {
     max-width: 65%;
     word-break: break-all;
 
+    .info {
+      display: flex;
+      flex-direction: column;
+
+      .top {
+
+      }
+    }
+
     .username {
       font-size: 1.4rem;
       margin-right: 1rem;
@@ -186,20 +203,6 @@ export default {
       width: 2rem;
       height: 2rem;
       transform: rotate(90deg);
-    }
-
-    .avatar {
-      margin-right: 1rem;
-      display: flex;
-
-      img {
-        @w: 2.8rem;
-        width: @w;
-        height: @w;
-        border-radius: 0.4rem;
-      }
-
-      //border-radius: 50%;
     }
 
     @color: #1484cd;
@@ -269,10 +272,6 @@ export default {
       &:hover {
         opacity: 1;
       }
-    }
-
-    .isDev {
-      //color: black !important;
     }
   }
 }

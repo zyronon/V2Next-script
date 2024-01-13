@@ -55,14 +55,14 @@ export default {
       return this.full ? loveColor : 'none'
     },
     thankError() {
+      if (!this.isLogin) {
+        return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
+      }
       if (this.item.username === window.user.username) {
         return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '不能感谢自己'})
       }
       if (this.item.isThanked) {
         return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '已经感谢过了'})
-      }
-      if (!this.isLogin) {
-        return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
       }
     },
     async thank() {

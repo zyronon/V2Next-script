@@ -4,21 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "vue": "^3.2.47"
-  },
-  "devDependencies": {
-    "@types/jquery": "^3.5.16",
-    "@vitejs/plugin-vue": "^4.2.1",
-    "@vitejs/plugin-vue-jsx": "^3.0.1",
-    "less": "4.1.1",
-    "typescript": "^5.0.4",
-    "vite": "^4.3.5",
-    "vite-plugin-monkey": "^3.2.0",
-    "vue-tsc": "^1.6.4"
+    "dev-mobile": "vite",
+    "build-mobile": "vue-tsc --noEmit && vite build",
+    "preview-mobile": "vite preview"
   }
 }

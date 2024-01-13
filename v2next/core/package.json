@@ -1,0 +1,11 @@
+{
+  "name": "@v2next/core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "core.ts",
+  "scripts": {
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

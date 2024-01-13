@@ -15,6 +15,7 @@ import BaseSwitch from "./components/BaseSwitch.vue";
 import BaseLoading from "./components/BaseLoading.vue";
 import NotificationModal from "./components/Modal/NotificationModal.vue";
 import BaseButton from "./components/BaseButton.vue";
+import {functions} from "../../core/core.ts";
 
 export default {
   components: {
@@ -328,7 +329,7 @@ export default {
     },
     showPost() {
       this.show = true
-      $(`#Wrapper #Main .box:lt(3)`).each(function () {
+      $(`#Wrapper .box:lt(3)`).each(function () {
         $(this).hide()
       })
     },

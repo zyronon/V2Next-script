@@ -1,65 +1,76 @@
 <template>
   <div class="post-detail"
        ref="detail"
-       @keydown.esc="close()"
        v-show="modelValue"
        :class="[isNight?'isNight':'',pageType,isMobile?'mobile':'']"
        @scroll="debounceScroll"
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
       <div class="main-wrapper" ref="mainWrapper"
-           @click="close('space')"
            :style="{width:config.postWidth}">
-        <div class="my-box post-wrapper">
-          <div class="header">
-            <div class="fr">
-              <a :href="`/member/${post.member.username}`"
-                 v-if="post.member.avatar_large">
-                <img :src="post.member.avatar_large"
-                     class="avatar"
-                     style="width: 73px;height: 73px;"
-                     border="0" align="default" :alt="post.member.username"></a>
-            </div>
+
+        <div class="my-box nav-bar">
+          <div class="left">
+            <svg
+                @click="close('btn')"
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M20 12H4m0 0l6-6m-6 6l6 6"/>
+            </svg>
             <a href="/v2next/pc/public">V2EX</a>
             <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
             <a :href="post.node.url">{{ post.node.title }}</a>
-            <div class="sep10"></div>
-            <h1>{{ post.title }}</h1>
-            <div :id="`topic_${post.id}_votes`" class="votes" v-if="!isMobile">
-              <a href="javascript:" :onclick="`upVoteTopic(${post.id});`" class="vote">
-                <li class="fa fa-chevron-up"></li> &nbsp;
-              </a>
-              &nbsp;
-              <a href="javascript:" :onclick="`downVoteTopic(${post.id});`" class="vote">
-                <li class="fa fa-chevron-down"></li>
-              </a>
-            </div> &nbsp;
-            <small class="gray">
-              <a :href="`/member/${post.member.username}`">{{ post.member.username }}</a> ·
-              <template v-if="post.member.createDate">
-                <span :class="post.member.isNew && 'danger'">{{ post.member.createDate }}</span> ·
-              </template>
-              <template v-if="post.createDateAgo">
-                <span :title="post.createDate">{{ post.createDateAgo }}</span> ·
-              </template>
-              {{ post.clickCount }} 次点击
-              <template v-if="isMy">&nbsp;&nbsp;
-                <a :href="`/t/${post.id}/info`">
-                  <li class="fa fa-info-circle"></li>
-                </a>&nbsp;&nbsp;
-                <a :href="`/append/topic/${post.id}`" class="op">APPEND</a>
-              </template>
-            </small>
-            <template v-if="isLogin && config.openTag ">
+
+          </div>
+          <div class="right">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m20 20l-4.05-4.05m0 0a7 7 0 1 0-9.9-9.9a7 7 0 0 0 9.9 9.9"/>
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
+                    d="M41.5 10h-6m-8-4v8m0-4h-22m8 14h-8m16-4v8m22-4h-22m20 14h-6m-8-4v8m0-4h-22"/>
+            </svg>
+            <MoreIcon/>
+          </div>
+        </div>
+
+        <div class="my-box post-wrapper">
+          <div class="box-content">
+            <div class="header">
+              <h1>{{ post.title }}</h1>
+              <small class="gray">
+                <a class="avatar"
+                   :href="`/member/${post.member.username}`"
+                   v-if="post.member.avatar_large">
+                  <img :src="post.member.avatar_large"
+                       border="0" align="default" :alt="post.member.username"></a>
+                <a :href="`/member/${post.member.username}`">{{ post.member.username }}</a> ·
+                <template v-if="post.member.createDate">
+                  <span :class="post.member.isNew && 'danger'">{{ post.member.createDate }}</span> ·
+                </template>
+                <template v-if="post.createDateAgo">
+                  <span :title="post.createDate">{{ post.createDateAgo }}</span> ·
+                </template>
+                {{ post.clickCount }} 次点击
+                <template v-if="isMy">&nbsp;&nbsp;
+                  <a :href="`/t/${post.id}/info`">
+                    <li class="fa fa-info-circle"></li>
+                  </a>&nbsp;&nbsp;
+                  <a :href="`/append/topic/${post.id}`" class="op">APPEND</a>
+                </template>
+              </small>
+              <template v-if="isLogin && config.openTag ">
               <span class="my-tag" v-for="i in myTags">
                 <i class="fa fa-tag"></i>
                 <span>{{ i }}</span>
                 <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
               </span>
-              <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
-            </template>
+                <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
+              </template>
+            </div>
+            <BaseHtmlRender :html="post.headerTemplate"/>
           </div>
-          <BaseHtmlRender :html="post.headerTemplate"/>
           <Toolbar @reply="isSticky = !isSticky">
             <Point
                 @addThank="addThank"
@@ -98,7 +109,7 @@
           </div>
         </div>
 
-        <div class="my-box my-cell" v-if="isMobile">
+        <div class="my-box my-cell" v-if="isMobile && false">
           <div class="inner" v-html="post.fr"></div>
         </div>
 
@@ -150,12 +161,6 @@
                   <i class="fa fa-long-arrow-down"/>
                 </div>
               </div>
-            </div>
-            <div class="my-cell flex">
-                <span>{{ post.replyCount }} 条回复
-                 <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
-                </span>
-              <div class="fr" v-html="post.fr" v-if="!isMobile"></div>
             </div>
           </template>
 
@@ -218,9 +223,6 @@
           <a>{{ item }}</a>
         </div>
       </div>
-      <div class="close-btn" v-if="config.closePostDetailBySpace" @click="close('btn')">
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </div>
       <div class="scroll-top gray" @click.stop="scrollTop">
         <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
       </div>
@@ -233,6 +235,10 @@
         <input type="text" v-model="currentFloor"
                @click.stop="stop"
                @keydown.enter="jump(currentFloor)">
+      </div>
+
+      <div>
+
       </div>
     </div>
   </div>
@@ -253,10 +259,12 @@ import SingleComment from "./SingleComment.vue";
 import {debounce} from "../utils/index.js";
 import BaseLoading from "./BaseLoading.vue";
 import BaseButton from "./BaseButton.vue";
+import MoreIcon from "@/components/MoreIcon.vue";
 
 export default {
   name: "detail",
   components: {
+    MoreIcon,
     BaseButton,
     SingleComment,
     PopConfirm,
@@ -350,7 +358,7 @@ export default {
           .slice(0, this.config.topReplyCount)
     },
     replyList() {
-      console.log('this.post.nestedReplies', this.post.nestedReplies)
+      // console.log('this.post.nestedReplies', this.post.nestedReplies)
       if ([CommentDisplayType.FloorInFloor, CommentDisplayType.FloorInFloorNoCallUser].includes(this.displayType)) return this.post.nestedReplies
       if (this.displayType === CommentDisplayType.Like) {
         return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
@@ -739,12 +747,32 @@ export default {
       align-items: center;
       position: relative;
 
+      .nav-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        margin-bottom: -1px;
+
+        svg {
+          @w: 2rem;
+          width: @w;
+          height: @w;
+          color: var(--color-font);
+        }
+
+        .left, .right {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+      }
+
       .post-wrapper {
         .header {
-          &:hover {
-            .add-tag {
-              display: inline-block;
-            }
+          small {
+            display: flex;
+            align-items: center;
           }
         }
       }
@@ -864,7 +892,6 @@ export default {
     padding: .8rem 0;
     gap: 1rem;
     width: 4.5rem;
-    transform: translateX(6rem);
     font-size: 2rem;
     background: var(--color-sp-btn-bg);
   }
@@ -902,15 +929,6 @@ export default {
       margin: 0 1rem;
       cursor: pointer;
     }
-  }
-
-  .close-btn {
-    color: @main-color;
-    cursor: pointer;
-    position: fixed;
-    top: 3rem;
-    transform: translateX(4rem);
-    font-size: 2rem;
   }
 
   .top-reply {

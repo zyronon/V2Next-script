@@ -74,6 +74,7 @@
       </svg>
       <span>{{ post.isReport ? '你已对本主题进行了报告' : '报告这个主题' }}</span>
     </div>
+
   </div>
 </template>
 

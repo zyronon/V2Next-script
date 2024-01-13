@@ -62,13 +62,23 @@
 }
 
 .floor {
-  margin-left: 1rem;
   font-size: 1.1rem;
   line-height: 1rem;
   border-radius: .5rem;
   display: inline-block;
-  background-color: var(--color-floor);
   color: var(--color-floor-font);
-  padding: 3px 9px;
   cursor: default;
+  margin-right: 1rem;
+}
+
+.avatar {
+  margin-right: 1rem;
+  display: inline-flex;
+
+  img {
+    @w: 2.8rem;
+    width: @w;
+    height: @w;
+    border-radius: 0.4rem;
+  }
 }

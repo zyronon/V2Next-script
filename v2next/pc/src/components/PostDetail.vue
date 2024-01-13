@@ -218,7 +218,7 @@
           <a>{{ item }}</a>
         </div>
       </div>
-      <div class="close-btn" v-if="config.closePostDetailBySpace" @click="close('btn')">
+      <div class="close-btn"  @click="close('btn')">
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
       <div class="scroll-top gray" @click.stop="scrollTop">
