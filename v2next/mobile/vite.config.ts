@@ -16,7 +16,7 @@ export default defineConfig({
       entry: 'src/main.ts',
       userscript: {
         version: '7.9.1',
-        name: 'V2Next',
+        name: 'V2Next-Mobile',
         icon: 'https://www.google.com/s2/favicons?sz=64&domain=v2ex.com',
         namespace: 'http://tampermonkey.net/',
         match: [
@@ -53,4 +53,7 @@ export default defineConfig({
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   },
+  server: {
+    host: '0.0.0.0'
+  }
 });

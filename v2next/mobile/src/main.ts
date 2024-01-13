@@ -6,6 +6,7 @@ import {GM_notification} from "$"
 import './global.d.ts'
 import {PageType, Post, Reply} from "./types"
 import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core";
+import * as eruda from "eruda";
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -1149,6 +1150,7 @@ function run() {
 }
 
 run()
+eruda.init()
 let vueApp = createApp(App)
 vueApp.config.unwrapInjectedRef = true
 vueApp.mount($section);

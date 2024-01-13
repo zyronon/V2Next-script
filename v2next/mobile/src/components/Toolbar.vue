@@ -1,7 +1,7 @@
 <template>
   <div class="toolbar">
     <div class="left">
-      <span>{{ post.replyCount }} 条回复</span>
+<!--      <span>{{ post.replyCount }} 条回复</span>-->
       <div>{{ post.createDate.substring(0, 16) }}</div>
     </div>
     <div class="right">
@@ -203,12 +203,15 @@ export default {
   display: flex;
   align-items: center;
   color: var(--color-font);
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   justify-content: space-between;
 
   .left, .right {
     gap: 1rem;
     display: flex;
+  }
+  .right{
+    gap: .6rem;
   }
 }
 

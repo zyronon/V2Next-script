@@ -6,35 +6,34 @@
        @scroll="debounceScroll"
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
+      <div class="my-box nav-bar">
+        <div class="left">
+          <svg
+              @click="close('btn')"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M20 12H4m0 0l6-6m-6 6l6 6"/>
+          </svg>
+          <a href="/v2next/pc/public">V2EX</a>
+          <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
+          <a :href="post.node.url">{{ post.node.title }}</a>
+
+        </div>
+        <div class="right">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m20 20l-4.05-4.05m0 0a7 7 0 1 0-9.9-9.9a7 7 0 0 0 9.9 9.9"/>
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
+                  d="M41.5 10h-6m-8-4v8m0-4h-22m8 14h-8m16-4v8m22-4h-22m20 14h-6m-8-4v8m0-4h-22"/>
+          </svg>
+          <MoreIcon/>
+        </div>
+      </div>
+
       <div class="main-wrapper" ref="mainWrapper"
            :style="{width:config.postWidth}">
-
-        <div class="my-box nav-bar">
-          <div class="left">
-            <svg
-                @click="close('btn')"
-                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                    d="M20 12H4m0 0l6-6m-6 6l6 6"/>
-            </svg>
-            <a href="/v2next/pc/public">V2EX</a>
-            <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
-            <a :href="post.node.url">{{ post.node.title }}</a>
-
-          </div>
-          <div class="right">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-              <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="m20 20l-4.05-4.05m0 0a7 7 0 1 0-9.9-9.9a7 7 0 0 0 9.9 9.9"/>
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-              <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
-                    d="M41.5 10h-6m-8-4v8m0-4h-22m8 14h-8m16-4v8m22-4h-22m20 14h-6m-8-4v8m0-4h-22"/>
-            </svg>
-            <MoreIcon/>
-          </div>
-        </div>
-
         <div class="my-box post-wrapper">
           <div class="box-content">
             <div class="header">
@@ -45,29 +44,35 @@
                    v-if="post.member.avatar_large">
                   <img :src="post.member.avatar_large"
                        border="0" align="default" :alt="post.member.username"></a>
-                <a :href="`/member/${post.member.username}`">{{ post.member.username }}</a> ·
-                <template v-if="post.member.createDate">
-                  <span :class="post.member.isNew && 'danger'">{{ post.member.createDate }}</span> ·
-                </template>
-                <template v-if="post.createDateAgo">
-                  <span :title="post.createDate">{{ post.createDateAgo }}</span> ·
-                </template>
-                {{ post.clickCount }} 次点击
-                <template v-if="isMy">&nbsp;&nbsp;
-                  <a :href="`/t/${post.id}/info`">
-                    <li class="fa fa-info-circle"></li>
-                  </a>&nbsp;&nbsp;
-                  <a :href="`/append/topic/${post.id}`" class="op">APPEND</a>
-                </template>
+                <div class="info">
+                  <div class="top">
+                    <a :href="`/member/${post.member.username}`">{{ post.member.username }}</a> ·
+                    <template v-if="post.member.createDate">
+                      <span :class="post.member.isNew && 'danger'">{{ post.member.createDate }}</span>
+                    </template>
+                  </div>
+                  <div class="center" v-if="isLogin && config.openTag ">
+                    <span class="my-tag" v-for="i in myTags">
+                      <i class="fa fa-tag"></i>
+                      <span>{{ i }}</span>
+                      <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
+                    </span>
+                    <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
+                  </div>
+                  <div class="bottom">
+                    <template v-if="post.createDateAgo">
+                      <span :title="post.createDate">{{ post.createDateAgo }}</span> ·
+                    </template>
+                    {{ post.clickCount }} 次点击
+                    <template v-if="isMy">&nbsp;&nbsp;
+                      <a :href="`/t/${post.id}/info`">
+                        <li class="fa fa-info-circle"></li>
+                      </a>&nbsp;&nbsp;
+                      <a :href="`/append/topic/${post.id}`" class="op">APPEND</a>
+                    </template>
+                  </div>
+                </div>
               </small>
-              <template v-if="isLogin && config.openTag ">
-              <span class="my-tag" v-for="i in myTags">
-                <i class="fa fa-tag"></i>
-                <span>{{ i }}</span>
-                <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
-              </span>
-                <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
-              </template>
             </div>
             <BaseHtmlRender :html="post.headerTemplate"/>
           </div>
@@ -114,6 +119,27 @@
         </div>
 
         <div class="my-box comment-wrapper">
+          <div class="my-cell flex">
+            <span>{{ post.replyCount }} 条回复</span>
+            <div class="display-type">
+              <div>最新</div>
+              <div>最热</div>
+              <div class="active">
+                <span>楼中楼</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+                  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="4" d="M36 18L24 30L12 18"/>
+                </svg>
+                <div class="list">
+                  <div class="item">楼中楼</div>
+                  <div class="item">楼中楼(@)</div>
+                  <div class="item">冗余楼中楼</div>
+                  <div class="item">只看楼主</div>
+                  <div class="item">V2原版</div>
+                </div>
+              </div>
+            </div>
+          </div>
           <template v-if="post.replyList.length ||loading">
             <div class="my-cell flex" v-if="config.showToolbar">
               <div class="radio-group2">
@@ -235,10 +261,6 @@
         <input type="text" v-model="currentFloor"
                @click.stop="stop"
                @keydown.enter="jump(currentFloor)">
-      </div>
-
-      <div>
-
       </div>
     </div>
   </div>
@@ -739,37 +761,58 @@ export default {
     position: relative;
     outline: none;
 
+    @nav-height: 4rem;
+
+    .nav-bar {
+      position: fixed;
+      top: 0;
+      z-index: 9999;
+      //background: red;
+      height: @nav-height;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      margin-bottom: -1px;
+
+      svg {
+        @w: 2rem;
+        width: @w;
+        height: @w;
+        color: var(--color-font);
+      }
+
+      .left, .right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+    }
+
     .main-wrapper {
       width: @width;
+      padding-top: @nav-height;
       padding-bottom: 2rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
 
-      .nav-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        margin-bottom: -1px;
-
-        svg {
-          @w: 2rem;
-          width: @w;
-          height: @w;
-          color: var(--color-font);
-        }
-
-        .left, .right {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-      }
-
       .post-wrapper {
+        .box-content {
+          padding-top: 0;
+        }
+
         .header {
+          padding-top: 0;
+
+          h1 {
+            margin: 0;
+            margin-bottom: 1rem;
+          }
+
+          //var(--color-gray)
           small {
             display: flex;
             align-items: center;
@@ -782,6 +825,45 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+
+      .display-type {
+        height: 2.8rem;
+        padding: 0 .4rem;
+        //gap: .5rem;
+        background: #f1f1f1;
+        border-radius: 1rem;
+        display: flex;
+        font-size: 1.2rem;
+        align-items: center;
+        @sw: 1.5rem;
+
+        & > div {
+          border-radius: .8rem;
+          padding: 0 1.3rem;
+          height: 2.3rem;
+          align-items: center;
+          display: flex;
+          position: relative;
+
+          .list {
+            position: absolute;
+            background: red;
+            right: 0;
+            top: 0;
+
+          }
+        }
+
+        .active {
+          background: white;
+          color: black;
+          box-shadow: 0 0 6px 0px var(--color-tooltip-shadow);
+        }
+
+        svg {
+          width: @sw;
+        }
       }
 
       #no-comments-yet {
