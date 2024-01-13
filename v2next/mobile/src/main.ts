@@ -2,13 +2,10 @@ import {createApp} from 'vue';
 import './assets/less/index.less'
 
 import App from './App.vue';
-import {GM_notification} from "$"
+import {GM_notification, GM_openInTab, GM_registerMenuCommand} from "$"
 import './global.d.ts'
-import {PageType, Post, Reply} from "./types"
-import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core";
-import * as eruda from "eruda";
-
-eruda.init()
+import {CommentDisplayType, MAX_REPLY_LIMIT, PageType, Post, Reply} from "./types"
+import {DefaultConfig, DefaultPost, DefaultUser} from "../../core/core";
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -51,25 +48,12 @@ function run() {
 
       post.isReport = htmlText.includes('你已对本主题进行了报告')
 
-      let wrapperClass = 'Wrapper'
-      let wrapper
-      let boxs
+      let wrapperClass = window.vals.isMobile ? 'Wrapper' : 'Main'
+      let wrapper = body.find('#Main')
 
-      if (body.length > 1) {
-        body.each(function () {
-          if (this.id === wrapperClass) {
-            wrapper = $(this)
-            boxs = this.querySelectorAll('.box')
-          }
-        })
-      } else {
+      if (window.vals.isMobile) {
         wrapper = body
-        boxs = body.find(`#${wrapperClass} .box`)
       }
-
-      let box1 = $(boxs[0])
-      let header1 = wrapper.find('.header')
-
       //如果没有正文（点的本站的a标签），才会解析正文
       if (!post.title || !post.content_rendered) {
         let h1 = wrapper.find('h1')
@@ -78,7 +62,6 @@ function run() {
         }
       }
 
-
       let as: any = wrapper.find('.header > a')
       if (as.length) {
         // console.log('as[1].innerText', as[1])
@@ -86,55 +69,67 @@ function run() {
         post.node.url = as[1].href
       }
 
-      let aName = header1.find('small.gray a:nth-child(1)')
+      let aName = wrapper.find('.header small.gray a:nth-child(1)')
       if (aName) {
         post.member.username = aName[0].innerText
       }
 
-      let small = header1.find('small.gray')
-      if (small[0]) {
-        let spanEl = small[0]?.lastChild?.nodeValue
+      if (window.vals.isMobile) {
+        let small = wrapper.find('.header small.gray')
+        if (small[0]) {
+          let spanEl = small[0]?.lastChild?.nodeValue
+          if (spanEl) {
+            let dianIndex = spanEl.indexOf('·')
+            post.createDateAgo = spanEl.substring(4, dianIndex - 1)
+            let text = spanEl.substring(dianIndex + 1).trim()
+            let reg3 = text.matchAll(/([\d]+)[\s]*次点击/g)
+            let clickCountReg = [...reg3]
+            if (clickCountReg.length) {
+              post.clickCount = Number(clickCountReg[0][1])
+            }
+            reg3 = text.matchAll(/([\d]+)[\s]*views/g)
+            clickCountReg = [...reg3]
+            if (clickCountReg.length) {
+              post.clickCount = Number(clickCountReg[0][1])
+            }
+          }
+        }
+      } else {
+        let spanEl = wrapper.find('.header small.gray span')
         if (spanEl) {
-          let dianIndex = spanEl.indexOf('·')
-          post.createDateAgo = spanEl.substring(4, dianIndex - 1)
-          let text = spanEl.substring(dianIndex + 1).trim()
-          let reg3 = text.matchAll(/([\d]+)[\s]*次点击/g)
-          let clickCountReg = [...reg3]
-          if (clickCountReg.length) {
-            post.clickCount = Number(clickCountReg[0][1])
-          }
-          reg3 = text.matchAll(/([\d]+)[\s]*views/g)
-          clickCountReg = [...reg3]
-          if (clickCountReg.length) {
-            post.clickCount = Number(clickCountReg[0][1])
-          }
+          post.createDateAgo = spanEl[0].innerText
         }
       }
 
-      let avatarEl: any = header1.find('.avatar')
+
+      let avatarEl: any = wrapper.find('.header .avatar')
+      // console.log('avatarEl', avatarEl[0].src)
       if (avatarEl) {
         post.member.avatar_large = avatarEl[0].src
       }
 
-      let topic_buttons = box1.find('.inner .fr')
+
+      let topic_buttons = body.find('.topic_buttons')
       if (topic_buttons.length) {
-        let favoriteNode = topic_buttons.find('.op:first')
+        let favoriteNode = topic_buttons.find('.tb:first')
         if (favoriteNode.length) {
           post.isFavorite = favoriteNode[0].innerText === '取消收藏'
         }
-        let ignoreNode = topic_buttons.find('.tb')
+        let ignoreNode = topic_buttons.find('.tb:nth-child(3)')
         if (ignoreNode.length) {
           post.isIgnore = ignoreNode[0].innerText === '取消忽略'
         }
         //
-        let thankNode = topic_buttons.find('.topic_thanked')
+        let thankNode = topic_buttons.find('#topic_thank .tb')
         if (!thankNode.length) {
           post.isThanked = true
         }
 
-        let span = topic_buttons.find('span')
-        if (span.length) {
-          let text = span[0].innerText
+        let topic_stats = topic_buttons.find('.topic_stats')
+        //topic_stats = $(`<div class="fr topic_stats" style="padding-top: 4px;">9569 次点击 &nbsp;∙&nbsp; 28 人收藏 &nbsp; ∙&nbsp; 1 人感谢 &nbsp; </div>`)
+        //收藏数、感谢数
+        if (topic_stats.length) {
+          let text = topic_stats[0].innerText
           let reg1 = text.matchAll(/([\d]+)[\s]*人收藏/g)
           let collectCountReg = [...reg1]
           if (collectCountReg.length) {
@@ -145,20 +140,35 @@ function run() {
           if (collectCountReg.length) {
             post.collectCount = Number(collectCountReg[0][1])
           }
-          //TODO 手机端获取不到感谢数
+          // console.log([...collectCountReg])
+          let reg2 = text.matchAll(/([\d]+)[\s]*人感谢/g)
+          let thankCountReg = [...reg2]
+          if (thankCountReg.length) {
+            post.thankCount = Number(thankCountReg[0][1])
+          }
+          let reg3 = text.matchAll(/([\d]+)[\s]*次点击/g)
+          let clickCountReg = [...reg3]
+          if (clickCountReg.length) {
+            post.clickCount = Number(clickCountReg[0][1])
+          }
+          reg3 = text.matchAll(/([\d]+)[\s]*views/g)
+          clickCountReg = [...reg3]
+          if (clickCountReg.length) {
+            post.clickCount = Number(clickCountReg[0][1])
+          }
+          // console.log([...thankCountReg])
         }
       }
 
       // console.log('基本信息', post)
 
-      let header = $(boxs[0])
+      let header = body.find(`#${wrapperClass} .box`).first()
       let temp = header.clone()
-      console.log('temp', temp)
       temp.find('.topic_buttons').remove()
       temp.find('.inner').remove()
       temp.find('.header').remove()
       let html = temp.html()
-      html = functions.checkPhotoLink2Img(html)
+      html = this.checkPhotoLink2Img(html)
       // console.log('html', html)
       post.headerTemplate = html
       return post
@@ -203,25 +213,24 @@ function run() {
         return post
       }
 
+      console.log('body', body)
+
       let wrapperClass = window.vals.isMobile ? 'Wrapper' : 'Main'
       let boxs
       let box: any
-      if (window.vals.isMobile) {
-        if (body.length > 1) {
-          body.each(function () {
-            if (this.id === wrapperClass) {
-              boxs = this.querySelectorAll('.box')
-              box = boxs[2]
-            }
-          })
-        } else {
-          boxs = body.find(`#${wrapperClass} .box`)
-          box = boxs[2]
-        }
+      if (window.vals.isMobile && body.length > 1) {
+        body.each(function () {
+          if (this.id === wrapperClass) {
+            boxs = this.querySelectorAll('.box')
+            box = boxs[2]
+          }
+        })
       } else {
         boxs = body.find(`#${wrapperClass} .box`)
         box = boxs[1]
       }
+
+      console.log('box', box)
 
       let cells: any = box.querySelectorAll('.cell')
       if (cells && cells.length) {
@@ -240,12 +249,12 @@ function run() {
         //如果第二条有id，就说明是第二条是回复。只有一页回复
         if (cells[1].id) {
           repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
-          let replyList = functions.getAllReply(repliesMap)
+          let replyList = this.getAllReply(repliesMap)
           post.replyList = replyList
           post.replyCount = replyList.length
           post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
-          let nestedList = functions.createNestedList(replyList)
-          let nestedRedundantList = functions.createNestedRedundantList(replyList)
+          let nestedList = this.createNestedList(replyList)
+          let nestedRedundantList = this.createNestedRedundantList(replyList)
           if (nestedList) post.nestedReplies = nestedList
           if (nestedRedundantList) post.nestedRedundReplies = nestedRedundantList
           return post
@@ -266,12 +275,12 @@ function run() {
               (results) => {
                 // @ts-ignore
                 results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-                let replyList = functions.getAllReply(repliesMap)
+                let replyList = this.getAllReply(repliesMap)
                 post.replyList = replyList
                 post.replyCount = replyList.length
                 post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
-                let nestedList = functions.createNestedList(replyList)
-                let nestedRedundantList = functions.createNestedRedundantList(replyList)
+                let nestedList = this.createNestedList(replyList)
+                let nestedRedundantList = this.createNestedRedundantList(replyList)
                 if (nestedList) post.nestedReplies = nestedList
                 if (nestedRedundantList) post.nestedRedundReplies = nestedRedundantList
                 resolve(post)
@@ -302,7 +311,7 @@ function run() {
           resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
         }).catch((r: any) => {
           if (r.status === 403) {
-            functions.cbChecker({type: 'restorePost', value: null})
+            cbChecker({type: 'restorePost', value: null})
           }
         })
       })
@@ -322,7 +331,7 @@ function run() {
         } as any
         let reply_content = node.querySelector('.reply_content')
         // console.log('reply_content',reply_content)
-        item.reply_content = functions.checkPhotoLink2Img(reply_content!.innerHTML)
+        item.reply_content = this.checkPhotoLink2Img(reply_content!.innerHTML)
         item.reply_text = reply_content!.textContent!
 
         let {users, floor} = this.parseReplyContent(item.reply_content)
@@ -424,12 +433,195 @@ function run() {
       post = await this.parsePostContent(post, body, htmlText)
       return await this.getPostAllReplies(post, body, htmlText, pageNo)
     },
+    //获取所有回复
+    getAllReply(repliesMap = []) {
+      return repliesMap.sort((a: any, b: any) => a.i - b.i).reduce((pre, i: any) => {
+        pre = pre.concat(i.replyList)
+        return pre
+      }, [])
+    },
+    //生成嵌套回复
+    createNestedList(allList = []) {
+      if (!allList.length) return []
+
+      // console.log('cal-createNestedList', Date.now())
+
+      let list = window.clone(allList)
+      let nestedList: any[] = []
+      list.map((item: any, index: number) => {
+        let startList = list.slice(0, index)
+        //用于918489这种情况，@不存在的人
+        let startReplyUsers = Array.from(new Set(startList.map((v: any) => v.username)))
+
+        let endList = list.slice(index + 1)
+
+        if (index === 0) {
+          nestedList.push(this.findChildren(item, endList, list))
+        } else {
+          if (!item.isUse) {
+            //是否是一级回复
+            let isOneLevelReply = false
+            if (item.replyUsers.length) {
+              if (item.replyUsers.length > 1) {
+                isOneLevelReply = true
+              } else {
+                isOneLevelReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
+              }
+            } else {
+              isOneLevelReply = true
+            }
+            if (isOneLevelReply) {
+              item.level = 0
+              nestedList.push(this.findChildren(item, endList, list))
+            }
+          }
+        }
+      })
+      // console.log('replies长度', allList)
+      // console.log('nestedList长度', nestedList)
+
+      return nestedList
+    },
+    //生成嵌套冗余回复
+    createNestedRedundantList(allList = []) {
+      if (!allList.length) return []
+
+      // console.log('cal-createNestedList', Date.now())
+
+      let list = window.clone(allList)
+      let nestedList: any[] = []
+      list.map((item: any, index: number) => {
+        let startList = list.slice(0, index)
+        //用于918489这种情况，@不存在的人
+        let startReplyUsers = Array.from(new Set(startList.map((v: any) => v.username)))
+
+        let endList = list.slice(index + 1)
+
+        if (index === 0) {
+          nestedList.push(this.findChildren(item, endList, list))
+        } else {
+          if (!item.isUse) {
+            //是否是一级回复
+            let isOneLevelReply = false
+            if (item.replyUsers.length) {
+              if (item.replyUsers.length > 1) {
+                isOneLevelReply = true
+              } else {
+                isOneLevelReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
+              }
+            } else {
+              isOneLevelReply = true
+            }
+            if (isOneLevelReply) {
+              item.level = 0
+              nestedList.push(this.findChildren(item, endList, list))
+            }
+          } else {
+            let newItem = window.clone(item)
+            newItem.children = []
+            newItem.level = 0
+            newItem.isDup = true
+            nestedList.push(newItem)
+          }
+        }
+      })
+      // console.log('replies长度', allList)
+      // console.log('nestedList长度', nestedList)
+      return nestedList
+    },
+    //查找子回复
+    findChildren(item: any, endList: any[], all: any[]) {
+      const fn = (child: any, endList2: any[], parent: any) => {
+        child.level = parent.level + 1
+        //用于标记为已使用，直接标记源数据靠谱点，标记child可能会有问题
+        let rIndex = all.findIndex(v => v.floor === child.floor)
+        if (rIndex > -1) {
+          all[rIndex].isUse = true
+        }
+        parent.children.push(this.findChildren(child, endList2, all,))
+      }
+      // console.log('endList', endList)
+      item.children = []
+      // if (item.floor === 46) debugger
+      let floorReplyList = []
+
+      //先找到指定楼层的回复，再去循环查找子回复
+      //原因：问题930155，有图
+      for (let i = 0; i < endList.length; i++) {
+        let currentItem = endList[i]
+        //如果已被使用，直接跳过
+        if (currentItem.isUse) continue
+        if (currentItem.replyFloor === item.floor) {
+          //必须楼层对应的名字和@人的名字相同。因为经常出现不相同的情况
+          if (currentItem.replyUsers.length === 1 && currentItem.replyUsers[0] === item.username) {
+            //先标记为使用，不然遇到“问题930155”，会出现重复回复
+            currentItem.isUse = true
+            floorReplyList.push({endList: endList.slice(i + 1), currentItem})
+            //问题930155：这里不能直接找子级，如果item为A，currentItem为B，但随后A又回复了B，然后C回复A。这样直接找子级就会把C归类到B的子回复，而不是直接A的子回复
+            //截图：930155.png
+            // fn(currentItem, endList.slice(i + 1), item)
+          } else {
+            currentItem.isWrong = true
+          }
+        }
+      }
+
+      //从后往前找
+      //原因：问题933080，有图
+      floorReplyList.reverse().map(({currentItem, endList}) => {
+        fn(currentItem, endList, item)
+      })
+
+      //下一个我的下标，如果有下一个我，那么当前item的子回复应在当前和下个我的区间内查找
+      let nextMeIndex = endList.findIndex(v => {
+        //必须是下一个不是”自己回复自己“的自己
+        //原因：问题887644（1-2），有图
+        return (v.username === item.username) && (v.replyUsers?.[0] !== item.username)
+      })
+      let findList = nextMeIndex > -1 ? endList.slice(0, nextMeIndex) : endList
+
+      for (let i = 0; i < findList.length; i++) {
+        let currentItem = findList[i]
+        //如果已被使用，直接跳过
+        if (currentItem.isUse) continue
+
+        if (currentItem.replyUsers.length === 1) {
+          //如果这条数据指定了楼层，并且名字也能匹配上，那么直接忽略
+          //原因：问题887644-3，有图
+          if (currentItem.replyFloor !== -1) {
+            if (all[currentItem.replyFloor - 1]?.username === currentItem.replyUsers[0]) {
+              continue
+            }
+          }
+          let endList2 = endList.slice(i + 1)
+          //如果是下一条是同一人的回复，那么跳出循环
+          if (currentItem.username === item.username) {
+            //自己回复自己的特殊情况
+            if (currentItem.replyUsers[0] === item.username) {
+              fn(currentItem, endList2, item)
+            }
+            break
+          } else {
+            if (currentItem.replyUsers[0] === item.username) {
+              fn(currentItem, endList2, item)
+            }
+          }
+        } else {
+          //下一条是同一人的回复，并且均未@人。直接跳过
+          if (currentItem.username === item.username) break
+        }
+      }
+
+      //排序，因为指定楼层时，是从后往前找的
+      item.children = item.children.sort((a: any, b: any) => a.floor - b.floor)
+      return item
+    },
     //解析页面帖子列表
     parsePagePostList(list: any[], box: any) {
       list.forEach(itemDom => {
         let item = window.clone(window.initPost)
         let item_title = itemDom.querySelector('.item_title a')
-        let {href, id} = functions.parseA(item_title)
+        let {href, id} = window.parse.parseA(item_title)
         item.id = id
         item.href = href
         item.url = location.origin + '/api/topics/show.json?id=' + item.id
@@ -494,10 +686,18 @@ function run() {
             }
           }
         })
-        functions.cbChecker({type: 'syncData'})
+        cbChecker({type: 'syncData'})
       })
     },
-
+    //解析A标签
+    parseA(a: HTMLAnchorElement) {
+      let href = a.href
+      let id
+      if (href.includes('/t/')) {
+        id = a.pathname.substring('/t/'.length);
+      }
+      return {href, id, title: a.innerText}
+    },
     //创建记事本子条目
     async createNoteItem(itemName: string) {
       return new Promise(async resolve => {
@@ -539,14 +739,117 @@ function run() {
     async saveImgurList(val: any) {
       return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
     },
+    //图片链接转Img标签
+    checkPhotoLink2Img(str: string) {
+      if (!str) return
+      try {
+        let imgWebs = [
+          /<a((?!<a).)*href="https?:\/\/((?!<a).)*imgur.com((?!<a).)*>(((?!<a).)*)<\/a>/g,
+          /<a((?!<a).)*href="https?:\/\/((?!<a).)*\.(gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG) ((?!<a).)*>(((?!<a).)*)<\/a>/g,
+        ]
+        imgWebs.map((v, i) => {
+          let has = str.matchAll(v)
+          let res2 = [...has]
+          // console.log('总匹配', res2)
+          res2.map(r => {
+            let p = i === 0 ? r[4] : r[5]
+            if (p) {
+              let link = p.toLowerCase()
+              let src = p
+              if (
+                link.includes('.png') ||
+                link.includes('.jpg') ||
+                link.includes('.jpeg') ||
+                link.includes('.gif')
+              ) {
+              } else {
+                src = p + '.png'
+              }
+              str = str.replace(r[0], `<img src="${src}" data-originUrl="${p}" data-notice="此img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`)
+            }
+          })
+        })
+      } catch (e) {
+        console.log('正则解析html里面的a标签的图片链接出错了')
+      }
+      return str
+    },
+    //检测帖子回复长度
+    async checkPostReplies(id: string, needOpen: boolean = true) {
+      return new Promise(async resolve => {
+        let showJsonUrl = `${location.origin}/api/topics/show.json?id=${id}`
+        let r = await fetch(showJsonUrl)
+        if (r) {
+          let res = await r.json()
+          if (res) {
+            if (res[0]?.replies > MAX_REPLY_LIMIT) {
+              if (needOpen) {
+                window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1&script=1`)
+              }
+              return resolve(true)
+            }
+          }
+        }
+        resolve(false)
+      })
+    },
+    //打开新标签页
+    openNewTab(href: string) {
+      GM_openInTab(href, {active: true});
+      // let tempId = 'a_blank_' + Date.now()
+      // let a = document.createElement("a");
+      // a.setAttribute("href", href);
+      // a.setAttribute("target", "_blank");
+      // a.setAttribute("id", tempId);
+      // a.setAttribute("script", '1');
+      // // 防止反复添加
+      // if (!document.getElementById(tempId)) {
+      //   document.body.appendChild(a);
+      // }
+      // a.click();
+    }
   }
   window.vals = {
     isMobile: !document.querySelector('#Rightbar')
   }
   window.functions = {
     feedback() {
-      functions.openNewTab(window.const.issue)
+      window.parse.openNewTab(window.const.issue)
     },
+  }
+
+  async function sleep(time: number) {
+    return new Promise(resolve => {
+      // console.log('等待vue加载完成,第' + count + '次', Date.now())
+      setTimeout(resolve, time)
+    })
+  }
+
+  async function cbChecker(val: any, count = 0) {
+    if (window.cb) {
+      window.cb(val)
+    } else {
+      while ((!window.cb) && count < 30) {
+        await sleep(500)
+        count++
+      }
+      window.cb && window.cb(val)
+    }
+  }
+
+  //初始化脚本菜单
+  function initMonkeyMenu() {
+    try {
+      GM_registerMenuCommand("脚本设置", () => {
+        cbChecker({type: 'openSetting'})
+      });
+      GM_registerMenuCommand('仓库地址', () => {
+        window.parse.openNewTab(window.const.git)
+      });
+      GM_registerMenuCommand('反馈 & 建议', window.functions.feedback);
+    } catch (e) {
+      console.error('无法使用Tampermonkey')
+    }
   }
 
   //初始化样式表
@@ -560,10 +863,6 @@ function run() {
 
         :root{
           --box-border-radius:8px;
-        }
-        
-        #Wrapper .content{
-        padding:0;
         }
         
         .box{
@@ -615,7 +914,7 @@ function run() {
           display: flex;
           justify-content: flex-end;
           align-items: flex-end;
-          
+          cursor: pointer;
           font-size: 1.2rem;
           color: #ccc;
           display: none;
@@ -625,7 +924,11 @@ function run() {
           margin: 1rem 0;
           border: 1px solid transparent;
           border-radius: var(--box-border-radius);
-          
+          cursor: pointer;
+      }
+
+      .preview:hover {
+          border: 1px solid #c8c8c8;
       }
 
       .preview > .post-content {
@@ -901,7 +1204,7 @@ function run() {
         r && (window.user.imgurNoteId = r);
       }
 
-      functions.cbChecker({type: 'syncData'})
+      cbChecker({type: 'syncData'})
     })
   }
 
@@ -925,7 +1228,7 @@ function run() {
     let setting = $(`<a href="javascript:void 0;" class="top ${window.config.version < window.currentVersion ? 'new' : ''}">脚本设置</a>`)
     setting.on('click', function () {
       this.classList.remove('new')
-      functions.cbChecker({type: 'openSetting'})
+      cbChecker({type: 'openSetting'})
     })
     $('.tools').prepend(setting)
   }
@@ -950,12 +1253,12 @@ function run() {
     }
 
     checkPageType()
-    functions.initMonkeyMenu()
+    initMonkeyMenu()
 
-    let top2 = $('#menu-body .cell:first .top:first')
-    if (top2.length && ['个人主页', 'Profile'].includes(top2.text())) {
-      window.user.username = top2.attr('href').replace('/member/', '')
-      window.user.avatar = $('#menu-entry .avatar').attr('src')
+    let top2 = document.querySelector('.tools .top:nth-child(2)')
+    if (top2 && top2.textContent !== '注册') {
+      window.user.username = top2.textContent
+      window.user.avatar = $('#Rightbar .box .avatar').attr('src')
 
       initNoteData()
     }
@@ -981,7 +1284,7 @@ function run() {
 
     let box: any
     let list
-    // console.log(window.pageType)
+    console.log(window.pageType)
     // window.pageType = PageType.Post
     // window.pageData.id = 1007682
 
@@ -1013,11 +1316,11 @@ function run() {
         // @ts-ignore
         box.after($section)
 
-        // let r = await functions.checkPostReplies(window.pageData.id, false)
+        // let r = await window.parse.checkPostReplies(window.pageData.id, false)
         // if (r) {
         //   window.stopMe = true
-        //   functions.cbChecker({type: 'syncData'})
-        //   functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
+        //   cbChecker({type: 'syncData'})
+        //   cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
         //   return
         // }
 
@@ -1050,7 +1353,7 @@ function run() {
           htmlText
         ).then(async (res: any) => {
           // console.log('详情页-基本信息解析完成', Date.now())
-          await functions.cbChecker({type: 'postContent', value: res}, 0)
+          await cbChecker({type: 'postContent', value: res}, 0)
           //引用修改
           await window.parse.parseOp(res)
           // console.log('详情页-OP信息解析完成', Date.now())
@@ -1064,7 +1367,7 @@ function run() {
           window.pageData.pageNo
         ).then(async (res: any) => {
           // console.log('详情页-回复解析完成', Date.now())
-          await functions.cbChecker({type: 'postReplies'})
+          await cbChecker({type: 'postReplies'})
         })
         break
       case PageType.Member:
@@ -1087,7 +1390,7 @@ function run() {
         break
       default:
         window.stopMe = true
-        functions.cbChecker({type: 'syncData'})
+        cbChecker({type: 'syncData'})
         console.error('未知页面')
         break
     }
@@ -1100,12 +1403,12 @@ function run() {
     let box: any = document.querySelector('#Wrapper #Main .box')
     box.after($section)
     window.stopMe = true
-    functions.cbChecker({type: 'syncData'})
+    cbChecker({type: 'syncData'})
     if (window.location.search.includes('script=0')) {
-      functions.cbChecker({type: 'warningNotice', value: '脚本无法查看此主题，已为您单独打开此主题'})
+      cbChecker({type: 'warningNotice', value: '脚本无法查看此主题，已为您单独打开此主题'})
     }
     if (window.location.search.includes('script=1')) {
-      functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，已为您单独打开此主题并停止解析楼中楼'})
+      cbChecker({type: 'warningNotice', value: '由于回复数量较多，已为您单独打开此主题并停止解析楼中楼'})
     }
   }
 }
