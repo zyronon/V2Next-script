@@ -72,7 +72,7 @@
           <path d="M13.001 21H14.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </div>
-      <slot></slot>
+<!--      <slot></slot>-->
     </div>
   </div>
 </template>

@@ -332,6 +332,7 @@ export default {
     showPost() {
       this.show = true
       $('#site-header').hide()
+      $('#reply-box').hide()
       $(`#Wrapper .box:lt(3)`).each(function () {
         $(this).hide()
       })
@@ -398,11 +399,11 @@ export default {
       // console.log('重新生成列表')
       if (this.current.replyList.length) {
         this.current.replyCount = this.current.replyList.length
-        let res = window.parse.createNestedList(this.current.replyList)
+        let res = functions.createNestedList(this.current.replyList)
         if (res) {
           this.current.nestedReplies = res
         }
-        let dup_res = window.parse.createNestedRedundantList(this.current.replyList)
+        let dup_res = functions.createNestedRedundantList(this.current.replyList)
         if (dup_res) {
           this.current.nestedRedundReplies = dup_res
         }
