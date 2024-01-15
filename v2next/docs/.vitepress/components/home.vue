@@ -18,7 +18,7 @@ import SearchIcon from "./search-icon.vue";
       <div class="actions">
         <div class="action">
           <a href="https://greasyfork.org/zh-CN/scripts/458024" target="_blank">直接安装</a></div>
-        <div class="action">
+        <div class="action" v-if="false">
           <a href="">立即开始</a>
         </div>
         <div class="action">
@@ -43,7 +43,7 @@ import SearchIcon from "./search-icon.vue";
             autoplay
             muted
             loop
-            src="../assets/video/d.mp4"></video>
+            src="../assets/video/d-min.mp4"></video>
       </div>
 
       <div class="important-desc">
@@ -427,17 +427,18 @@ import SearchIcon from "./search-icon.vue";
 
   .notice {
     margin-top: 32px;
-    width: @w;
+    width: 60vw;
     display: flex;
     justify-content: space-between;
   }
 
   .display {
-    margin-top: 80px;
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.2);
+    margin-top: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
     border-radius: 12px;
     overflow: hidden;
-    display: none;
+    //display: none;
 
     video {
       width: 80vw;
