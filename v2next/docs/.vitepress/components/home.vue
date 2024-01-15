@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SearchIcon from "./search-icon.vue";
 </script>
 
 <template>
@@ -13,6 +14,7 @@
           <p>这或许就是你需要的 V2EX 脚本</p>
         </div>
       </div>
+
       <div class="actions">
         <div class="action">
           <a href="https://greasyfork.org/zh-CN/scripts/458024" target="_blank">直接安装</a></div>
@@ -23,6 +25,67 @@
           <a href="https://github.com/zyronon/web-scripts" target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </div>
+
+      <div class="notice">
+        <div>
+          <strong>尊重用户隐私</strong> ━ 绝不私自收集任何用户数据，安全可靠
+        </div>
+        <div>
+          <strong>轻量便捷</strong> ━ 安装体积小于 0.3M，即装即用
+        </div>
+        <div>
+          <strong>免费使用</strong> ━ 代码开源，所有功能均免费使用
+        </div>
+      </div>
+
+      <div class="display">
+        <video
+            autoplay
+            muted
+            loop
+            src="../assets/video/d.mp4"></video>
+      </div>
+
+      <div class="important-desc">
+        <div class="item">
+          <div class="title">UI美化和卡片模式</div>
+          <div class="desc-content">
+            <div class="desc">
+              <p>UI 设计更现代化，为你带来愉悦的视觉体验。</p>
+              <p>卡片模式无需进入主题，在列表中即可浏览主题内容</p>
+              <p>点击列表标题或内容，在当前页面弹框显示主题详情，无须刷新界面，就像Reddit那样！</p>
+            </div>
+            <div class="img-wrapper">
+              <img src="../assets/img/1.png" alt="">
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="title" style="text-align:right;">楼中楼、主题显示OP注册时间</div>
+          <div class="desc-content">
+            <div class="img-wrapper">
+              <img src="../assets/img/2.png" alt="">
+            </div>
+            <div class="desc">
+              <p>自动解析所有回复并以楼中楼的形式展示，更轻松理清回复与回复之间的关系，无需再用 Ctrl + F 搜索用户回复了什么</p>
+              <p>自动查询OP注册时间并显示，小于7天会被标红</p>
+            </div>
+          </div>
+        </div>
+        <div class="item" style="margin-bottom: 0;">
+          <div class="title">高赞回复、回复上下文</div>
+          <div class="desc-content">
+            <div class="desc">
+              <p>自动筛选出感谢最多的回复，第一时间追上热评</p>
+              <p>点击上下文按钮，一键查看相关联的所有回复</p>
+            </div>
+            <div class="img-wrapper">
+              <img src="../assets/img/3.png" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+
       <h3 class="features-type">特色功能</h3>
       <div class="features">
         <div class="item">
@@ -126,7 +189,6 @@
 
       <h3 class="features-type">其他功能</h3>
       <div class="features">
-
         <div class="item">
           <div class="icon">
             <svg t="1705247630407" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -234,16 +296,15 @@
       </div>
 
       <section class="faq" id="faq">
-        <div class="title">FAQs</div>
+        <div class="title">常见问题</div>
         <div class="questions">
           <div class="list-wrapper">
             <div class="question-wrapper">
               <div class="question">
-                <div class="name"><img class="dark"
-                                       src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAAKpSURBVEiJtZQ7aBRRFIb//5qZXSQvcBdm7yxyixQpgkSIaGkK8QEWgYggFoJ2WohBLdLYiY/YC2lEBDsLBUFTGggoRDCFRYoBdyYLmyKyEZOZYY7FzsZxnTxWzN/c1zn/d+/cuQfYZ3G3gGq1ejyO42GSVRGpAfDq9fo8gPifAcaYYhRFU0mS3CDp5ISsApi1bfuB53lrXQG01sMAXgMYykwvi0iNpCMiQyR7AEBE6kqpCd/3F/YESM0/AugFsA5ghuSs7/u1TExJRC6TnAZQEpGY5HgQBB92BBhjimEYfkl37gE4GwTB1+125rpuVUTeAxgWkXocx0cbjUa9M061O2EY3kzN13czBwDf92tRFI0DWCXpWJY1nRenMv3raTuzm3lbjUajTvJ2OrxWLpd7cwGVSmUMQBUASM7uxbwty7JeonXqom3bZ3IBSqmRdLycvdC9yPO8DRH5BAAiMtK5rtKFUtp2Zd4WSS/NH8gFkFxN2+q/APD7837PBYjIctoarXWpS/MeAGMpYCkXEATBAlq/Ww+AK924a60nAQyKSGxZ1lwuAEAsIk/T/rTjOGYv5saYQQD3092/yKtLW++gUCg8FpE6gEGl1FvXdXe8D2PMYBRF7wAYAJtJktzLi9sCeJ63ppSaALCB1vNf1FpfNcYUO3J6tNYXwzBcFJFj7f0ppS7kAf6qpq7rnkiS5FWmTK8D+CwiHoAqyTG0iiEAbAIoZNLvBEHwKOt3oBPQbDZr/f39z0gWAIwCOAjgMMkjJA0AO62gz5MkmQTwjeTpNP1UX1/fz2azOb/tCbIql8u9tm2fTJJklOQAgB8klyzLmsteaKVSuUVyJpN6NwiCh7sCulEnhOR53/ffqJ2SutHKysoTEZnKTB36X95/yHGcc1rrS/tinqdfOy0Llq4eQgkAAAAASUVORK5CYII="
-                                       alt=""><img class="blue"
-                                                   src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAAKBSURBVEiJtZU/aFNRFMZ/5zU1ebGlAQt2yNChQwYHhYqO7aaC0FZrU3EIKDjoIBZ1qEM38U/dhQ4uRWOhFhQE7eCgUFCoYAeHDhkyBNqhQupLQ/o+h76Etr42SbHf9M7lO9/vwr33PDhkWT2Dm9YZ+aQcI+mLPCJXWuErn61ycEBGsbjHGHAb6ApxrAqmohs8XpuztaYARy4p1RLhnUHPtuVlQR6jy0QPEAnWC4JBL2sLDQGC8G8GbYKiGZMqM+XNWr7qaR9VZ8XnmsE40AlUfJ/+0ox92R+QUcz1+BnsPFdxOF9+Zb/22pk7pCStfDJIAQXzObU+Y4XdPqf6cdTjjkGPoFgvHMCbtbzj0w+sAl1yGA/z1QAybgGYMVkvvKr1GSuYcS8obzCstlBAPK1eRBJAZaYaCa9BYrwWFIGY28K5UIDBiaBe3n6gDemllYDvAObXcnYCfJ9OAEFz4YEMcgAyOkIBjsNqYEweBEDQZ+J3KGBzk+Wg7m4fVWdT0X2KAL0AclgKBZRWWGDrukUqm2SayXePcxlIAJVoiflQQDC4XgAYjMfS6m4kPDGghMEjAMR02FyqvYMjGzwDChgJEx/cIe17HokBJcpRPgLdwIbvMBHmqwHW5mxNMAiUDFLWymI8retkFNvR0aeIm9ZIOcoicDpYjZoYDgP8M03dEZ01eEswpgVFEz8EOYwk0Guw9WLFBka02iu472Xt6b4A2JqYvs9DwU0gFmKpIKZ9hwkTQwaTNYh44L2xJ/sCahpWW9yhD3FS0GGwLoelaIn57QfqjujuXpC6v8xGtRsCXPyTtffOnh1Nysvac8FYtTaHY/8re4fiV3TBTevqoYSH6S/8deebK9rBpQAAAABJRU5ErkJggg=="
-                                                   alt="">为什么要加载所有回复？
+                <div class="name">
+                  <search-icon class="dark"/>
+                  <search-icon class="blue"/>
+                  为什么要加载所有回复？
                 </div>
                 <div class="desc">如果有多页回复，只解析当前页的话，那么许多楼层会找不到@的人，因为有可能@的人在前一页
                 </div>
@@ -251,48 +312,55 @@
             </div>
             <div class="question-wrapper">
               <div class="question">
-                <div class="name"><img class="dark"
-                                       src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAAKpSURBVEiJtZQ7aBRRFIb//5qZXSQvcBdm7yxyixQpgkSIaGkK8QEWgYggFoJ2WohBLdLYiY/YC2lEBDsLBUFTGggoRDCFRYoBdyYLmyKyEZOZYY7FzsZxnTxWzN/c1zn/d+/cuQfYZ3G3gGq1ejyO42GSVRGpAfDq9fo8gPifAcaYYhRFU0mS3CDp5ISsApi1bfuB53lrXQG01sMAXgMYykwvi0iNpCMiQyR7AEBE6kqpCd/3F/YESM0/AugFsA5ghuSs7/u1TExJRC6TnAZQEpGY5HgQBB92BBhjimEYfkl37gE4GwTB1+125rpuVUTeAxgWkXocx0cbjUa9M061O2EY3kzN13czBwDf92tRFI0DWCXpWJY1nRenMv3raTuzm3lbjUajTvJ2OrxWLpd7cwGVSmUMQBUASM7uxbwty7JeonXqom3bZ3IBSqmRdLycvdC9yPO8DRH5BAAiMtK5rtKFUtp2Zd4WSS/NH8gFkFxN2+q/APD7837PBYjIctoarXWpS/MeAGMpYCkXEATBAlq/Ww+AK924a60nAQyKSGxZ1lwuAEAsIk/T/rTjOGYv5saYQQD3092/yKtLW++gUCg8FpE6gEGl1FvXdXe8D2PMYBRF7wAYAJtJktzLi9sCeJ63ppSaALCB1vNf1FpfNcYUO3J6tNYXwzBcFJFj7f0ppS7kAf6qpq7rnkiS5FWmTK8D+CwiHoAqyTG0iiEAbAIoZNLvBEHwKOt3oBPQbDZr/f39z0gWAIwCOAjgMMkjJA0AO62gz5MkmQTwjeTpNP1UX1/fz2azOb/tCbIql8u9tm2fTJJklOQAgB8klyzLmsteaKVSuUVyJpN6NwiCh7sCulEnhOR53/ffqJ2SutHKysoTEZnKTB36X95/yHGcc1rrS/tinqdfOy0Llq4eQgkAAAAASUVORK5CYII="
-                                       alt=""><img class="blue"
-                                                   src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAAKBSURBVEiJtZU/aFNRFMZ/5zU1ebGlAQt2yNChQwYHhYqO7aaC0FZrU3EIKDjoIBZ1qEM38U/dhQ4uRWOhFhQE7eCgUFCoYAeHDhkyBNqhQupLQ/o+h76Etr42SbHf9M7lO9/vwr33PDhkWT2Dm9YZ+aQcI+mLPCJXWuErn61ycEBGsbjHGHAb6ApxrAqmohs8XpuztaYARy4p1RLhnUHPtuVlQR6jy0QPEAnWC4JBL2sLDQGC8G8GbYKiGZMqM+XNWr7qaR9VZ8XnmsE40AlUfJ/+0ox92R+QUcz1+BnsPFdxOF9+Zb/22pk7pCStfDJIAQXzObU+Y4XdPqf6cdTjjkGPoFgvHMCbtbzj0w+sAl1yGA/z1QAybgGYMVkvvKr1GSuYcS8obzCstlBAPK1eRBJAZaYaCa9BYrwWFIGY28K5UIDBiaBe3n6gDemllYDvAObXcnYCfJ9OAEFz4YEMcgAyOkIBjsNqYEweBEDQZ+J3KGBzk+Wg7m4fVWdT0X2KAL0AclgKBZRWWGDrukUqm2SayXePcxlIAJVoiflQQDC4XgAYjMfS6m4kPDGghMEjAMR02FyqvYMjGzwDChgJEx/cIe17HokBJcpRPgLdwIbvMBHmqwHW5mxNMAiUDFLWymI8retkFNvR0aeIm9ZIOcoicDpYjZoYDgP8M03dEZ01eEswpgVFEz8EOYwk0Guw9WLFBka02iu472Xt6b4A2JqYvs9DwU0gFmKpIKZ9hwkTQwaTNYh44L2xJ/sCahpWW9yhD3FS0GGwLoelaIn57QfqjujuXpC6v8xGtRsCXPyTtffOnh1Nysvac8FYtTaHY/8re4fiV3TBTevqoYSH6S/8deebK9rBpQAAAABJRU5ErkJggg=="
-                                                   alt="">为什么有的「楼中楼」回复的楼层不正确？
+                <div class="name">
+                  <search-icon class="dark"/>
+                  <search-icon class="blue"/>
+                  为什么有的「楼中楼」回复的楼层不正确？
                 </div>
                 <div class="desc">由于 V2EX
                   的原回复并没有记录回复的楼层，本脚本只能根据被回复的用户去寻找此用户的最近一条回复，然后嵌入到这后面去，这种方法并不能保证正确识别用户真正要回复的是哪一个楼层。
                 </div>
               </div>
             </div>
-            <div class="question-wrapper">
-              <div class="question">
-                <div class="name"><img class="dark"
-                                       src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAAKpSURBVEiJtZQ7aBRRFIb//5qZXSQvcBdm7yxyixQpgkSIaGkK8QEWgYggFoJ2WohBLdLYiY/YC2lEBDsLBUFTGggoRDCFRYoBdyYLmyKyEZOZYY7FzsZxnTxWzN/c1zn/d+/cuQfYZ3G3gGq1ejyO42GSVRGpAfDq9fo8gPifAcaYYhRFU0mS3CDp5ISsApi1bfuB53lrXQG01sMAXgMYykwvi0iNpCMiQyR7AEBE6kqpCd/3F/YESM0/AugFsA5ghuSs7/u1TExJRC6TnAZQEpGY5HgQBB92BBhjimEYfkl37gE4GwTB1+125rpuVUTeAxgWkXocx0cbjUa9M061O2EY3kzN13czBwDf92tRFI0DWCXpWJY1nRenMv3raTuzm3lbjUajTvJ2OrxWLpd7cwGVSmUMQBUASM7uxbwty7JeonXqom3bZ3IBSqmRdLycvdC9yPO8DRH5BAAiMtK5rtKFUtp2Zd4WSS/NH8gFkFxN2+q/APD7837PBYjIctoarXWpS/MeAGMpYCkXEATBAlq/Ww+AK924a60nAQyKSGxZ1lwuAEAsIk/T/rTjOGYv5saYQQD3092/yKtLW++gUCg8FpE6gEGl1FvXdXe8D2PMYBRF7wAYAJtJktzLi9sCeJ63ppSaALCB1vNf1FpfNcYUO3J6tNYXwzBcFJFj7f0ppS7kAf6qpq7rnkiS5FWmTK8D+CwiHoAqyTG0iiEAbAIoZNLvBEHwKOt3oBPQbDZr/f39z0gWAIwCOAjgMMkjJA0AO62gz5MkmQTwjeTpNP1UX1/fz2azOb/tCbIql8u9tm2fTJJklOQAgB8klyzLmsteaKVSuUVyJpN6NwiCh7sCulEnhOR53/ffqJ2SutHKysoTEZnKTB36X95/yHGcc1rrS/tinqdfOy0Llq4eQgkAAAAASUVORK5CYII="
-                                       alt=""><img class="blue"
-                                                   src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAAKBSURBVEiJtZU/aFNRFMZ/5zU1ebGlAQt2yNChQwYHhYqO7aaC0FZrU3EIKDjoIBZ1qEM38U/dhQ4uRWOhFhQE7eCgUFCoYAeHDhkyBNqhQupLQ/o+h76Etr42SbHf9M7lO9/vwr33PDhkWT2Dm9YZ+aQcI+mLPCJXWuErn61ycEBGsbjHGHAb6ApxrAqmohs8XpuztaYARy4p1RLhnUHPtuVlQR6jy0QPEAnWC4JBL2sLDQGC8G8GbYKiGZMqM+XNWr7qaR9VZ8XnmsE40AlUfJ/+0ox92R+QUcz1+BnsPFdxOF9+Zb/22pk7pCStfDJIAQXzObU+Y4XdPqf6cdTjjkGPoFgvHMCbtbzj0w+sAl1yGA/z1QAybgGYMVkvvKr1GSuYcS8obzCstlBAPK1eRBJAZaYaCa9BYrwWFIGY28K5UIDBiaBe3n6gDemllYDvAObXcnYCfJ9OAEFz4YEMcgAyOkIBjsNqYEweBEDQZ+J3KGBzk+Wg7m4fVWdT0X2KAL0AclgKBZRWWGDrukUqm2SayXePcxlIAJVoiflQQDC4XgAYjMfS6m4kPDGghMEjAMR02FyqvYMjGzwDChgJEx/cIe17HokBJcpRPgLdwIbvMBHmqwHW5mxNMAiUDFLWymI8retkFNvR0aeIm9ZIOcoicDpYjZoYDgP8M03dEZ01eEswpgVFEz8EOYwk0Guw9WLFBka02iu472Xt6b4A2JqYvs9DwU0gFmKpIKZ9hwkTQwaTNYh44L2xJ/sCahpWW9yhD3FS0GGwLoelaIn57QfqjujuXpC6v8xGtRsCXPyTtffOnh1Nysvac8FYtTaHY/8re4fiV3TBTevqoYSH6S/8deebK9rBpQAAAABJRU5ErkJggg=="
-                                                   alt="">为什么有的「楼中楼」回复指定了楼层还是不正确？
-                </div>
-                <div class="desc">
-                  - 屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1
-                  <br/>
-                  - 忽略回复导致楼层塌陷：原理同上
-                  <br/>
-                  - 回复时指定错了楼层号
-                  <br/>
-                  - 脚本解析错误，请在[这里](https://github.com/zyronon/v2ex-script/issues)反馈给我
-                </div>
-              </div>
-            </div>
+
           </div>
           <div class="list-wrapper">
             <div class="question-wrapper">
               <div class="question">
-                <div class="name"><img class="dark"
-                                       src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAAKpSURBVEiJtZQ7aBRRFIb//5qZXSQvcBdm7yxyixQpgkSIaGkK8QEWgYggFoJ2WohBLdLYiY/YC2lEBDsLBUFTGggoRDCFRYoBdyYLmyKyEZOZYY7FzsZxnTxWzN/c1zn/d+/cuQfYZ3G3gGq1ejyO42GSVRGpAfDq9fo8gPifAcaYYhRFU0mS3CDp5ISsApi1bfuB53lrXQG01sMAXgMYykwvi0iNpCMiQyR7AEBE6kqpCd/3F/YESM0/AugFsA5ghuSs7/u1TExJRC6TnAZQEpGY5HgQBB92BBhjimEYfkl37gE4GwTB1+125rpuVUTeAxgWkXocx0cbjUa9M061O2EY3kzN13czBwDf92tRFI0DWCXpWJY1nRenMv3raTuzm3lbjUajTvJ2OrxWLpd7cwGVSmUMQBUASM7uxbwty7JeonXqom3bZ3IBSqmRdLycvdC9yPO8DRH5BAAiMtK5rtKFUtp2Zd4WSS/NH8gFkFxN2+q/APD7837PBYjIctoarXWpS/MeAGMpYCkXEATBAlq/Ww+AK924a60nAQyKSGxZ1lwuAEAsIk/T/rTjOGYv5saYQQD3092/yKtLW++gUCg8FpE6gEGl1FvXdXe8D2PMYBRF7wAYAJtJktzLi9sCeJ63ppSaALCB1vNf1FpfNcYUO3J6tNYXwzBcFJFj7f0ppS7kAf6qpq7rnkiS5FWmTK8D+CwiHoAqyTG0iiEAbAIoZNLvBEHwKOt3oBPQbDZr/f39z0gWAIwCOAjgMMkjJA0AO62gz5MkmQTwjeTpNP1UX1/fz2azOb/tCbIql8u9tm2fTJJklOQAgB8klyzLmsteaKVSuUVyJpN6NwiCh7sCulEnhOR53/ffqJ2SutHKysoTEZnKTB36X95/yHGcc1rrS/tinqdfOy0Llq4eQgkAAAAASUVORK5CYII="
-                                       alt=""><img class="blue"
-                                                   src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAAKBSURBVEiJtZU/aFNRFMZ/5zU1ebGlAQt2yNChQwYHhYqO7aaC0FZrU3EIKDjoIBZ1qEM38U/dhQ4uRWOhFhQE7eCgUFCoYAeHDhkyBNqhQupLQ/o+h76Etr42SbHf9M7lO9/vwr33PDhkWT2Dm9YZ+aQcI+mLPCJXWuErn61ycEBGsbjHGHAb6ApxrAqmohs8XpuztaYARy4p1RLhnUHPtuVlQR6jy0QPEAnWC4JBL2sLDQGC8G8GbYKiGZMqM+XNWr7qaR9VZ8XnmsE40AlUfJ/+0ox92R+QUcz1+BnsPFdxOF9+Zb/22pk7pCStfDJIAQXzObU+Y4XdPqf6cdTjjkGPoFgvHMCbtbzj0w+sAl1yGA/z1QAybgGYMVkvvKr1GSuYcS8obzCstlBAPK1eRBJAZaYaCa9BYrwWFIGY28K5UIDBiaBe3n6gDemllYDvAObXcnYCfJ9OAEFz4YEMcgAyOkIBjsNqYEweBEDQZ+J3KGBzk+Wg7m4fVWdT0X2KAL0AclgKBZRWWGDrukUqm2SayXePcxlIAJVoiflQQDC4XgAYjMfS6m4kPDGghMEjAMR02FyqvYMjGzwDChgJEx/cIe17HokBJcpRPgLdwIbvMBHmqwHW5mxNMAiUDFLWymI8retkFNvR0aeIm9ZIOcoicDpYjZoYDgP8M03dEZ01eEswpgVFEz8EOYwk0Guw9WLFBka02iu472Xt6b4A2JqYvs9DwU0gFmKpIKZ9hwkTQwaTNYh44L2xJ/sCahpWW9yhD3FS0GGwLoelaIn57QfqjujuXpC6v8xGtRsCXPyTtffOnh1Nysvac8FYtTaHY/8re4fiV3TBTevqoYSH6S/8deebK9rBpQAAAABJRU5ErkJggg=="
-                                                   alt="">详情页加载很慢？
+                <div class="name">
+                  <search-icon class="dark"/>
+                  <search-icon class="blue"/>
+                  详情页加载很慢？
                 </div>
                 <div class="desc">
-                  回复多时会加载很慢，其实不是脚本的问题。是因为请求V站的其他页的回复时，V站迟迟未返回，导致我无法进行后续的解析，所以只能显示加载中...
+                  <p>加载慢的原因：脚本在请求V站主题数据，V站迟迟不返回，脚本就会显示加载中...</p>
+                  <p>一般来说，楼中楼解析所需要时间很短，短到可以忽略不计</p>
+                  <br>
+                  <p>
+                    1. 直接打开的主题（如地址为 t/123456
+                    这种）：回复小于100条，脚本将会直接进行楼中楼解析。如果回复超过100条，V站会进行分页，脚本需要先请求其他几页的回复，再进行解析
+                  </p>
+                  <br>
+                  <p>
+                    2. 弹框打开的主题，脚本需要先请求主题数据，然后再进行解析
+                  </p>
+                  <br>
+                  <p>所以，大家可以打开控制台查看一下请求，看一下V站大概多长时间返回数据</p>
+                </div>
+              </div>
+            </div>
+            <div class="question-wrapper">
+              <div class="question">
+                <div class="name">
+                  <search-icon class="dark"/>
+                  <search-icon class="blue"/>
+                  为什么有的「楼中楼」回复指定了楼层还是不正确？
+                </div>
+                <div class="desc">
+                  <p>1. 屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1</p>
+                  <p>2. 忽略回复导致楼层塌陷：原理同上</p>
+                  <p>3. 回复时指定错了楼层号</p>
+                  <p>4. 脚本解析错误，请在<a href="https://github.com/zyronon/v2ex-script/issues">这里</a>反馈给我</p>
                 </div>
               </div>
             </div>
@@ -310,10 +378,14 @@
   justify-content: center;
   align-items: center;
 
+  @w: 65vw;
+  @mt: 64px;
+  @fs: 42px;
+
   .info {
     .title {
       text-align: center;
-      font-size: 56px;
+      font-size: 72px;
       font-weight: bold;
       line-height: 1.4;
       color: var(--vp-home-hero-name-color);
@@ -349,13 +421,78 @@
         color: var(--vp-button-brand-hover-text);
         background-color: var(--vp-button-brand-hover-bg);
       }
+    }
+  }
 
+  .notice {
+    margin-top: 32px;
+    width: @w;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .display {
+    margin-top: 80px;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    display: none;
+
+    video {
+      width: 80vw;
+    }
+  }
+
+  .important-desc {
+    width: 75vw;
+    margin-top: @mt;
+
+    .item {
+      width: 100%;
+      margin-bottom: 80px;
+
+      .title {
+        font-size: @fs;
+        font-weight: bold;
+        line-height: 1;
+      }
+
+      .desc-content {
+        margin-top: 40px;
+        display: flex;
+        justify-content: space-between;
+        gap: 50px;
+
+        .desc {
+          font-size: 22px;
+
+          p {
+            margin-bottom: 15px;
+          }
+        }
+
+        .img-wrapper {
+          min-width: 75%;
+          flex: 1;
+          padding: 32px;
+          background: linear-gradient(to top, #fff 0, hsla(0, 0%, 100%, 0) 100%), linear-gradient(to right, rgb(247 185 85/.1) 0, rgb(255 0 128/.1) 100%);
+          border-radius: 24px;
+          overflow: hidden;
+
+          img {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0px 6px 20px 2px #e1e1e1;
+            //box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.2);
+          }
+        }
+      }
     }
   }
 
   .features-type {
     margin-top: 80px;
-    font-size: 26px;
+    font-size: @fs;
     font-weight: bold;
   }
 
@@ -414,18 +551,13 @@
     align-items: center;
 
     .title {
-      margin-bottom: 64px;
-      height: 60px;
-      opacity: 1;
-      font-family: Montserrat;
-      font-size: 60px;
-      font-weight: 700;
-      line-height: 60px;
-      letter-spacing: 0em;
-      color: #1a1a1a;
+      font-size: @fs;
+      font-weight: bold;
+      letter-spacing: 0;
     }
 
     .questions {
+      margin-top: 30px;
       width: 100%;
       display: flex;
       gap: 24px;
@@ -438,40 +570,64 @@
         .question-wrapper {
           padding-bottom: 24px;
 
-          .question {
-            border-radius: 16px;
-            background: rgba(10, 87, 255, .08);
-            padding: 24px 16px;
-
-            .name {
-              display: flex;
-              font-family: Montserrat;
-              font-size: 24px;
-              font-weight: 600;
-              line-height: 24px;
-              letter-spacing: 0em;
-              color: #1a1a1a;
-
-              img {
-                width: 24px;
-                height: 24px;
-                margin-right: 12px;
-              }
+          &:hover {
+            .blue {
+              display: block !important;
             }
 
             .desc {
-              //height: 0;
-              margin-left: 40px;
-              opacity: 1;
-              overflow: hidden;
-              font-family: Montserrat;
-              font-size: 20px;
-              font-weight: 500;
-              line-height: 24px;
-              letter-spacing: 0em;
-              transition: all .3s;
-              color: #6a769b;
+              height: unset;
+              margin-top: 20px;
             }
+
+            .dark {
+              display: none !important;
+            }
+
+            .name {
+              color: var(--vp-carbon-ads-hover-text-color);
+            }
+          }
+        }
+      }
+
+      .question {
+        border-radius: 16px;
+        background: var(--vp-c-bg-soft);
+        padding: 24px 16px;
+
+        .name {
+          display: flex;
+          font-size: 18px;
+          font-weight: 600;
+          line-height: 24px;
+          letter-spacing: 0;
+
+          svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+          }
+
+          .blue {
+            display: none;
+          }
+        }
+
+        .desc {
+          height: 0;
+          margin-left: 40px;
+          opacity: 1;
+          overflow: hidden;
+          font-size: 20px;
+          font-weight: 500;
+          line-height: 24px;
+          letter-spacing: 0;
+          transition: all .3s;
+          color: var(--vp-c-text-2);
+
+          a {
+            color: var(--vp-carbon-ads-hover-text-color);
           }
         }
       }
