@@ -20,7 +20,7 @@
           <a href="">立即开始</a>
         </div>
         <div class="action">
-          <a href="https://github.com/vuejs/vitepress" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://github.com/zyronon/web-scripts" target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </div>
       <h3 class="features-type">特色功能</h3>

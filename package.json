@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "scripts": {
+  },
   "dependencies": {
     "@v2next/core": "workspace:^",
     "eruda": "^3.0.1",
