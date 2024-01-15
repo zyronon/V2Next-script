@@ -67,7 +67,8 @@ import SearchIcon from "./search-icon.vue";
               <img src="../assets/img/2.png" alt="">
             </div>
             <div class="desc">
-              <p>自动解析所有回复并以楼中楼的形式展示，更轻松理清回复与回复之间的关系，无需再用 Ctrl + F 搜索用户回复了什么</p>
+              <p>自动解析所有回复并以楼中楼的形式展示，更轻松理清回复与回复之间的关系，无需再用 Ctrl + F
+                搜索用户回复了什么</p>
               <p>自动查询OP注册时间并显示，小于7天会被标红</p>
             </div>
           </div>
@@ -465,6 +466,7 @@ import SearchIcon from "./search-icon.vue";
 
         .desc {
           font-size: 22px;
+          color: var(--vp-c-text-2);
 
           p {
             margin-bottom: 15px;
@@ -493,6 +495,7 @@ import SearchIcon from "./search-icon.vue";
   .features-type {
     margin-top: 80px;
     font-size: @fs;
+    line-height: 1;
     font-weight: bold;
   }
 
