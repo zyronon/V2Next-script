@@ -415,12 +415,26 @@ import SearchIcon from "./search-icon.vue";
       border-radius: 210px;
       padding: 10px 30px;
       font-size: 16px;
-      color: var(--vp-button-alt-text);
-      background-color: var(--vp-button-alt-bg);
+      border-color: var(--vp-button-brand-border);
+      color: var(--vp-button-brand-text);
+      background-color: var(--vp-button-brand-bg);
 
-      &:nth-child(1) {
+      &:hover {
+        border-color: var(--vp-button-brand-hover-border);
         color: var(--vp-button-brand-hover-text);
-        background-color: var(--vp-button-brand-hover-bg);
+        background-color: var(--vp-button-brand-hover-bg)
+      }
+
+      &:nth-child(2) {
+        border-color: var(--vp-button-alt-border);
+        color: var(--vp-button-alt-text);
+        background-color: var(--vp-button-alt-bg);
+
+        &:hover {
+          border-color: var(--vp-button-alt-hover-border);
+          color: var(--vp-button-alt-hover-text);
+          background-color: var(--vp-button-alt-hover-bg);
+        }
       }
     }
   }
