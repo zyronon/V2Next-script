@@ -3,12 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "@v2next/core": "workspace:^",
     "eruda": "^3.0.1",
-    "vue": "^3.2.47"
+    "vue": "^3.4.14"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.16",

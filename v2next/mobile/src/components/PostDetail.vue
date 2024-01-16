@@ -3,8 +3,7 @@
        ref="detail"
        v-show="modelValue"
        :class="[isNight?'isNight':'',pageType,isMobile?'mobile':'']"
-       @scroll="debounceScroll"
-       @click="close('space')">
+       @scroll="debounceScroll">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
       <div class="my-box nav-bar">
         <div class="left">
@@ -19,10 +18,10 @@
           <a :href="post.node.url">{{ post.node.title }}</a>
         </div>
         <div class="right">
-<!--          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">-->
-<!--            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"-->
-<!--                  d="m20 20l-4.05-4.05m0 0a7 7 0 1 0-9.9-9.9a7 7 0 0 0 9.9 9.9"/>-->
-<!--          </svg>-->
+          <!--          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">-->
+          <!--            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"-->
+          <!--                  d="m20 20l-4.05-4.05m0 0a7 7 0 1 0-9.9-9.9a7 7 0 0 0 9.9 9.9"/>-->
+          <!--          </svg>-->
           <img v-if="user.avatar"
                @click="clickAvatar"
                style="margin-right: 0;"
@@ -236,6 +235,7 @@
                @keydown.enter="jump(currentFloor)">
       </div>
     </div>
+    <post-options/>
   </div>
 </template>
 <script>
@@ -255,10 +255,12 @@ import {debounce} from "../utils/index.js";
 import BaseLoading from "./BaseLoading.vue";
 import BaseButton from "./BaseButton.vue";
 import MoreIcon from "@/components/MoreIcon.vue";
+import PostOptions from "@/components/Modal/PostOptions.vue";
 
 export default {
   name: "detail",
   components: {
+    PostOptions,
     MoreIcon,
     BaseButton,
     SingleComment,
@@ -511,9 +513,9 @@ export default {
     clickAvatar() {
       let menu = $('#menu-body')
       if (menu.css('--show-dropdown') === 'block') {
-        menu.css('--show-dropdown','none')
-      }else {
-        menu.css('--show-dropdown','block')
+        menu.css('--show-dropdown', 'none')
+      } else {
+        menu.css('--show-dropdown', 'block')
       }
     },
     clickDisplayType() {
