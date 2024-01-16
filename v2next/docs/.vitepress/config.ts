@@ -4,6 +4,7 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
   title: "V2Next",
   description: "V2Next 介绍",
+  head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     // nav: [
