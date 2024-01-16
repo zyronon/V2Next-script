@@ -53,7 +53,7 @@ import SearchIcon from "./search-icon.vue";
             <div class="desc">
               <p>UI 设计更现代化，为你带来愉悦的视觉体验。</p>
               <p>卡片模式无需进入主题，在列表中即可浏览主题内容</p>
-              <p>点击列表标题或内容，在当前页面弹框显示主题详情，无须刷新界面，就像Reddit那样！</p>
+              <p>点击列表标题或内容，在当前页面弹框显示主题详情，无需刷新界面，就像Reddit那样！</p>
             </div>
             <div class="img-wrapper">
               <img src="../assets/img/1.png" alt="">
@@ -107,7 +107,7 @@ import SearchIcon from "./search-icon.vue";
           </div>
           <div class="title">弹框查看主题</div>
           <div class="details">
-            点击标题，在当前页面弹框显示主题正文和回复，无须刷新界面，就像Reddit那样！
+            点击标题，在当前页面弹框显示主题正文和回复，无需刷新界面，就像Reddit那样！
           </div>
         </div>
         <div class="item">
