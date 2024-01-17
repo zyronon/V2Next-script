@@ -4,7 +4,6 @@
             :comment="modelValue"
             @reply="edit = !edit"
             :type="type"
-            @hide="hide"
     />
     <div v-if="cssStyle && !expand" class="more ago" @click="expand = !expand">
       由于嵌套回复层级太深，自动将后续回复隐藏
@@ -159,16 +158,6 @@ export default {
       setTimeout(() => {
         this.ding = false
       }, 2000)
-    },
-    hide() {
-      let url = `${window.baseUrl}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`
-      eventBus.emit(CMD.REMOVE, this.modelValue.floor)
-      JQuery.post(url).then(res => {
-        eventBus.emit(CMD.REFRESH_ONCE)
-        eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '隐藏成功'})
-      }, err => {
-        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '隐藏成功,仅本次有效（接口调用失败！）'})
-      })
     },
     toggle() {
       this.expand = !this.expand

@@ -6,7 +6,7 @@
        :class="[isNight?'isNight':'',pageType,isMobile?'mobile':'']"
        @scroll="debounceScroll">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
-      <div class="my-box nav-bar">
+      <div class="my-box nav-bar" @click="scrollTop">
         <div class="left">
           <svg
               @click="close('btn')"
@@ -14,20 +14,15 @@
             <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                   d="M20 12H4m0 0l6-6m-6 6l6 6"/>
           </svg>
-          <a href="/">V2EX</a>
-          <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
           <a :href="post.node.url">{{ post.node.title }}</a>
         </div>
         <div class="right">
-          <!--          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">-->
-          <!--            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"-->
-          <!--                  d="m20 20l-4.05-4.05m0 0a7 7 0 1 0-9.9-9.9a7 7 0 0 0 9.9 9.9"/>-->
-          <!--          </svg>-->
+          <BaseLoading v-if="refreshLoading"/>
           <img v-if="user.avatar"
                @click="clickAvatar"
                style="margin-right: 0;"
                class="avatar mobile" :src="user.avatar">
-          <MoreIcon @click="showPostOptions = true"/>
+          <MoreIcon @click.stop="showPostOptions = true"/>
         </div>
       </div>
 
@@ -181,9 +176,10 @@
 
         <div v-if="isLogin" class="my-box" ref="replyBox" :class="{'sticky':isSticky}">
           <div class="my-cell flex">
-            <span>添加一条新回复</span>
+            <span>{{ currentComment ? `回复${currentComment.floor}楼` : '回复主题' }}</span>
             <div class="notice-right gray">
-              <a style="margin-right: 2rem;" v-if="isSticky" @click="isSticky = false">取消回复框停靠</a>
+              <a style="margin-right: 2rem;" v-if="isSticky"
+                 @click="isSticky = false; currentComment = null">取消回复框停靠</a>
               <a @click="scrollTop">回到顶部</a>
             </div>
           </div>
@@ -222,24 +218,30 @@
           <a>{{ item }}</a>
         </div>
       </div>
-      <div class="scroll-top gray" @click.stop="scrollTop">
-        <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
-      </div>
-      <div class="refresh gray" @click.stop="$emit('refresh')">
-        <BaseLoading v-if="refreshLoading"/>
-        <i v-else class="fa fa-refresh" aria-hidden="true"></i>
-      </div>
+
       <div class="scroll-to gray" @click.stop="jump(currentFloor)">
         <i class="fa fa-long-arrow-down"/>
         <input type="text" v-model="currentFloor"
                @click.stop="stop"
                @keydown.enter="jump(currentFloor)">
       </div>
+
+      <post-options
+          :post="post"
+          @reply="isSticky = true;currentComment = null"
+
+          @refresh="$emit('refresh')"
+          v-model="showPostOptions"/>
+
+      <comment-options
+          @add-thank="currentComment.isThanked = true"
+          @recall-thank="currentComment.isThanked = false"
+          :post="post"
+          :comment="currentComment"
+          @close="currentComment = null"
+          @reply="isSticky = true; showCommentOptions = false"
+          v-model="showCommentOptions"/>
     </div>
-    <post-options v-model="showPostOptions"/>
-    <comment-options
-        :comment="currentComment"
-        v-model="showCommentOptions"/>
   </div>
 </template>
 <script>
@@ -742,7 +744,7 @@ export default {
 
 .mobile {
   .main {
-    padding: unset !important;
+    padding-bottom: 100px !important;
     width: 100% !important;
   }
 }
@@ -781,11 +783,6 @@ export default {
   .main {
     display: flex;
     justify-content: flex-end;
-    padding: 3rem 8rem 15rem 8rem;
-    //margin: auto;
-    //box-sizing: border-box;
-    //min-height: 100%;
-    //background: #e2e2e2;
     background: var(--color-main-bg);
     position: relative;
     outline: none;
@@ -795,7 +792,7 @@ export default {
     .nav-bar {
       position: fixed;
       top: 0;
-      z-index: 9999;
+      z-index: 9;
       //background: red;
       height: @nav-height;
 
@@ -1001,7 +998,6 @@ export default {
   }
 
   .scroll-top {
-
     position: fixed;
     border-radius: .6rem;
     display: flex;
@@ -1016,14 +1012,9 @@ export default {
     background: var(--color-sp-btn-bg);
   }
 
-  .refresh {
-    .scroll-top;
-    bottom: 23.5rem;
-  }
-
   .scroll-to {
     .scroll-top;
-    bottom: 15rem;
+    bottom: 55rem;
     display: flex;
     flex-direction: column;
 

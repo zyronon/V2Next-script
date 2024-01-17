@@ -12,13 +12,15 @@
 
 <style scoped lang="less">
 .more {
-  @w1:1.6rem;
+  @w1: 1.6rem;
   height: @w1;
-  width: @w1;
+  width: @w1 * 1.2;
+  padding: 1rem 0;
+  padding-right: .5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 
   div {
     background: var(--color-floor-font);

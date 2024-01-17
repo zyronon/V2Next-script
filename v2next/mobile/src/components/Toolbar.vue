@@ -55,24 +55,16 @@
       </div>
       <div v-if="post.once" class="tool" :class="{disabled:loading}" @click="toggleFavorite">
         <BaseLoading v-if="loading" size="small"/>
-        <svg v-else viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-              d="M23.9986 5L17.8856 17.4776L4 19.4911L14.0589 29.3251L11.6544 43L23.9986 36.4192L36.3454 43L33.9586 29.3251L44 19.4911L30.1913 17.4776L23.9986 5Z"
-              :fill="getIsFull(post.isFavorite)" :stroke="getColor(post.isFavorite)" stroke-width="2"
-              stroke-linejoin="round"/>
-        </svg>
+        <template v-else>
+          <Icon v-if="post.isFavorite" color="rgb(224,42,42)" icon="iconoir:star-solid"/>
+          <Icon v-else icon="iconoir:star"/>
+        </template>
         <span v-if="post.collectCount!==0">{{ post.collectCount }}</span>
       </div>
       <div class="tool" @click="checkIsLogin('reply')">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M23 21H25.0025" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-          <path d="M33.001 21H34.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-          <path d="M13.001 21H14.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+        <Icon icon="mynaui:message"/>
       </div>
-<!--      <slot></slot>-->
+      <!--      <slot></slot>-->
     </div>
   </div>
 </template>
@@ -82,10 +74,11 @@ import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import BaseLoading from "./BaseLoading.vue";
 import {PageType} from "../types.ts";
+import {Icon} from "@iconify/vue";
 
 export default {
   name: "Toolbar",
-  components: {BaseLoading},
+  components: {Icon, BaseLoading},
   inject: [
     'isLogin',
     'post',

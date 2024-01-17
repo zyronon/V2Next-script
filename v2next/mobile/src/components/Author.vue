@@ -38,18 +38,6 @@
     </div>
     <div class="Author-right">
       <div class="toolbar" v-if="isLogin">
-        <PopConfirm title="确认隐藏这条回复?" @confirm="$emit('hide')">
-          <div class="tool">
-            <span>隐藏</span>
-          </div>
-        </PopConfirm>
-        <div class="tool" v-if="context"
-             @click="showRelationReply">
-          <span>上下文</span>
-        </div>
-        <div class="tool" v-if="type === 'top'" @click="jump">
-          <span>跳转</span>
-        </div>
         <div class="tool" @click="checkIsLogin('reply')">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
@@ -76,7 +64,7 @@
           @recallThank="recallThank"
           :api-url="'reply/'+comment.id"
       />
-      <MoreIcon @click="eventBus.emit(CMD.SHOW_COMMENT_OPTIONS,comment)"/>
+      <MoreIcon @click="eventBus.emit(CMD.SHOW_COMMENT_OPTIONS,{...comment, top: type === 'top'})"/>
     </div>
   </div>
 </template>
@@ -126,25 +114,8 @@ export default {
     myTags() {
       return this.tags[this.comment.username] ?? []
     },
-    context() {
-      return this.comment.replyUsers.length
-    }
   },
   methods: {
-    jump() {
-      eventBus.emit(CMD.JUMP, this.comment.floor)
-    },
-    showRelationReply() {
-      if (!this.comment.replyUsers.length) {
-        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '该回复无上下文'})
-        return
-      }
-      eventBus.emit(CMD.RELATION_REPLY, {
-        left: this.comment.replyUsers,
-        right: this.comment.username,
-        rightFloor: this.comment.floor
-      })
-    },
     addTag() {
       eventBus.emit(CMD.ADD_TAG, this.comment.username)
     },

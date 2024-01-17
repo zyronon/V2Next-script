@@ -1,45 +1,123 @@
 <script setup lang="ts">
-import { inject } from 'vue'
-import { Icon } from "@iconify/vue";
+import {inject, onMounted} from 'vue'
+import {Icon} from "@iconify/vue";
 import FromBottomDialog from "@/components/Modal/FromBottomDialog.vue";
-import { CommentDisplayType } from "@v2next/core/types";
-import { copy } from '@/utils/index'
+import {CommentDisplayType} from "@v2next/core/types";
+import {copy} from '@/utils/index'
+import eventBus from '@/utils/eventBus'
+import {CMD} from '@/utils/type'
 
 const props = defineProps<{
   modelValue: boolean,
   comment: any
+  post: any
 }>()
 const emit = defineEmits<{
   close: [],
+  reply: [],
   'update:modelValue': [val: boolean],
+  addThank: [],
+  recallThank: [],
 }>()
 
-
 const config: any = inject('config')
+const isLogin = inject<boolean>('config')
 
 function close() {
+  emit('close')
   emit('update:modelValue', false)
 }
 
 async function handleCopy() {
   let text = props.comment.reply_content
-  if (config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser) {
+  if (config.value.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser) {
     text = props.comment.hideCallUserReplyContent
   }
+  text = $(`<div>${text}</div>`).text()
   if (await copy(text)) {
     close()
   }
 }
+
+async function hide() {
+  let url = `${window.baseUrl}/ignore/reply/${props.comment.id}?once=${props.post.once}`
+  eventBus.emit(CMD.REMOVE, props.comment.floor)
+  close()
+  $.post(url).then(res => {
+    eventBus.emit(CMD.REFRESH_ONCE)
+    eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '隐藏成功'})
+  }, err => {
+    eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '隐藏成功,仅本次有效（接口调用失败！）'})
+  })
+}
+
+function jump() {
+  eventBus.emit(CMD.JUMP, props.comment.floor)
+  close()
+}
+
+function showRelationReply() {
+  if (!props.comment.replyUsers.length) {
+    eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '该回复无上下文'})
+    return
+  }
+  //TODO
+  eventBus.emit(CMD.RELATION_REPLY, {
+    left: props.comment.replyUsers,
+    right: props.comment.username,
+    rightFloor: props.comment.floor
+  })
+  close()
+}
+
+function addThank() {
+  emit('addThank')
+  eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: props.comment.id, type: 'add'})
+}
+
+function recallThank() {
+  emit('recallThank')
+  eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: props.comment.id, type: 'recall'})
+}
+
+function thank() {
+  if (!isLogin.value) {
+    return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
+  }
+  if (props.comment.username === window.user.username) {
+    return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '不能感谢自己'})
+  }
+  if (props.comment.isThanked) {
+    return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '已经感谢过了'})
+  }
+  addThank()
+  //https://www.v2ex.com/thank/topic/886147?once=38719
+  let url = `${window.baseUrl}/thank/reply/${props.comment.id}?once=${props.post.once}`
+  $.post(url).then(res => {
+    if (!res.success) {
+      recallThank()
+      eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: res.message})
+    }
+    eventBus.emit(CMD.REFRESH_ONCE, res.once)
+  }, err => {
+    recallThank()
+    eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '感谢失败'})
+    eventBus.emit(CMD.REFRESH_ONCE)
+  })
+  close()
+}
+
 </script>
 
 <template>
-  <from-bottom-dialog page-id="post-detail"
-                      height="40rem"
-                      :model-value="modelValue"
-                      @cancel="emit('update:modelValue',false)">
+  <from-bottom-dialog
+      page-id="post-detail"
+      height="40rem"
+      :model-value="modelValue"
+      @cancel="emit('update:modelValue',false)">
     <div class="wrapper">
       <div class="options">
-        <div class="item">
+        <div class="item" @click="hide">
           <div class="icon-wrap">
             <Icon icon="solar:forbidden-circle-outline"/>
           </div>
@@ -51,23 +129,34 @@ async function handleCopy() {
           </div>
           <span>复制</span>
         </div>
-        <div class="item">
+        <div class="item"
+             @click="showRelationReply"
+             :class="[!comment.replyUsers.length && 'disabled']">
           <div class="icon-wrap">
             <Icon icon="iconoir:page-search"/>
           </div>
           <span>上下文</span>
         </div>
-        <div class="item">
+        <div class="item"
+             @click="thank"
+             :class="[comment.isThanked && 'full']">
           <div class="icon-wrap">
-            <Icon icon="icon-park-outline:like"/>
+            <Icon v-if="comment.isThanked" icon="icon-park-solid:like"/>
+            <Icon v-else icon="icon-park-outline:like"/>
           </div>
           <span>感谢</span>
         </div>
-        <div class="item">
+        <div class="item" @click="emit('reply')">
           <div class="icon-wrap">
             <Icon icon="mynaui:message"/>
           </div>
           <span>回复</span>
+        </div>
+        <div class="item" v-if="comment.top" @click="jump">
+          <div class="icon-wrap">
+            <Icon icon="icon-park-outline:to-bottom"/>
+          </div>
+          <span>跳转</span>
         </div>
       </div>
       <div class="cancel" @click="close">取消</div>
@@ -93,6 +182,20 @@ async function handleCopy() {
       align-items: center;
       color: grey;
       font-size: 1.2rem;
+
+      &.disabled {
+        opacity: .5;
+
+        svg {
+          color: gray !important;
+        }
+      }
+
+      &.full {
+        svg {
+          color: rgb(224, 42, 42) !important;
+        }
+      }
 
       .icon-wrap {
         margin-bottom: .5rem;

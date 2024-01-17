@@ -8,7 +8,7 @@ import { PageType, Post, Reply } from "./types"
 import { DefaultConfig, DefaultPost, DefaultUser, functions } from "@v2next/core";
 import * as eruda from "eruda";
 
-// eruda.init()
+eruda.init()
 
 let $section = document.createElement('section')
 $section.id = 'app'

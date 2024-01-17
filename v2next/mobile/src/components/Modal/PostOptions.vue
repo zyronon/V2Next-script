@@ -1,22 +1,38 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Icon } from "@iconify/vue";
+import {Icon} from "@iconify/vue";
 import FromBottomDialog from "@/components/Modal/FromBottomDialog.vue";
+import {copy} from '@/utils/index'
+import {ref} from "vue";
 
 let fs = ref(0)
-// let count = $ref(0)
-// console.log(count)
-
-defineProps<{
+const props = defineProps<{
   modelValue: boolean
+  post: any
 }>()
 const emit = defineEmits<{
   close: [],
+  reply: [],
+  refresh: [],
   'update:modelValue': [val: boolean]
 }>()
 
 function close() {
   emit('update:modelValue', false)
+}
+
+async function copyLink() {
+  let text = props.post.url
+  if (await copy(text)) {
+    close()
+  }
+}
+
+async function copyContent() {
+  let text = props.post.headerTemplate
+  text = $(`<div>${text}</div>`).text()
+  if (await copy(text)) {
+    close()
+  }
 }
 </script>
 
@@ -39,7 +55,7 @@ function close() {
           </div>
           <span>忽略</span>
         </div>
-        <div class="item">
+        <div class="item" @click="emit('reply'),close()">
           <div class="icon-wrap">
             <Icon color="rgb(57,174,85)" icon="mynaui:message"/>
           </div>
@@ -63,13 +79,13 @@ function close() {
           </div>
           <span>报告问题</span>
         </div>
-        <div class="item">
+        <div class="item" @click="copyLink">
           <div class="icon-wrap">
             <Icon color="black" icon="solar:link-broken"/>
           </div>
           <span>复制链接</span>
         </div>
-        <div class="item">
+        <div class="item" @click="copyContent">
           <div class="icon-wrap">
             <Icon color="black" icon="octicon:copy-24"/>
           </div>
@@ -81,7 +97,7 @@ function close() {
           </div>
           <span>跳转</span>
         </div>
-        <div class="item">
+        <div class="item" @click="emit('refresh'),close()">
           <div class="icon-wrap">
             <Icon color="black" icon="ic:round-refresh"/>
           </div>

@@ -71,14 +71,16 @@ export default {
     modelValue(newVal) {
       let page = document.getElementById(this.pageId)
       if (newVal) {
-        document.body.style.overflow = 'hidden'
+        page.style.overflow = 'hidden'
+        this.scroll = page.scrollTop
         let mask = $(`<div class="mask fade-in ${this.maskMode}"></div>`)
         mask.on('click', e => {
           this.hide(false)
         })
         page.appendChild(mask[0])
       } else {
-        document.body.style.overflow = 'unset'
+        // page.scrollTop = this.scroll + 'px'
+        page.style.overflow = 'auto'
         let mask = $('.mask')
         mask.removeClass('fade-in')
         mask.addClass('fade-out')
@@ -163,7 +165,9 @@ export default {
         this.$refs.dialog.style['transform'] = `translate3d(0,0,0)`
         // bus.emit(EVENT_KEY.DIALOG_END, {tag: this.tag, isClose: false})
         setTimeout(() => {
-          this.$refs.dialog.style['transform'] = `none`
+          if (this.$refs.dialog) {
+            this.$refs.dialog.style['transform'] = `none`
+          }
           // this.$setCss(this.$refs.dialog, 'transition-duration', `0ms`)
         }, 250)
       }
@@ -201,7 +205,7 @@ export default {
 @msg-subpage-card-bg: rgb(28, 30, 43); //二级页面，卡片背景
 
 .FromBottomDialog {
-  z-index: 9;
+  z-index: 11;
   position: fixed;
   width: 100%;
   overflow-y: auto;
