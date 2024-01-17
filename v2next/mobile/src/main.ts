@@ -1,16 +1,14 @@
-
-
-import {createApp} from 'vue';
+import { createApp } from 'vue';
 import './assets/less/index.less'
 
 import App from './App.vue';
-import {GM_notification} from "$"
+import { GM_notification } from "gmApi"
 import './global.d.ts'
-import {PageType, Post, Reply} from "./types"
-import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core";
+import { PageType, Post, Reply } from "./types"
+import { DefaultConfig, DefaultPost, DefaultUser, functions } from "@v2next/core";
 import * as eruda from "eruda";
 
-eruda.init()
+// eruda.init()
 
 let $section = document.createElement('section')
 $section.id = 'app'

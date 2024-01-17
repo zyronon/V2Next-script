@@ -1,6 +1,7 @@
 <template>
   <div class="post-detail"
        ref="detail"
+       id="post-detail"
        v-show="modelValue"
        :class="[isNight?'isNight':'',pageType,isMobile?'mobile':'']"
        @scroll="debounceScroll">
@@ -26,7 +27,7 @@
                @click="clickAvatar"
                style="margin-right: 0;"
                class="avatar mobile" :src="user.avatar">
-          <MoreIcon/>
+          <MoreIcon @click="showPostOptions = true"/>
         </div>
       </div>
 
@@ -235,7 +236,10 @@
                @keydown.enter="jump(currentFloor)">
       </div>
     </div>
-    <post-options/>
+    <post-options v-model="showPostOptions"/>
+    <comment-options
+        :comment="currentComment"
+        v-model="showCommentOptions"/>
   </div>
 </template>
 <script>
@@ -256,10 +260,14 @@ import BaseLoading from "./BaseLoading.vue";
 import BaseButton from "./BaseButton.vue";
 import MoreIcon from "@/components/MoreIcon.vue";
 import PostOptions from "@/components/Modal/PostOptions.vue";
+import FromBottomDialog from "@/components/Modal/FromBottomDialog.vue";
+import CommentOptions from "@/components/Modal/CommentOptions.vue";
 
 export default {
   name: "detail",
   components: {
+    CommentOptions,
+    FromBottomDialog,
     PostOptions,
     MoreIcon,
     BaseButton,
@@ -303,6 +311,8 @@ export default {
   data() {
     return {
       isSticky: false,
+      showPostOptions: false,
+      showCommentOptions: false,
       selectCallIndex: 0,
       postDetailWidth: 0,
       showCallList: false,
@@ -327,6 +337,7 @@ export default {
       showOpTag: false,
       showChangeDisplayType: false,
       lastDisplayType: CommentDisplayType.FloorInFloorNoCallUser,
+      currentComment: null
     }
   },
   computed: {
@@ -504,6 +515,10 @@ export default {
     if (this.isPost) {
       window.addEventListener('scroll', this.debounceScroll)
     }
+    eventBus.on(CMD.SHOW_COMMENT_OPTIONS, (comment) => {
+      this.currentComment = comment
+      this.showCommentOptions = true
+    })
   },
   beforeUnmount() {
     window.removeEventListener('keydown', this.onKeyDown)

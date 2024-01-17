@@ -1,7 +1,7 @@
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import monkey, {cdn} from 'vite-plugin-monkey';
-import {resolve} from 'path'
+import monkey, { cdn } from 'vite-plugin-monkey';
+import { resolve } from 'path'
 import vueJsx from "@vitejs/plugin-vue-jsx";
 
 function pathResolve(dir) {
@@ -13,6 +13,8 @@ export default defineConfig({
     vue(),
     vueJsx(),
     monkey({
+      //这里不能使用默认值$，会和vue/macros的冲突
+      clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
         version: '7.9.1',

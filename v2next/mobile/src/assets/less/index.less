@@ -282,3 +282,34 @@ input {
 .topic_content, .reply_content {
   font-size: 1.6rem;
 }
+
+@mask-dark: #000000bb;
+@mask-light: transparent;
+@mask-white: transparent;
+@mask-lightgray: rgba(0, 0, 0, 0.25);
+
+.mask {
+  z-index: 3;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: @mask-dark;
+
+  &.dark {
+    background: @mask-dark;
+  }
+
+  &.light {
+    background: @mask-light;
+  }
+
+  &.lightgray {
+    background: @mask-lightgray;
+  }
+
+  &.white {
+    background: @mask-white;
+  }
+}

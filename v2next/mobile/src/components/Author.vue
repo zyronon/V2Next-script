@@ -76,7 +76,7 @@
           @recallThank="recallThank"
           :api-url="'reply/'+comment.id"
       />
-      <MoreIcon/>
+      <MoreIcon @click="eventBus.emit(CMD.SHOW_COMMENT_OPTIONS,comment)"/>
     </div>
   </div>
 </template>
@@ -107,6 +107,12 @@ export default {
     },
   },
   computed: {
+    eventBus() {
+      return eventBus
+    },
+    CMD() {
+      return CMD
+    },
     isDev() {
       return import.meta.env.DEV
     },

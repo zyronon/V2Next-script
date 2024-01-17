@@ -163,7 +163,7 @@ export default {
     hide() {
       let url = `${window.baseUrl}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`
       eventBus.emit(CMD.REMOVE, this.modelValue.floor)
-      $.post(url).then(res => {
+      JQuery.post(url).then(res => {
         eventBus.emit(CMD.REFRESH_ONCE)
         eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '隐藏成功'})
       }, err => {

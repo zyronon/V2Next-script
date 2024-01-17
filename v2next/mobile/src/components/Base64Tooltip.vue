@@ -19,7 +19,7 @@
     </template>
     <div v-else>
       <span>{{ decodeText }}</span>
-      <BaseButton class="btn" size="small" @click="copy">点击复制</BaseButton>
+      <BaseButton class="btn" size="small" @click="copy(decodeText)">点击复制</BaseButton>
     </div>
   </div>
 </template>
@@ -29,6 +29,7 @@ import {onMounted, reactive, ref} from "vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import BaseButton from "./BaseButton.vue";
+import {copy} from "@/utils/index.js";
 
 const tooltip = ref(null)
 const show = ref(false)
@@ -57,15 +58,6 @@ onMounted(() => {
   const fn = () => (show.value && (show.value = false))
   $('.post-detail', window.win().doc).on('scroll', fn)
 })
-
-function copy() {
-  if (window.win().navigator.clipboard) {
-    window.win().navigator.clipboard.writeText(decodeText.value);
-    eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '复制成功'})
-  } else {
-    eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '复制失败！浏览器不支持！'})
-  }
-}
 
 function base64ToArrayBuffer(base64) {
   let binary_string = window.atob(base64);
