@@ -143,7 +143,7 @@ export default {
       this.$refs.dialog.style['transition-duration'] = `0ms`
     },
     move(e) {
-      console.log('this.$refs.dialog.scrollTop',this.$refs.dialog.scrollTop)
+      // console.log('this.$refs.dialog.scrollTop',this.$refs.dialog.scrollTop)
       if (this.$refs.dialog.scrollTop !== 0) return
       this.moveYDistance = e.touches[0].pageY - this.startLocationY
       if (this.moveYDistance > 0) {

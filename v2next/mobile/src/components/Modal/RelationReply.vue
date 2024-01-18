@@ -34,16 +34,10 @@ function close() {
 <template>
   <from-bottom-dialog
       page-id="post-detail"
-      height="40vh"
+      height="70vh"
       :model-value="modelValue"
       @cancel="emit('update:modelValue',false)">
     <div class="wrapper">
-      <div class="my-cell flex">
-        <span class="gray">上下文</span>
-        <div class="top-reply">
-          <i class="fa fa-times" @click="close"/>
-        </div>
-      </div>
       <div class="comments">
         <SingleComment v-for="(item,index) in relationReply"
                        :is-right="item.username === targetUser.right"
@@ -57,6 +51,17 @@ function close() {
 <style scoped lang="less">
 
 .wrapper {
+
+
+  .cancel {
+    border-top: 1px solid #e3e3e3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    height: 5rem;
+    color: rgb(100, 111, 129);
+  }
 }
 
 </style>
