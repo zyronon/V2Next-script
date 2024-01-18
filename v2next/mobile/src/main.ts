@@ -8,7 +8,7 @@ import { PageType, Post, Reply } from "./types"
 import { DefaultConfig, DefaultPost, DefaultUser, functions } from "@v2next/core";
 import * as eruda from "eruda";
 
-eruda.init()
+// eruda.init()
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -128,7 +128,7 @@ function run() {
         }
         //
         let thankNode = topic_buttons.find('.topic_thanked')
-        if (!thankNode.length) {
+        if (thankNode.length) {
           post.isThanked = true
         }
 
@@ -506,7 +506,7 @@ function run() {
         data.append('parent_id', 0)
         data.append('syntax', 0)
         let apiRes = await window.win().fetch(`${window.baseUrl}/notes/new`, {method: 'post', body: data})
-        console.log(apiRes)
+        // console.log(apiRes)
         if (apiRes.redirected && apiRes.status === 200) {
           resolve(apiRes.url.substr(-5))
           return
@@ -560,6 +560,11 @@ function run() {
 
         :root{
           --box-border-radius:8px;
+        }
+        
+        #site-header #site-header-menu #menu-body{
+          position:fixed;
+          top:50px;
         }
         
         #Wrapper .content{

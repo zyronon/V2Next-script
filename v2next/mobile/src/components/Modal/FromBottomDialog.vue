@@ -22,7 +22,9 @@
       <div class="heng-gang" :class="mode" v-if="showHengGang">
         <div class="gang-content"></div>
       </div>
-      <slot></slot>
+      <div class="dialog-wrapper">
+        <slot></slot>
+      </div>
     </div>
   </transition>
 </template>
@@ -135,13 +137,14 @@ export default {
       this.$emit('cancel')
     },
     start(e) {
-      // if (this.$refs.dialog.scrollTop !== 0) return
+      if (this.$refs.dialog.scrollTop !== 0) return
       this.startLocationY = e.touches[0].pageY
       this.startTime = Date.now()
       this.$refs.dialog.style['transition-duration'] = `0ms`
     },
     move(e) {
-      // if (this.$refs.dialog.scrollTop !== 0) return
+      console.log('this.$refs.dialog.scrollTop',this.$refs.dialog.scrollTop)
+      if (this.$refs.dialog.scrollTop !== 0) return
       this.moveYDistance = e.touches[0].pageY - this.startLocationY
       if (this.moveYDistance > 0) {
         // bus.emit(EVENT_KEY.DIALOG_MOVE, {tag: this.tag, e: this.moveYDistance})
@@ -214,6 +217,8 @@ export default {
   box-sizing: border-box;
   border-radius: v-bind(borderRadius);
   transition: all .3s;
+  //display: flex;
+  //flex-direction: column;
 
   &.dark {
     background: @main-bg;
@@ -236,7 +241,8 @@ export default {
     border-radius: v-bind(borderRadius);
     z-index: 3;
     width: 100%;
-    height: 3rem;
+    position: fixed;
+    min-height: 3rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -270,6 +276,10 @@ export default {
       height: .4rem;
       width: 3rem;
     }
+  }
+
+  .dialog-wrapper{
+    margin-top: 3rem;
   }
 }
 </style>

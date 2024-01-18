@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {inject, onMounted} from 'vue'
-import {Icon} from "@iconify/vue";
+import { inject, onMounted } from 'vue'
+import { Icon } from "@iconify/vue";
 import FromBottomDialog from "@/components/Modal/FromBottomDialog.vue";
-import {CommentDisplayType} from "@v2next/core/types";
-import {copy} from '@/utils/index'
+import { CommentDisplayType } from "@v2next/core/types";
+import { copy } from '@/utils/index'
 import eventBus from '@/utils/eventBus'
-import {CMD} from '@/utils/type'
+import { CMD } from '@/utils/type'
 
 const props = defineProps<{
   modelValue: boolean,
@@ -15,17 +15,24 @@ const props = defineProps<{
 const emit = defineEmits<{
   close: [],
   reply: [],
+  merge: [val: any],
   'update:modelValue': [val: boolean],
-  addThank: [],
-  recallThank: [],
 }>()
 
 const config: any = inject('config')
-const isLogin = inject<boolean>('config')
+const isLogin = inject<boolean>('isLogin')
 
 function close() {
   emit('close')
   emit('update:modelValue', false)
+}
+
+function checkIsLogin() {
+  if (!isLogin.value) {
+    eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
+    return false
+  }
+  return true
 }
 
 async function handleCopy() {
@@ -40,6 +47,7 @@ async function handleCopy() {
 }
 
 async function hide() {
+  if (!checkIsLogin()) return
   let url = `${window.baseUrl}/ignore/reply/${props.comment.id}?once=${props.post.once}`
   eventBus.emit(CMD.REMOVE, props.comment.floor)
   close()
@@ -70,27 +78,19 @@ function showRelationReply() {
   close()
 }
 
-function addThank() {
-  emit('addThank')
-  eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: props.comment.id, type: 'add'})
-}
-
 function recallThank() {
-  emit('recallThank')
   eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: props.comment.id, type: 'recall'})
 }
 
 function thank() {
-  if (!isLogin.value) {
-    return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
-  }
+  if (!checkIsLogin()) return
   if (props.comment.username === window.user.username) {
     return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '不能感谢自己'})
   }
   if (props.comment.isThanked) {
     return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '已经感谢过了'})
   }
-  addThank()
+  eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: props.comment.id, type: 'add'})
   //https://www.v2ex.com/thank/topic/886147?once=38719
   let url = `${window.baseUrl}/thank/reply/${props.comment.id}?once=${props.post.once}`
   $.post(url).then(res => {
@@ -144,7 +144,7 @@ function thank() {
             <Icon v-if="comment.isThanked" icon="icon-park-solid:like"/>
             <Icon v-else icon="icon-park-outline:like"/>
           </div>
-          <span>感谢</span>
+          <span>{{ comment.isThanked ? '已' : ''}}感谢</span>
         </div>
         <div class="item" @click="emit('reply')">
           <div class="icon-wrap">

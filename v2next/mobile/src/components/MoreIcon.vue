@@ -14,9 +14,9 @@
 .more {
   @w1: 1.6rem;
   height: @w1;
-  width: @w1 * 1.2;
+  width: @w1 * 1.3;
   padding: 1rem 0;
-  padding-right: .5rem;
+  padding-right: .8rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

@@ -6,28 +6,32 @@
        :class="[isNight?'isNight':'',pageType,isMobile?'mobile':'']"
        @scroll="debounceScroll">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
-      <div class="my-box nav-bar" @click="scrollTop">
+      <div class="my-box nav-bar" @dblclick="scrollTop">
         <div class="left">
           <svg
-              @click="close('btn')"
+              v-if="!isPost"
+              @click.stop="close('btn')"
               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                   d="M20 12H4m0 0l6-6m-6 6l6 6"/>
           </svg>
+          <template v-if="isPost">
+            <a href="/">V2EX</a>
+            <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
+          </template>
           <a :href="post.node.url">{{ post.node.title }}</a>
         </div>
         <div class="right">
           <BaseLoading v-if="refreshLoading"/>
+          <MoreIcon @click.stop="showPostOptions = true"/>
           <img v-if="user.avatar"
                @click="clickAvatar"
                style="margin-right: 0;"
                class="avatar mobile" :src="user.avatar">
-          <MoreIcon @click.stop="showPostOptions = true"/>
         </div>
       </div>
 
-      <div class="main-wrapper" ref="mainWrapper"
-           :style="{width:config.postWidth}">
+      <div class="main-wrapper" ref="mainWrapper">
         <div class="my-box post-wrapper">
           <div class="box-content">
             <div class="header">
@@ -68,27 +72,18 @@
                 </div>
               </small>
             </div>
-            <BaseHtmlRender :html="post.headerTemplate"/>
+            <BaseHtmlRender
+                @click.stop="eventBus.emit(CMD.SHOW_EDITOR,null)"
+                :html="post.headerTemplate"/>
           </div>
-          <Toolbar @reply="isSticky = !isSticky">
-            <Point
-                @addThank="addThank"
-                @recallThank="recallThank"
-                :full="false"
-                :item="{
-                isThanked:post.isThanked,
-                thankCount:post.thankCount,
-                username:post.username
-              }"
-                :api-url="'topic/'+post.id"/>
-          </Toolbar>
+          <Toolbar @reply="isSticky = !isSticky;currentComment = null"></Toolbar>
         </div>
 
         <div class="my-box" v-if="topReply.length && config.showTopReply">
-          <div class="my-cell flex ">
+          <div class="my-cell flex " @click="collapseTopReplyList">
             <span class=" ">高赞回复</span>
             <div class="top-reply">
-              <i class="fa fa-compress" @click="collapseTopReplyList"/>
+              <i class="fa fa-compress"/>
             </div>
           </div>
           <div ref="topReply">
@@ -99,77 +94,69 @@
           </div>
         </div>
 
-        <div class="my-box my-cell" v-if="isMobile && false">
-          <div class="inner" v-html="post.fr"></div>
-        </div>
+        <div class="my-cell flex comments-header" v-if="post.replyList.length ||loading">
+          <span>{{ post.replyCount }} 条回复</span>
+          <div class="display-type">
+            <!--              <div class="type">最新</div>-->
+            <div class="type"
+                 @click="changeOption(CommentDisplayType.Like)"
+                 :class="displayType === CommentDisplayType.Like && 'active'"
+            >最热
+            </div>
+            <div style="position: relative">
+              <div class="type"
+                   @click="clickDisplayType"
+                   :class="![CommentDisplayType.New,CommentDisplayType.Like].includes(displayType)  && 'active'"
+              >
+                <span>{{ currentDisplayType }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+                  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="4" d="M36 18L24 30L12 18"/>
+                </svg>
+              </div>
 
-        <div class="my-box comment-wrapper">
-          <template v-if="post.replyList.length ||loading">
-            <div class="my-cell flex">
-              <span>{{ post.replyCount }} 条回复</span>
-              <div class="display-type">
-                <!--              <div class="type">最新</div>-->
-                <div class="type"
-                     @click="changeOption(CommentDisplayType.Like)"
-                     :class="displayType === CommentDisplayType.Like && 'active'"
-                >最热
+              <div class="type-list" v-if="showChangeDisplayType">
+                <div class="item"
+                     @click.stop="changeOption(CommentDisplayType.FloorInFloorNoCallUser)"
+                     :class="displayType === CommentDisplayType.FloorInFloorNoCallUser && 'active'"
+                >楼中楼
                 </div>
-                <div style="position: relative">
-                  <div class="type"
-                       @click="clickDisplayType"
-                       :class="![CommentDisplayType.New,CommentDisplayType.Like].includes(displayType)  && 'active'"
-                  >
-                    <span>{{ currentDisplayType }}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-                      <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="4" d="M36 18L24 30L12 18"/>
-                    </svg>
-                  </div>
-
-                  <div class="type-list" v-if="showChangeDisplayType">
-                    <div class="item"
-                         @click.stop="changeOption(CommentDisplayType.FloorInFloorNoCallUser)"
-                         :class="displayType === CommentDisplayType.FloorInFloorNoCallUser && 'active'"
-                    >楼中楼
-                    </div>
-                    <div class="item"
-                         @click.stop="changeOption(CommentDisplayType.FloorInFloor)"
-                         :class="displayType === CommentDisplayType.FloorInFloor && 'active'"
-                    >楼中楼(@)
-                    </div>
-                    <div class="item"
-                         @click.stop="changeOption(CommentDisplayType.FloorInFloorNested)"
-                         :class="displayType === CommentDisplayType.FloorInFloorNested && 'active'"
-                    >冗余楼中楼
-                    </div>
-                    <div class="item"
-                         @click.stop="changeOption(CommentDisplayType.OnlyOp)"
-                         :class="displayType === CommentDisplayType.OnlyOp && 'active'"
-                    >只看楼主
-                    </div>
-                    <div class="item"
-                         @click.stop="changeOption(CommentDisplayType.V2exOrigin)"
-                         :class="displayType === CommentDisplayType.V2exOrigin && 'active'"
-                    >V2原版
-                    </div>
-                  </div>
+                <div class="item"
+                     @click.stop="changeOption(CommentDisplayType.FloorInFloor)"
+                     :class="displayType === CommentDisplayType.FloorInFloor && 'active'"
+                >楼中楼(@)
+                </div>
+                <div class="item"
+                     @click.stop="changeOption(CommentDisplayType.FloorInFloorNested)"
+                     :class="displayType === CommentDisplayType.FloorInFloorNested && 'active'"
+                >冗余楼中楼
+                </div>
+                <div class="item"
+                     @click.stop="changeOption(CommentDisplayType.OnlyOp)"
+                     :class="displayType === CommentDisplayType.OnlyOp && 'active'"
+                >只看楼主
+                </div>
+                <div class="item"
+                     @click.stop="changeOption(CommentDisplayType.V2exOrigin)"
+                     :class="displayType === CommentDisplayType.V2exOrigin && 'active'"
+                >V2原版
                 </div>
               </div>
             </div>
-          </template>
+          </div>
+        </div>
 
-          <template v-if="replyList.length || loading">
-            <div class="loading-wrapper" v-if="loading">
-              <BaseLoading size="large"/>
-            </div>
-            <div class="comments" v-else>
-              <template v-if="modelValue">
-                <Comment v-for="(item,index) in replyList"
-                         :key="item.floor"
-                         v-model="replyList[index]"/>
-              </template>
-            </div>
-          </template>
+        <div class="my-box comment-wrapper" v-if="replyList.length || loading">
+          <div class="loading-wrapper" v-if="loading">
+            <BaseLoading size="large"/>
+          </div>
+          <div class="comments" v-else>
+            <template v-if="modelValue">
+              <Comment v-for="(item,index) in replyList"
+                       :key="item.floor"
+                       v-model="replyList[index]"/>
+            </template>
+          </div>
         </div>
 
         <div v-if="!(replyList.length || loading)" id="no-comments-yet">目前尚无回复</div>
@@ -187,24 +174,11 @@
             <PostEditor
                 @close="goBottom"
                 ref="post-editor"
-                useType="reply-post"
+                :useType="currentComment?'reply-comment':'reply-post'"
+                :replyUser="replyUser"
+                :replyFloor="replyFloor"
                 @click="isSticky = true"/>
           </div>
-        </div>
-      </div>
-
-      <div class="relationReply" v-if="showRelationReply" @click="close('space')">
-        <div class="my-cell flex" @click.stop="stop">
-          <span class="gray">上下文</span>
-          <div class="top-reply">
-            <i class="fa fa-times" @click="showRelationReply = false"/>
-          </div>
-        </div>
-        <div class="comments" @click.stop="stop">
-          <SingleComment v-for="(item,index) in relationReply"
-                         :is-right="item.username === targetUser.right"
-                         :key="item.floor"
-                         :comment="item"/>
         </div>
       </div>
 
@@ -227,20 +201,28 @@
       </div>
 
       <post-options
+          @merge="val => {
+            post = Object.assign( post,val)
+            console.log('va',val,post)
+          }"
           :post="post"
-          @reply="isSticky = true;currentComment = null"
-
+          @reply="eventBus.emit(CMD.SHOW_EDITOR,null),showPostOptions = false"
           @refresh="$emit('refresh')"
           v-model="showPostOptions"/>
 
       <comment-options
-          @add-thank="currentComment.isThanked = true"
+          @merge="val => currentComment = Object.assign(currentComment,val)"
           @recall-thank="currentComment.isThanked = false"
           :post="post"
           :comment="currentComment"
           @close="currentComment = null"
-          @reply="isSticky = true; showCommentOptions = false"
+          @reply="eventBus.emit(CMD.SHOW_EDITOR,currentComment),showCommentOptions = false"
           v-model="showCommentOptions"/>
+
+      <relation-reply :post="post"
+                      :relation-reply="relationReply"
+                      v-model="showRelationReply"
+                      :target-user="targetUser"/>
     </div>
   </div>
 </template>
@@ -264,10 +246,12 @@ import MoreIcon from "@/components/MoreIcon.vue";
 import PostOptions from "@/components/Modal/PostOptions.vue";
 import FromBottomDialog from "@/components/Modal/FromBottomDialog.vue";
 import CommentOptions from "@/components/Modal/CommentOptions.vue";
+import RelationReply from "@/components/Modal/RelationReply.vue";
 
 export default {
   name: "detail",
   components: {
+    RelationReply,
     CommentOptions,
     FromBottomDialog,
     PostOptions,
@@ -343,6 +327,20 @@ export default {
     }
   },
   computed: {
+    eventBus() {
+      return eventBus
+    },
+    CMD() {
+      return CMD
+    },
+    replyUser() {
+      if (this.currentComment) return this.currentComment.username
+      return null
+    },
+    replyFloor() {
+      if (this.currentComment) return this.currentComment.floor
+      return null
+    },
     currentDisplayType() {
       let judge = this.displayType
       if ([CommentDisplayType.New, CommentDisplayType.Like].includes(this.displayType)) {
@@ -521,6 +519,14 @@ export default {
       this.currentComment = comment
       this.showCommentOptions = true
     })
+
+    eventBus.on(CMD.SHOW_EDITOR, (comment) => {
+      this.currentComment = comment
+      this.isSticky = true
+      setTimeout(() => {
+        this.$refs["post-editor"]?.focus()
+      }, 300)
+    })
   },
   beforeUnmount() {
     window.removeEventListener('keydown', this.onKeyDown)
@@ -691,12 +697,6 @@ export default {
       this.$emit('update:displayType', item)
       this.showChangeDisplayType = false
     },
-    addThank() {
-      eventBus.emit(CMD.CHANGE_POST_THANK, {id: this.post.id, type: 'add'})
-    },
-    recallThank() {
-      eventBus.emit(CMD.CHANGE_POST_THANK, {id: this.post.id, type: 'recall'})
-    },
     scrollTop() {
       if (this.isPost) {
         $("body , html").animate({scrollTop: 0}, 300);
@@ -725,22 +725,6 @@ export default {
 <style scoped lang="less">
 @import "src/assets/less/index.less";
 @import "src/assets/less/variable.less";
-
-.Post {
-  position: unset !important;
-  background: transparent !important;
-  overflow: unset !important;
-
-  .main {
-    background: transparent !important;
-    padding: unset !important;
-    width: 100% !important;
-  }
-
-  .close-btn {
-    display: none;
-  }
-}
 
 .mobile {
   .main {
@@ -851,6 +835,13 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+
+      .comments-header {
+        width: 100%;
+        padding: 0 1rem;
+        box-sizing: border-box;
+        background: var(--box-background-color);
       }
 
       .display-type {
@@ -1024,20 +1015,6 @@ export default {
       font-size: 1.4rem;
       text-align: center;
       color: gray;
-    }
-  }
-
-  .read-notice {
-    display: flex;
-    align-items: center;
-    color: gray;
-
-    .jump {
-      background: var(--color-third-bg);
-      color: gray;
-      padding: 0.3rem 1rem;
-      border-radius: .4rem;
-      margin: 0 1rem;
     }
   }
 

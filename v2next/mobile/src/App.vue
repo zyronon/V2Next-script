@@ -331,9 +331,8 @@ export default {
     },
     showPost() {
       this.show = true
-      $('#site-header').hide()
-      $('#reply-box').hide()
-      $(`#Wrapper .box:lt(3)`).each(function () {
+      $('#site-header').css('margin-top','-42px')
+      $(`#Wrapper .box:lt(5)`).each(function () {
         $(this).hide()
       })
     },
@@ -471,6 +470,8 @@ export default {
         if (rIndex > -1) {
           this.list.splice(rIndex, 1)
         }
+        let el = document.querySelector(`.id_${this.current.id}`)
+        if (el) el.remove()
         this.current = this.clone(window.initPost)
       })
       eventBus.on(CMD.MERGE, (val) => {

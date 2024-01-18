@@ -2,7 +2,6 @@
   <div class="comment" :class="myClass" ref="comment" :data-floor="floor">
     <Author v-model="expand"
             :comment="modelValue"
-            @reply="edit = !edit"
             :type="type"
     />
     <div v-if="cssStyle && !expand" class="more ago" @click="expand = !expand">
@@ -13,17 +12,15 @@
         由于嵌套回复层级太深，自动将以下回复移至可见范围
       </div>
       <div class="comment-content">
-        <div class="left expand-line" @click="toggle"></div>
-        <div class="right">
+        <div class="left expand-line"  @click="toggle"></div>
+        <div class="right"
+             @click.stop="eventBus.emit(CMD.SHOW_EDITOR,modelValue)">
           <div class="w">
             <div class="wrong-wrapper" v-if="modelValue.isWrong">
-              <span
-                  @click="expandWrong = !expandWrong"
-                  title="点击楼层号查看提示"
-              >
+              <span @click="expandWrong = !expandWrong" title="点击楼层号查看提示">
                 <a :href="'/member/'+modelValue.replyUsers[0]">@{{ modelValue.replyUsers[0] }}&nbsp;&nbsp;</a>
-              <span class="del-line">#{{ modelValue.replyFloor }} </span>
-              <i class="fa fa-question-circle-o wrong-icon" aria-hidden="true"></i>
+                <span class="del-line">#{{ modelValue.replyFloor }} </span>
+                <i class="fa fa-question-circle-o wrong-icon" aria-hidden="true"></i>
               </span>
               <div class="warning" v-if="expandWrong">
                 这条回复似乎有点问题，指定的楼层号与@的人对应不上
@@ -36,25 +33,15 @@
                 <br>
                 三、层主回复时指定错了楼层号（同一，层主屏蔽了别人，导致楼层塌陷）
                 <br>
-                四、脚本解析错误，请在<a href="https://github.com/zyronon/v2ex-script/discussions/7"
-                                       target="_blank">这里</a>反馈
+                四、脚本解析错误，请在
+                <a href="https://github.com/zyronon/web-scripts/issues" target="_blank">这里</a>反馈
               </div>
             </div>
-            <template v-if="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser && this.type !== 'top'">
-              <div v-if="showOrigin" @dblclick="toggleContent">
-                <p>---原文---</p>
-                <BaseHtmlRender class="reply_content" :html="modelValue.reply_content"/>
-                <p>-----------</p>
-              </div>
-              <BaseHtmlRender class="reply_content" @dblclick="toggleContent"
-                              :html="modelValue.hideCallUserReplyContent"/>
-            </template>
+            <BaseHtmlRender
+                v-if="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser && this.type !== 'top'"
+                class="reply_content"
+                :html="modelValue.hideCallUserReplyContent"/>
             <BaseHtmlRender v-else class="reply_content" :html="modelValue.reply_content"/>
-            <PostEditor v-if="edit"
-                        @close="edit = false"
-                        :replyInfo="replyInfo"
-                        :replyUser="modelValue.username"
-                        :replyFloor="modelValue.floor"/>
           </div>
           <div class="simple-wrapper">
             <Comment v-for="(item,index) in modelValue.children"
@@ -77,10 +64,11 @@ import eventBus from "../utils/eventBus.js";
 import BaseHtmlRender from "./BaseHtmlRender.vue";
 import {CMD} from "../utils/type.js";
 import {CommentDisplayType} from "../types.ts";
+import MoreIcon from "@/components/MoreIcon.vue";
 
 export default {
   name: "Comment",
-  components: {BaseHtmlRender, Author, PostEditor, Point},
+  components: {MoreIcon, BaseHtmlRender, Author, PostEditor, Point},
   inject: ['post', 'postDetailWidth', 'show', 'isNight', 'config'],
   props: {
     modelValue: {
@@ -95,7 +83,6 @@ export default {
   },
   data() {
     return {
-      showOrigin: false,
       edit: false,
       ding: false,
       expand: true,
@@ -116,6 +103,12 @@ export default {
     }
   },
   computed: {
+    eventBus() {
+      return eventBus
+    },
+    CMD() {
+      return CMD
+    },
     CommentDisplayType() {
       return CommentDisplayType
     },
@@ -161,10 +154,6 @@ export default {
     },
     toggle() {
       this.expand = !this.expand
-    },
-    toggleContent() {
-      if (this.modelValue.level === 0 && this.modelValue.replyUsers.length === 0) return
-      this.showOrigin = !this.showOrigin
     },
   }
 }

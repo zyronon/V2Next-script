@@ -1,70 +1,51 @@
 <template>
   <div class="Author" :class="{expand:!modelValue}">
     <div class="Author-left">
-      <svg class="expand-icon"
-           v-if="!modelValue"
-           @click="$emit('update:modelValue',true)"
-           width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22 42H6V26" stroke="#177EC9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M26 6H42V22" stroke="#177EC9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <Icon
+          v-if="!modelValue"
+          @click="$emit('update:modelValue',true)"
+          color="#177EC9"
+          class="expand-icon"
+          icon="gravity-ui:chevrons-expand-up-right"/>
       <a class="avatar" v-if="config.viewType !== 'simple'" :href="`/member/${comment.username}`">
         <img :src="comment.avatar" alt="">
       </a>
       <div class="info">
         <div class="top">
-        <span class="texts">
-        <strong>
-          <a :href="`/member/${comment.username}`" class="username" :class="{'dark':isNight}">{{ comment.username }}</a>
-        </strong>
-        <div v-if="comment.isOp" class="owner">OP</div>
-        <div v-if="comment.isDup" class="dup">DUP</div>
-        <div v-if="comment.isMod" class="mod">MOD</div>
-        <template v-if="isLogin && config.openTag">
-            <span class="my-tag" v-for="i in myTags">
-              <i class="fa fa-tag"></i>
-              <span>{{ i }}</span>
-              <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
-            </span>
-             <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
-        </template>
-      </span>
+          <span class="texts">
+            <strong>
+              <a :href="`/member/${comment.username}`" class="username" :class="{'dark':isNight}">{{
+                  comment.username
+                }}</a>
+            </strong>
+            <div v-if="comment.isOp" class="owner">OP</div>
+            <div v-if="comment.isDup" class="dup">DUP</div>
+            <div v-if="comment.isMod" class="mod">MOD</div>
+            <template v-if="isLogin && config.openTag">
+                <span class="my-tag" v-for="i in myTags">
+                  <i class="fa fa-tag"></i>
+                  <span>{{ i }}</span>
+                  <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
+                </span>
+                 <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
+            </template>
+          </span>
         </div>
         <div>
-          <div class="floor">{{ comment.floor }}楼</div>
+          <span class="floor">{{ comment.floor }}楼</span>
           <span class="ago">{{ comment.date }}</span>
         </div>
       </div>
     </div>
     <div class="Author-right">
-      <div class="toolbar" v-if="isLogin">
-        <div class="tool" @click="checkIsLogin('reply')">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M23 21H25.0025" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-            <path d="M33.001 21H34.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-            <path d="M13.001 21H14.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <span>回复</span>
-        </div>
-        <Point
-            v-show="!comment.thankCount"
-            :item="pointInfo"
-            @addThank="addThank"
-            @recallThank="recallThank"
-            :api-url="'reply/'+comment.id"
-        />
-      </div>
       <Point
-          style="margin-left: 1rem;"
           v-show="comment.thankCount"
           :item="pointInfo"
           @addThank="addThank"
           @recallThank="recallThank"
           :api-url="'reply/'+comment.id"
       />
-      <MoreIcon @click="eventBus.emit(CMD.SHOW_COMMENT_OPTIONS,{...comment, top: type === 'top'})"/>
+      <MoreIcon @click.stop="eventBus.emit(CMD.SHOW_COMMENT_OPTIONS,{...comment, top: type === 'top'})"/>
     </div>
   </div>
 </template>
@@ -72,12 +53,12 @@
 import Point from "./Point.vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
-import PopConfirm from "./PopConfirm.vue";
 import MoreIcon from "@/components/MoreIcon.vue";
+import {Icon} from "@iconify/vue";
 
 export default {
   name: "Author",
-  components: {MoreIcon, PopConfirm, Point},
+  components: {MoreIcon, Point, Icon},
   inject: ['isLogin', 'tags', 'config', 'isNight'],
   props: {
     modelValue: false,
@@ -100,9 +81,6 @@ export default {
     },
     CMD() {
       return CMD
-    },
-    isDev() {
-      return import.meta.env.DEV
     },
     pointInfo() {
       return {
@@ -176,8 +154,8 @@ export default {
 
     .expand-icon {
       margin-right: .8rem;
-      width: 2rem;
-      height: 2rem;
+      width: 2.4rem;
+      height: 2.4rem;
       transform: rotate(90deg);
     }
 
@@ -222,7 +200,6 @@ export default {
       color: white;
       margin-right: 1rem;
     }
-
   }
 
   .Author-right {
@@ -230,15 +207,6 @@ export default {
     right: 0;
     display: flex;
     align-items: center;
-
-    .toolbar {
-      display: flex;
-      align-items: center;
-      color: var(--color-gray);
-      opacity: 0;
-      font-weight: bold;
-      gap: 1rem;
-    }
   }
 }
 </style>
