@@ -230,9 +230,7 @@ export default {
       //未读提醒
       if (href.includes('/notifications')) return
       if (href === window.origin + '/script-setting') {
-        // if (that.show) {
-        // }
-
+        window.functions.clickAvatar(this.show ? '.post-wrapper ' : '')
         this.slide('setting', this.step++)
         that.stopEvent(e)
         return
