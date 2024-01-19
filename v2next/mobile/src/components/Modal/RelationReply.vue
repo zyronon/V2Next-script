@@ -37,31 +37,16 @@ function close() {
       height="70vh"
       :model-value="modelValue"
       @cancel="emit('update:modelValue',false)">
-    <div class="wrapper">
-      <div class="comments">
-        <SingleComment v-for="(item,index) in relationReply"
-                       :is-right="item.username === targetUser.right"
-                       :key="item.floor"
-                       :comment="item"/>
-      </div>
+    <div class="comments">
+      <SingleComment v-for="(item,index) in relationReply"
+                     :is-right="item.username === targetUser.right"
+                     :key="item.floor"
+                     :comment="item"/>
     </div>
   </from-bottom-dialog>
 </template>
 
 <style scoped lang="less">
 
-.wrapper {
-
-
-  .cancel {
-    border-top: 1px solid #e3e3e3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.6rem;
-    height: 5rem;
-    color: rgb(100, 111, 129);
-  }
-}
 
 </style>

@@ -41,6 +41,8 @@
   --color-sp-btn-bg: #f1f1f1;
 
   --color-call-list-bg: white;
+
+  --space: 1rem;
 }
 
 html.dark {
@@ -251,6 +253,7 @@ a {
 }
 
 input {
+  width: 10rem;
   height: 3rem;
   outline: unset;
   border: 1px solid var(--color-input-border);
@@ -302,5 +305,44 @@ input {
 
   &.white {
     background: @mask-white;
+  }
+}
+
+
+.slide {
+  flex: 1;
+  width: 100vw;
+  height: 100vh;
+  transition: height .3s;
+  position: relative;
+  overflow: hidden;
+
+  .slide-list {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    position: relative;
+    transition: transform .3s;
+
+    .slide-item {
+      height: 100%;
+      width: 100%;
+      flex-shrink: 0;
+      position: relative;
+      overflow: auto;
+    }
+  }
+}
+
+.mobile-page {
+  font-size: 1.8rem;
+  display: flex;
+  flex-direction: column;
+
+  & > .page-content {
+    padding: 1rem;
+    padding-top: 0;
+    box-sizing: border-box;
+    overflow: auto;
   }
 }

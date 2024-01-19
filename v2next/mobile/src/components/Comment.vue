@@ -63,7 +63,7 @@ import Point from "./Point.vue";
 import eventBus from "../utils/eventBus.js";
 import BaseHtmlRender from "./BaseHtmlRender.vue";
 import {CMD} from "../utils/type.js";
-import {CommentDisplayType} from "../types.ts";
+import {CommentDisplayType} from "@v2next/core/types.ts";
 import MoreIcon from "@/components/MoreIcon.vue";
 
 export default {

@@ -6,7 +6,7 @@ import { inject, reactive, ref, watch } from "vue";
 import { Post } from "@v2next/core/types";
 import eventBus from '@/utils/eventBus'
 import { CMD } from '@/utils/type'
-import { PageType } from "@/types";
+import { PageType } from "@v2next/core/types";
 import BaseLoading from "@/components/BaseLoading.vue";
 
 let fs = ref(0)
@@ -263,12 +263,6 @@ async function thank() {
             <Icon color="black" icon="octicon:copy-24"/>
           </div>
           <span>复制内容</span>
-        </div>
-        <div class="item">
-          <div class="icon-wrap">
-            <Icon color="black" icon="iconoir:page-search"/>
-          </div>
-          <span>跳转</span>
         </div>
         <div class="item" @click="emit('refresh'),close()">
           <div class="icon-wrap">

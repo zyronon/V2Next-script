@@ -1,5 +1,5 @@
 <script>
-import {MAX_REPLY_LIMIT, PageType} from "./types.ts"
+import {MAX_REPLY_LIMIT, PageType} from "@v2next/core/types.ts"
 import {computed, nextTick} from "vue";
 import Setting from "./components/Modal/SettingModal.vue";
 import eventBus from "./utils/eventBus.js";
@@ -129,8 +129,6 @@ export default {
         if (e.target.tagName !== 'A'
             &&
             e.target.tagName !== 'IMG'
-            &&
-            !e.target.classList.contains('toggle')
         ) {
           console.log('点空白处', this)
           let id = this.dataset['id']
@@ -141,17 +139,6 @@ export default {
             if (href) location.href = href
           }
         }
-      }
-    })
-    //展开或收起的点击事件
-    $(document).on('click', '.toggle', (e) => {
-      if (this.stopMe) return true
-      let id = e.currentTarget.dataset['id']
-      let itemDom = window.win().query(`.id_${id}`)
-      if (itemDom.classList.contains('preview')) {
-        itemDom.classList.remove('preview')
-      } else {
-        itemDom.classList.add('preview')
       }
     })
 
@@ -331,12 +318,13 @@ export default {
     },
     showPost() {
       this.show = true
-      $('#site-header').css('margin-top','-42px')
+      $('#site-header').css('margin-top', '-42px')
       $(`#Wrapper .box:lt(5)`).each(function () {
         $(this).hide()
       })
     },
     showConfig() {
+      $('.slide-list').css('transform', `translateX(-100vw)`)
       this.configModal.show = true
     },
     async winCb({type, value}) {
@@ -381,9 +369,7 @@ export default {
         this.current = value
         this.current.inList = true
         //这时有正文了，再打开，体验比较好
-        if (this.config.autoOpenDetail) {
-          this.showPost()
-        }
+        this.showPost()
       }
       if (type === 'postReplies') {
         console.log('当前帖子', this.current)
@@ -638,7 +624,7 @@ export default {
             </span>
       <span class="add-tag ago" @click="addTargetUserTag" title="添加标签">+</span>
     </div>
-    <div v-if="isPost && !show && config.autoOpenDetail" class="my-box p2"
+    <div v-if="isPost && !show" class="my-box p2"
          style="margin-top: 2rem;">
       <div class="flex flex-center" v-if="loading">
         <BaseLoading/>

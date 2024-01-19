@@ -6,15 +6,11 @@
        :class="[isNight?'isNight':'',pageType,isMobile?'mobile':'']"
        @scroll="debounceScroll">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
-      <div class="my-box nav-bar" @dblclick="scrollTop">
+      <div class="my-box nav-bar" @dblclick.stop="scrollTop">
         <div class="left">
-          <svg
-              v-if="!isPost"
-              @click.stop="close('btn')"
-              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M20 12H4m0 0l6-6m-6 6l6 6"/>
-          </svg>
+          <Icon v-if="!isPost"
+                @click.stop="close"
+                icon="ep:back"/>
           <template v-if="isPost">
             <a href="/">V2EX</a>
             <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
@@ -96,54 +92,9 @@
 
         <div class="my-cell flex comments-header" v-if="post.replyList.length ||loading">
           <span>{{ post.replyCount }} 条回复</span>
-          <div class="display-type">
-            <!--              <div class="type">最新</div>-->
-            <div class="type"
-                 @click="changeOption(CommentDisplayType.Like)"
-                 :class="displayType === CommentDisplayType.Like && 'active'"
-            >最热
-            </div>
-            <div style="position: relative">
-              <div class="type"
-                   @click="clickDisplayType"
-                   :class="![CommentDisplayType.New,CommentDisplayType.Like].includes(displayType)  && 'active'"
-              >
-                <span>{{ currentDisplayType }}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-                  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="4" d="M36 18L24 30L12 18"/>
-                </svg>
-              </div>
-
-              <div class="type-list" v-if="showChangeDisplayType">
-                <div class="item"
-                     @click.stop="changeOption(CommentDisplayType.FloorInFloorNoCallUser)"
-                     :class="displayType === CommentDisplayType.FloorInFloorNoCallUser && 'active'"
-                >楼中楼
-                </div>
-                <div class="item"
-                     @click.stop="changeOption(CommentDisplayType.FloorInFloor)"
-                     :class="displayType === CommentDisplayType.FloorInFloor && 'active'"
-                >楼中楼(@)
-                </div>
-                <div class="item"
-                     @click.stop="changeOption(CommentDisplayType.FloorInFloorNested)"
-                     :class="displayType === CommentDisplayType.FloorInFloorNested && 'active'"
-                >冗余楼中楼
-                </div>
-                <div class="item"
-                     @click.stop="changeOption(CommentDisplayType.OnlyOp)"
-                     :class="displayType === CommentDisplayType.OnlyOp && 'active'"
-                >只看楼主
-                </div>
-                <div class="item"
-                     @click.stop="changeOption(CommentDisplayType.V2exOrigin)"
-                     :class="displayType === CommentDisplayType.V2exOrigin && 'active'"
-                >V2原版
-                </div>
-              </div>
-            </div>
-          </div>
+          <BaseSelect :display-type="displayType"
+                      @update:display-type="e => $emit('update:displayType', e)"
+          />
         </div>
 
         <div class="my-box comment-wrapper" v-if="replyList.length || loading">
@@ -193,13 +144,6 @@
         </div>
       </div>
 
-      <div class="scroll-to gray" @click.stop="jump(currentFloor)">
-        <i class="fa fa-long-arrow-down"/>
-        <input type="text" v-model="currentFloor"
-               @click.stop="stop"
-               @keydown.enter="jump(currentFloor)">
-      </div>
-
       <post-options
           @merge="val => {
             post = Object.assign( post,val)
@@ -235,7 +179,7 @@ import BaseHtmlRender from "./BaseHtmlRender.vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import {computed, nextTick} from "vue";
-import {CommentDisplayType, PageType} from "../types.ts";
+import {CommentDisplayType, PageType} from "@v2next/core/types.ts";
 import Tooltip from "./Tooltip.vue";
 import PopConfirm from "./PopConfirm.vue";
 import SingleComment from "./SingleComment.vue";
@@ -247,10 +191,13 @@ import PostOptions from "@/components/Modal/PostOptions.vue";
 import FromBottomDialog from "@/components/Modal/FromBottomDialog.vue";
 import CommentOptions from "@/components/Modal/CommentOptions.vue";
 import RelationReply from "@/components/Modal/RelationReply.vue";
+import {Icon} from "@iconify/vue";
+import BaseSelect from "@/components/BaseSelect.vue";
 
 export default {
   name: "detail",
   components: {
+    BaseSelect,
     RelationReply,
     CommentOptions,
     FromBottomDialog,
@@ -265,7 +212,8 @@ export default {
     Toolbar,
     BaseHtmlRender,
     Tooltip,
-    BaseLoading
+    BaseLoading,
+    Icon
   },
   inject: ['allReplyUsers', 'user', 'post', 'isMobile', 'tags', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
   provide() {
@@ -321,8 +269,6 @@ export default {
       },
       currentFloor: '',
       showOpTag: false,
-      showChangeDisplayType: false,
-      lastDisplayType: CommentDisplayType.FloorInFloorNoCallUser,
       currentComment: null
     }
   },
@@ -340,25 +286,6 @@ export default {
     replyFloor() {
       if (this.currentComment) return this.currentComment.floor
       return null
-    },
-    currentDisplayType() {
-      let judge = this.displayType
-      if ([CommentDisplayType.New, CommentDisplayType.Like].includes(this.displayType)) {
-        judge = this.lastDisplayType
-      }
-      switch (judge) {
-        case CommentDisplayType.FloorInFloorNoCallUser:
-          return '楼中楼'
-        case CommentDisplayType.FloorInFloor:
-          return '楼中楼(@)'
-        case CommentDisplayType.FloorInFloorNested:
-          return '冗余楼中楼'
-        case CommentDisplayType.V2exOrigin:
-          return 'V2原版'
-        case CommentDisplayType.OnlyOp:
-          return '只看楼主'
-      }
-      return ''
     },
     isMy() {
       return this.post.member.username === window.user.username
@@ -534,18 +461,7 @@ export default {
   },
   methods: {
     clickAvatar() {
-      let menu = $('#menu-body')
-      if (menu.css('--show-dropdown') === 'block') {
-        menu.css('--show-dropdown', 'none')
-      } else {
-        menu.css('--show-dropdown', 'block')
-      }
-    },
-    clickDisplayType() {
-      if ([CommentDisplayType.New, CommentDisplayType.Like].includes(this.displayType)) {
-        return this.changeOption(this.lastDisplayType)
-      }
-      this.showChangeDisplayType = !this.showChangeDisplayType
+      window.functions.clickAvatar()
     },
     addTag() {
       eventBus.emit(CMD.ADD_TAG, this.post.member.username)
@@ -650,15 +566,9 @@ export default {
         }
       })
     },
-    close(from) {
+    close() {
       if (this.isPost) return
-      if (from === 'space') {
-        if (this.config.closePostDetailBySpace) {
-          this.$emit('update:modelValue', false)
-        }
-      } else {
-        this.$emit('update:modelValue', false)
-      }
+      this.$emit('update:modelValue', false)
     },
     setCall(e) {
       eventBus.emit(CMD.SET_CALL, e)
@@ -689,13 +599,6 @@ export default {
         }
         e.preventDefault()
       }
-    },
-    changeOption(item) {
-      if (![CommentDisplayType.New, CommentDisplayType.Like].includes(this.displayType)) {
-        this.lastDisplayType = this.displayType
-      }
-      this.$emit('update:displayType', item)
-      this.showChangeDisplayType = false
     },
     scrollTop() {
       if (this.isPost) {
@@ -844,58 +747,6 @@ export default {
         background: var(--box-background-color);
       }
 
-      .display-type {
-        height: 3rem;
-        padding: 0 .3rem;
-        //gap: .5rem;
-        background: #f1f1f1;
-        border-radius: 1rem;
-        display: flex;
-        font-size: 1.4rem;
-        align-items: center;
-        @sw: 1.5rem;
-
-        .type {
-          border-radius: .8rem;
-          padding: 0 1.3rem;
-          height: 2.5rem;
-          align-items: center;
-          display: flex;
-          position: relative;
-
-          &.active {
-            background: white;
-            color: black;
-            box-shadow: 0 0 6px 0px var(--color-tooltip-shadow);
-          }
-        }
-
-        .type-list {
-          position: absolute;
-          background: white;
-          right: 0rem;
-          top: 3rem;
-          font-size: 1.4rem;
-          box-shadow: 0 0 6px 0px var(--color-tooltip-shadow);
-          border-radius: .6rem;
-          z-index: 9;
-          color: var(--color-font);
-
-          .item {
-            word-break: keep-all;
-            padding: .8rem 1rem;
-
-            &.active {
-              color: var(--color-font-pure);
-            }
-          }
-        }
-
-        svg {
-          width: @sw;
-        }
-      }
-
       #no-comments-yet {
         color: #a9a9a9;
         font-weight: bold;
@@ -985,36 +836,6 @@ export default {
     @width: 100vw;
     .main-wrapper {
       width: @width !important;
-    }
-  }
-
-  .scroll-top {
-    position: fixed;
-    border-radius: .6rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    bottom: 10rem;
-    z-index: 99;
-    padding: .8rem 0;
-    gap: 1rem;
-    width: 4.5rem;
-    font-size: 2rem;
-    background: var(--color-sp-btn-bg);
-  }
-
-  .scroll-to {
-    .scroll-top;
-    bottom: 55rem;
-    display: flex;
-    flex-direction: column;
-
-    input {
-      height: 2.6rem;
-      width: 3.6rem;
-      font-size: 1.4rem;
-      text-align: center;
-      color: gray;
     }
   }
 

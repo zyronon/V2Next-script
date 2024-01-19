@@ -84,6 +84,7 @@ export enum CommentDisplayType {
     Like = 1,//感谢
     V2exOrigin = 2,//V2原版
     OnlyOp = 3,//只看楼主
+    New = 6,//最新
 }
 
 export interface Reply {
