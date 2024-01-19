@@ -51,7 +51,6 @@ declare global {
     stopMe: boolean
     vals: {
       isMobile: boolean,
-      step:0
     }
   }
 }

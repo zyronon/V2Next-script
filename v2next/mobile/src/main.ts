@@ -442,8 +442,6 @@ function run() {
             Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
                 let ok = res.filter((r) => r.status === "fulfilled").map((v: any) => v.value[0])
                 // let fail = res.filter((r) => r.status === "rejected")
-                box.style.boxShadow = 'unset'
-                box.style.background = 'unset'
                 if (window.config.viewType === 'card') {
                     list.forEach(itemDom => itemDom.classList.add('preview'))
                 }
@@ -531,7 +529,6 @@ function run() {
     }
     window.vals = {
         isMobile: !document.querySelector('#Rightbar'),
-        step: 0
     }
     window.functions = {
         feedback() {
@@ -564,10 +561,6 @@ function run() {
           top:50px;
         }
         
-        #Wrapper .content{
-        padding:0;
-        }
-        
         .box{
           box-shadow:rgba(0, 0, 0, 0.08) 0px 4px 12px;
         }
@@ -584,17 +577,7 @@ function run() {
             border-radius: 5px; 
         }
 
-        #Wrapper {
-          height: unset !important;
-          width: unset !important;
-        }
-
-       #Wrapper > .content {
-        height: unset !important;
-        width: unset !important;
-          max-width:1100px !important;
-      }
-
+         
       .post-item {
           background: white;
       } 
@@ -657,7 +640,6 @@ function run() {
           color: #494949;
       }
 
-
       .Night .post-item {
           background: #18222d !important;
       }
@@ -678,40 +660,10 @@ function run() {
           color: #c0dbff !important;
       }
       
-      ${
-            window.config.viewType === 'simple' ? `
-      ${window.pageType !== PageType.Member ? `
-      .item table tr td:first-child{display:none;}
-      #Rightbar .cell table:first-child tr td:first-child{display:none;}
-      .item table tr td .sep5{display:none;}
-      .item table tr td .topic_info{display:none;}
-      .item {border-bottom:none;}
-      .avatar,#avatar{display:none;}
-      ` : ''}
-      
-      #Logo {background-image:url('https://i.imgur.com/i9VgUtM.png');}
-       .bigger a, .top:nth-last-child(5){color: transparent!important;text-shadow: #b0b0b0 0 0 6px;user-select: none;}
-      // .bigger a:before,.top:nth-last-child(5):before{content:'Mona Lisa';position: absolute;background: white;}
-      #Rightbar .cell table:first-child tr td:first-child{display:none;}
-      ` : ''}
-        
       .top{
         position:relative;
       }
-        
-      .new:before{
-        content:'new';
-        position: absolute;
-        background: red;
-        font-size: 10px;
-        border-radius: 4px;
-        padding: 0px 2px;
-        color: white;
-        right: -9px;
-        top: -3px;
-      }
     }
-
     `
         let addStyle2: HTMLStyleElement = document.createElement("style");
         // @ts-ignore
@@ -987,11 +939,7 @@ function run() {
                 window.parse.parsePagePostList(list, box[1])
                 break
             case  PageType.Home:
-                if (window.vals.isMobile) {
-                    box = document.querySelector('#Wrapper .box')
-                } else {
-                    box = document.querySelector('#Wrapper #Main .box')
-                }
+                box = document.querySelector('#Wrapper .box')
                 list = box!.querySelectorAll('.item')
                 list[0].before($section)
                 window.parse.parsePagePostList(list, box)

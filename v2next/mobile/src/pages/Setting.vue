@@ -158,7 +158,7 @@ export default {
     Tooltip,
     Icon
   },
-  inject: ['isNight'],
+  emits:['back'],
   props: {
     modelValue: {
       type: Object,

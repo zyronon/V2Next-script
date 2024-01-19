@@ -115,7 +115,6 @@ export default {
     myClass() {
       return {
         isOp: this.modelValue.isOp,
-        isSimple: this.config.viewType === 'simple',
         ding: this.ding,
         isLevelOne: this.modelValue.level === 0,
         ['c_' + this.floor]: this.type !== 'top'
@@ -180,21 +179,6 @@ export default {
   &.ding {
     @bg: rgb(yellow, .3);
     background: @bg !important;
-  }
-
-  &.isSimple {
-    .avatar, .expand-line {
-      display: none;
-    }
-
-    .simple-wrapper {
-      padding-left: 2.8rem;
-    }
-
-    .w {
-      padding-left: 0 !important;
-      padding-top: .5rem;
-    }
   }
 
   .comment-content-w {

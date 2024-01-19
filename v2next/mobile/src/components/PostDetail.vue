@@ -23,7 +23,8 @@
           <img v-if="user.avatar"
                @click="clickAvatar"
                style="margin-right: 0;"
-               class="avatar mobile" :src="user.avatar">
+               class="avatar mobile"
+               :src="user.avatar">
         </div>
       </div>
 
@@ -32,7 +33,7 @@
           <div class="header">
             <h1>{{ post.title }}</h1>
             <small class="gray">
-              <a class="avatar"
+              <a class="base-avatar"
                  :href="`/member/${post.member.username}`"
                  v-if="post.member.avatar_large">
                 <img :src="post.member.avatar_large"
@@ -195,6 +196,7 @@ import BackIcon from "@/components/BackIcon.vue";
 
 export default {
   name: "detail",
+  emits: ['saveReadList', 'refresh'],
   components: {
     BackIcon,
     BaseSelect,
@@ -375,7 +377,7 @@ export default {
         if (newVal) {
           if (!window.history.state) {
             // console.log('执行了pushState')
-            window.history.pushState({}, 0, this.post.url);
+            window.history.pushState({}, 0, this.post.href);
           }
 
           this.read = this.post.read

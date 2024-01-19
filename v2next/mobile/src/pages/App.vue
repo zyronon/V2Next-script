@@ -323,7 +323,7 @@ export default {
       $('.slide-list').css('transform', `translateX(-${this.step * 100}vw)`)
     },
     async winCb({type, value}) {
-      // console.log('回调的类型', type, value)
+      console.log('回调的类型', type, value)
       if (type === 'syncData') {
         this.list = window.postList
         this.config = window.config

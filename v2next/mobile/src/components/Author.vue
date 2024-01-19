@@ -7,7 +7,7 @@
           color="#177EC9"
           class="expand-icon"
           icon="gravity-ui:chevrons-expand-up-right"/>
-      <a class="avatar" v-if="config.viewType !== 'simple'" :href="`/member/${comment.username}`">
+      <a class="base-avatar" v-if="config.viewType !== 'simple'" :href="`/member/${comment.username}`">
         <img :src="comment.avatar" alt="">
       </a>
       <div class="info">

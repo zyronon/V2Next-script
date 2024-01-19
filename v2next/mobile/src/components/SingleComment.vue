@@ -1,6 +1,6 @@
 <template>
-  <div class="comment" :class="{isSimple:config.viewType === 'simple'}" ref="comment">
-    <a class="avatar" v-if="!isRight" :href="`/member/${comment.username}`">
+  <div class="comment" ref="comment">
+    <a class="base-avatar" v-if="!isRight" :href="`/member/${comment.username}`">
       <img :src="comment.avatar" alt="">
     </a>
     <div class="comment-body" :class="{isRight}">
@@ -37,7 +37,7 @@
       </div>
       <BaseHtmlRender class="reply_content" :html="comment.reply_content"/>
     </div>
-    <a class="avatar" v-if="isRight" :href="`/member/${comment.username}`">
+    <a class="base-avatar" v-if="isRight" :href="`/member/${comment.username}`">
       <img :src="comment.avatar" alt="">
     </a>
     <div class="Author-right">
@@ -89,17 +89,7 @@ function jump() {
   padding: 1rem;
   border-bottom: 1px solid var(--color-line);
 
-  &.isSimple {
-    .avatar {
-      display: none;
-    }
-
-    .reply_content {
-      margin-top: 0.5rem !important;
-    }
-  }
-
-  .avatar {
+  .base-avatar {
     display: flex;
     margin-right: 0;
 

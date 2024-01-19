@@ -681,12 +681,6 @@ export default {
   }
 }
 
-.mobile {
-  .main {
-    padding: unset !important;
-    width: 100% !important;
-  }
-}
 
 .post-detail {
   text-align: start;
