@@ -300,6 +300,10 @@ export default {
       }
     },
     showPost() {
+      $('.slide-list').css('transition', `0s`)
+      setTimeout(() => {
+        $('.slide-list').css('transition', `transform .3s`)
+      }, 500)
       this.show = true
       $('#site-header').css('margin-top', '-42px')
       $(`#Wrapper .box:lt(5)`).each(function () {
@@ -307,15 +311,13 @@ export default {
       })
     },
     slide(to = 'post', v) {
-      if (this.isList) {
-        if (this.step === 1) {
-          if (to === 'post') {
-            $('.post-wrapper').css('z-index', 10)
-            $('.setting-wrapper').css('z-index', 9)
-          } else {
-            $('.post-wrapper').css('z-index', 9)
-            $('.setting-wrapper').css('z-index', 10)
-          }
+      if (this.step === 1) {
+        if (to === 'post') {
+          $('.post-wrapper').css('z-index', 10)
+          $('.setting-wrapper').css('z-index', 9)
+        } else {
+          $('.post-wrapper').css('z-index', 9)
+          $('.setting-wrapper').css('z-index', 10)
         }
       }
       $('.slide-list').css('transform', `translateX(-${this.step * 100}vw)`)

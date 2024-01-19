@@ -624,7 +624,7 @@ export default {
 
 .post-detail {
   text-align: start;
-  background: gray;
+  background: #f1f1f1;
   font-size: 1.4rem;
   display: flex;
   justify-content: center;
