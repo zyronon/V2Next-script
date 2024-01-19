@@ -213,7 +213,7 @@ export default {
   width: 100%;
   overflow-y: auto;
   bottom: 0;
-  left: 0;
+  //left: 0;
   box-sizing: border-box;
   border-radius: v-bind(borderRadius);
   transition: all .3s;

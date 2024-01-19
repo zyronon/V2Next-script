@@ -1,7 +1,7 @@
 <template>
-  <Teleport to=".setting-wrapper">
+  <Teleport :to="to">
     <div class="mobile-page">
-      <NavBar title="设置" @back="close"/>
+      <NavBar title="设置" @back="$emit('back')"/>
       <div class="page-content ">
         <div class="row">
           <label class="main-title">列表设置</label>
@@ -142,9 +142,9 @@
 </template>
 
 <script>
-import Tooltip from "../Tooltip.vue";
+import Tooltip from "../components/Tooltip.vue";
 import {CommentDisplayType} from "@v2next/core/types.ts";
-import BaseSwitch from "../BaseSwitch.vue";
+import BaseSwitch from "../components/BaseSwitch.vue";
 import NavBar from "@/components/NavBar.vue";
 import {Icon} from "@iconify/vue";
 import BaseSelect from "@/components/BaseSelect.vue";
@@ -170,6 +170,12 @@ export default {
       type: Boolean,
       default() {
         return false
+      }
+    },
+    to: {
+      type: String,
+      default() {
+        return ''
       }
     }
   },
@@ -202,11 +208,6 @@ export default {
       deep: true
     }
   },
-  methods: {
-    close() {
-      $('.slide-list').css('transform', `translateX(0)`)
-    }
-  }
 }
 </script>
 

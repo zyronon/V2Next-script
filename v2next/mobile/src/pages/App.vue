@@ -1,21 +1,21 @@
 <script>
 import {MAX_REPLY_LIMIT, PageType} from "@v2next/core/types.ts"
 import {computed, nextTick} from "vue";
-import Setting from "./components/Modal/SettingModal.vue";
-import eventBus from "./utils/eventBus.js";
-import {CMD} from "./utils/type.js";
-import PostDetail from "./components/PostDetail.vue";
-import Base64Tooltip from "./components/Base64Tooltip.vue";
-import Msg from './components/Msg.vue';
-import Tooltip from "./components/Tooltip.vue";
-import TagModal from "./components/Modal/TagModal.vue";
-import MsgModal from "./components/Modal/MsgModal.vue";
-import {decodeEmail} from "./utils/email-decode.js";
-import BaseSwitch from "./components/BaseSwitch.vue";
-import BaseLoading from "./components/BaseLoading.vue";
-import NotificationModal from "./components/Modal/NotificationModal.vue";
-import BaseButton from "./components/BaseButton.vue";
-import {functions} from "../../core/core.ts";
+import Setting from "./Setting.vue";
+import eventBus from "../utils/eventBus.js";
+import {CMD} from "../utils/type.js";
+import PostDetail from "../components/PostDetail.vue";
+import Base64Tooltip from "../components/Base64Tooltip.vue";
+import Msg from '../components/Msg.vue';
+import Tooltip from "../components/Tooltip.vue";
+import TagModal from "../components/Modal/TagModal.vue";
+import MsgModal from "../components/Modal/MsgModal.vue";
+import {decodeEmail} from "../utils/email-decode.js";
+import BaseSwitch from "../components/BaseSwitch.vue";
+import BaseLoading from "../components/BaseLoading.vue";
+import NotificationModal from "../components/Modal/NotificationModal.vue";
+import BaseButton from "../components/BaseButton.vue";
+import {functions} from "../../../core/core.ts";
 
 export default {
   components: {
@@ -40,7 +40,6 @@ export default {
         }
         return []
       }),
-      showConfig: this.showConfig
     }
   },
   data() {
@@ -58,13 +57,11 @@ export default {
       config: window.clone(window.config),
       tags: window.user.tags,
       readList: window.user.readList,
-      configModal: {
-        show: false
-      },
       notificationModal: {
         show: false,
         h: ''
       },
+      step: 0,
     }
   },
   computed: {
@@ -105,6 +102,11 @@ export default {
         })
       }
     },
+    show(n) {
+      if (n) this.step++
+      else this.step--
+      this.slide('post')
+    }
   },
   created() {
     let that = this
@@ -115,7 +117,7 @@ export default {
     // fetch(location.origin)
 
     //A标签的
-    $(document).on('click', 'a', this.clickA)
+    document.addEventListener('click', this.clickA, true)
     //帖子的
     $(document).on('click', '.post-item', function (e) {
       // console.log('click-post-item')
@@ -154,7 +156,6 @@ export default {
       //TODO
       // this.saveReadList()
     }
-
     window.deleteNotification = (nId, token) => {
       console.log('deleteNotification', nId, token)
       let item = $("#n_" + nId)
@@ -188,8 +189,7 @@ export default {
   beforeUnmount() {
     // console.log('unmounted')
     eventBus.clear()
-    $(document).off('click', 'a', this.clickA)
-
+    document.removeEventListener('click', this.clickA, true)
   },
   methods: {
     async getUnreadMessagesCount() {
@@ -210,13 +210,15 @@ export default {
       throw new Error('无法获取未读消息数量')
     },
     clickA(e) {
+      if (!e?.target) return
+      if (e.target.tagName !== 'A') return
       let that = this
       //有script表示是脚本生成的a标签用于新开页面的
-      if (e.currentTarget.getAttribute('script')) return
+      if (e.target.getAttribute('script')) return
       if (that.stopMe) return true
-      let {href, id, title} = functions.parseA(e.currentTarget)
+      let {href, id, title} = functions.parseA(e.target)
 
-      console.log('click-a', e.currentTarget, e, href, id, title)
+      // console.log('click-a', e.target, e, href, id, title)
       //夜间模式切换
       if (href.includes('/settings/night/toggle')) return
       if (href.includes('/?tab=')) return
@@ -225,32 +227,15 @@ export default {
       if (href === window.origin + '/#;') return
       //主页
       if (href === window.origin + '/') return
-
       //未读提醒
-      if (href.includes('/notifications')) {
-        // this.notificationModal.show = true
-        //
-        // let clientWidth = window.document.body.clientWidth
-        // let windowWidth = 1200
-        // let left = clientWidth / 2 - windowWidth / 2
-        // // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
-        // // newWin.document.write('123');
-        //
-        // fetch(href).then(async r => {
-        //   let htmlText = await r.text()
-        //   let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-        //   let res = htmlText.match(/var notificationBottom = ([\d]+);/)
-        //   if (res && res[1]) {
-        //     window.notificationBottom = Number(res[1])
-        //     console.log(' window.notificationBottom', window.notificationBottom)
-        //   }
-        //
-        //   let body = $(bodyText[0])
-        //   let h = body.find('#notifications').parent().html()
-        //   this.notificationModal.h = h
-        //
-        // })
-        // that.stopEvent(e)
+      if (href.includes('/notifications')) return
+      if (href === window.origin + '/script-setting') {
+        // if (that.show) {
+        // }
+
+        this.slide('setting', this.step++)
+        that.stopEvent(e)
+        return
       }
 
       if (id) {
@@ -323,15 +308,22 @@ export default {
         $(this).hide()
       })
     },
-    showConfig() {
-      $('.slide-list').css('transform', `translateX(-100vw)`)
-      this.configModal.show = true
+    slide(to = 'post', v) {
+      if (this.isList) {
+        if (this.step === 1) {
+          if (to === 'post') {
+            $('.post-wrapper').css('z-index', 10)
+            $('.setting-wrapper').css('z-index', 9)
+          } else {
+            $('.post-wrapper').css('z-index', 9)
+            $('.setting-wrapper').css('z-index', 10)
+          }
+        }
+      }
+      $('.slide-list').css('transform', `translateX(-${this.step * 100}vw)`)
     },
     async winCb({type, value}) {
       // console.log('回调的类型', type, value)
-      if (type === 'openSetting') {
-        this.showConfig()
-      }
       if (type === 'syncData') {
         this.list = window.postList
         this.config = window.config
@@ -596,8 +588,12 @@ export default {
 </script>
 
 <template>
-  <Setting v-model="config" v-model:show="configModal.show"/>
-  <TagModal v-model:tags="tags"/>
+  <Setting v-model="config"
+           @back="slide('post', step--)"
+           to=".setting-wrapper"/>
+  <Setting v-model="config"
+           @back="slide('post', step--)"
+           to=".setting-wrapper2"/>
   <PostDetail v-model="show"
               ref="postDetail"
               v-model:displayType="config.commentDisplayType"
@@ -606,10 +602,13 @@ export default {
               :loading="loading"
               :refreshLoading="refreshLoading"
   />
+
+  <TagModal v-model:tags="tags"/>
   <Base64Tooltip/>
   <MsgModal/>
 
   <NotificationModal
+      v-if="false"
       v-model="notificationModal.show"
       :h="notificationModal.h"
   />
@@ -638,7 +637,7 @@ export default {
 </template>
 
 <style scoped lang="less">
-@import "assets/less/variable";
+@import "../assets/less/variable";
 
 .target-user-tags {
   background: var(--color-second-bg);

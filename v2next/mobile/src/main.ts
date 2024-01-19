@@ -1,14 +1,14 @@
 import { createApp } from 'vue';
 import './assets/less/index.less'
 
-import App from './App.vue';
+import App from './pages/App.vue';
 import { GM_notification } from "gmApi"
 import './global.d.ts'
 import { PageType, Post, Reply } from "@v2next/core/types"
 import { DefaultConfig, DefaultPost, DefaultUser, functions } from "@v2next/core";
 import * as eruda from "eruda";
 
-// eruda.init()
+eruda.init()
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -530,14 +530,15 @@ function run() {
         },
     }
     window.vals = {
-        isMobile: !document.querySelector('#Rightbar')
+        isMobile: !document.querySelector('#Rightbar'),
+        step: 0
     }
     window.functions = {
         feedback() {
             functions.openNewTab(window.const.issue)
         },
-        clickAvatar() {
-            let menu = $('#menu-body')
+        clickAvatar(prex: string) {
+            let menu = $(`${prex}#menu-body`)
             if (menu.css('--show-dropdown') === 'block') {
                 menu.css('--show-dropdown', 'none')
             } else {
@@ -897,11 +898,7 @@ function run() {
     }
 
     function addSettingText() {
-        let setting = $(`<a href="javascript:void 0;" class="top">脚本设置</a>`)
-        setting.on('click', function () {
-            window.functions.clickAvatar()
-            functions.cbChecker({type: 'openSetting'})
-        })
+        let setting = $(`<a href="/script-setting" class="top">脚本设置</a>`)
         $('#menu-body .cell:first').append(setting)
     }
 
@@ -923,7 +920,9 @@ function run() {
         if (window.isNight) {
             document.documentElement.classList.add('dark')
         }
-
+        checkPageType()
+        addSettingText()
+        functions.initMonkeyMenu()
 
         let s = $(`
         <div class="slide">
@@ -934,17 +933,18 @@ function run() {
                     <div class="setting-wrapper"></div>
                 </div>
                 <div class="slide-item page2">
+                    <div class="setting-wrapper2"></div>
                 </div>
             </div>    
-        </div>
-`)
+        </div>`)
+
         $('body').append(s)
         $('body').children().slice(0, 4).each(function () {
             $('.page0').append(this)
         })
+        //因为原来页面在page0下面，右上角的菜单只能显示在page0下面。所以这里复制一份到post-wrapper里面去，那边点右上角就显示这个
+        $('.post-wrapper').append($('#site-header').clone())
 
-        checkPageType()
-        functions.initMonkeyMenu()
 
         let top2 = $('#menu-body .cell:first .top:first')
         if (top2.length && ['个人主页', 'Profile'].includes(top2.text())) {
@@ -955,8 +955,6 @@ function run() {
         }
 
         initConfig().then(r => {
-            //这个要放后面，不然前面查找会出错
-            addSettingText()
 
             initStyle()
 

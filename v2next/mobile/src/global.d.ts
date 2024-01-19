@@ -20,7 +20,7 @@ declare global {
     postList: any[]
     functions: {
       feedback: () => void
-      clickAvatar: () => void
+      clickAvatar: (prex?:string) => void
     },
     parse: {
       parsePostContent: Function,
@@ -50,7 +50,8 @@ declare global {
     query: any
     stopMe: boolean
     vals: {
-      isMobile: boolean
+      isMobile: boolean,
+      step:0
     }
   }
 }
