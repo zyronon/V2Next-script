@@ -82,7 +82,7 @@ export default {
         page.appendChild(mask[0])
       } else {
         // page.scrollTop = this.scroll + 'px'
-        page.style.overflow = 'auto'
+        page.style.overflow = 'unset'
         let mask = $('.mask')
         mask.removeClass('fade-in')
         mask.addClass('fade-out')

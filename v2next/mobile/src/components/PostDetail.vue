@@ -30,19 +30,18 @@
 
       <div class="my-box post-main-body">
         <div class="box-content">
-          <div class="header">
-            <h1>{{ post.title }}</h1>
+          <div class="box-header">
             <small class="gray">
               <a class="base-avatar"
                  :href="`/member/${post.member.username}`"
                  v-if="post.member.avatar_large">
-                <img :src="post.member.avatar_large"
-                     border="0" align="default" :alt="post.member.username"></a>
+                <img :src="post.member.avatar_large"/>
+              </a>
               <div class="info">
                 <div class="top">
-                  <a :href="`/member/${post.member.username}`">{{ post.member.username }}</a> ·
+                  <a :href="`/member/${post.member.username}`">{{ post.member.username }}</a>
                   <template v-if="post.member.createDate">
-                    <span :class="post.member.isNew && 'danger'">{{ post.member.createDate }}</span>
+                    · <span :class="post.member.isNew && 'danger'">{{ post.member.createDate }}</span>
                   </template>
                 </div>
                 <div class="center" v-if="isLogin && config.openTag ">
@@ -60,16 +59,16 @@
                   {{ post.clickCount }} 次点击
                   <template v-if="isMy">&nbsp;&nbsp;
                     <a :href="`/t/${post.id}/info`">
-                      <li class="fa fa-info-circle"></li>
+                      <i class="fa fa-info-circle"></i>
                     </a>&nbsp;&nbsp;
                     <a :href="`/append/topic/${post.id}`" class="op">APPEND</a>
                   </template>
                 </div>
               </div>
             </small>
+            <h1>{{ post.title }}</h1>
           </div>
           <BaseHtmlRender
-              @click.stop="eventBus.emit(CMD.SHOW_EDITOR,null)"
               :html="post.headerTemplate"/>
         </div>
         <Toolbar @reply="isSticky = !isSticky;currentComment = null"></Toolbar>
@@ -218,11 +217,6 @@ export default {
     Icon
   },
   inject: ['allReplyUsers', 'user', 'post', 'isMobile', 'tags', 'isLogin', 'config', 'pageType', 'isNight'],
-  provide() {
-    return {
-      postDetailWidth: computed(() => this.postDetailWidth)
-    }
-  },
   props: {
     modelValue: {
       type: Boolean,
@@ -250,7 +244,6 @@ export default {
       showPostOptions: false,
       showCommentOptions: false,
       selectCallIndex: 0,
-      postDetailWidth: 0,
       showCallList: false,
       showRelationReply: false,
       replyText: '',
@@ -444,7 +437,6 @@ export default {
     })
 
     eventBus.on(CMD.SHOW_EDITOR, (comment) => {
-      return
       this.currentComment = comment
       this.isSticky = true
       setTimeout(() => {
@@ -674,18 +666,12 @@ export default {
   }
 
   .post-main-body {
-    margin-top: 0.2rem;
 
-    .box-content {
-      padding-top: 0;
-    }
-
-    .header {
-      padding-top: 0;
+    .box-header {
+      padding: 0 .5rem;
 
       h1 {
-        margin: 0;
-        margin-bottom: 1rem;
+        font-weight: bold;
       }
 
       //var(--color-gray)

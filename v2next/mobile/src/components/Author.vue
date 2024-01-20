@@ -135,16 +135,12 @@ export default {
   .Author-left {
     display: flex;
     align-items: center;
-    max-width: 65%;
+    width: 80%;
     word-break: break-all;
 
     .info {
       display: flex;
       flex-direction: column;
-
-      .top {
-
-      }
     }
 
     .username {

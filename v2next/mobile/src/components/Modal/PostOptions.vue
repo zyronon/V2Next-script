@@ -29,7 +29,8 @@ const emit = defineEmits<{
   merge: [val: any],
   'update:modelValue': [val: boolean]
 }>()
-const isLogin = inject<boolean>('isLogin')
+
+const isLogin = inject('isLogin')
 const pageType: any = inject('pageType')
 const config: any = inject('config')
 
@@ -179,19 +180,19 @@ async function thank() {
   let apiRes = await fetch(url)
   state.loading4 = false
 
-  // $.post(url).then(res => {
-  //   if (!res.success) {
-  //     eventBus.emit(CMD.MERGE, {isThanked: !isThanked})
-  //     eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: res.message})
-  //   }
-  //   eventBus.emit(CMD.REFRESH_ONCE, res.once)
-  // }, err => {
-  //   state.loading4 = false
-  //   eventBus.emit(CMD.MERGE, {isThanked: !isThanked})
-  //   eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '感谢失败'})
-  //   eventBus.emit(CMD.REFRESH_ONCE)
-  // })
-  // close()
+  $.post(url).then(res => {
+    if (!res.success) {
+      eventBus.emit(CMD.MERGE, {isThanked: !isThanked})
+      eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: res.message})
+    }
+    eventBus.emit(CMD.REFRESH_ONCE, res.once)
+  }, err => {
+    state.loading4 = false
+    eventBus.emit(CMD.MERGE, {isThanked: !isThanked})
+    eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '感谢失败'})
+    eventBus.emit(CMD.REFRESH_ONCE)
+  })
+  close()
 }
 </script>
 

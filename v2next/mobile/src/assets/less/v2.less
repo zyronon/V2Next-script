@@ -1,0 +1,149 @@
+html, body {
+  font-size: 62.5%;
+}
+
+:root {
+  --box-border-radius: 8px;
+}
+
+#Wrapper .box:first-child {
+  background: unset;
+  box-shadow: unset;
+  overflow: hidden;
+}
+
+#site-header #site-header-menu #menu-body {
+  top: 5rem;
+  right: 1rem;
+}
+
+#Wrapper .cell .count_livid {
+  font-size: 14px;
+  font-weight: bold;
+  padding: 3px 10px;
+  border-radius: 5px;
+}
+
+a {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-user-select: none;
+  -moz-user-focus: none;
+  -moz-user-select: none;
+}
+
+.post-item {
+  background: var(--box-background-color);
+
+  .new-item {
+    display: flex;
+    justify-content: space-between;
+
+    .left {
+      .top {
+        display: flex;
+        align-items: center;
+        line-height: 1.1;
+        gap: 1rem;
+      }
+
+      .bottom {
+        margin: 1rem 0;
+        a {
+          text-decoration: none !important;
+        }
+      }
+    }
+
+    .right {
+      min-width: 5rem;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+
+      .count_livid {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .post-content {
+    display: block;
+    max-height: 30rem;
+    overflow: hidden;
+    line-break: anywhere;
+    -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent);
+    height: 0;
+    color: black;
+    text-decoration: none !important;
+
+    blockquote {
+      margin-top: .5rem;
+    }
+
+    p:first-child {
+      margin-top: 0;
+    }
+
+    &:visited {
+      color: var(--link-visited-color);
+    }
+  }
+
+  .show-more {
+    font-size: 1.3rem;
+    text-align: right;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 9;
+    display: none;
+  }
+}
+
+.preview {
+  margin-bottom: 0.7rem;
+  border-radius: var(--box-border-radius);
+
+  .topic-link:link {
+    color: black !important;
+  }
+
+  .show-all {
+    max-height: unset;
+    -webkit-mask-image: none;
+  }
+
+  .post-content {
+    height: unset !important;
+  }
+
+  .show-more {
+    display: flex;
+  }
+
+  .item_title {
+    font-weight: bold;
+  }
+}
+
+
+.Night .post-item {
+  background: #18222d !important;
+}
+
+.Night .preview {
+  border: 1px solid #3b536e;
+}
+
+.Night .preview > .post-content:link {
+  color: #d1d5d9;
+}
+
+.Night .preview > .post-content:visited {
+  color: #393f4e !important;
+}
+
+.Night .preview .topic-link:link {
+  color: #c0dbff !important;
+}

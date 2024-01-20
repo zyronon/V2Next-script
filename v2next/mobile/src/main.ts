@@ -8,7 +8,7 @@ import { PageType, Post, Reply } from "@v2next/core/types"
 import { DefaultConfig, DefaultPost, DefaultUser, functions } from "@v2next/core";
 import * as eruda from "eruda";
 
-eruda.init()
+// eruda.init()
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -428,16 +428,44 @@ function run() {
         parsePagePostList(list: any[], box: any) {
             list.forEach(itemDom => {
                 let item = window.clone(window.initPost)
-                let item_title = itemDom.querySelector('.item_title a')
-                let {href, id} = functions.parseA(item_title)
+                let item_title = itemDom.querySelector('.item_title')
+                let a = item_title.querySelector('a')
+                let {href, id} = functions.parseA(a)
                 item.id = id
-                item.href = href
+                a.href = item.href = href
                 item.url = location.origin + '/api/topics/show.json?id=' + item.id
                 itemDom.classList.add('post-item')
                 itemDom.classList.add(`id_${id}`)
                 itemDom.dataset['href'] = href
                 itemDom.dataset['id'] = id
                 window.postList.push(item)
+                let headerWrap = $(`
+<div class="new-item">
+        <div class="left">
+           <div class="top">
+              <div class="r">
+                <div class="small fade"></div>
+                <div class="small fade"></div>
+              </div>
+            </div>
+            <div class="bottom"></div>
+        </div>
+        <div class="right"></div>
+</div>`)
+                headerWrap.find('.bottom').append(item_title)
+                headerWrap.find('.right').append(itemDom.querySelector('.count_livid'))
+                headerWrap.find('.top').prepend(itemDom.querySelector('td:first-child a'))
+                let info = itemDom.querySelector('td:nth-child(3)')
+                let s1 = info.querySelector('span:first-child')
+                let t = headerWrap.find('.top .r div:first');
+                t.append(s1.querySelector('strong'))
+                t.append(`  •  `)
+                t.append(s1.querySelector('a'))
+                let b = headerWrap.find('.top .r div:last');
+                b.append(info.querySelector('span:last-child').innerHTML)
+
+                itemDom.append(headerWrap[0])
+                itemDom.querySelector('table').remove()
             })
             Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
                 let ok = res.filter((r) => r.status === "fulfilled").map((v: any) => v.value[0])
@@ -465,7 +493,7 @@ function run() {
                                 // console.log(div.clientHeight)
                                 itemDom.append(a)
                                 // show More
-                                if (div.clientHeight < 172) {
+                                if (div.clientHeight < 300) {
                                     a.classList.add('show-all')
                                 } else {
                                     let showMore = document.createElement('div')
@@ -548,121 +576,7 @@ function run() {
     function initStyle() {
         //给Wrapper和content取消宽高，是因为好像是v2的屏蔽机制，时不时会v2会修改这两个div的宽高，让网页变形
         let style2 = `
-       html, body {
-            font-size: 62.5%;
-        }
-        
-        :root{
-          --box-border-radius:8px;
-        }
-        
-        #site-header #site-header-menu #menu-body{
-          position:fixed;
-          top:50px;
-        }
-        
-        .box{
-          box-shadow:rgba(0, 0, 0, 0.08) 0px 4px 12px;
-        }
-        
-        #Tabs{
-            border-top-left-radius: var(--box-border-radius) !important;
-            border-top-right-radius: var(--box-border-radius) !important;
-        }
-        
-        #Main .cell .count_livid { 
-            font-size: 14px;
-            font-weight: 500; 
-            padding: 3px 10px; 
-            border-radius: 5px; 
-        }
-
-         
-      .post-item {
-          background: white;
-      } 
-
-      .post-item > .post-content {
-          height: 0;
-          margin-top: 0;
-      }
- 
-      .preview {
-          margin: 1rem 0;
-          border: 1px solid transparent;
-          border-radius: var(--box-border-radius);
-      }
-
-      .preview > .post-content {
-          height: unset !important;
-          margin-top: 0.5rem !important;
-      }
-
-      .preview > .post-content.show-all {
-          max-height: unset;
-          -webkit-mask-image:none; 
-      }
-
-      .preview  .topic-link:link {
-          color: black !important;
-      }
-
-      .post-content {
-          margin-top: 0.5rem;
-          display: block;
-          max-height: 20rem;
-          overflow: hidden;
-          text-decoration: unset !important;
-          line-break: anywhere;
-          -webkit-mask-image: linear-gradient(180deg,#000 60%,transparent);
-      }
-
-      .show-more {
-        display: none;
-      }
-
-      .preview > .show-more {
-        font-size: 1.3rem;
-        text-align: right;
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        z-index: 9;
-      }
-
-      .post-content:visited {
-          color: #afb9c1 !important;
-      }
-
-      .post-content:link {
-          color: #494949;
-      }
-
-      .Night .post-item {
-          background: #18222d !important;
-      }
-
-      .Night .preview {
-          border: 1px solid #3b536e;
-      }
-
-      .Night .preview > .post-content:link {
-          color: #d1d5d9;
-      }
-
-      .Night .preview > .post-content:visited {
-          color: #393f4e !important;
-      }
       
-      .Night .preview  .topic-link:link {
-          color: #c0dbff !important;
-      }
-      
-      .top{
-        position:relative;
-      }
     }
     `
         let addStyle2: HTMLStyleElement = document.createElement("style");
@@ -940,6 +854,18 @@ function run() {
                 break
             case  PageType.Home:
                 box = document.querySelector('#Wrapper .box')
+
+                //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+                let headerWrap = $('<div class="cell post-item"></div>')
+                if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+                $(box).prepend(headerWrap)
+                $(box).children().slice(1, 3).each(function () {
+                    headerWrap.append(this)
+                })
+                let last = $(box).children().last()
+                last.addClass('cell post-item')
+                if (window.config.viewType === 'card') last[0].classList.add('preview')
+
                 list = box!.querySelectorAll('.item')
                 list[0].before($section)
                 window.parse.parsePagePostList(list, box)

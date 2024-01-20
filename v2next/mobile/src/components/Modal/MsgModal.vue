@@ -1,7 +1,9 @@
 <template>
-  <div class="msgs">
-    <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
-  </div>
+  <teleport to="body">
+    <div class="msgs">
+      <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
+    </div>
+  </teleport>
 </template>
 
 <script setup>

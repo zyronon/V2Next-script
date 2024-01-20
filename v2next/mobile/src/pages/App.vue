@@ -227,6 +227,8 @@ export default {
       if (href === window.origin + '/#;') return
       //主页
       if (href === window.origin + '/') return
+      //最近
+      if (href === window.origin + '/recent') return
       //未读提醒
       if (href.includes('/notifications')) return
       if (href === window.origin + '/script-setting') {

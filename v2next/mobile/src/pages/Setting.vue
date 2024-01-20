@@ -21,10 +21,6 @@
             </div>
           </div>
         </div>
-        <div class="desc danger">
-          提示：此项需要刷新页面才能生效
-        </div>
-
         <div class="row">
           <label class="item-title">帖子弹框显示</label>
           <div class="wrapper">
