@@ -52,7 +52,7 @@ export const DefaultConfig: Config = {
     showToolbar: true,
     showPreviewBtn: true,
     autoOpenDetail: true,
-    openTag: true,//给用户打标签
+    openTag: false,//给用户打标签
     clickPostItemOpenDetail: true,
     closePostDetailBySpace: true,//点击空白处关闭详情
     contentAutoCollapse: true,//正文超长自动折叠
@@ -66,7 +66,7 @@ export const DefaultConfig: Config = {
     topReplyLoveMinCount: 3,
     topReplyCount: 3,
     autoJumpLastReadFloor: false,
-    rememberLastReadFloor: true,
+    rememberLastReadFloor: false,
     autoSignin: true,
     customBgColor: '',
     version: 1,

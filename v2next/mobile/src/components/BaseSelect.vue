@@ -106,12 +106,13 @@ const currentDisplayType = computed(() => {
   height: 3rem;
   padding: 0 .3rem;
   //gap: .5rem;
-  background: #f1f1f1;
+  background: var(--color-main-bg);
   border-radius: 1rem;
   display: flex;
   font-size: 1.4rem;
   align-items: center;
   @sw: 1.5rem;
+  color: darkgrey;
 
   .type {
     border-radius: .8rem;
@@ -122,8 +123,8 @@ const currentDisplayType = computed(() => {
     position: relative;
 
     &.active {
-      background: white;
-      color: black;
+      background: var(--color-second-bg);
+      color: var(--color-font-pure);
       box-shadow: 0 0 6px 0 var(--color-tooltip-shadow);
     }
   }

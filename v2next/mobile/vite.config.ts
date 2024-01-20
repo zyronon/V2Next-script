@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
 import vue from '@vitejs/plugin-vue';
-import monkey, { cdn } from 'vite-plugin-monkey';
-import { resolve } from 'path'
+import monkey, {cdn} from 'vite-plugin-monkey';
+import {resolve} from 'path'
 import vueJsx from "@vitejs/plugin-vue-jsx";
 
 function pathResolve(dir) {
@@ -21,6 +21,9 @@ export default defineConfig({
         name: 'V2Next-Mobile',
         icon: 'https://www.google.com/s2/favicons?sz=64&domain=v2ex.com',
         namespace: 'http://tampermonkey.net/',
+        require: [
+          'tampermonkey://vendor/jquery.js'
+        ],
         match: [
           'https://v2ex.com/',
           'https://v2ex.com/?tab=*',

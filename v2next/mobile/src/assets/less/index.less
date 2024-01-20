@@ -7,6 +7,7 @@
   --color-main-bg: rgb(226, 226, 226);
   --color-second-bg: white;
   --color-third-bg: rgb(226, 226, 226);
+  --color-four-bg: rgb(231, 233, 235);
 
   --color-item-bg: white;
 
@@ -30,6 +31,7 @@
   --color-scrollbar: rgb(147, 173, 227);
 
   --color-line: rgb(226, 226, 226);
+  --color-line2: rgb(206, 206, 206);
 
   --color-loading-1: #00000033;
   --color-loading-2: #000;
@@ -50,6 +52,7 @@ html.dark {
   --color-main-bg: #22303f;
   --color-second-bg: rgb(24, 34, 45);
   --color-third-bg: rgb(49, 71, 94);
+  --color-four-bg: #22303f;
 
   --color-item-bg: rgb(24, 34, 45);
 
@@ -339,9 +342,13 @@ input {
     top: 0;
     height: 100%;
     width: 100%;
-    background: white;
+    background: var(--color-main-bg);
     overflow: auto;
   }
+}
+
+.setting-wrapper2 {
+  background: var(--color-main-bg);
 }
 
 .mobile-page {

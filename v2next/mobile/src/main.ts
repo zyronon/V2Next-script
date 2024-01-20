@@ -6,8 +6,9 @@ import {GM_notification} from "gmApi"
 import './global.d.ts'
 import {PageType, Post, Reply} from "@v2next/core/types"
 import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core";
+import * as eruda from "eruda";
 
-// eruda.init()
+eruda.init()
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -707,33 +708,38 @@ function run() {
       let body = $(bodyText[0])
       let items: HTMLAnchorElement[] = body.find('#Main .box .note_item_title a') as any
 
-      let tagItem = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
-      if (tagItem) {
-        window.user.tagsId = tagItem.href.substr(-5)
-        window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix,)
-      } else {
-        let r = await window.parse.createNoteItem(window.user.tagPrefix)
-        r && (window.user.tagsId = r);
+      if (window.config.openTag) {
+        let tagItem = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
+        if (tagItem) {
+          window.user.tagsId = tagItem.href.substr(-5)
+          window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix,)
+        } else {
+          let r = await window.parse.createNoteItem(window.user.tagPrefix)
+          r && (window.user.tagsId = r);
+        }
       }
 
-      let readItem = Array.from(items).find(v => v.innerText.includes(window.user.readPrefix))
-      if (readItem) {
-        window.user.readNoteItemId = readItem.href.substr(-5)
-        window.user.readList = await getNoteItemContent(window.user.readNoteItemId, window.user.readPrefix)
-      } else {
-        let r = await window.parse.createNoteItem(window.user.readPrefix)
-        r && (window.user.readNoteItemId = r);
+      if (window.config.rememberLastReadFloor) {
+        let readItem = Array.from(items).find(v => v.innerText.includes(window.user.readPrefix))
+        if (readItem) {
+          window.user.readNoteItemId = readItem.href.substr(-5)
+          window.user.readList = await getNoteItemContent(window.user.readNoteItemId, window.user.readPrefix)
+        } else {
+          let r = await window.parse.createNoteItem(window.user.readPrefix)
+          r && (window.user.readNoteItemId = r);
+        }
       }
 
-      let imgurItem = Array.from(items).find(v => v.innerText.includes(window.user.imgurPrefix))
-      if (imgurItem) {
-        window.user.imgurNoteId = imgurItem.href.substr(-5)
-        window.user.imgurList = await getNoteItemContent(window.user.imgurNoteId, window.user.imgurPrefix)
-      } else {
-        let r = await window.parse.createNoteItem(window.user.imgurPrefix)
-        r && (window.user.imgurNoteId = r);
+      if (false) {
+        let imgurItem = Array.from(items).find(v => v.innerText.includes(window.user.imgurPrefix))
+        if (imgurItem) {
+          window.user.imgurNoteId = imgurItem.href.substr(-5)
+          window.user.imgurList = await getNoteItemContent(window.user.imgurNoteId, window.user.imgurPrefix)
+        } else {
+          let r = await window.parse.createNoteItem(window.user.imgurPrefix)
+          r && (window.user.imgurNoteId = r);
+        }
       }
-
       functions.cbChecker({type: 'syncData'})
     })
   }
@@ -807,8 +813,6 @@ function run() {
     if (top2.length && ['个人主页', 'Profile'].includes(top2.text())) {
       window.user.username = top2.attr('href').replace('/member/', '')
       window.user.avatar = $('#menu-entry .avatar').attr('src')
-
-      initNoteData()
     }
 
     initConfig().then(r => {
@@ -824,7 +828,7 @@ function run() {
       }
 
       if (window.user.username) {
-
+        initNoteData()
       }
     })
 

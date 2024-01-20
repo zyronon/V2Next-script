@@ -267,7 +267,9 @@ export default {
       e.stopPropagation()
     },
     saveReadList() {
-      window.parse.saveReadList(this.readList)
+      if (this.config.rememberLastReadFloor){
+        window.parse.saveReadList(this.readList)
+      }
     },
     async clickPost(e, id, href, title = '') {
       // id = '976890'

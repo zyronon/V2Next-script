@@ -218,7 +218,7 @@ function thank() {
   }
 
   .cancel {
-    border-top: 1px solid #e3e3e3;
+    border-top: 1px solid var(--color-line2);
     display: flex;
     align-items: center;
     justify-content: center;

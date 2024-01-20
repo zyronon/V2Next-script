@@ -190,7 +190,7 @@ export default {
   box-sizing: border-box;
   border-radius: v-bind(borderRadius);
   transition: all .3s;
-  background: var(--color-main-bg);
+  background: var(--color-four-bg);
 
   &.no-heng-gang {
     padding-top: 0;

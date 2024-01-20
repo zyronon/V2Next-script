@@ -352,7 +352,7 @@ export default {
       if (this.$refs["post-editor"]) {
         this.$refs["post-editor"].content = ''
         nextTick(() => {
-          this.$refs?.detail?.scrollTo({top: 0})
+          this.scrollTop()
         })
       }
     },
@@ -545,13 +545,8 @@ export default {
     goBottom() {
       this.isSticky = false
       setTimeout(() => {
-        if (this.isPost) {
-          let body = $('body , html')
-          let scrollHeight = body.prop("scrollHeight");
-          body.animate({scrollTop: scrollHeight - 850}, 300);
-        } else {
-          this.$refs.detail.scrollTo({top: this.$refs.detail.scrollHeight, behavior: 'smooth'})
-        }
+        let postWrapper = document.querySelector('.post-wrapper')
+        postWrapper.scrollTo({top: this.$refs['detail'].clientHeight, behavior: 'smooth'})
       })
     },
     close() {
@@ -588,11 +583,7 @@ export default {
       }
     },
     scrollTop() {
-      if (this.isPost) {
-        $("body , html").animate({scrollTop: 0}, 300);
-      } else {
-        this.$refs.detail.scrollTo({top: 0, behavior: 'smooth'})
-      }
+      document.querySelector('.post-wrapper').scrollTo({top: 0, behavior: 'smooth'})
     },
   }
 }

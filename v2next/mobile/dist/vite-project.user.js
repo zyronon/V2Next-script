@@ -14,12 +14,14 @@
 // @match        https://v2ex.com/recent*
 // @match        https://v2ex.com/go/*
 // @match        https://v2ex.com/member/*
+// @match        https://v2ex.com/changes*
 // @match        https://*.v2ex.com/
 // @match        https://*.v2ex.com/?tab=*
 // @match        https://*.v2ex.com/t/*
 // @match        https://*.v2ex.com/recent*
 // @match        https://*.v2ex.com/go/*
 // @match        https://*.v2ex.com/member/*
+// @match        https://*.v2ex.com/changes*
 // @match        http://localhost:8000/*
 // @require      https://cdn.jsdelivr.net/npm/vue@3.4.14/dist/vue.global.prod.js
 // @grant        GM_addStyle
@@ -28,7 +30,7 @@
 // @grant        GM_registerMenuCommand
 // ==/UserScript==
 
-(e=>{if(typeof GM_addStyle=="function"){GM_addStyle(e);return}const o=document.createElement("style");o.textContent=e,document.head.append(o)})(' .v-enter-active,.v-leave-active{transition:opacity .3s ease}.v-enter-from,.v-leave-to{opacity:0}.fade-in{animation:fade-in .3s}.fade-out{animation:fade-out .4s}@keyframes fade-in{0%{opacity:0}to{opacity:1}}@keyframes fade-out{0%{opacity:1}to{opacity:0;display:none}}.username{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num{font-size:1.4rem;color:var(--color-font-8);color:#e02a2a}.owner{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag{font-size:1.4rem;color:red;margin-left:1rem}.my-tag .remove{margin-left:.5rem;display:none}.add-tag{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;position:absolute;display:none}.floor{font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;color:var(--color-floor-font);cursor:default;margin-right:1rem}.base-avatar{margin-right:1rem;display:inline-flex}.base-avatar img{width:2.8rem;height:2.8rem;border-radius:.4rem}:root{--box-border-radius: 8px}#Wrapper .box:first-child{background:unset;box-shadow:unset;overflow:hidden}#site-header #site-header-menu #menu-body{top:5rem;right:1rem}#Wrapper .cell .count_livid{font-size:14px;font-weight:700;padding:3px 10px;border-radius:5px}a{-webkit-tap-highlight-color:rgba(255,255,255,0);-webkit-user-select:none;-moz-user-focus:none;-moz-user-select:none}.post-item{background:var(--box-background-color)}.post-item .new-item{display:flex;justify-content:space-between}.post-item .new-item .left .top{display:flex;align-items:center;line-height:1.1;gap:1rem}.post-item .new-item .left .bottom{margin:1rem 0}.post-item .new-item .left .bottom a{text-decoration:none!important}.post-item .new-item .right{min-width:5rem;display:flex;justify-content:flex-end;align-items:center}.post-item .new-item .right .count_livid{margin-right:0}.post-item .post-content{display:block;max-height:30rem;overflow:hidden;line-break:anywhere;-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);height:0;color:#000;text-decoration:none!important}.post-item .post-content blockquote{margin-top:.5rem}.post-item .post-content p:first-child{margin-top:0}.post-item .post-content:visited{color:var(--link-visited-color)}.post-item .show-more{font-size:1.3rem;text-align:right;height:3rem;align-items:center;justify-content:center;position:relative;z-index:9;display:none}.preview{margin-bottom:.7rem;border-radius:var(--box-border-radius)}.preview .topic-link:link{color:#000!important}.preview .show-all{max-height:unset;-webkit-mask-image:none}.preview .post-content{height:unset!important}.preview .show-more{display:flex}.preview .item_title{font-weight:700}.Night .post-item{background:#18222d!important}.Night .preview{border:1px solid #3b536e}.Night .preview>.post-content:link{color:#d1d5d9}.Night .preview>.post-content:visited{color:#393f4e!important}.Night .preview .topic-link:link{color:#c0dbff!important}:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--space: 1rem}html.dark{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e}html,body{font-size:62.5%}.flex{display:flex;align-items:center;justify-content:space-between}.flex-end{justify-content:flex-end}.flex-center{justify-content:center}.p1{padding:1rem}.p2{padding:2rem}.p0{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http]{text-underline-offset:.46ex;color:currentcolor;text-decoration:underline 1.5px}a{text-decoration:none}.tool{position:relative;display:flex;align-items:center;border-radius:.3rem;height:2.6rem;padding:0 .5rem;gap:.6rem}.tool>svg{width:2.2rem!important;height:2.2rem!important}.tool.disabled{cursor:not-allowed}.tool span{line-height:1rem}.my-node{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5}.msgs{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box{background:var(--box-background-color);margin-bottom:.5rem;width:100%;overflow:hidden;box-sizing:border-box;transition:background-color .3s}.my-box .box-content{padding:.5rem}.my-cell{color:var(--color-font);height:4.2rem;padding:0 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option{display:flex;align-items:center;padding:.6rem 0}.modal .option>span{position:relative}.radio-group2{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio{background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio:first-child{border-left:none}.radio-group2 .active{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm{position:relative;display:inline-flex;justify-content:center}input{width:10rem;height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input:focus{border:1px solid var(--color-active)}.danger{color:red!important}.topic_content,.reply_content{font-size:1.6rem}.mask{z-index:10;position:fixed;top:0;width:100vw;height:100vh;background:#000000bb}.mask.dark{background:#000000bb}.mask.light{background:transparent}.mask.lightgray{background:rgba(0,0,0,.25)}.mask.white{background:transparent}.slide{flex:1;width:100vw;height:100vh;transition:height .3s;position:relative;overflow:hidden}.slide .slide-list{height:100%;width:100%;display:flex;position:relative;transition:transform .3s}.slide .slide-list .slide-item{height:100%;width:100%;flex-shrink:0;position:relative;overflow:auto}.page1{overflow:hidden!important}.page1 .post-wrapper,.page1 .setting-wrapper{position:absolute;left:0;top:0;height:100%;width:100%;background:white;overflow:auto}.mobile-page{font-size:1.8rem;display:flex;flex-direction:column}.mobile-page>.page-content{padding:1rem;padding-top:0;box-sizing:border-box;overflow:auto}.tip[data-v-ee672411]{position:fixed;font-size:1.6rem;z-index:9999;max-width:10rem;border-radius:.5rem;padding:1rem;color:var(--color-font-8);background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow)}.v-enter-active[data-v-e7c0fbef],.v-leave-active[data-v-e7c0fbef]{transition:opacity .3s ease}.v-enter-from[data-v-e7c0fbef],.v-leave-to[data-v-e7c0fbef]{opacity:0}.fade-in[data-v-e7c0fbef]{animation:fade-in-e7c0fbef .3s}.fade-out[data-v-e7c0fbef]{animation:fade-out-e7c0fbef .4s}@keyframes fade-in-e7c0fbef{0%{opacity:0}to{opacity:1}}@keyframes fade-out-e7c0fbef{0%{opacity:1}to{opacity:0;display:none}}.username[data-v-e7c0fbef]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-e7c0fbef]{font-size:1.4rem;color:var(--color-font-8);color:#e02a2a}.owner[data-v-e7c0fbef]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-e7c0fbef]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-e7c0fbef]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag .remove[data-v-e7c0fbef]{margin-left:.5rem;display:none}.add-tag[data-v-e7c0fbef]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;position:absolute;display:none}.floor[data-v-e7c0fbef]{font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;color:var(--color-floor-font);cursor:default;margin-right:1rem}.base-avatar[data-v-e7c0fbef]{margin-right:1rem;display:inline-flex}.base-avatar img[data-v-e7c0fbef]{width:2.8rem;height:2.8rem;border-radius:.4rem}[data-v-e7c0fbef]:root{--box-border-radius: 8px}#Wrapper .box[data-v-e7c0fbef]:first-child{background:unset;box-shadow:unset;overflow:hidden}#site-header #site-header-menu #menu-body[data-v-e7c0fbef]{top:5rem;right:1rem}#Wrapper .cell .count_livid[data-v-e7c0fbef]{font-size:14px;font-weight:700;padding:3px 10px;border-radius:5px}a[data-v-e7c0fbef]{-webkit-tap-highlight-color:rgba(255,255,255,0);-webkit-user-select:none;-moz-user-focus:none;-moz-user-select:none}.post-item[data-v-e7c0fbef]{background:var(--box-background-color)}.post-item .new-item[data-v-e7c0fbef]{display:flex;justify-content:space-between}.post-item .new-item .left .top[data-v-e7c0fbef]{display:flex;align-items:center;line-height:1.1;gap:1rem}.post-item .new-item .left .bottom[data-v-e7c0fbef]{margin:1rem 0}.post-item .new-item .left .bottom a[data-v-e7c0fbef]{text-decoration:none!important}.post-item .new-item .right[data-v-e7c0fbef]{min-width:5rem;display:flex;justify-content:flex-end;align-items:center}.post-item .new-item .right .count_livid[data-v-e7c0fbef]{margin-right:0}.post-item .post-content[data-v-e7c0fbef]{display:block;max-height:30rem;overflow:hidden;line-break:anywhere;-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);height:0;color:#000;text-decoration:none!important}.post-item .post-content blockquote[data-v-e7c0fbef]{margin-top:.5rem}.post-item .post-content p[data-v-e7c0fbef]:first-child{margin-top:0}.post-item .post-content[data-v-e7c0fbef]:visited{color:var(--link-visited-color)}.post-item .show-more[data-v-e7c0fbef]{font-size:1.3rem;text-align:right;height:3rem;align-items:center;justify-content:center;position:relative;z-index:9;display:none}.preview[data-v-e7c0fbef]{margin-bottom:.7rem;border-radius:var(--box-border-radius)}.preview .topic-link[data-v-e7c0fbef]:link{color:#000!important}.preview .show-all[data-v-e7c0fbef]{max-height:unset;-webkit-mask-image:none}.preview .post-content[data-v-e7c0fbef]{height:unset!important}.preview .show-more[data-v-e7c0fbef]{display:flex}.preview .item_title[data-v-e7c0fbef]{font-weight:700}.Night .post-item[data-v-e7c0fbef]{background:#18222d!important}.Night .preview[data-v-e7c0fbef]{border:1px solid #3b536e}.Night .preview>.post-content[data-v-e7c0fbef]:link{color:#d1d5d9}.Night .preview>.post-content[data-v-e7c0fbef]:visited{color:#393f4e!important}.Night .preview .topic-link[data-v-e7c0fbef]:link{color:#c0dbff!important}[data-v-e7c0fbef]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--space: 1rem}html.dark[data-v-e7c0fbef]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e}html[data-v-e7c0fbef],body[data-v-e7c0fbef]{font-size:62.5%}.flex[data-v-e7c0fbef]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-e7c0fbef]{justify-content:flex-end}.flex-center[data-v-e7c0fbef]{justify-content:center}.p1[data-v-e7c0fbef]{padding:1rem}.p2[data-v-e7c0fbef]{padding:2rem}.p0[data-v-e7c0fbef]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-e7c0fbef]{text-underline-offset:.46ex;color:currentcolor;text-decoration:underline 1.5px}a[data-v-e7c0fbef]{text-decoration:none}.tool[data-v-e7c0fbef]{position:relative;display:flex;align-items:center;border-radius:.3rem;height:2.6rem;padding:0 .5rem;gap:.6rem}.tool>svg[data-v-e7c0fbef]{width:2.2rem!important;height:2.2rem!important}.tool.disabled[data-v-e7c0fbef]{cursor:not-allowed}.tool span[data-v-e7c0fbef]{line-height:1rem}.my-node[data-v-e7c0fbef]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5}.msgs[data-v-e7c0fbef]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-e7c0fbef]{background:var(--box-background-color);margin-bottom:.5rem;width:100%;overflow:hidden;box-sizing:border-box;transition:background-color .3s}.my-box .box-content[data-v-e7c0fbef]{padding:.5rem}.my-cell[data-v-e7c0fbef]{color:var(--color-font);height:4.2rem;padding:0 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-e7c0fbef]{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-e7c0fbef]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-e7c0fbef]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-e7c0fbef]{position:relative}.radio-group2[data-v-e7c0fbef]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-e7c0fbef]{background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-e7c0fbef]:first-child{border-left:none}.radio-group2 .active[data-v-e7c0fbef]{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm[data-v-e7c0fbef]{position:relative;display:inline-flex;justify-content:center}input[data-v-e7c0fbef]{width:10rem;height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-e7c0fbef]:focus{border:1px solid var(--color-active)}.danger[data-v-e7c0fbef]{color:red!important}.topic_content[data-v-e7c0fbef],.reply_content[data-v-e7c0fbef]{font-size:1.6rem}.mask[data-v-e7c0fbef]{z-index:10;position:fixed;top:0;width:100vw;height:100vh;background:#000000bb}.mask.dark[data-v-e7c0fbef]{background:#000000bb}.mask.light[data-v-e7c0fbef]{background:transparent}.mask.lightgray[data-v-e7c0fbef]{background:rgba(0,0,0,.25)}.mask.white[data-v-e7c0fbef]{background:transparent}.slide[data-v-e7c0fbef]{flex:1;width:100vw;height:100vh;transition:height .3s;position:relative;overflow:hidden}.slide .slide-list[data-v-e7c0fbef]{height:100%;width:100%;display:flex;position:relative;transition:transform .3s}.slide .slide-list .slide-item[data-v-e7c0fbef]{height:100%;width:100%;flex-shrink:0;position:relative;overflow:auto}.page1[data-v-e7c0fbef]{overflow:hidden!important}.page1 .post-wrapper[data-v-e7c0fbef],.page1 .setting-wrapper[data-v-e7c0fbef]{position:absolute;left:0;top:0;height:100%;width:100%;background:white;overflow:auto}.mobile-page[data-v-e7c0fbef]{font-size:1.8rem;display:flex;flex-direction:column}.mobile-page>.page-content[data-v-e7c0fbef]{padding:1rem;padding-top:0;box-sizing:border-box;overflow:auto}.switch[data-v-e7c0fbef]{width:4.5rem;height:2.2rem;border-radius:2rem;position:relative;display:flex;align-items:center;background:var(--color-swtich-bg);transition:all .3s}.switch.active[data-v-e7c0fbef]{background:var(--color-active)}.switch.active[data-v-e7c0fbef]:before{right:.2rem}.switch[data-v-e7c0fbef]:before{position:absolute;content:" ";transition:all .3s;right:calc(100% - 2rem);width:1.8rem;height:1.8rem;background:white;border-radius:50%}.nav-bar[data-v-458eae26]{box-sizing:border-box;width:100%;height:5rem;padding:0 var(--space);display:flex;align-items:center;justify-content:center;position:relative;font-size:2rem}.nav-bar[data-v-458eae26] .back-icon{left:var(--space);position:absolute}.display-type[data-v-91cb5f03]{height:3rem;padding:0 .3rem;background:#f1f1f1;border-radius:1rem;display:flex;font-size:1.4rem;align-items:center}.display-type .type[data-v-91cb5f03]{border-radius:.8rem;padding:0 1.3rem;height:2.5rem;align-items:center;display:flex;position:relative}.display-type .type.active[data-v-91cb5f03]{background:white;color:#000;box-shadow:0 0 6px 0 var(--color-tooltip-shadow)}.display-type .type-list[data-v-91cb5f03]{position:absolute;background:white;right:0;top:3rem;font-size:1.4rem;box-shadow:0 0 6px 0 var(--color-tooltip-shadow);border-radius:.6rem;z-index:9;color:var(--color-font)}.display-type .type-list .item[data-v-91cb5f03]{word-break:keep-all;padding:.8rem 1rem}.display-type .type-list .item.active[data-v-91cb5f03]{color:var(--color-font-pure)}.display-type svg[data-v-91cb5f03]{width:1.5rem}.row[data-v-fe7602d7]{min-height:4rem;display:flex;justify-content:space-between;align-items:center}.row .wrapper[data-v-fe7602d7]{height:3rem;flex:1;display:flex;justify-content:flex-end;align-items:center;gap:var(--space)}.row .wrapper span[data-v-fe7602d7]{text-align:right;font-size:1.4rem;color:gray}.row .main-title[data-v-fe7602d7]{font-size:2.2rem;font-weight:700;color:var(--color-font-8)}.row .item-title[data-v-fe7602d7]{font-size:1.8rem}.desc[data-v-fe7602d7]{margin-bottom:1rem;font-size:1.4rem;text-align:left;color:var(--color-font)}.tool>svg[data-v-b7c6664e]{width:1.8rem!important;height:1.8rem!important}.more[data-v-e92e0529]{height:1.6rem;width:2.08rem;padding:1rem .8rem 1rem 0;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end}.more div[data-v-e92e0529]{background:var(--color-floor-font);width:.3rem;height:.3rem;border-radius:50%}.Author[data-v-9041586a]{display:flex;align-items:center;justify-content:space-between;font-size:1.2rem;position:relative}.Author.expand[data-v-9041586a]{margin-bottom:0}.Author .Author-left[data-v-9041586a]{display:flex;align-items:center;width:80%;word-break:break-all}.Author .Author-left .info[data-v-9041586a]{display:flex;flex-direction:column}.Author .Author-left .username[data-v-9041586a]{font-size:1.4rem;margin-right:1rem}.Author .Author-left .expand-icon[data-v-9041586a]{margin-right:.8rem;width:2.4rem;height:2.4rem;transform:rotate(90deg)}.Author .Author-left .texts[data-v-9041586a]{flex:1}.Author .Author-left .owner[data-v-9041586a]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.Author .Author-left .dup[data-v-9041586a]{display:inline-block;background-color:transparent;color:red;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid red;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.Author .Author-left .mod[data-v-9041586a]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.Author .Author-right[data-v-9041586a]{position:absolute;right:0;display:flex;align-items:center}.loading[data-v-2697baa2]{border:2px solid;border-color:var(--color-loading-2) var(--color-loading-1) var(--color-loading-1) var(--color-loading-1);border-radius:100%;animation:circle-2697baa2 infinite 1s linear;width:2rem;height:2rem}.loading.small[data-v-2697baa2]{width:1.2rem;height:1.2rem}.loading.large[data-v-2697baa2]{width:3rem;height:3rem}@keyframes circle-2697baa2{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.base-button[data-v-04f4c89d]{border-radius:.6rem;padding:0 1.5rem;display:inline-flex;align-items:center;justify-content:center;transition:all .3s;height:3.6rem;line-height:1;position:relative}.base-button .loading[data-v-04f4c89d]{position:absolute}.base-button.disabled[data-v-04f4c89d]{opacity:.6;cursor:not-allowed;-webkit-user-select:none;user-select:none}.base-button.small[data-v-04f4c89d]{height:3rem}.base-button.small>span[data-v-04f4c89d]{font-size:1.3rem}.base-button.large[data-v-04f4c89d]{height:5rem;font-size:1.8rem;padding:0 2.2rem}.base-button.large>span[data-v-04f4c89d]{font-size:1.8rem}.base-button.primary[data-v-04f4c89d]{background:var(--color-active)}.base-button.primary>span[data-v-04f4c89d]{color:#fff}.base-button.gary[data-v-04f4c89d]{background:#4b5563}.base-button.link[data-v-04f4c89d]{border-radius:0;border-bottom:2px solid transparent}.base-button.link>span[data-v-04f4c89d]{color:var(--color-font-8)}.base-button.active[data-v-04f4c89d]{opacity:.4}.key-notice[data-v-04f4c89d]{margin-left:1rem;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff}.key-notice .key[data-v-04f4c89d]{transform:scale(.8)}.post-editor-wrapper[data-v-0612e02f]{width:100%;box-sizing:border-box;position:relative;overflow:hidden;transition:all .3s;color:var(--color-font)}.post-editor-wrapper.isFocus .post-editor[data-v-0612e02f]{border:1px solid var(--color-active)}.post-editor-wrapper .post-editor[data-v-0612e02f]{border:1px solid var(--color-line);border-radius:var(--box-border-radius);transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.6rem;min-height:13rem;resize:none;background:var(--box-background-color);color:var(--color-font-pure)}.post-editor-wrapper .toolbar[data-v-0612e02f]{box-sizing:border-box;padding:.5rem 1rem;width:100%;position:relative;display:flex;justify-content:space-between;align-items:center}.post-editor-wrapper .toolbar .left[data-v-0612e02f]{display:flex;gap:1rem}.post-editor-wrapper .toolbar .left .upload input[data-v-0612e02f]{position:absolute;width:20px;height:20px;opacity:0}.post-editor-wrapper .toolbar span[data-v-0612e02f]{color:gray;font-size:1.3rem}.post-editor-wrapper .get-cursor[data-v-0612e02f]{border:1px solid var(--color-line);border-radius:var(--box-border-radius);transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.6rem;min-height:13rem;resize:none;background:var(--box-background-color);color:var(--color-font-pure);position:absolute;top:0;z-index:-100}.post-editor-wrapper .emoticon-pack[data-v-0612e02f]{z-index:999999999;border-radius:1rem;padding:1rem;width:31rem;max-width:31rem;height:30rem;max-height:30rem;overflow:auto;background:var(--color-third-bg);border:1px solid var(--color-font-3);box-shadow:0 9px 24px -3px #0000000f,0 4px 8px -1px #0000001f;position:fixed;bottom:11rem;left:14rem}.post-editor-wrapper .emoticon-pack i[data-v-0612e02f]{position:absolute;right:2rem;font-size:2rem;color:#e2e2e2}.post-editor-wrapper .emoticon-pack .list[data-v-0612e02f]{margin:1rem 0}.post-editor-wrapper .emoticon-pack img[data-v-0612e02f]{width:3rem;height:3rem;padding:.5rem}.post-editor-wrapper .emoticon-pack span[data-v-0612e02f]{display:inline-block;font-size:2.3rem;padding:.5rem}.v-enter-active[data-v-f8165980],.v-leave-active[data-v-f8165980]{transition:opacity .3s ease}.v-enter-from[data-v-f8165980],.v-leave-to[data-v-f8165980]{opacity:0}.fade-in[data-v-f8165980]{animation:fade-in-f8165980 .3s}.fade-out[data-v-f8165980]{animation:fade-out-f8165980 .4s}@keyframes fade-in-f8165980{0%{opacity:0}to{opacity:1}}@keyframes fade-out-f8165980{0%{opacity:1}to{opacity:0;display:none}}.username[data-v-f8165980]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-f8165980]{font-size:1.4rem;color:var(--color-font-8);color:#e02a2a}.owner[data-v-f8165980]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-f8165980]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-f8165980]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag .remove[data-v-f8165980]{margin-left:.5rem;display:none}.add-tag[data-v-f8165980]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;position:absolute;display:none}.floor[data-v-f8165980]{font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;color:var(--color-floor-font);cursor:default;margin-right:1rem}.base-avatar[data-v-f8165980]{margin-right:1rem;display:inline-flex}.base-avatar img[data-v-f8165980]{width:2.8rem;height:2.8rem;border-radius:.4rem}[data-v-f8165980]:root{--box-border-radius: 8px}#Wrapper .box[data-v-f8165980]:first-child{background:unset;box-shadow:unset;overflow:hidden}#site-header #site-header-menu #menu-body[data-v-f8165980]{top:5rem;right:1rem}#Wrapper .cell .count_livid[data-v-f8165980]{font-size:14px;font-weight:700;padding:3px 10px;border-radius:5px}a[data-v-f8165980]{-webkit-tap-highlight-color:rgba(255,255,255,0);-webkit-user-select:none;-moz-user-focus:none;-moz-user-select:none}.post-item[data-v-f8165980]{background:var(--box-background-color)}.post-item .new-item[data-v-f8165980]{display:flex;justify-content:space-between}.post-item .new-item .left .top[data-v-f8165980]{display:flex;align-items:center;line-height:1.1;gap:1rem}.post-item .new-item .left .bottom[data-v-f8165980]{margin:1rem 0}.post-item .new-item .left .bottom a[data-v-f8165980]{text-decoration:none!important}.post-item .new-item .right[data-v-f8165980]{min-width:5rem;display:flex;justify-content:flex-end;align-items:center}.post-item .new-item .right .count_livid[data-v-f8165980]{margin-right:0}.post-item .post-content[data-v-f8165980]{display:block;max-height:30rem;overflow:hidden;line-break:anywhere;-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);height:0;color:#000;text-decoration:none!important}.post-item .post-content blockquote[data-v-f8165980]{margin-top:.5rem}.post-item .post-content p[data-v-f8165980]:first-child{margin-top:0}.post-item .post-content[data-v-f8165980]:visited{color:var(--link-visited-color)}.post-item .show-more[data-v-f8165980]{font-size:1.3rem;text-align:right;height:3rem;align-items:center;justify-content:center;position:relative;z-index:9;display:none}.preview[data-v-f8165980]{margin-bottom:.7rem;border-radius:var(--box-border-radius)}.preview .topic-link[data-v-f8165980]:link{color:#000!important}.preview .show-all[data-v-f8165980]{max-height:unset;-webkit-mask-image:none}.preview .post-content[data-v-f8165980]{height:unset!important}.preview .show-more[data-v-f8165980]{display:flex}.preview .item_title[data-v-f8165980]{font-weight:700}.Night .post-item[data-v-f8165980]{background:#18222d!important}.Night .preview[data-v-f8165980]{border:1px solid #3b536e}.Night .preview>.post-content[data-v-f8165980]:link{color:#d1d5d9}.Night .preview>.post-content[data-v-f8165980]:visited{color:#393f4e!important}.Night .preview .topic-link[data-v-f8165980]:link{color:#c0dbff!important}[data-v-f8165980]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--space: 1rem}html.dark[data-v-f8165980]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e}html[data-v-f8165980],body[data-v-f8165980]{font-size:62.5%}.flex[data-v-f8165980]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-f8165980]{justify-content:flex-end}.flex-center[data-v-f8165980]{justify-content:center}.p1[data-v-f8165980]{padding:1rem}.p2[data-v-f8165980]{padding:2rem}.p0[data-v-f8165980]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-f8165980]{text-underline-offset:.46ex;color:currentcolor;text-decoration:underline 1.5px}a[data-v-f8165980]{text-decoration:none}.tool[data-v-f8165980]{position:relative;display:flex;align-items:center;border-radius:.3rem;height:2.6rem;padding:0 .5rem;gap:.6rem}.tool>svg[data-v-f8165980]{width:2.2rem!important;height:2.2rem!important}.tool.disabled[data-v-f8165980]{cursor:not-allowed}.tool span[data-v-f8165980]{line-height:1rem}.my-node[data-v-f8165980]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5}.msgs[data-v-f8165980]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-f8165980]{background:var(--box-background-color);margin-bottom:.5rem;width:100%;overflow:hidden;box-sizing:border-box;transition:background-color .3s}.my-box .box-content[data-v-f8165980]{padding:.5rem}.my-cell[data-v-f8165980]{color:var(--color-font);height:4.2rem;padding:0 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-f8165980]{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-f8165980]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-f8165980]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-f8165980]{position:relative}.radio-group2[data-v-f8165980]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-f8165980]{background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-f8165980]:first-child{border-left:none}.radio-group2 .active[data-v-f8165980]{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm[data-v-f8165980]{position:relative;display:inline-flex;justify-content:center}input[data-v-f8165980]{width:10rem;height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-f8165980]:focus{border:1px solid var(--color-active)}.danger[data-v-f8165980]{color:red!important}.topic_content[data-v-f8165980],.reply_content[data-v-f8165980]{font-size:1.6rem}.mask[data-v-f8165980]{z-index:10;position:fixed;top:0;width:100vw;height:100vh;background:#000000bb}.mask.dark[data-v-f8165980]{background:#000000bb}.mask.light[data-v-f8165980]{background:transparent}.mask.lightgray[data-v-f8165980]{background:rgba(0,0,0,.25)}.mask.white[data-v-f8165980]{background:transparent}.slide[data-v-f8165980]{flex:1;width:100vw;height:100vh;transition:height .3s;position:relative;overflow:hidden}.slide .slide-list[data-v-f8165980]{height:100%;width:100%;display:flex;position:relative;transition:transform .3s}.slide .slide-list .slide-item[data-v-f8165980]{height:100%;width:100%;flex-shrink:0;position:relative;overflow:auto}.page1[data-v-f8165980]{overflow:hidden!important}.page1 .post-wrapper[data-v-f8165980],.page1 .setting-wrapper[data-v-f8165980]{position:absolute;left:0;top:0;height:100%;width:100%;background:white;overflow:auto}.mobile-page[data-v-f8165980]{font-size:1.8rem;display:flex;flex-direction:column}.mobile-page>.page-content[data-v-f8165980]{padding:1rem;padding-top:0;box-sizing:border-box;overflow:auto}.html-wrapper[data-v-f8165980]{position:relative}.html-wrapper .htmlMask[data-v-f8165980]{max-height:90rem;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent)}.html-wrapper .expand[data-v-f8165980]{position:absolute;z-index:1;bottom:2rem;padding:.2rem 1.5rem;border-radius:2rem;border:1px solid gray;background:white;color:gray;left:50%;transform:translate(-50%)}.comment[data-v-d6a88e6f]{width:100%;box-sizing:border-box;margin-top:.6rem}.comment.isLevelOne[data-v-d6a88e6f]{border-bottom:1px solid var(--color-line);padding:.8rem 1rem;margin-top:0}.comment.ding[data-v-d6a88e6f]{background:rgba(255,255,0,.3)!important}.comment .comment-content-w .more[data-v-d6a88e6f]{text-align:center;margin:2rem 0}.comment .comment-content[data-v-d6a88e6f]{display:flex;position:relative}.comment .comment-content .expand-line[data-v-d6a88e6f]{margin-top:.6rem;width:2.8rem;min-width:2.8rem;position:relative}.comment .comment-content .expand-line[data-v-d6a88e6f]:after{position:absolute;left:50%;content:" ";height:100%;width:0;border-right:1px solid var(--color-line)}.comment .comment-content .right[data-v-d6a88e6f]{flex:1;width:calc(100% - 3rem)}.comment .comment-content .right .w[data-v-d6a88e6f]{padding-left:1rem}.comment .comment-content .right .w .post-editor-wrapper[data-v-d6a88e6f]{margin-top:1rem}.wrong-wrapper[data-v-d6a88e6f]{font-size:1.4rem;margin-bottom:1rem}.wrong-wrapper .del-line[data-v-d6a88e6f]{text-decoration:line-through}.wrong-wrapper .wrong-icon[data-v-d6a88e6f]{margin-left:.5rem}.wrong-wrapper .warning[data-v-d6a88e6f]{border-top:1px solid #e1e1e1;border-bottom:1px solid #e1e1e1;padding:1rem 0;margin-top:1rem;font-size:1.2rem;color:red}.toolbar[data-v-6234240d]{border-top:1px solid var(--color-line);height:4rem;padding:0 1rem;display:flex;align-items:center;color:var(--color-font);font-size:1.4rem;justify-content:space-between}.toolbar .left[data-v-6234240d],.toolbar .right[data-v-6234240d]{gap:1rem;display:flex}.toolbar .right[data-v-6234240d]{gap:.6rem}.pop-confirm-content[data-v-05424197]{position:fixed;background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow);color:var(--color-font-8);padding:1.5rem;border-radius:.8rem;transform:translate(-50%,calc(-100% - 1rem));z-index:999}.pop-confirm-content .text[data-v-05424197]{text-align:start;font-size:1.6rem;width:15rem;min-width:15rem}.pop-confirm-content .options[data-v-05424197]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1rem}.comment[data-v-0869dab5]{width:100%;box-sizing:border-box;display:flex;gap:1rem;padding:1rem;border-bottom:1px solid var(--color-line)}.comment .base-avatar[data-v-0869dab5]{display:flex;margin-right:0}.comment .base-avatar img[data-v-0869dab5]{width:2.8rem;height:2.8rem;border-radius:.3rem}.comment .comment-body[data-v-0869dab5]{flex:1;display:flex;flex-direction:column}.comment .comment-body .texts[data-v-0869dab5]{display:flex;align-items:center}.comment .comment-body .reply_content[data-v-0869dab5]{margin-top:1rem;max-width:calc(100% - 5rem)}.comment .isRight[data-v-0869dab5]{align-items:flex-end}.comment .isRight .owner[data-v-0869dab5],.comment .isRight .mod[data-v-0869dab5],.comment .isRight .username[data-v-0869dab5]{margin:0 0 0 1rem}.comment .Author-right[data-v-0869dab5]{display:flex;flex-direction:column;align-items:center}.comment .Author-right .floor[data-v-0869dab5]{margin:0;border-radius:.5rem;background-color:var(--color-floor);padding:3px 9px}.comment .Author-right .jump[data-v-0869dab5]{color:#929596;margin-top:.4rem;font-size:1.4rem}.comment .point[data-v-0869dab5]{margin:0 1rem;display:flex;gap:.5rem;align-items:center}.comment .point svg[data-v-0869dab5]{font-size:1.6rem}.second-text-color[data-v-90461695]{color:#8f8f9e}.FromBottomDialog[data-v-90461695]{z-index:11;position:fixed;width:100%;overflow-y:auto;bottom:0;box-sizing:border-box;border-radius:var(--72fc3da4);transition:all .3s}.FromBottomDialog.dark[data-v-90461695]{background:#151724}.FromBottomDialog.light[data-v-90461695]{background:whitesmoke}.FromBottomDialog.white[data-v-90461695]{background:white}.FromBottomDialog.no-heng-gang[data-v-90461695]{padding-top:0}.FromBottomDialog .heng-gang[data-v-90461695]{border-radius:.5rem .5rem 0 0;border-radius:var(--72fc3da4);z-index:3;width:100%;position:fixed;min-height:3rem;display:flex;justify-content:center;align-items:center}.FromBottomDialog .heng-gang.dark[data-v-90461695]{background:#151724}.FromBottomDialog .heng-gang.dark .gang-content[data-v-90461695]{background:#3a3a46}.FromBottomDialog .heng-gang.light[data-v-90461695]{background:whitesmoke}.FromBottomDialog .heng-gang.light .gang-content[data-v-90461695]{background:darkgray}.FromBottomDialog .heng-gang.white[data-v-90461695]{background:white}.FromBottomDialog .heng-gang.white .gang-content[data-v-90461695]{background:darkgray}.FromBottomDialog .heng-gang .gang-content[data-v-90461695]{border-radius:2px;height:.4rem;width:3rem}.FromBottomDialog .dialog-wrapper[data-v-90461695]{margin-top:3rem}.wrapper .options[data-v-f5c7e39b]{padding:1rem 2rem 3rem;display:grid;grid-template-columns:repeat(5,1fr);justify-content:space-between;gap:2rem}.wrapper .options .item[data-v-f5c7e39b]{display:flex;flex-direction:column;align-items:center;color:gray;font-size:1.2rem}.wrapper .options .item.disabled[data-v-f5c7e39b]{opacity:.5}.wrapper .options .item.disabled svg[data-v-f5c7e39b]{color:gray!important}.wrapper .options .item .icon-wrap[data-v-f5c7e39b]{margin-bottom:.5rem;width:100%;height:15vw;display:flex;justify-content:center;align-items:center;background:var(--color-second-bg);border-radius:1rem}.wrapper .options .item .icon-wrap svg[data-v-f5c7e39b]{font-size:3rem}.wrapper .steps[data-v-f5c7e39b]{width:100%;border-radius:10rpx;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2}.wrapper .steps .step[data-v-f5c7e39b]{width:100%;font-size:20rpx;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:4.8rem;gap:1.5rem;color:gray}.wrapper .steps .step .text[data-v-f5c7e39b]{font-size:1.4rem}.wrapper .steps .step .point[data-v-f5c7e39b]{border-radius:50%;min-width:6px;min-height:6px;background:#adadad}.wrapper .steps .step.active[data-v-f5c7e39b]{color:#000}.wrapper .steps .step.active .point[data-v-f5c7e39b]{box-shadow:0 0 1px 1px #f1f1f1;background:white;transform:scale(3)}.wrapper .font-size[data-v-f5c7e39b]{margin-bottom:3rem;display:flex;flex-direction:column;align-items:center;justify-content:center}.wrapper .font-size .line[data-v-f5c7e39b]{position:relative;z-index:1;margin-top:-4px;height:2px;width:76%;background:#dadada}.wrapper .cancel[data-v-f5c7e39b]{border-top:1px solid #e3e3e3;display:flex;align-items:center;justify-content:center;font-size:1.6rem;height:5rem;color:#646f81}.wrapper .options[data-v-23ff5e1e]{padding:1rem 2rem 3rem;display:grid;grid-template-columns:repeat(5,1fr);justify-content:space-between;gap:2rem}.wrapper .options .item[data-v-23ff5e1e]{display:flex;flex-direction:column;align-items:center;color:gray;font-size:1.2rem}.wrapper .options .item.disabled[data-v-23ff5e1e]{opacity:.5}.wrapper .options .item.disabled svg[data-v-23ff5e1e]{color:gray!important}.wrapper .options .item.full svg[data-v-23ff5e1e]{color:#e02a2a!important}.wrapper .options .item .icon-wrap[data-v-23ff5e1e]{margin-bottom:.5rem;width:100%;height:15vw;display:flex;justify-content:center;align-items:center;background:var(--color-second-bg);border-radius:1rem}.wrapper .options .item .icon-wrap svg[data-v-23ff5e1e]{font-size:3rem;color:#39ae55}.wrapper .cancel[data-v-23ff5e1e]{border-top:1px solid #e3e3e3;display:flex;align-items:center;justify-content:center;font-size:1.6rem;height:5rem;color:#646f81}.sticky{position:sticky;bottom:-2px;z-index:2;background:var(--box-background-hover-color)!important}.sticky[stuck]{box-shadow:0 2px 20px #00000059!important}.v-enter-active[data-v-bdb6b650],.v-leave-active[data-v-bdb6b650]{transition:opacity .3s ease}.v-enter-from[data-v-bdb6b650],.v-leave-to[data-v-bdb6b650]{opacity:0}.fade-in[data-v-bdb6b650]{animation:fade-in-bdb6b650 .3s}.fade-out[data-v-bdb6b650]{animation:fade-out-bdb6b650 .4s}@keyframes fade-in-bdb6b650{0%{opacity:0}to{opacity:1}}@keyframes fade-out-bdb6b650{0%{opacity:1}to{opacity:0;display:none}}.username[data-v-bdb6b650]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-bdb6b650]{font-size:1.4rem;color:var(--color-font-8);color:#e02a2a}.owner[data-v-bdb6b650]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-bdb6b650]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-bdb6b650]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag .remove[data-v-bdb6b650]{margin-left:.5rem;display:none}.add-tag[data-v-bdb6b650]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;position:absolute;display:none}.floor[data-v-bdb6b650]{font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;color:var(--color-floor-font);cursor:default;margin-right:1rem}.base-avatar[data-v-bdb6b650]{margin-right:1rem;display:inline-flex}.base-avatar img[data-v-bdb6b650]{width:2.8rem;height:2.8rem;border-radius:.4rem}[data-v-bdb6b650]:root{--box-border-radius: 8px}#Wrapper .box[data-v-bdb6b650]:first-child{background:unset;box-shadow:unset;overflow:hidden}#site-header #site-header-menu #menu-body[data-v-bdb6b650]{top:5rem;right:1rem}#Wrapper .cell .count_livid[data-v-bdb6b650]{font-size:14px;font-weight:700;padding:3px 10px;border-radius:5px}a[data-v-bdb6b650]{-webkit-tap-highlight-color:rgba(255,255,255,0);-webkit-user-select:none;-moz-user-focus:none;-moz-user-select:none}.post-item[data-v-bdb6b650]{background:var(--box-background-color)}.post-item .new-item[data-v-bdb6b650]{display:flex;justify-content:space-between}.post-item .new-item .left .top[data-v-bdb6b650]{display:flex;align-items:center;line-height:1.1;gap:1rem}.post-item .new-item .left .bottom[data-v-bdb6b650]{margin:1rem 0}.post-item .new-item .left .bottom a[data-v-bdb6b650]{text-decoration:none!important}.post-item .new-item .right[data-v-bdb6b650]{min-width:5rem;display:flex;justify-content:flex-end;align-items:center}.post-item .new-item .right .count_livid[data-v-bdb6b650]{margin-right:0}.post-item .post-content[data-v-bdb6b650]{display:block;max-height:30rem;overflow:hidden;line-break:anywhere;-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);height:0;color:#000;text-decoration:none!important}.post-item .post-content blockquote[data-v-bdb6b650]{margin-top:.5rem}.post-item .post-content p[data-v-bdb6b650]:first-child{margin-top:0}.post-item .post-content[data-v-bdb6b650]:visited{color:var(--link-visited-color)}.post-item .show-more[data-v-bdb6b650]{font-size:1.3rem;text-align:right;height:3rem;align-items:center;justify-content:center;position:relative;z-index:9;display:none}.preview[data-v-bdb6b650]{margin-bottom:.7rem;border-radius:var(--box-border-radius)}.preview .topic-link[data-v-bdb6b650]:link{color:#000!important}.preview .show-all[data-v-bdb6b650]{max-height:unset;-webkit-mask-image:none}.preview .post-content[data-v-bdb6b650]{height:unset!important}.preview .show-more[data-v-bdb6b650]{display:flex}.preview .item_title[data-v-bdb6b650]{font-weight:700}.Night .post-item[data-v-bdb6b650]{background:#18222d!important}.Night .preview[data-v-bdb6b650]{border:1px solid #3b536e}.Night .preview>.post-content[data-v-bdb6b650]:link{color:#d1d5d9}.Night .preview>.post-content[data-v-bdb6b650]:visited{color:#393f4e!important}.Night .preview .topic-link[data-v-bdb6b650]:link{color:#c0dbff!important}[data-v-bdb6b650]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--space: 1rem}html.dark[data-v-bdb6b650]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e}html[data-v-bdb6b650],body[data-v-bdb6b650]{font-size:62.5%}.flex[data-v-bdb6b650]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-bdb6b650]{justify-content:flex-end}.flex-center[data-v-bdb6b650]{justify-content:center}.p1[data-v-bdb6b650]{padding:1rem}.p2[data-v-bdb6b650]{padding:2rem}.p0[data-v-bdb6b650]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-bdb6b650]{text-underline-offset:.46ex;color:currentcolor;text-decoration:underline 1.5px}a[data-v-bdb6b650]{text-decoration:none}.tool[data-v-bdb6b650]{position:relative;display:flex;align-items:center;border-radius:.3rem;height:2.6rem;padding:0 .5rem;gap:.6rem}.tool>svg[data-v-bdb6b650]{width:2.2rem!important;height:2.2rem!important}.tool.disabled[data-v-bdb6b650]{cursor:not-allowed}.tool span[data-v-bdb6b650]{line-height:1rem}.my-node[data-v-bdb6b650]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5}.msgs[data-v-bdb6b650]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-bdb6b650]{background:var(--box-background-color);margin-bottom:.5rem;width:100%;overflow:hidden;box-sizing:border-box;transition:background-color .3s}.my-box .box-content[data-v-bdb6b650]{padding:.5rem}.my-cell[data-v-bdb6b650]{color:var(--color-font);height:4.2rem;padding:0 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-bdb6b650]{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-bdb6b650]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-bdb6b650]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-bdb6b650]{position:relative}.radio-group2[data-v-bdb6b650]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-bdb6b650]{background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-bdb6b650]:first-child{border-left:none}.radio-group2 .active[data-v-bdb6b650]{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm[data-v-bdb6b650]{position:relative;display:inline-flex;justify-content:center}input[data-v-bdb6b650]{width:10rem;height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-bdb6b650]:focus{border:1px solid var(--color-active)}.danger[data-v-bdb6b650]{color:red!important}.topic_content[data-v-bdb6b650],.reply_content[data-v-bdb6b650]{font-size:1.6rem}.mask[data-v-bdb6b650]{z-index:10;position:fixed;top:0;width:100vw;height:100vh;background:#000000bb}.mask.dark[data-v-bdb6b650]{background:#000000bb}.mask.light[data-v-bdb6b650]{background:transparent}.mask.lightgray[data-v-bdb6b650]{background:rgba(0,0,0,.25)}.mask.white[data-v-bdb6b650]{background:transparent}.slide[data-v-bdb6b650]{flex:1;width:100vw;height:100vh;transition:height .3s;position:relative;overflow:hidden}.slide .slide-list[data-v-bdb6b650]{height:100%;width:100%;display:flex;position:relative;transition:transform .3s}.slide .slide-list .slide-item[data-v-bdb6b650]{height:100%;width:100%;flex-shrink:0;position:relative;overflow:auto}.page1[data-v-bdb6b650]{overflow:hidden!important}.page1 .post-wrapper[data-v-bdb6b650],.page1 .setting-wrapper[data-v-bdb6b650]{position:absolute;left:0;top:0;height:100%;width:100%;background:white;overflow:auto}.mobile-page[data-v-bdb6b650]{font-size:1.8rem;display:flex;flex-direction:column}.mobile-page>.page-content[data-v-bdb6b650]{padding:1rem;padding-top:0;box-sizing:border-box;overflow:auto}.post-detail[data-v-bdb6b650]{text-align:start;background:#f1f1f1;font-size:1.4rem;display:flex;justify-content:center;flex-wrap:wrap}.post-detail[data-v-bdb6b650] .subtle{background-color:#ecfdf5e6;border-left:4px solid #a7f3d0}.post-detail.isNight[data-v-bdb6b650] .subtle{background-color:#1a3332;border-left:4px solid #047857}.post-detail .nav-bar[data-v-bdb6b650]{position:fixed;top:0;z-index:9;height:4.6rem;display:flex;justify-content:space-between;align-items:center;padding:1rem;margin-bottom:-1px}.post-detail .nav-bar svg[data-v-bdb6b650]{width:2rem;height:2rem;color:var(--color-font)}.post-detail .nav-bar .left[data-v-bdb6b650],.post-detail .nav-bar .right[data-v-bdb6b650]{display:flex;align-items:center;gap:1rem}.post-detail .post-main-body .box-header[data-v-bdb6b650]{padding:0 .5rem}.post-detail .post-main-body .box-header h1[data-v-bdb6b650]{font-weight:700}.post-detail .post-main-body .box-header small[data-v-bdb6b650]{display:flex;align-items:center}.post-detail .loading-wrapper[data-v-bdb6b650]{height:20rem;display:flex;justify-content:center;align-items:center}.post-detail .comments-header[data-v-bdb6b650]{width:100%;padding:0 1rem;box-sizing:border-box;background:var(--box-background-color)}.post-detail #no-comments-yet[data-v-bdb6b650]{color:#a9a9a9;font-weight:700;text-align:center;width:100%;margin-bottom:2rem;box-sizing:border-box}.post-detail .relationReply[data-v-bdb6b650]{position:fixed;width:25vw;top:6.5rem;bottom:15rem;z-index:100;transform:translate(calc(100% + 2rem));font-size:2rem;overflow:hidden}.post-detail .relationReply .my-cell[data-v-bdb6b650]{background:var(--color-second-bg);border-radius:var(--box-border-radius) var(--box-border-radius) 0 0}.post-detail .relationReply .comments[data-v-bdb6b650]{max-height:calc(100% - 4.2rem);overflow:auto;background:var(--color-second-bg);border-radius:0 0 var(--box-border-radius) var(--box-border-radius)}.post-detail .call-list[data-v-bdb6b650]{z-index:9;position:absolute;top:12rem;border:1px solid var(--color-main-bg);background:var(--color-call-list-bg);box-shadow:0 5px 15px #0000001a;overflow:auto;max-height:30rem;border-radius:var(--box-border-radius);min-width:8rem;box-sizing:content-box}.post-detail .call-list .call-item[data-v-bdb6b650]{border-top:1px solid var(--color-main-bg);height:3rem;display:flex;padding:0 1rem;align-items:center;font-size:14px;box-sizing:border-box}.post-detail .call-list .call-item .select[data-v-bdb6b650],.post-detail .call-list .call-item.select[data-v-bdb6b650]{background:var(--color-main-bg);text-decoration:none}.post-detail .call-list .call-item[data-v-bdb6b650]:nth-child(1){border-top:1px solid transparent}.post-detail .top-reply[data-v-bdb6b650]{color:var(--color-font-3);font-size:2rem;margin-right:1rem}.base64_tooltip[data-v-1988f33b]{box-shadow:0 3px 6px -4px #0000001f,0 6px 16px #00000014,0 9px 28px 8px #0000000d;background:var(--color-third-bg);min-height:2.2rem;max-width:20rem;padding:1rem;position:fixed;z-index:9998;display:flex;align-items:center;border-radius:.5rem;line-break:anywhere;font-size:1.4rem;color:var(--color-font-8)}.base64_tooltip svg[data-v-1988f33b]{margin-left:1rem;min-width:1.8rem}.base64_tooltip[data-v-1988f33b] .base-button{margin-left:1rem;margin-top:1rem}.msg[data-v-31e55c59]{cursor:default;margin-bottom:2rem;display:flex;font-size:1.4rem;box-sizing:border-box;border-radius:var(--box-border-radius);color:var(--color-font-8);background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow)}.msg.success .left[data-v-31e55c59]{background:var(--color-active)}.msg.warning .left[data-v-31e55c59]{background:#c8c002}.msg.error .left[data-v-31e55c59]{background:red}.msg .left[data-v-31e55c59]{border-radius:var(--box-border-radius) 0 0 var(--box-border-radius);display:flex;align-items:center;background:var(--color-active)}.msg .left svg[data-v-31e55c59]{margin:0 .3rem}.msg .right[data-v-31e55c59]{flex:1;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}.tag-modal .wrapper[data-v-674b86aa]{z-index:9;background:var(--color-main-bg);color:var(--color-font-8);border-radius:1.6rem;font-size:1.4rem;padding:2rem 4rem;width:25rem}.tag-modal .wrapper .title[data-v-674b86aa]{font-weight:700}.tag-modal .wrapper .btns[data-v-674b86aa]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1.5rem;font-size:1.4rem}.msgs[data-v-93c4dec0]{position:fixed;margin-left:calc(50% - 40vw);width:80vw;z-index:9999;bottom:0;left:0;right:0}.tag-modal .modal-root[data-v-19a5903e]{z-index:9;background:var(--color-second-bg);color:var(--color-font-8);border-radius:1.6rem;font-size:1.4rem;width:50vw;height:70vh;display:flex;flex-direction:column}.tag-modal .modal-root .modal-header[data-v-19a5903e]{padding:2.4rem;display:flex;justify-content:space-between}.tag-modal .modal-root .modal-header .title[data-v-19a5903e]{font-size:2.6rem;font-weight:700;text-align:left;margin-bottom:0}.tag-modal .modal-root .modal-header i[data-v-19a5903e]{font-size:2.2rem}.tag-modal .modal-root .modal-body[data-v-19a5903e]{padding:2rem;padding-top:0;flex:1;overflow:auto}.tag-modal .modal-root .modal-body[data-v-19a5903e] .cell{padding:2rem}.target-user-tags[data-v-34a1bac1]{background:var(--color-second-bg);color:var(--color-font);word-break:break-all;text-align:start;font-size:1.4rem;box-shadow:0 2px 3px #0000001a;border-bottom-left-radius:3px;border-bottom-right-radius:3px}.target-user-tags .add-tag[data-v-34a1bac1]{display:inline-block}.loaded[data-v-34a1bac1]{font-size:1.4rem;display:flex;align-items:center;gap:1rem} ');
+(e=>{if(typeof GM_addStyle=="function"){GM_addStyle(e);return}const o=document.createElement("style");o.textContent=e,document.head.append(o)})(' .v-enter-active,.v-leave-active{transition:opacity .3s ease}.v-enter-from,.v-leave-to{opacity:0}.fade-in{animation:fade-in .3s}.fade-out{animation:fade-out .4s}@keyframes fade-in{0%{opacity:0}to{opacity:1}}@keyframes fade-out{0%{opacity:1}to{opacity:0;display:none}}.username{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num{font-size:1.4rem;color:var(--color-font-8);color:#e02a2a}.owner{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag{font-size:1.4rem;color:red;margin-left:1rem}.my-tag .remove{margin-left:.5rem;display:none}.add-tag{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;position:absolute;display:none}.floor{font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;color:var(--color-floor-font);cursor:default;margin-right:1rem}.base-avatar{margin-right:1rem;display:inline-flex}.base-avatar img{width:2.8rem;height:2.8rem;border-radius:.4rem}html{font-size:10px}:root{--box-border-radius: 8px}#site-header{height:4rem}#site-header #site-header-menu #menu-body{top:5rem;right:1rem}#Wrapper .cell .count_livid{font-size:14px;font-weight:700;padding:3px 10px;border-radius:5px}a{-webkit-tap-highlight-color:rgba(255,255,255,0);-webkit-user-select:none;-moz-user-focus:none;-moz-user-select:none}.post-item{background:var(--box-background-color)}.post-item .new-item{display:flex;justify-content:space-between}.post-item .new-item .left .top{display:flex;align-items:center;line-height:1.2;gap:1rem}.post-item .new-item .left .small,.post-item .new-item .left a.node{font-size:1.2rem}.post-item .new-item .left .bottom{margin:1rem 0 .5rem}.post-item .new-item .left .bottom .item_title{font-size:1.6rem}.post-item .new-item .left .bottom a{text-decoration:none!important}.post-item .new-item .right{min-width:5rem;display:flex;justify-content:flex-end;align-items:center}.post-item .new-item .right .count_livid{font-size:1.4rem!important;margin-right:0;padding:.3rem 1rem!important;border-radius:.5rem!important}.post-item .post-content{display:block;max-height:30rem;overflow:hidden;line-break:anywhere;-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);height:0;color:#000;text-decoration:none!important}.post-item .post-content blockquote{margin-top:.5rem}.post-item .post-content p:first-child{margin-top:0}.post-item .post-content:visited{color:var(--link-visited-color)}.post-item .show-more{font-size:1.3rem;text-align:right;height:3rem;align-items:center;justify-content:center;position:relative;z-index:9;display:none}.preview{margin-bottom:.7rem;border-radius:var(--box-border-radius)}.preview .topic-link:link{color:#000!important}.preview .show-all{max-height:unset;-webkit-mask-image:none}.preview .post-content{height:unset!important}.preview .show-more{display:flex}.preview .item_title{font-weight:700}.Night .post-item{background:#18222d!important}.Night .preview{border:1px solid #3b536e}.Night .preview>.post-content:link{color:#d1d5d9}.Night .preview>.post-content:visited{color:#393f4e!important}.Night .preview .topic-link:link{color:#c0dbff!important}:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-four-bg: #e7e9eb;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-line2: #cecece;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--space: 1rem}html.dark{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-four-bg: #22303f;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e}.flex{display:flex;align-items:center;justify-content:space-between}.flex-end{justify-content:flex-end}.flex-center{justify-content:center}.p1{padding:1rem}.p2{padding:2rem}.p0{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http]{text-underline-offset:.46ex;color:currentcolor;text-decoration:underline 1.5px}a{text-decoration:none}.tool{position:relative;display:flex;align-items:center;border-radius:.3rem;height:2.6rem;padding:0 .5rem;gap:.6rem}.tool>svg{width:2.2rem!important;height:2.2rem!important}.tool.disabled{cursor:not-allowed}.tool span{line-height:1rem}.my-node{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5}.msgs{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box{background:var(--box-background-color);margin-bottom:.5rem;width:100%;overflow:hidden;box-sizing:border-box;transition:background-color .3s}.my-box .box-content{padding:.5rem}.my-cell{color:var(--color-font);height:4.2rem;padding:0 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option{display:flex;align-items:center;padding:.6rem 0}.modal .option>span{position:relative}.radio-group2{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio{background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio:first-child{border-left:none}.radio-group2 .active{background:var(--color-active);color:#fff}.pop-confirm{position:relative;display:inline-flex;justify-content:center}input{width:10rem;height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input:focus{border:1px solid var(--color-active)}.danger{color:red!important}.topic_content,.reply_content{font-size:1.6rem}.mask{z-index:10;position:fixed;top:0;width:100vw;height:100vh;background:#000000bb}.mask.dark{background:#000000bb}.mask.light{background:transparent}.mask.lightgray{background:rgba(0,0,0,.25)}.mask.white{background:transparent}.slide{flex:1;width:100vw;height:100vh;transition:height .3s;position:relative;overflow:hidden}.slide .slide-list{height:100%;width:100%;display:flex;position:relative;transition:transform .3s}.slide .slide-list .slide-item{height:100%;width:100%;flex-shrink:0;position:relative;overflow:auto}.page1{overflow:hidden!important}.page1 .post-wrapper,.page1 .setting-wrapper{position:absolute;left:0;top:0;height:100%;width:100%;background:var(--color-main-bg);overflow:auto}.setting-wrapper2{background:var(--color-main-bg)}.mobile-page{font-size:1.8rem;display:flex;flex-direction:column}.mobile-page>.page-content{padding:1rem;padding-top:0;box-sizing:border-box;overflow:auto}.tip[data-v-ee672411]{position:fixed;font-size:1.6rem;z-index:9999;max-width:10rem;border-radius:.5rem;padding:1rem;color:var(--color-font-8);background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow)}.v-enter-active[data-v-e7c0fbef],.v-leave-active[data-v-e7c0fbef]{transition:opacity .3s ease}.v-enter-from[data-v-e7c0fbef],.v-leave-to[data-v-e7c0fbef]{opacity:0}.fade-in[data-v-e7c0fbef]{animation:fade-in-e7c0fbef .3s}.fade-out[data-v-e7c0fbef]{animation:fade-out-e7c0fbef .4s}@keyframes fade-in-e7c0fbef{0%{opacity:0}to{opacity:1}}@keyframes fade-out-e7c0fbef{0%{opacity:1}to{opacity:0;display:none}}.username[data-v-e7c0fbef]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-e7c0fbef]{font-size:1.4rem;color:var(--color-font-8);color:#e02a2a}.owner[data-v-e7c0fbef]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-e7c0fbef]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-e7c0fbef]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag .remove[data-v-e7c0fbef]{margin-left:.5rem;display:none}.add-tag[data-v-e7c0fbef]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;position:absolute;display:none}.floor[data-v-e7c0fbef]{font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;color:var(--color-floor-font);cursor:default;margin-right:1rem}.base-avatar[data-v-e7c0fbef]{margin-right:1rem;display:inline-flex}.base-avatar img[data-v-e7c0fbef]{width:2.8rem;height:2.8rem;border-radius:.4rem}html[data-v-e7c0fbef]{font-size:10px}[data-v-e7c0fbef]:root{--box-border-radius: 8px}#site-header[data-v-e7c0fbef]{height:4rem}#site-header #site-header-menu #menu-body[data-v-e7c0fbef]{top:5rem;right:1rem}#Wrapper .cell .count_livid[data-v-e7c0fbef]{font-size:14px;font-weight:700;padding:3px 10px;border-radius:5px}a[data-v-e7c0fbef]{-webkit-tap-highlight-color:rgba(255,255,255,0);-webkit-user-select:none;-moz-user-focus:none;-moz-user-select:none}.post-item[data-v-e7c0fbef]{background:var(--box-background-color)}.post-item .new-item[data-v-e7c0fbef]{display:flex;justify-content:space-between}.post-item .new-item .left .top[data-v-e7c0fbef]{display:flex;align-items:center;line-height:1.2;gap:1rem}.post-item .new-item .left .small[data-v-e7c0fbef],.post-item .new-item .left a.node[data-v-e7c0fbef]{font-size:1.2rem}.post-item .new-item .left .bottom[data-v-e7c0fbef]{margin:1rem 0 .5rem}.post-item .new-item .left .bottom .item_title[data-v-e7c0fbef]{font-size:1.6rem}.post-item .new-item .left .bottom a[data-v-e7c0fbef]{text-decoration:none!important}.post-item .new-item .right[data-v-e7c0fbef]{min-width:5rem;display:flex;justify-content:flex-end;align-items:center}.post-item .new-item .right .count_livid[data-v-e7c0fbef]{font-size:1.4rem!important;margin-right:0;padding:.3rem 1rem!important;border-radius:.5rem!important}.post-item .post-content[data-v-e7c0fbef]{display:block;max-height:30rem;overflow:hidden;line-break:anywhere;-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);height:0;color:#000;text-decoration:none!important}.post-item .post-content blockquote[data-v-e7c0fbef]{margin-top:.5rem}.post-item .post-content p[data-v-e7c0fbef]:first-child{margin-top:0}.post-item .post-content[data-v-e7c0fbef]:visited{color:var(--link-visited-color)}.post-item .show-more[data-v-e7c0fbef]{font-size:1.3rem;text-align:right;height:3rem;align-items:center;justify-content:center;position:relative;z-index:9;display:none}.preview[data-v-e7c0fbef]{margin-bottom:.7rem;border-radius:var(--box-border-radius)}.preview .topic-link[data-v-e7c0fbef]:link{color:#000!important}.preview .show-all[data-v-e7c0fbef]{max-height:unset;-webkit-mask-image:none}.preview .post-content[data-v-e7c0fbef]{height:unset!important}.preview .show-more[data-v-e7c0fbef]{display:flex}.preview .item_title[data-v-e7c0fbef]{font-weight:700}.Night .post-item[data-v-e7c0fbef]{background:#18222d!important}.Night .preview[data-v-e7c0fbef]{border:1px solid #3b536e}.Night .preview>.post-content[data-v-e7c0fbef]:link{color:#d1d5d9}.Night .preview>.post-content[data-v-e7c0fbef]:visited{color:#393f4e!important}.Night .preview .topic-link[data-v-e7c0fbef]:link{color:#c0dbff!important}[data-v-e7c0fbef]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-four-bg: #e7e9eb;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-line2: #cecece;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--space: 1rem}html.dark[data-v-e7c0fbef]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-four-bg: #22303f;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e}.flex[data-v-e7c0fbef]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-e7c0fbef]{justify-content:flex-end}.flex-center[data-v-e7c0fbef]{justify-content:center}.p1[data-v-e7c0fbef]{padding:1rem}.p2[data-v-e7c0fbef]{padding:2rem}.p0[data-v-e7c0fbef]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-e7c0fbef]{text-underline-offset:.46ex;color:currentcolor;text-decoration:underline 1.5px}a[data-v-e7c0fbef]{text-decoration:none}.tool[data-v-e7c0fbef]{position:relative;display:flex;align-items:center;border-radius:.3rem;height:2.6rem;padding:0 .5rem;gap:.6rem}.tool>svg[data-v-e7c0fbef]{width:2.2rem!important;height:2.2rem!important}.tool.disabled[data-v-e7c0fbef]{cursor:not-allowed}.tool span[data-v-e7c0fbef]{line-height:1rem}.my-node[data-v-e7c0fbef]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5}.msgs[data-v-e7c0fbef]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-e7c0fbef]{background:var(--box-background-color);margin-bottom:.5rem;width:100%;overflow:hidden;box-sizing:border-box;transition:background-color .3s}.my-box .box-content[data-v-e7c0fbef]{padding:.5rem}.my-cell[data-v-e7c0fbef]{color:var(--color-font);height:4.2rem;padding:0 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-e7c0fbef]{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-e7c0fbef]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-e7c0fbef]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-e7c0fbef]{position:relative}.radio-group2[data-v-e7c0fbef]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-e7c0fbef]{background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-e7c0fbef]:first-child{border-left:none}.radio-group2 .active[data-v-e7c0fbef]{background:var(--color-active);color:#fff}.pop-confirm[data-v-e7c0fbef]{position:relative;display:inline-flex;justify-content:center}input[data-v-e7c0fbef]{width:10rem;height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-e7c0fbef]:focus{border:1px solid var(--color-active)}.danger[data-v-e7c0fbef]{color:red!important}.topic_content[data-v-e7c0fbef],.reply_content[data-v-e7c0fbef]{font-size:1.6rem}.mask[data-v-e7c0fbef]{z-index:10;position:fixed;top:0;width:100vw;height:100vh;background:#000000bb}.mask.dark[data-v-e7c0fbef]{background:#000000bb}.mask.light[data-v-e7c0fbef]{background:transparent}.mask.lightgray[data-v-e7c0fbef]{background:rgba(0,0,0,.25)}.mask.white[data-v-e7c0fbef]{background:transparent}.slide[data-v-e7c0fbef]{flex:1;width:100vw;height:100vh;transition:height .3s;position:relative;overflow:hidden}.slide .slide-list[data-v-e7c0fbef]{height:100%;width:100%;display:flex;position:relative;transition:transform .3s}.slide .slide-list .slide-item[data-v-e7c0fbef]{height:100%;width:100%;flex-shrink:0;position:relative;overflow:auto}.page1[data-v-e7c0fbef]{overflow:hidden!important}.page1 .post-wrapper[data-v-e7c0fbef],.page1 .setting-wrapper[data-v-e7c0fbef]{position:absolute;left:0;top:0;height:100%;width:100%;background:var(--color-main-bg);overflow:auto}.setting-wrapper2[data-v-e7c0fbef]{background:var(--color-main-bg)}.mobile-page[data-v-e7c0fbef]{font-size:1.8rem;display:flex;flex-direction:column}.mobile-page>.page-content[data-v-e7c0fbef]{padding:1rem;padding-top:0;box-sizing:border-box;overflow:auto}.switch[data-v-e7c0fbef]{width:4.5rem;height:2.2rem;border-radius:2rem;position:relative;display:flex;align-items:center;background:var(--color-swtich-bg);transition:all .3s}.switch.active[data-v-e7c0fbef]{background:var(--color-active)}.switch.active[data-v-e7c0fbef]:before{right:.2rem}.switch[data-v-e7c0fbef]:before{position:absolute;content:" ";transition:all .3s;right:calc(100% - 2rem);width:1.8rem;height:1.8rem;background:white;border-radius:50%}.nav-bar[data-v-fda0acaa]{box-sizing:border-box;width:100%;height:5rem;padding:0 var(--space);display:flex;align-items:center;justify-content:center;position:relative;font-size:2rem;color:var(--color-font-pure)}.nav-bar[data-v-fda0acaa] .back-icon{left:var(--space);position:absolute}.display-type[data-v-1d327f48]{height:3rem;padding:0 .3rem;background:var(--color-main-bg);border-radius:1rem;display:flex;font-size:1.4rem;align-items:center;color:#a9a9a9}.display-type .type[data-v-1d327f48]{border-radius:.8rem;padding:0 1.3rem;height:2.5rem;align-items:center;display:flex;position:relative}.display-type .type.active[data-v-1d327f48]{background:var(--color-second-bg);color:var(--color-font-pure);box-shadow:0 0 6px 0 var(--color-tooltip-shadow)}.display-type .type-list[data-v-1d327f48]{position:absolute;background:white;right:0;top:3rem;font-size:1.4rem;box-shadow:0 0 6px 0 var(--color-tooltip-shadow);border-radius:.6rem;z-index:9;color:var(--color-font)}.display-type .type-list .item[data-v-1d327f48]{word-break:keep-all;padding:.8rem 1rem}.display-type .type-list .item.active[data-v-1d327f48]{color:var(--color-font-pure)}.display-type svg[data-v-1d327f48]{width:1.5rem}.font-size[data-v-a64ba8b8]{margin-bottom:3rem;display:flex;flex-direction:column;align-items:center;justify-content:center}.font-size .steps[data-v-a64ba8b8]{width:100%;border-radius:10rpx;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2}.font-size .steps .step[data-v-a64ba8b8]{width:100%;font-size:20rpx;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:4.8rem;gap:1.5rem;color:gray}.font-size .steps .step .text[data-v-a64ba8b8]{font-size:1.4rem}.font-size .steps .step .point[data-v-a64ba8b8]{border-radius:50%;min-width:6px;min-height:6px;background:#adadad}.font-size .steps .step.active[data-v-a64ba8b8]{color:var(--color-font-pure)}.font-size .steps .step.active .point[data-v-a64ba8b8]{box-shadow:0 0 1px 1px #f1f1f1;background:white;transform:scale(3)}.font-size .line[data-v-a64ba8b8]{position:relative;z-index:1;margin-top:-4px;height:2px;width:76%;background:var(--color-font)}.row[data-v-7e31c9a2]{min-height:4rem;display:flex;justify-content:space-between;align-items:center}.row .wrapper[data-v-7e31c9a2]{height:3rem;flex:1;display:flex;justify-content:flex-end;align-items:center;gap:var(--space)}.row .wrapper span[data-v-7e31c9a2]{text-align:right;font-size:1.4rem;color:gray}.row .main-title[data-v-7e31c9a2]{font-size:2.2rem;font-weight:700;color:var(--color-font-8)}.row .item-title[data-v-7e31c9a2]{font-size:1.8rem;color:var(--color-font)}.desc[data-v-7e31c9a2]{margin-bottom:1rem;font-size:1.4rem;text-align:left;color:var(--color-font)}.tool>svg[data-v-b7c6664e]{width:1.8rem!important;height:1.8rem!important}.more[data-v-e92e0529]{height:1.6rem;width:2.08rem;padding:1rem .8rem 1rem 0;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end}.more div[data-v-e92e0529]{background:var(--color-floor-font);width:.3rem;height:.3rem;border-radius:50%}.Author[data-v-9041586a]{display:flex;align-items:center;justify-content:space-between;font-size:1.2rem;position:relative}.Author.expand[data-v-9041586a]{margin-bottom:0}.Author .Author-left[data-v-9041586a]{display:flex;align-items:center;width:80%;word-break:break-all}.Author .Author-left .info[data-v-9041586a]{display:flex;flex-direction:column}.Author .Author-left .username[data-v-9041586a]{font-size:1.4rem;margin-right:1rem}.Author .Author-left .expand-icon[data-v-9041586a]{margin-right:.8rem;width:2.4rem;height:2.4rem;transform:rotate(90deg)}.Author .Author-left .texts[data-v-9041586a]{flex:1}.Author .Author-left .owner[data-v-9041586a]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.Author .Author-left .dup[data-v-9041586a]{display:inline-block;background-color:transparent;color:red;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid red;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.Author .Author-left .mod[data-v-9041586a]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.Author .Author-right[data-v-9041586a]{position:absolute;right:0;display:flex;align-items:center}.loading[data-v-2697baa2]{border:2px solid;border-color:var(--color-loading-2) var(--color-loading-1) var(--color-loading-1) var(--color-loading-1);border-radius:100%;animation:circle-2697baa2 infinite 1s linear;width:2rem;height:2rem}.loading.small[data-v-2697baa2]{width:1.2rem;height:1.2rem}.loading.large[data-v-2697baa2]{width:3rem;height:3rem}@keyframes circle-2697baa2{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.base-button[data-v-04f4c89d]{border-radius:.6rem;padding:0 1.5rem;display:inline-flex;align-items:center;justify-content:center;transition:all .3s;height:3.6rem;line-height:1;position:relative}.base-button .loading[data-v-04f4c89d]{position:absolute}.base-button.disabled[data-v-04f4c89d]{opacity:.6;cursor:not-allowed;-webkit-user-select:none;user-select:none}.base-button.small[data-v-04f4c89d]{height:3rem}.base-button.small>span[data-v-04f4c89d]{font-size:1.3rem}.base-button.large[data-v-04f4c89d]{height:5rem;font-size:1.8rem;padding:0 2.2rem}.base-button.large>span[data-v-04f4c89d]{font-size:1.8rem}.base-button.primary[data-v-04f4c89d]{background:var(--color-active)}.base-button.primary>span[data-v-04f4c89d]{color:#fff}.base-button.gary[data-v-04f4c89d]{background:#4b5563}.base-button.link[data-v-04f4c89d]{border-radius:0;border-bottom:2px solid transparent}.base-button.link>span[data-v-04f4c89d]{color:var(--color-font-8)}.base-button.active[data-v-04f4c89d]{opacity:.4}.key-notice[data-v-04f4c89d]{margin-left:1rem;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff}.key-notice .key[data-v-04f4c89d]{transform:scale(.8)}.post-editor-wrapper[data-v-0612e02f]{width:100%;box-sizing:border-box;position:relative;overflow:hidden;transition:all .3s;color:var(--color-font)}.post-editor-wrapper.isFocus .post-editor[data-v-0612e02f]{border:1px solid var(--color-active)}.post-editor-wrapper .post-editor[data-v-0612e02f]{border:1px solid var(--color-line);border-radius:var(--box-border-radius);transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.6rem;min-height:13rem;resize:none;background:var(--box-background-color);color:var(--color-font-pure)}.post-editor-wrapper .toolbar[data-v-0612e02f]{box-sizing:border-box;padding:.5rem 1rem;width:100%;position:relative;display:flex;justify-content:space-between;align-items:center}.post-editor-wrapper .toolbar .left[data-v-0612e02f]{display:flex;gap:1rem}.post-editor-wrapper .toolbar .left .upload input[data-v-0612e02f]{position:absolute;width:20px;height:20px;opacity:0}.post-editor-wrapper .toolbar span[data-v-0612e02f]{color:gray;font-size:1.3rem}.post-editor-wrapper .get-cursor[data-v-0612e02f]{border:1px solid var(--color-line);border-radius:var(--box-border-radius);transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.6rem;min-height:13rem;resize:none;background:var(--box-background-color);color:var(--color-font-pure);position:absolute;top:0;z-index:-100}.post-editor-wrapper .emoticon-pack[data-v-0612e02f]{z-index:999999999;border-radius:1rem;padding:1rem;width:31rem;max-width:31rem;height:30rem;max-height:30rem;overflow:auto;background:var(--color-third-bg);border:1px solid var(--color-font-3);box-shadow:0 9px 24px -3px #0000000f,0 4px 8px -1px #0000001f;position:fixed;bottom:11rem;left:14rem}.post-editor-wrapper .emoticon-pack i[data-v-0612e02f]{position:absolute;right:2rem;font-size:2rem;color:#e2e2e2}.post-editor-wrapper .emoticon-pack .list[data-v-0612e02f]{margin:1rem 0}.post-editor-wrapper .emoticon-pack img[data-v-0612e02f]{width:3rem;height:3rem;padding:.5rem}.post-editor-wrapper .emoticon-pack span[data-v-0612e02f]{display:inline-block;font-size:2.3rem;padding:.5rem}.v-enter-active[data-v-f8165980],.v-leave-active[data-v-f8165980]{transition:opacity .3s ease}.v-enter-from[data-v-f8165980],.v-leave-to[data-v-f8165980]{opacity:0}.fade-in[data-v-f8165980]{animation:fade-in-f8165980 .3s}.fade-out[data-v-f8165980]{animation:fade-out-f8165980 .4s}@keyframes fade-in-f8165980{0%{opacity:0}to{opacity:1}}@keyframes fade-out-f8165980{0%{opacity:1}to{opacity:0;display:none}}.username[data-v-f8165980]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-f8165980]{font-size:1.4rem;color:var(--color-font-8);color:#e02a2a}.owner[data-v-f8165980]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-f8165980]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-f8165980]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag .remove[data-v-f8165980]{margin-left:.5rem;display:none}.add-tag[data-v-f8165980]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;position:absolute;display:none}.floor[data-v-f8165980]{font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;color:var(--color-floor-font);cursor:default;margin-right:1rem}.base-avatar[data-v-f8165980]{margin-right:1rem;display:inline-flex}.base-avatar img[data-v-f8165980]{width:2.8rem;height:2.8rem;border-radius:.4rem}html[data-v-f8165980]{font-size:10px}[data-v-f8165980]:root{--box-border-radius: 8px}#site-header[data-v-f8165980]{height:4rem}#site-header #site-header-menu #menu-body[data-v-f8165980]{top:5rem;right:1rem}#Wrapper .cell .count_livid[data-v-f8165980]{font-size:14px;font-weight:700;padding:3px 10px;border-radius:5px}a[data-v-f8165980]{-webkit-tap-highlight-color:rgba(255,255,255,0);-webkit-user-select:none;-moz-user-focus:none;-moz-user-select:none}.post-item[data-v-f8165980]{background:var(--box-background-color)}.post-item .new-item[data-v-f8165980]{display:flex;justify-content:space-between}.post-item .new-item .left .top[data-v-f8165980]{display:flex;align-items:center;line-height:1.2;gap:1rem}.post-item .new-item .left .small[data-v-f8165980],.post-item .new-item .left a.node[data-v-f8165980]{font-size:1.2rem}.post-item .new-item .left .bottom[data-v-f8165980]{margin:1rem 0 .5rem}.post-item .new-item .left .bottom .item_title[data-v-f8165980]{font-size:1.6rem}.post-item .new-item .left .bottom a[data-v-f8165980]{text-decoration:none!important}.post-item .new-item .right[data-v-f8165980]{min-width:5rem;display:flex;justify-content:flex-end;align-items:center}.post-item .new-item .right .count_livid[data-v-f8165980]{font-size:1.4rem!important;margin-right:0;padding:.3rem 1rem!important;border-radius:.5rem!important}.post-item .post-content[data-v-f8165980]{display:block;max-height:30rem;overflow:hidden;line-break:anywhere;-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);height:0;color:#000;text-decoration:none!important}.post-item .post-content blockquote[data-v-f8165980]{margin-top:.5rem}.post-item .post-content p[data-v-f8165980]:first-child{margin-top:0}.post-item .post-content[data-v-f8165980]:visited{color:var(--link-visited-color)}.post-item .show-more[data-v-f8165980]{font-size:1.3rem;text-align:right;height:3rem;align-items:center;justify-content:center;position:relative;z-index:9;display:none}.preview[data-v-f8165980]{margin-bottom:.7rem;border-radius:var(--box-border-radius)}.preview .topic-link[data-v-f8165980]:link{color:#000!important}.preview .show-all[data-v-f8165980]{max-height:unset;-webkit-mask-image:none}.preview .post-content[data-v-f8165980]{height:unset!important}.preview .show-more[data-v-f8165980]{display:flex}.preview .item_title[data-v-f8165980]{font-weight:700}.Night .post-item[data-v-f8165980]{background:#18222d!important}.Night .preview[data-v-f8165980]{border:1px solid #3b536e}.Night .preview>.post-content[data-v-f8165980]:link{color:#d1d5d9}.Night .preview>.post-content[data-v-f8165980]:visited{color:#393f4e!important}.Night .preview .topic-link[data-v-f8165980]:link{color:#c0dbff!important}[data-v-f8165980]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-four-bg: #e7e9eb;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-line2: #cecece;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--space: 1rem}html.dark[data-v-f8165980]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-four-bg: #22303f;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e}.flex[data-v-f8165980]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-f8165980]{justify-content:flex-end}.flex-center[data-v-f8165980]{justify-content:center}.p1[data-v-f8165980]{padding:1rem}.p2[data-v-f8165980]{padding:2rem}.p0[data-v-f8165980]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-f8165980]{text-underline-offset:.46ex;color:currentcolor;text-decoration:underline 1.5px}a[data-v-f8165980]{text-decoration:none}.tool[data-v-f8165980]{position:relative;display:flex;align-items:center;border-radius:.3rem;height:2.6rem;padding:0 .5rem;gap:.6rem}.tool>svg[data-v-f8165980]{width:2.2rem!important;height:2.2rem!important}.tool.disabled[data-v-f8165980]{cursor:not-allowed}.tool span[data-v-f8165980]{line-height:1rem}.my-node[data-v-f8165980]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5}.msgs[data-v-f8165980]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-f8165980]{background:var(--box-background-color);margin-bottom:.5rem;width:100%;overflow:hidden;box-sizing:border-box;transition:background-color .3s}.my-box .box-content[data-v-f8165980]{padding:.5rem}.my-cell[data-v-f8165980]{color:var(--color-font);height:4.2rem;padding:0 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-f8165980]{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-f8165980]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-f8165980]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-f8165980]{position:relative}.radio-group2[data-v-f8165980]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-f8165980]{background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-f8165980]:first-child{border-left:none}.radio-group2 .active[data-v-f8165980]{background:var(--color-active);color:#fff}.pop-confirm[data-v-f8165980]{position:relative;display:inline-flex;justify-content:center}input[data-v-f8165980]{width:10rem;height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-f8165980]:focus{border:1px solid var(--color-active)}.danger[data-v-f8165980]{color:red!important}.topic_content[data-v-f8165980],.reply_content[data-v-f8165980]{font-size:1.6rem}.mask[data-v-f8165980]{z-index:10;position:fixed;top:0;width:100vw;height:100vh;background:#000000bb}.mask.dark[data-v-f8165980]{background:#000000bb}.mask.light[data-v-f8165980]{background:transparent}.mask.lightgray[data-v-f8165980]{background:rgba(0,0,0,.25)}.mask.white[data-v-f8165980]{background:transparent}.slide[data-v-f8165980]{flex:1;width:100vw;height:100vh;transition:height .3s;position:relative;overflow:hidden}.slide .slide-list[data-v-f8165980]{height:100%;width:100%;display:flex;position:relative;transition:transform .3s}.slide .slide-list .slide-item[data-v-f8165980]{height:100%;width:100%;flex-shrink:0;position:relative;overflow:auto}.page1[data-v-f8165980]{overflow:hidden!important}.page1 .post-wrapper[data-v-f8165980],.page1 .setting-wrapper[data-v-f8165980]{position:absolute;left:0;top:0;height:100%;width:100%;background:var(--color-main-bg);overflow:auto}.setting-wrapper2[data-v-f8165980]{background:var(--color-main-bg)}.mobile-page[data-v-f8165980]{font-size:1.8rem;display:flex;flex-direction:column}.mobile-page>.page-content[data-v-f8165980]{padding:1rem;padding-top:0;box-sizing:border-box;overflow:auto}.html-wrapper[data-v-f8165980]{position:relative}.html-wrapper .htmlMask[data-v-f8165980]{max-height:90rem;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent)}.html-wrapper .expand[data-v-f8165980]{position:absolute;z-index:1;bottom:2rem;padding:.2rem 1.5rem;border-radius:2rem;border:1px solid gray;background:white;color:gray;left:50%;transform:translate(-50%)}.comment[data-v-312e9541]{width:100%;box-sizing:border-box;margin-top:.6rem}.comment.isLevelOne[data-v-312e9541]{border-bottom:1px solid var(--color-line);padding:.8rem 1rem;margin-top:0}.comment.ding[data-v-312e9541]{background:rgba(255,255,0,.3)!important}.comment .comment-content-w .more[data-v-312e9541]{text-align:center;margin:1rem 0}.comment .comment-content[data-v-312e9541]{display:flex;position:relative}.comment .comment-content .expand-line[data-v-312e9541]{margin-top:.6rem;width:1.8rem;min-width:1.8rem;position:relative}.comment .comment-content .expand-line[data-v-312e9541]:after{position:absolute;left:30%;content:" ";height:100%;width:0;border-right:1px solid var(--color-line)}.comment .comment-content .right[data-v-312e9541]{flex:1;width:calc(100% - 3rem)}.comment .comment-content .right .w[data-v-312e9541]{margin:.5rem 0}.wrong-wrapper[data-v-312e9541]{font-size:1.4rem;margin-bottom:1rem}.wrong-wrapper .del-line[data-v-312e9541]{text-decoration:line-through}.wrong-wrapper .wrong-icon[data-v-312e9541]{margin-left:.5rem}.wrong-wrapper .warning[data-v-312e9541]{border-top:1px solid #e1e1e1;border-bottom:1px solid #e1e1e1;padding:1rem 0;margin-top:1rem;font-size:1.2rem;color:red}.toolbar[data-v-6234240d]{border-top:1px solid var(--color-line);height:4rem;padding:0 1rem;display:flex;align-items:center;color:var(--color-font);font-size:1.4rem;justify-content:space-between}.toolbar .left[data-v-6234240d],.toolbar .right[data-v-6234240d]{gap:1rem;display:flex}.toolbar .right[data-v-6234240d]{gap:.6rem}.comment[data-v-0869dab5]{width:100%;box-sizing:border-box;display:flex;gap:1rem;padding:1rem;border-bottom:1px solid var(--color-line)}.comment .base-avatar[data-v-0869dab5]{display:flex;margin-right:0}.comment .base-avatar img[data-v-0869dab5]{width:2.8rem;height:2.8rem;border-radius:.3rem}.comment .comment-body[data-v-0869dab5]{flex:1;display:flex;flex-direction:column}.comment .comment-body .texts[data-v-0869dab5]{display:flex;align-items:center}.comment .comment-body .reply_content[data-v-0869dab5]{margin-top:1rem;max-width:calc(100% - 5rem)}.comment .isRight[data-v-0869dab5]{align-items:flex-end}.comment .isRight .owner[data-v-0869dab5],.comment .isRight .mod[data-v-0869dab5],.comment .isRight .username[data-v-0869dab5]{margin:0 0 0 1rem}.comment .Author-right[data-v-0869dab5]{display:flex;flex-direction:column;align-items:center}.comment .Author-right .floor[data-v-0869dab5]{margin:0;border-radius:.5rem;background-color:var(--color-floor);padding:3px 9px}.comment .Author-right .jump[data-v-0869dab5]{color:#929596;margin-top:.4rem;font-size:1.4rem}.comment .point[data-v-0869dab5]{margin:0 1rem;display:flex;gap:.5rem;align-items:center}.comment .point svg[data-v-0869dab5]{font-size:1.6rem}.FromBottomDialog[data-v-3a54f208]{z-index:11;position:fixed;width:100%;overflow-y:auto;bottom:0;box-sizing:border-box;border-radius:var(--0013fa15);transition:all .3s;background:var(--color-four-bg)}.FromBottomDialog.no-heng-gang[data-v-3a54f208]{padding-top:0}.FromBottomDialog .heng-gang[data-v-3a54f208]{border-radius:.5rem .5rem 0 0;border-radius:var(--0013fa15);z-index:3;width:100%;position:fixed;min-height:3rem;display:flex;justify-content:center;align-items:center}.FromBottomDialog .heng-gang .gang-content[data-v-3a54f208]{background:darkgray;border-radius:2px;height:.4rem;width:3rem}.FromBottomDialog .dialog-wrapper[data-v-3a54f208]{margin-top:3rem}.wrapper .options[data-v-ce52828d]{padding:1rem 2rem 3rem;display:grid;grid-template-columns:repeat(5,1fr);justify-content:space-between;gap:2rem}.wrapper .options .item[data-v-ce52828d]{display:flex;flex-direction:column;align-items:center;color:gray;font-size:1.2rem}.wrapper .options .item.disabled[data-v-ce52828d]{opacity:.5}.wrapper .options .item.disabled svg[data-v-ce52828d]{color:gray!important}.wrapper .options .item .icon-wrap[data-v-ce52828d]{margin-bottom:.5rem;width:100%;height:15vw;display:flex;justify-content:center;align-items:center;background:var(--color-second-bg);border-radius:1rem}.wrapper .options .item .icon-wrap svg[data-v-ce52828d]{font-size:3rem}.wrapper .options .black[data-v-ce52828d]{color:var(--color-font-pure)}.wrapper .cancel[data-v-ce52828d]{border-top:1px solid var(--color-tooltip-bg);display:flex;align-items:center;justify-content:center;font-size:1.6rem;height:5rem;color:#646f81}.wrapper .options[data-v-8ef13a81]{padding:1rem 2rem 3rem;display:grid;grid-template-columns:repeat(5,1fr);justify-content:space-between;gap:2rem}.wrapper .options .item[data-v-8ef13a81]{display:flex;flex-direction:column;align-items:center;color:gray;font-size:1.2rem}.wrapper .options .item.disabled[data-v-8ef13a81]{opacity:.5}.wrapper .options .item.disabled svg[data-v-8ef13a81]{color:gray!important}.wrapper .options .item.full svg[data-v-8ef13a81]{color:#e02a2a!important}.wrapper .options .item .icon-wrap[data-v-8ef13a81]{margin-bottom:.5rem;width:100%;height:15vw;display:flex;justify-content:center;align-items:center;background:var(--color-second-bg);border-radius:1rem}.wrapper .options .item .icon-wrap svg[data-v-8ef13a81]{font-size:3rem;color:#39ae55}.wrapper .cancel[data-v-8ef13a81]{border-top:1px solid var(--color-line2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;height:5rem;color:#646f81}.sticky{position:sticky;bottom:-2px;z-index:2;background:var(--box-background-hover-color)!important}.sticky[stuck]{box-shadow:0 2px 20px #00000059!important}.v-enter-active[data-v-2ae4681d],.v-leave-active[data-v-2ae4681d]{transition:opacity .3s ease}.v-enter-from[data-v-2ae4681d],.v-leave-to[data-v-2ae4681d]{opacity:0}.fade-in[data-v-2ae4681d]{animation:fade-in-2ae4681d .3s}.fade-out[data-v-2ae4681d]{animation:fade-out-2ae4681d .4s}@keyframes fade-in-2ae4681d{0%{opacity:0}to{opacity:1}}@keyframes fade-out-2ae4681d{0%{opacity:1}to{opacity:0;display:none}}.username[data-v-2ae4681d]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-2ae4681d]{font-size:1.4rem;color:var(--color-font-8);color:#e02a2a}.owner[data-v-2ae4681d]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-2ae4681d]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-2ae4681d]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag .remove[data-v-2ae4681d]{margin-left:.5rem;display:none}.add-tag[data-v-2ae4681d]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;position:absolute;display:none}.floor[data-v-2ae4681d]{font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;color:var(--color-floor-font);cursor:default;margin-right:1rem}.base-avatar[data-v-2ae4681d]{margin-right:1rem;display:inline-flex}.base-avatar img[data-v-2ae4681d]{width:2.8rem;height:2.8rem;border-radius:.4rem}html[data-v-2ae4681d]{font-size:10px}[data-v-2ae4681d]:root{--box-border-radius: 8px}#site-header[data-v-2ae4681d]{height:4rem}#site-header #site-header-menu #menu-body[data-v-2ae4681d]{top:5rem;right:1rem}#Wrapper .cell .count_livid[data-v-2ae4681d]{font-size:14px;font-weight:700;padding:3px 10px;border-radius:5px}a[data-v-2ae4681d]{-webkit-tap-highlight-color:rgba(255,255,255,0);-webkit-user-select:none;-moz-user-focus:none;-moz-user-select:none}.post-item[data-v-2ae4681d]{background:var(--box-background-color)}.post-item .new-item[data-v-2ae4681d]{display:flex;justify-content:space-between}.post-item .new-item .left .top[data-v-2ae4681d]{display:flex;align-items:center;line-height:1.2;gap:1rem}.post-item .new-item .left .small[data-v-2ae4681d],.post-item .new-item .left a.node[data-v-2ae4681d]{font-size:1.2rem}.post-item .new-item .left .bottom[data-v-2ae4681d]{margin:1rem 0 .5rem}.post-item .new-item .left .bottom .item_title[data-v-2ae4681d]{font-size:1.6rem}.post-item .new-item .left .bottom a[data-v-2ae4681d]{text-decoration:none!important}.post-item .new-item .right[data-v-2ae4681d]{min-width:5rem;display:flex;justify-content:flex-end;align-items:center}.post-item .new-item .right .count_livid[data-v-2ae4681d]{font-size:1.4rem!important;margin-right:0;padding:.3rem 1rem!important;border-radius:.5rem!important}.post-item .post-content[data-v-2ae4681d]{display:block;max-height:30rem;overflow:hidden;line-break:anywhere;-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);height:0;color:#000;text-decoration:none!important}.post-item .post-content blockquote[data-v-2ae4681d]{margin-top:.5rem}.post-item .post-content p[data-v-2ae4681d]:first-child{margin-top:0}.post-item .post-content[data-v-2ae4681d]:visited{color:var(--link-visited-color)}.post-item .show-more[data-v-2ae4681d]{font-size:1.3rem;text-align:right;height:3rem;align-items:center;justify-content:center;position:relative;z-index:9;display:none}.preview[data-v-2ae4681d]{margin-bottom:.7rem;border-radius:var(--box-border-radius)}.preview .topic-link[data-v-2ae4681d]:link{color:#000!important}.preview .show-all[data-v-2ae4681d]{max-height:unset;-webkit-mask-image:none}.preview .post-content[data-v-2ae4681d]{height:unset!important}.preview .show-more[data-v-2ae4681d]{display:flex}.preview .item_title[data-v-2ae4681d]{font-weight:700}.Night .post-item[data-v-2ae4681d]{background:#18222d!important}.Night .preview[data-v-2ae4681d]{border:1px solid #3b536e}.Night .preview>.post-content[data-v-2ae4681d]:link{color:#d1d5d9}.Night .preview>.post-content[data-v-2ae4681d]:visited{color:#393f4e!important}.Night .preview .topic-link[data-v-2ae4681d]:link{color:#c0dbff!important}[data-v-2ae4681d]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-four-bg: #e7e9eb;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-line2: #cecece;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--space: 1rem}html.dark[data-v-2ae4681d]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-four-bg: #22303f;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e}.flex[data-v-2ae4681d]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-2ae4681d]{justify-content:flex-end}.flex-center[data-v-2ae4681d]{justify-content:center}.p1[data-v-2ae4681d]{padding:1rem}.p2[data-v-2ae4681d]{padding:2rem}.p0[data-v-2ae4681d]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-2ae4681d]{text-underline-offset:.46ex;color:currentcolor;text-decoration:underline 1.5px}a[data-v-2ae4681d]{text-decoration:none}.tool[data-v-2ae4681d]{position:relative;display:flex;align-items:center;border-radius:.3rem;height:2.6rem;padding:0 .5rem;gap:.6rem}.tool>svg[data-v-2ae4681d]{width:2.2rem!important;height:2.2rem!important}.tool.disabled[data-v-2ae4681d]{cursor:not-allowed}.tool span[data-v-2ae4681d]{line-height:1rem}.my-node[data-v-2ae4681d]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5}.msgs[data-v-2ae4681d]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-2ae4681d]{background:var(--box-background-color);margin-bottom:.5rem;width:100%;overflow:hidden;box-sizing:border-box;transition:background-color .3s}.my-box .box-content[data-v-2ae4681d]{padding:.5rem}.my-cell[data-v-2ae4681d]{color:var(--color-font);height:4.2rem;padding:0 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-2ae4681d]{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-2ae4681d]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-2ae4681d]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-2ae4681d]{position:relative}.radio-group2[data-v-2ae4681d]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-2ae4681d]{background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-2ae4681d]:first-child{border-left:none}.radio-group2 .active[data-v-2ae4681d]{background:var(--color-active);color:#fff}.pop-confirm[data-v-2ae4681d]{position:relative;display:inline-flex;justify-content:center}input[data-v-2ae4681d]{width:10rem;height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-2ae4681d]:focus{border:1px solid var(--color-active)}.danger[data-v-2ae4681d]{color:red!important}.topic_content[data-v-2ae4681d],.reply_content[data-v-2ae4681d]{font-size:1.6rem}.mask[data-v-2ae4681d]{z-index:10;position:fixed;top:0;width:100vw;height:100vh;background:#000000bb}.mask.dark[data-v-2ae4681d]{background:#000000bb}.mask.light[data-v-2ae4681d]{background:transparent}.mask.lightgray[data-v-2ae4681d]{background:rgba(0,0,0,.25)}.mask.white[data-v-2ae4681d]{background:transparent}.slide[data-v-2ae4681d]{flex:1;width:100vw;height:100vh;transition:height .3s;position:relative;overflow:hidden}.slide .slide-list[data-v-2ae4681d]{height:100%;width:100%;display:flex;position:relative;transition:transform .3s}.slide .slide-list .slide-item[data-v-2ae4681d]{height:100%;width:100%;flex-shrink:0;position:relative;overflow:auto}.page1[data-v-2ae4681d]{overflow:hidden!important}.page1 .post-wrapper[data-v-2ae4681d],.page1 .setting-wrapper[data-v-2ae4681d]{position:absolute;left:0;top:0;height:100%;width:100%;background:var(--color-main-bg);overflow:auto}.setting-wrapper2[data-v-2ae4681d]{background:var(--color-main-bg)}.mobile-page[data-v-2ae4681d]{font-size:1.8rem;display:flex;flex-direction:column}.mobile-page>.page-content[data-v-2ae4681d]{padding:1rem;padding-top:0;box-sizing:border-box;overflow:auto}.post-detail[data-v-2ae4681d]{text-align:start;background:var(--color-main-bg);font-size:1.6rem;display:flex;justify-content:center;flex-wrap:wrap}.post-detail[data-v-2ae4681d] .subtle{background-color:#ecfdf5e6;border-left:4px solid #a7f3d0}.post-detail.isNight[data-v-2ae4681d] .subtle{background-color:#1a3332;border-left:4px solid #047857}.post-detail .nav-bar[data-v-2ae4681d]{position:fixed;top:0;z-index:9;height:4.6rem;display:flex;justify-content:space-between;align-items:center;padding:1rem;margin-bottom:-1px}.post-detail .nav-bar svg[data-v-2ae4681d]{width:2rem;height:2rem;color:var(--color-font)}.post-detail .nav-bar .left[data-v-2ae4681d],.post-detail .nav-bar .right[data-v-2ae4681d]{display:flex;align-items:center;gap:1rem}.post-detail .post-main-body .box-header[data-v-2ae4681d]{padding:0 .5rem}.post-detail .post-main-body .box-header h1[data-v-2ae4681d]{font-size:2.2rem;font-weight:700}.post-detail .post-main-body .box-header small[data-v-2ae4681d]{display:flex;align-items:center}.post-detail .loading-wrapper[data-v-2ae4681d]{height:20rem;display:flex;justify-content:center;align-items:center}.post-detail .comments-header[data-v-2ae4681d]{width:100%;padding:0 1rem;box-sizing:border-box;background:var(--box-background-color)}.post-detail #no-comments-yet[data-v-2ae4681d]{color:#a9a9a9;font-weight:700;text-align:center;width:100%;margin:2rem 1rem;box-sizing:border-box}.post-detail .relationReply[data-v-2ae4681d]{position:fixed;width:25vw;top:6.5rem;bottom:15rem;z-index:100;transform:translate(calc(100% + 2rem));font-size:2rem;overflow:hidden}.post-detail .relationReply .my-cell[data-v-2ae4681d]{background:var(--color-second-bg);border-radius:var(--box-border-radius) var(--box-border-radius) 0 0}.post-detail .relationReply .comments[data-v-2ae4681d]{max-height:calc(100% - 4.2rem);overflow:auto;background:var(--color-second-bg);border-radius:0 0 var(--box-border-radius) var(--box-border-radius)}.post-detail .call-list[data-v-2ae4681d]{z-index:9;position:absolute;top:12rem;border:1px solid var(--color-main-bg);background:var(--color-call-list-bg);box-shadow:0 5px 15px #0000001a;overflow:auto;max-height:30rem;border-radius:var(--box-border-radius);min-width:8rem;box-sizing:content-box}.post-detail .call-list .call-item[data-v-2ae4681d]{border-top:1px solid var(--color-main-bg);height:3rem;display:flex;padding:0 1rem;align-items:center;font-size:14px;box-sizing:border-box}.post-detail .call-list .call-item .select[data-v-2ae4681d],.post-detail .call-list .call-item.select[data-v-2ae4681d]{background:var(--color-main-bg);text-decoration:none}.post-detail .call-list .call-item[data-v-2ae4681d]:nth-child(1){border-top:1px solid transparent}.post-detail .top-reply[data-v-2ae4681d]{color:var(--color-font-3);font-size:2rem;margin-right:1rem}.base64_tooltip[data-v-1988f33b]{box-shadow:0 3px 6px -4px #0000001f,0 6px 16px #00000014,0 9px 28px 8px #0000000d;background:var(--color-third-bg);min-height:2.2rem;max-width:20rem;padding:1rem;position:fixed;z-index:9998;display:flex;align-items:center;border-radius:.5rem;line-break:anywhere;font-size:1.4rem;color:var(--color-font-8)}.base64_tooltip svg[data-v-1988f33b]{margin-left:1rem;min-width:1.8rem}.base64_tooltip[data-v-1988f33b] .base-button{margin-left:1rem;margin-top:1rem}.msg[data-v-0dcc0508]{cursor:default;margin-bottom:2rem;display:flex;font-size:1.4rem;box-sizing:border-box;border-radius:var(--box-border-radius);color:var(--color-font-8);background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow)}.msg.success .left[data-v-0dcc0508]{background:var(--color-active)}.msg.warning .left[data-v-0dcc0508]{background:#c8c002}.msg.error .left[data-v-0dcc0508]{background:red}.msg .left[data-v-0dcc0508]{border-radius:var(--box-border-radius) 0 0 var(--box-border-radius);display:flex;align-items:center;background:var(--color-active)}.msg .left svg[data-v-0dcc0508]{color:#fff;font-size:2.2rem;margin:0 .6rem}.msg .right[data-v-0dcc0508]{flex:1;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}.tag-modal .wrapper[data-v-674b86aa]{z-index:9;background:var(--color-main-bg);color:var(--color-font-8);border-radius:1.6rem;font-size:1.4rem;padding:2rem 4rem;width:25rem}.tag-modal .wrapper .title[data-v-674b86aa]{font-weight:700}.tag-modal .wrapper .btns[data-v-674b86aa]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1.5rem;font-size:1.4rem}.msgs[data-v-93c4dec0]{position:fixed;margin-left:calc(50% - 40vw);width:80vw;z-index:9999;bottom:0;left:0;right:0}.tag-modal .modal-root[data-v-19a5903e]{z-index:9;background:var(--color-second-bg);color:var(--color-font-8);border-radius:1.6rem;font-size:1.4rem;width:50vw;height:70vh;display:flex;flex-direction:column}.tag-modal .modal-root .modal-header[data-v-19a5903e]{padding:2.4rem;display:flex;justify-content:space-between}.tag-modal .modal-root .modal-header .title[data-v-19a5903e]{font-size:2.6rem;font-weight:700;text-align:left;margin-bottom:0}.tag-modal .modal-root .modal-header i[data-v-19a5903e]{font-size:2.2rem}.tag-modal .modal-root .modal-body[data-v-19a5903e]{padding:2rem;padding-top:0;flex:1;overflow:auto}.tag-modal .modal-root .modal-body[data-v-19a5903e] .cell{padding:2rem}.target-user-tags[data-v-b2b0badd]{background:var(--color-second-bg);color:var(--color-font);word-break:break-all;text-align:start;font-size:1.4rem;box-shadow:0 2px 3px #0000001a;border-bottom-left-radius:3px;border-bottom-right-radius:3px}.target-user-tags .add-tag[data-v-b2b0badd]{display:inline-block}.loaded[data-v-b2b0badd]{font-size:1.4rem;display:flex;align-items:center;gap:1rem} ');
 
 (function (vue) {
   'use strict';
@@ -38,6 +40,7 @@
     PageType2["Node"] = "Node";
     PageType2["Post"] = "Post";
     PageType2["Member"] = "Member";
+    PageType2["Changes"] = "Changes";
     return PageType2;
   })(PageType || {});
   var CommentDisplayType = /* @__PURE__ */ ((CommentDisplayType2) => {
@@ -50,7 +53,7 @@
     CommentDisplayType2[CommentDisplayType2["New"] = 6] = "New";
     return CommentDisplayType2;
   })(CommentDisplayType || {});
-  const MAX_REPLY_LIMIT = 300;
+  const MAX_REPLY_LIMIT = 400;
   const _sfc_main$r = {
     name: "Tooltip",
     props: {
@@ -1873,7 +1876,7 @@
     }
   });
   const _hoisted_1$n = { class: "nav-bar" };
-  const _hoisted_2$k = {
+  const _hoisted_2$j = {
     key: 0,
     class: "title"
   };
@@ -1890,15 +1893,15 @@
           vue.createVNode(_sfc_main$p, {
             onClick: _cache[0] || (_cache[0] = ($event) => emit("back"))
           }),
-          _ctx.title ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$k, vue.toDisplayString(_ctx.title), 1)) : vue.createCommentVNode("", true)
+          _ctx.title ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$j, vue.toDisplayString(_ctx.title), 1)) : vue.createCommentVNode("", true)
         ]);
       };
     }
   });
-  const NavBar = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["__scopeId", "data-v-458eae26"]]);
+  const NavBar = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["__scopeId", "data-v-fda0acaa"]]);
   const _hoisted_1$m = { class: "display-type" };
-  const _hoisted_2$j = { style: { "position": "relative" } };
-  const _hoisted_3$g = {
+  const _hoisted_2$i = { style: { "position": "relative" } };
+  const _hoisted_3$f = {
     key: 0,
     class: "type-list"
   };
@@ -1954,7 +1957,7 @@
             class: vue.normalizeClass(["type", _ctx.displayType === vue.unref(CommentDisplayType).Like && "active"]),
             onClick: _cache[0] || (_cache[0] = ($event) => changeOption(vue.unref(CommentDisplayType).Like))
           }, "最热 ", 2),
-          vue.createElementVNode("div", _hoisted_2$j, [
+          vue.createElementVNode("div", _hoisted_2$i, [
             vue.createElementVNode("div", {
               class: vue.normalizeClass(["type", ![vue.unref(CommentDisplayType).New, vue.unref(CommentDisplayType).Like].includes(_ctx.displayType) && "active"]),
               onClick: clickDisplayType
@@ -1962,7 +1965,7 @@
               vue.createElementVNode("span", null, vue.toDisplayString(currentDisplayType.value), 1),
               vue.createVNode(vue.unref(Icon), { icon: "mingcute:down-line" })
             ], 2),
-            vue.unref(state).showChangeDisplayType ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$g, [
+            vue.unref(state).showChangeDisplayType ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$f, [
               vue.createElementVNode("div", {
                 class: vue.normalizeClass(["item", _ctx.displayType === vue.unref(CommentDisplayType).FloorInFloorNoCallUser && "active"]),
                 onClick: _cache[1] || (_cache[1] = vue.withModifiers(($event) => changeOption(vue.unref(CommentDisplayType).FloorInFloorNoCallUser), ["stop"]))
@@ -1989,10 +1992,127 @@
       };
     }
   });
-  const BaseSelect = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["__scopeId", "data-v-91cb5f03"]]);
-  const _sfc_main$m = {
+  const BaseSelect = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["__scopeId", "data-v-1d327f48"]]);
+  const eventBus = {
+    eventMap: /* @__PURE__ */ new Map(),
+    on(eventType, cb) {
+      let cbs = this.eventMap.get(eventType);
+      if (cbs) {
+        cbs.push(cb);
+      } else {
+        cbs = [cb];
+      }
+      this.eventMap.set(eventType, cbs);
+    },
+    emit(eventType, val) {
+      let cbs = this.eventMap.get(eventType);
+      if (cbs) {
+        cbs.map((cb) => cb(val));
+      }
+    },
+    off(eventType) {
+      let cbs = this.eventMap.has(eventType);
+      if (cbs) {
+        this.eventMap.delete(eventType);
+      }
+    },
+    clear() {
+      this.eventMap = /* @__PURE__ */ new Map();
+    }
+  };
+  const CMD = {
+    SHOW_TOOLTIP: "SHOW_TOOLTIP",
+    SHOW_MSG: "SHOW_MSG",
+    SET_CALL: "SET_CALL",
+    SHOW_CALL: "SHOW_CALL",
+    REFRESH_ONCE: "REFRESH_ONCE",
+    ADD_REPLY: "ADD_REPLY",
+    IGNORE: "IGNORE",
+    MERGE: "MERGE",
+    MERGE_CONFIG: "MERGE_CONFIG",
+    REMOVE: "REMOVE",
+    CHANGE_COMMENT_THANK: "CHANGE_COMMENT_THANK",
+    CHANGE_POST_THANK: "CHANGE_POST_THANK",
+    ADD_TAG: "ADD_TAG",
+    REMOVE_TAG: "REMOVE_TAG",
+    RELATION_REPLY: "RELATION_REPLY",
+    JUMP: "JUMP",
+    ADD_READ: "ADD_READ",
+    REFRESH_POST: "REFRESH_POST",
+    SHOW_COMMENT_OPTIONS: "SHOW_COMMENT_OPTIONS",
+    SHOW_EDITOR: "COMMENT_REPLY"
+  };
+  const _withScopeId$e = (n2) => (vue.pushScopeId("data-v-a64ba8b8"), n2 = n2(), vue.popScopeId(), n2);
+  const _hoisted_1$l = { class: "font-size" };
+  const _hoisted_2$h = { class: "steps" };
+  const _hoisted_3$e = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", {
+    class: "text",
+    style: { "font-size": "1.2rem" }
+  }, "小", -1));
+  const _hoisted_4$d = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "point" }, null, -1));
+  const _hoisted_5$b = [
+    _hoisted_3$e,
+    _hoisted_4$d
+  ];
+  const _hoisted_6$a = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "text" }, "标准", -1));
+  const _hoisted_7$9 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "point" }, null, -1));
+  const _hoisted_8$9 = [
+    _hoisted_6$a,
+    _hoisted_7$9
+  ];
+  const _hoisted_9$9 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", {
+    class: "text",
+    style: { "font-size": "1.8rem" }
+  }, "大", -1));
+  const _hoisted_10$8 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "point" }, null, -1));
+  const _hoisted_11$8 = [
+    _hoisted_9$9,
+    _hoisted_10$8
+  ];
+  const _hoisted_12$8 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", {
+    class: "text",
+    style: { "font-size": "2.2rem" }
+  }, "特大", -1));
+  const _hoisted_13$8 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "point" }, null, -1));
+  const _hoisted_14$7 = [
+    _hoisted_12$8,
+    _hoisted_13$8
+  ];
+  const _hoisted_15$7 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "line" }, null, -1));
+  const _sfc_main$m = /* @__PURE__ */ vue.defineComponent({
+    __name: "FontSizeType",
+    setup(__props) {
+      const config2 = vue.inject("config");
+      return (_ctx, _cache) => {
+        return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$l, [
+          vue.createElementVNode("div", _hoisted_2$h, [
+            vue.createElementVNode("div", {
+              class: vue.normalizeClass(["step", [vue.unref(config2).fontSizeType === "small" && "active"]]),
+              onClick: _cache[0] || (_cache[0] = ($event) => vue.unref(eventBus).emit(vue.unref(CMD).MERGE_CONFIG, { fontSizeType: "small" }))
+            }, _hoisted_5$b, 2),
+            vue.createElementVNode("div", {
+              class: vue.normalizeClass(["step", [vue.unref(config2).fontSizeType === "normal" && "active"]]),
+              onClick: _cache[1] || (_cache[1] = ($event) => vue.unref(eventBus).emit(vue.unref(CMD).MERGE_CONFIG, { fontSizeType: "normal" }))
+            }, _hoisted_8$9, 2),
+            vue.createElementVNode("div", {
+              class: vue.normalizeClass(["step", [vue.unref(config2).fontSizeType === "large" && "active"]]),
+              onClick: _cache[2] || (_cache[2] = ($event) => vue.unref(eventBus).emit(vue.unref(CMD).MERGE_CONFIG, { fontSizeType: "large" }))
+            }, _hoisted_11$8, 2),
+            vue.createElementVNode("div", {
+              class: vue.normalizeClass(["step", [vue.unref(config2).fontSizeType === "big-large" && "active"]]),
+              onClick: _cache[3] || (_cache[3] = ($event) => vue.unref(eventBus).emit(vue.unref(CMD).MERGE_CONFIG, { fontSizeType: "big-large" }))
+            }, _hoisted_14$7, 2)
+          ]),
+          _hoisted_15$7
+        ]);
+      };
+    }
+  });
+  const FontSizeType = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["__scopeId", "data-v-a64ba8b8"]]);
+  const _sfc_main$l = {
     name: "Setting",
     components: {
+      FontSizeType,
       BaseSelect,
       NavBar,
       BaseSwitch,
@@ -2050,83 +2170,87 @@
       }
     }
   };
-  const _withScopeId$e = (n2) => (vue.pushScopeId("data-v-fe7602d7"), n2 = n2(), vue.popScopeId(), n2);
-  const _hoisted_1$l = { class: "mobile-page" };
-  const _hoisted_2$i = { class: "page-content" };
-  const _hoisted_3$f = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
+  const _withScopeId$d = (n2) => (vue.pushScopeId("data-v-7e31c9a2"), n2 = n2(), vue.popScopeId(), n2);
+  const _hoisted_1$k = { class: "mobile-page" };
+  const _hoisted_2$g = { class: "page-content" };
+  const _hoisted_3$d = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
     /* @__PURE__ */ vue.createElementVNode("label", { class: "main-title" }, "列表设置")
   ], -1));
-  const _hoisted_4$d = { class: "row" };
-  const _hoisted_5$a = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "列表展示方式", -1));
+  const _hoisted_4$c = { class: "row" };
+  const _hoisted_5$a = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "列表展示方式", -1));
   const _hoisted_6$9 = { class: "wrapper" };
   const _hoisted_7$8 = { class: "radio-group2" };
   const _hoisted_8$8 = { class: "row" };
-  const _hoisted_9$8 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "帖子弹框显示", -1));
+  const _hoisted_9$8 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "帖子弹框显示", -1));
   const _hoisted_10$7 = { class: "wrapper" };
-  const _hoisted_11$7 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " 开启此选项后，帖子始终会以弹框的方式显示。优先级大于“新标签页打开链接” ", -1));
+  const _hoisted_11$7 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " 开启此选项后，帖子始终会以弹框的方式显示。优先级大于“新标签页打开链接” ", -1));
   const _hoisted_12$7 = { class: "row" };
-  const _hoisted_13$7 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "新标签页打开链接", -1));
+  const _hoisted_13$7 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "新标签页打开链接", -1));
   const _hoisted_14$6 = { class: "wrapper" };
-  const _hoisted_15$6 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " 网页上所有链接通过新标签页打开 ", -1));
-  const _hoisted_16$5 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
+  const _hoisted_15$6 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " 网页上所有链接通过新标签页打开 ", -1));
+  const _hoisted_16$6 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
     /* @__PURE__ */ vue.createElementVNode("label", { class: "main-title" }, "主题设置")
   ], -1));
-  const _hoisted_17$4 = { class: "row" };
-  const _hoisted_18$4 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "回复展示方式", -1));
-  const _hoisted_19$4 = { class: "wrapper" };
-  const _hoisted_20$4 = { class: "row" };
-  const _hoisted_21$3 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "正文超长自动折叠", -1));
-  const _hoisted_22$3 = { class: "wrapper" };
-  const _hoisted_23$3 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
+  const _hoisted_17$3 = { class: "row" };
+  const _hoisted_18$3 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "回复展示方式", -1));
+  const _hoisted_19$3 = { class: "wrapper" };
+  const _hoisted_20$3 = { class: "row" };
+  const _hoisted_21$2 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "正文超长自动折叠", -1));
+  const _hoisted_22$2 = { class: "wrapper" };
+  const _hoisted_23$2 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
     /* @__PURE__ */ vue.createElementVNode("label", { class: "main-title" }, "高赞回复")
   ], -1));
-  const _hoisted_24$3 = { class: "row" };
-  const _hoisted_25$3 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "显示高赞回复", -1));
-  const _hoisted_26$2 = { class: "wrapper" };
-  const _hoisted_27$2 = { class: "row" };
-  const _hoisted_28$2 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "最多显示多少个高赞回复", -1));
-  const _hoisted_29$2 = { class: "wrapper" };
-  const _hoisted_30$2 = { class: "row" };
-  const _hoisted_31$2 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "最少需要多少赞才能被判定为高赞", -1));
+  const _hoisted_24$2 = { class: "row" };
+  const _hoisted_25$2 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "显示高赞回复", -1));
+  const _hoisted_26$1 = { class: "wrapper" };
+  const _hoisted_27$1 = { class: "row" };
+  const _hoisted_28$1 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "最多显示多少个高赞回复", -1));
+  const _hoisted_29$1 = { class: "wrapper" };
+  const _hoisted_30$1 = { class: "row" };
+  const _hoisted_31$1 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "最少需要多少赞才能被判定为高赞", -1));
   const _hoisted_32$1 = { class: "wrapper" };
-  const _hoisted_33$1 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
+  const _hoisted_33$1 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
     /* @__PURE__ */ vue.createElementVNode("label", { class: "main-title" }, "记忆阅读")
   ], -1));
   const _hoisted_34$1 = { class: "row" };
-  const _hoisted_35$1 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "记录上次阅读楼层（误差1层左右）：", -1));
+  const _hoisted_35$1 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "记录上次阅读楼层（误差1层左右）：", -1));
   const _hoisted_36$1 = { class: "wrapper" };
   const _hoisted_37$1 = { class: "row" };
-  const _hoisted_38$1 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "打开帖子自动跳转到上次阅读楼层", -1));
+  const _hoisted_38$1 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "打开帖子自动跳转到上次阅读楼层", -1));
   const _hoisted_39$1 = { class: "wrapper" };
-  const _hoisted_40 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
+  const _hoisted_40 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
     /* @__PURE__ */ vue.createElementVNode("label", { class: "main-title" }, "其他设置")
   ], -1));
-  const _hoisted_41 = { class: "row" };
-  const _hoisted_42 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "用户打标签(跨平台，数据保存在自己的记事本)：", -1));
-  const _hoisted_43 = { class: "wrapper" };
-  const _hoisted_44 = { class: "row" };
-  const _hoisted_45 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "划词显示Base64解码框", -1));
-  const _hoisted_46 = { class: "wrapper" };
-  const _hoisted_47 = { class: "row" };
-  const _hoisted_48 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "自动签到", -1));
-  const _hoisted_49 = { class: "wrapper" };
-  const _hoisted_50 = { class: "row" };
-  const _hoisted_51 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "收藏时提醒添加到书签", -1));
-  const _hoisted_52 = { class: "wrapper" };
-  const _hoisted_53 = /* @__PURE__ */ _withScopeId$e(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " V站帐号一旦被封禁，则无法登录，无法查看账号收藏了 ", -1));
-  function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
+  const _hoisted_41 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
+    /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "字体设置")
+  ], -1));
+  const _hoisted_42 = { class: "row" };
+  const _hoisted_43 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "用户打标签(跨平台，数据保存在自己的记事本)：", -1));
+  const _hoisted_44 = { class: "wrapper" };
+  const _hoisted_45 = { class: "row" };
+  const _hoisted_46 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "划词显示Base64解码框", -1));
+  const _hoisted_47 = { class: "wrapper" };
+  const _hoisted_48 = { class: "row" };
+  const _hoisted_49 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "自动签到", -1));
+  const _hoisted_50 = { class: "wrapper" };
+  const _hoisted_51 = { class: "row" };
+  const _hoisted_52 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "收藏时提醒添加到书签", -1));
+  const _hoisted_53 = { class: "wrapper" };
+  const _hoisted_54 = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " V站帐号一旦被封禁，则无法登录，无法查看账号收藏了 ", -1));
+  function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_NavBar = vue.resolveComponent("NavBar");
     const _component_BaseSwitch = vue.resolveComponent("BaseSwitch");
     const _component_BaseSelect = vue.resolveComponent("BaseSelect");
+    const _component_font_size_type = vue.resolveComponent("font-size-type");
     return vue.openBlock(), vue.createBlock(vue.Teleport, { to: $props.to }, [
-      vue.createElementVNode("div", _hoisted_1$l, [
+      vue.createElementVNode("div", _hoisted_1$k, [
         vue.createVNode(_component_NavBar, {
           title: "设置",
           onBack: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("back"))
         }),
-        vue.createElementVNode("div", _hoisted_2$i, [
-          _hoisted_3$f,
-          vue.createElementVNode("div", _hoisted_4$d, [
+        vue.createElementVNode("div", _hoisted_2$g, [
+          _hoisted_3$d,
+          vue.createElementVNode("div", _hoisted_4$c, [
             _hoisted_5$a,
             vue.createElementVNode("div", _hoisted_6$9, [
               vue.createElementVNode("div", _hoisted_7$8, [
@@ -2161,38 +2285,38 @@
             ])
           ]),
           _hoisted_15$6,
-          _hoisted_16$5,
-          vue.createElementVNode("div", _hoisted_17$4, [
-            _hoisted_18$4,
-            vue.createElementVNode("div", _hoisted_19$4, [
+          _hoisted_16$6,
+          vue.createElementVNode("div", _hoisted_17$3, [
+            _hoisted_18$3,
+            vue.createElementVNode("div", _hoisted_19$3, [
               vue.createVNode(_component_BaseSelect, {
                 "display-type": $data.config.commentDisplayType,
                 "onUpdate:displayType": _cache[5] || (_cache[5] = ($event) => $data.config.commentDisplayType = $event)
               }, null, 8, ["display-type"])
             ])
           ]),
-          vue.createElementVNode("div", _hoisted_20$4, [
-            _hoisted_21$3,
-            vue.createElementVNode("div", _hoisted_22$3, [
+          vue.createElementVNode("div", _hoisted_20$3, [
+            _hoisted_21$2,
+            vue.createElementVNode("div", _hoisted_22$2, [
               vue.createVNode(_component_BaseSwitch, {
                 modelValue: $data.config.contentAutoCollapse,
                 "onUpdate:modelValue": _cache[6] || (_cache[6] = ($event) => $data.config.contentAutoCollapse = $event)
               }, null, 8, ["modelValue"])
             ])
           ]),
-          _hoisted_23$3,
-          vue.createElementVNode("div", _hoisted_24$3, [
-            _hoisted_25$3,
-            vue.createElementVNode("div", _hoisted_26$2, [
+          _hoisted_23$2,
+          vue.createElementVNode("div", _hoisted_24$2, [
+            _hoisted_25$2,
+            vue.createElementVNode("div", _hoisted_26$1, [
               vue.createVNode(_component_BaseSwitch, {
                 modelValue: $data.config.showTopReply,
                 "onUpdate:modelValue": _cache[7] || (_cache[7] = ($event) => $data.config.showTopReply = $event)
               }, null, 8, ["modelValue"])
             ])
           ]),
-          vue.createElementVNode("div", _hoisted_27$2, [
-            _hoisted_28$2,
-            vue.createElementVNode("div", _hoisted_29$2, [
+          vue.createElementVNode("div", _hoisted_27$1, [
+            _hoisted_28$1,
+            vue.createElementVNode("div", _hoisted_29$1, [
               vue.withDirectives(vue.createElementVNode("input", {
                 type: "number",
                 min: "1",
@@ -2202,8 +2326,8 @@
               ])
             ])
           ]),
-          vue.createElementVNode("div", _hoisted_30$2, [
-            _hoisted_31$2,
+          vue.createElementVNode("div", _hoisted_30$1, [
+            _hoisted_31$1,
             vue.createElementVNode("div", _hoisted_32$1, [
               vue.withDirectives(vue.createElementVNode("input", {
                 type: "number",
@@ -2237,97 +2361,51 @@
             ])
           ]),
           _hoisted_40,
-          vue.createElementVNode("div", _hoisted_41, [
-            _hoisted_42,
-            vue.createElementVNode("div", _hoisted_43, [
+          _hoisted_41,
+          vue.createVNode(_component_font_size_type),
+          vue.createElementVNode("div", _hoisted_42, [
+            _hoisted_43,
+            vue.createElementVNode("div", _hoisted_44, [
               vue.createVNode(_component_BaseSwitch, {
                 modelValue: $data.config.openTag,
                 "onUpdate:modelValue": _cache[12] || (_cache[12] = ($event) => $data.config.openTag = $event)
               }, null, 8, ["modelValue"])
             ])
           ]),
-          vue.createElementVNode("div", _hoisted_44, [
-            _hoisted_45,
-            vue.createElementVNode("div", _hoisted_46, [
+          vue.createElementVNode("div", _hoisted_45, [
+            _hoisted_46,
+            vue.createElementVNode("div", _hoisted_47, [
               vue.createVNode(_component_BaseSwitch, {
                 modelValue: $data.config.base64,
                 "onUpdate:modelValue": _cache[13] || (_cache[13] = ($event) => $data.config.base64 = $event)
               }, null, 8, ["modelValue"])
             ])
           ]),
-          vue.createElementVNode("div", _hoisted_47, [
-            _hoisted_48,
-            vue.createElementVNode("div", _hoisted_49, [
+          vue.createElementVNode("div", _hoisted_48, [
+            _hoisted_49,
+            vue.createElementVNode("div", _hoisted_50, [
               vue.createVNode(_component_BaseSwitch, {
                 modelValue: $data.config.autoSignin,
                 "onUpdate:modelValue": _cache[14] || (_cache[14] = ($event) => $data.config.autoSignin = $event)
               }, null, 8, ["modelValue"])
             ])
           ]),
-          vue.createElementVNode("div", _hoisted_50, [
-            _hoisted_51,
-            vue.createElementVNode("div", _hoisted_52, [
+          vue.createElementVNode("div", _hoisted_51, [
+            _hoisted_52,
+            vue.createElementVNode("div", _hoisted_53, [
               vue.createVNode(_component_BaseSwitch, {
                 modelValue: $data.config.collectBrowserNotice,
                 "onUpdate:modelValue": _cache[15] || (_cache[15] = ($event) => $data.config.collectBrowserNotice = $event)
               }, null, 8, ["modelValue"])
             ])
           ]),
-          _hoisted_53
+          _hoisted_54
         ])
       ])
     ], 8, ["to"]);
   }
-  const Setting = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$a], ["__scopeId", "data-v-fe7602d7"]]);
-  const eventBus = {
-    eventMap: /* @__PURE__ */ new Map(),
-    on(eventType, cb) {
-      let cbs = this.eventMap.get(eventType);
-      if (cbs) {
-        cbs.push(cb);
-      } else {
-        cbs = [cb];
-      }
-      this.eventMap.set(eventType, cbs);
-    },
-    emit(eventType, val) {
-      let cbs = this.eventMap.get(eventType);
-      if (cbs) {
-        cbs.map((cb) => cb(val));
-      }
-    },
-    off(eventType) {
-      let cbs = this.eventMap.has(eventType);
-      if (cbs) {
-        this.eventMap.delete(eventType);
-      }
-    },
-    clear() {
-      this.eventMap = /* @__PURE__ */ new Map();
-    }
-  };
-  const CMD = {
-    SHOW_TOOLTIP: "SHOW_TOOLTIP",
-    SHOW_MSG: "SHOW_MSG",
-    SET_CALL: "SET_CALL",
-    SHOW_CALL: "SHOW_CALL",
-    REFRESH_ONCE: "REFRESH_ONCE",
-    ADD_REPLY: "ADD_REPLY",
-    IGNORE: "IGNORE",
-    MERGE: "MERGE",
-    REMOVE: "REMOVE",
-    CHANGE_COMMENT_THANK: "CHANGE_COMMENT_THANK",
-    CHANGE_POST_THANK: "CHANGE_POST_THANK",
-    ADD_TAG: "ADD_TAG",
-    REMOVE_TAG: "REMOVE_TAG",
-    RELATION_REPLY: "RELATION_REPLY",
-    JUMP: "JUMP",
-    ADD_READ: "ADD_READ",
-    REFRESH_POST: "REFRESH_POST",
-    SHOW_COMMENT_OPTIONS: "SHOW_COMMENT_OPTIONS",
-    SHOW_EDITOR: "COMMENT_REPLY"
-  };
-  const _sfc_main$l = {
+  const Setting = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$9], ["__scopeId", "data-v-7e31c9a2"]]);
+  const _sfc_main$k = {
     name: "Point",
     components: { Icon },
     inject: ["post", "isLogin"],
@@ -2376,11 +2454,11 @@
       }
     }
   };
-  const _hoisted_1$k = {
+  const _hoisted_1$j = {
     key: 2,
     class: "link-num"
   };
-  function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Icon = vue.resolveComponent("Icon");
     return vue.openBlock(), vue.createElementBlock("div", {
       class: "tool",
@@ -2395,26 +2473,26 @@
         color: "rgb(224,42,42)",
         icon: "icon-park-outline:like"
       })),
-      $props.item.thankCount ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$k, vue.toDisplayString($props.item.thankCount), 1)) : vue.createCommentVNode("", true)
+      $props.item.thankCount ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$j, vue.toDisplayString($props.item.thankCount), 1)) : vue.createCommentVNode("", true)
     ]);
   }
-  const Point = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$9], ["__scopeId", "data-v-b7c6664e"]]);
-  const _sfc_main$k = {};
-  const _withScopeId$d = (n2) => (vue.pushScopeId("data-v-e92e0529"), n2 = n2(), vue.popScopeId(), n2);
-  const _hoisted_1$j = { class: "more" };
-  const _hoisted_2$h = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", null, null, -1));
-  const _hoisted_3$e = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", null, null, -1));
-  const _hoisted_4$c = /* @__PURE__ */ _withScopeId$d(() => /* @__PURE__ */ vue.createElementVNode("div", null, null, -1));
+  const Point = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$8], ["__scopeId", "data-v-b7c6664e"]]);
+  const _sfc_main$j = {};
+  const _withScopeId$c = (n2) => (vue.pushScopeId("data-v-e92e0529"), n2 = n2(), vue.popScopeId(), n2);
+  const _hoisted_1$i = { class: "more" };
+  const _hoisted_2$f = /* @__PURE__ */ _withScopeId$c(() => /* @__PURE__ */ vue.createElementVNode("div", null, null, -1));
+  const _hoisted_3$c = /* @__PURE__ */ _withScopeId$c(() => /* @__PURE__ */ vue.createElementVNode("div", null, null, -1));
+  const _hoisted_4$b = /* @__PURE__ */ _withScopeId$c(() => /* @__PURE__ */ vue.createElementVNode("div", null, null, -1));
   const _hoisted_5$9 = [
-    _hoisted_2$h,
-    _hoisted_3$e,
-    _hoisted_4$c
+    _hoisted_2$f,
+    _hoisted_3$c,
+    _hoisted_4$b
   ];
-  function _sfc_render$8(_ctx, _cache) {
-    return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$j, _hoisted_5$9);
+  function _sfc_render$7(_ctx, _cache) {
+    return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$i, _hoisted_5$9);
   }
-  const MoreIcon = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$8], ["__scopeId", "data-v-e92e0529"]]);
-  const _sfc_main$j = {
+  const MoreIcon = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$7], ["__scopeId", "data-v-e92e0529"]]);
+  const _sfc_main$i = {
     name: "Author",
     components: { MoreIcon, Point, Icon },
     inject: ["isLogin", "tags", "config", "isNight"],
@@ -2474,11 +2552,11 @@
       }
     }
   };
-  const _withScopeId$c = (n2) => (vue.pushScopeId("data-v-9041586a"), n2 = n2(), vue.popScopeId(), n2);
-  const _hoisted_1$i = { class: "Author-left" };
-  const _hoisted_2$g = ["href"];
-  const _hoisted_3$d = ["src"];
-  const _hoisted_4$b = { class: "info" };
+  const _withScopeId$b = (n2) => (vue.pushScopeId("data-v-9041586a"), n2 = n2(), vue.popScopeId(), n2);
+  const _hoisted_1$h = { class: "Author-left" };
+  const _hoisted_2$e = ["href"];
+  const _hoisted_3$b = ["src"];
+  const _hoisted_4$a = { class: "info" };
   const _hoisted_5$8 = { class: "top" };
   const _hoisted_6$8 = { class: "texts" };
   const _hoisted_7$7 = ["href"];
@@ -2495,19 +2573,19 @@
     class: "mod"
   };
   const _hoisted_11$6 = { class: "my-tag" };
-  const _hoisted_12$6 = /* @__PURE__ */ _withScopeId$c(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
+  const _hoisted_12$6 = /* @__PURE__ */ _withScopeId$b(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
   const _hoisted_13$6 = ["onClick"];
   const _hoisted_14$5 = { class: "floor" };
   const _hoisted_15$5 = { class: "ago" };
-  const _hoisted_16$4 = { class: "Author-right" };
-  function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+  const _hoisted_16$5 = { class: "Author-right" };
+  function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Icon = vue.resolveComponent("Icon");
     const _component_Point = vue.resolveComponent("Point");
     const _component_MoreIcon = vue.resolveComponent("MoreIcon");
     return vue.openBlock(), vue.createElementBlock("div", {
       class: vue.normalizeClass(["Author", { expand: !$props.modelValue }])
     }, [
-      vue.createElementVNode("div", _hoisted_1$i, [
+      vue.createElementVNode("div", _hoisted_1$h, [
         !$props.modelValue ? (vue.openBlock(), vue.createBlock(_component_Icon, {
           key: 0,
           onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("update:modelValue", true)),
@@ -2523,9 +2601,9 @@
           vue.createElementVNode("img", {
             src: $props.comment.avatar,
             alt: ""
-          }, null, 8, _hoisted_3$d)
-        ], 8, _hoisted_2$g)) : vue.createCommentVNode("", true),
-        vue.createElementVNode("div", _hoisted_4$b, [
+          }, null, 8, _hoisted_3$b)
+        ], 8, _hoisted_2$e)) : vue.createCommentVNode("", true),
+        vue.createElementVNode("div", _hoisted_4$a, [
           vue.createElementVNode("div", _hoisted_5$8, [
             vue.createElementVNode("span", _hoisted_6$8, [
               vue.createElementVNode("strong", null, [
@@ -2562,7 +2640,7 @@
           ])
         ])
       ]),
-      vue.createElementVNode("div", _hoisted_16$4, [
+      vue.createElementVNode("div", _hoisted_16$5, [
         vue.withDirectives(vue.createVNode(_component_Point, {
           item: $options.pointInfo,
           onAddThank: $options.addThank,
@@ -2577,8 +2655,8 @@
       ])
     ], 2);
   }
-  const Author = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$7], ["__scopeId", "data-v-9041586a"]]);
-  const _sfc_main$i = /* @__PURE__ */ vue.defineComponent({
+  const Author = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$6], ["__scopeId", "data-v-9041586a"]]);
+  const _sfc_main$h = /* @__PURE__ */ vue.defineComponent({
     __name: "BaseLoading",
     props: {
       size: { default: "normal" }
@@ -2591,13 +2669,13 @@
       };
     }
   });
-  const BaseLoading = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["__scopeId", "data-v-2697baa2"]]);
-  const _hoisted_1$h = {
+  const BaseLoading = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["__scopeId", "data-v-2697baa2"]]);
+  const _hoisted_1$g = {
     key: 1,
     class: "key-notice"
   };
-  const _hoisted_2$f = { class: "key" };
-  const _sfc_main$h = /* @__PURE__ */ vue.defineComponent({
+  const _hoisted_2$d = { class: "key" };
+  const _sfc_main$g = /* @__PURE__ */ vue.defineComponent({
     __name: "BaseButton",
     props: {
       keyboard: {},
@@ -2634,8 +2712,8 @@
                 key: 0,
                 size: "small"
               })) : vue.createCommentVNode("", true),
-              _ctx.keyboard ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$h, [
-                vue.createElementVNode("span", _hoisted_2$f, vue.toDisplayString(_ctx.keyboard), 1)
+              _ctx.keyboard ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$g, [
+                vue.createElementVNode("span", _hoisted_2$d, vue.toDisplayString(_ctx.keyboard), 1)
               ])) : vue.createCommentVNode("", true)
             ], 16)
           ]),
@@ -2644,34 +2722,34 @@
       };
     }
   });
-  const BaseButton = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["__scopeId", "data-v-04f4c89d"]]);
-  const _withScopeId$b = (n2) => (vue.pushScopeId("data-v-0612e02f"), n2 = n2(), vue.popScopeId(), n2);
-  const _hoisted_1$g = { class: "get-cursor" };
-  const _hoisted_2$e = ["innerHTML"];
-  const _hoisted_3$c = { class: "toolbar" };
-  const _hoisted_4$a = { class: "left" };
-  const _hoisted_5$7 = /* @__PURE__ */ _withScopeId$b(() => /* @__PURE__ */ vue.createElementVNode("path", {
+  const BaseButton = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["__scopeId", "data-v-04f4c89d"]]);
+  const _withScopeId$a = (n2) => (vue.pushScopeId("data-v-0612e02f"), n2 = n2(), vue.popScopeId(), n2);
+  const _hoisted_1$f = { class: "get-cursor" };
+  const _hoisted_2$c = ["innerHTML"];
+  const _hoisted_3$a = { class: "toolbar" };
+  const _hoisted_4$9 = { class: "left" };
+  const _hoisted_5$7 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("path", {
     d: "M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z",
     fill: "none",
     stroke: "#929596",
     "stroke-width": "2",
     "stroke-linejoin": "round"
   }, null, -1));
-  const _hoisted_6$7 = /* @__PURE__ */ _withScopeId$b(() => /* @__PURE__ */ vue.createElementVNode("path", {
+  const _hoisted_6$7 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("path", {
     d: "M24 35C29 35 31 31 31 31H17C17 31 19 35 24 35Z",
     stroke: "#929596",
     "stroke-width": "2",
     "stroke-linecap": "round",
     "stroke-linejoin": "round"
   }, null, -1));
-  const _hoisted_7$6 = /* @__PURE__ */ _withScopeId$b(() => /* @__PURE__ */ vue.createElementVNode("path", {
+  const _hoisted_7$6 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("path", {
     d: "M31 18V22",
     stroke: "#929596",
     "stroke-width": "2",
     "stroke-linecap": "round",
     "stroke-linejoin": "round"
   }, null, -1));
-  const _hoisted_8$6 = /* @__PURE__ */ _withScopeId$b(() => /* @__PURE__ */ vue.createElementVNode("path", {
+  const _hoisted_8$6 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("path", {
     d: "M17 18V22",
     stroke: "#929596",
     "stroke-width": "2",
@@ -2685,7 +2763,7 @@
     _hoisted_8$6
   ];
   const _hoisted_10$5 = { class: "upload" };
-  const _hoisted_11$5 = /* @__PURE__ */ _withScopeId$b(() => /* @__PURE__ */ vue.createElementVNode("svg", {
+  const _hoisted_11$5 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("svg", {
     width: "20",
     height: "20",
     viewBox: "0 0 48 48",
@@ -2723,14 +2801,14 @@
     style: { "color": "black", "font-size": "1.4rem" }
   };
   const _hoisted_13$5 = { class: "right" };
-  const _hoisted_14$4 = /* @__PURE__ */ _withScopeId$b(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "title" }, "经典表情", -1));
+  const _hoisted_14$4 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "title" }, "经典表情", -1));
   const _hoisted_15$4 = { class: "list" };
-  const _hoisted_16$3 = ["src", "onClick"];
-  const _hoisted_17$3 = { class: "emoji" };
-  const _hoisted_18$3 = { class: "title" };
-  const _hoisted_19$3 = { class: "list" };
-  const _hoisted_20$3 = ["onClick"];
-  const _sfc_main$g = {
+  const _hoisted_16$4 = ["src", "onClick"];
+  const _hoisted_17$2 = { class: "emoji" };
+  const _hoisted_18$2 = { class: "title" };
+  const _hoisted_19$2 = { class: "list" };
+  const _hoisted_20$2 = ["onClick"];
+  const _sfc_main$f = {
     __name: "PostEditor",
     props: {
       replyUser: null,
@@ -3314,16 +3392,16 @@
           }, null, 34), [
             [vue.vModelText, content.value]
           ]),
-          vue.createElementVNode("div", _hoisted_1$g, [
-            vue.createElementVNode("span", { innerHTML: cursorHtml.value }, null, 8, _hoisted_2$e),
+          vue.createElementVNode("div", _hoisted_1$f, [
+            vue.createElementVNode("span", { innerHTML: cursorHtml.value }, null, 8, _hoisted_2$c),
             vue.createElementVNode("span", {
               class: "cursor",
               ref_key: "cursorRef",
               ref: cursorRef
             }, "|", 512)
           ]),
-          vue.createElementVNode("div", _hoisted_3$c, [
-            vue.createElementVNode("div", _hoisted_4$a, [
+          vue.createElementVNode("div", _hoisted_3$a, [
+            vue.createElementVNode("div", _hoisted_4$9, [
               (vue.openBlock(), vue.createElementBlock("svg", {
                 onClick: showEmoticons,
                 width: "20",
@@ -3375,21 +3453,21 @@
                     insert(item.name);
                     isShowEmoticons.value = false;
                   }
-                }, null, 8, _hoisted_16$3);
+                }, null, 8, _hoisted_16$4);
               }), 64))
             ]),
-            vue.createElementVNode("div", _hoisted_17$3, [
+            vue.createElementVNode("div", _hoisted_17$2, [
               (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, vue.renderList(emojiEmoticons, (item) => {
                 return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
-                  vue.createElementVNode("div", _hoisted_18$3, vue.toDisplayString(item.title), 1),
-                  vue.createElementVNode("div", _hoisted_19$3, [
+                  vue.createElementVNode("div", _hoisted_18$2, vue.toDisplayString(item.title), 1),
+                  vue.createElementVNode("div", _hoisted_19$2, [
                     (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item.list, (emoji) => {
                       return vue.openBlock(), vue.createElementBlock("span", {
                         onClick: ($event) => {
                           insert(emoji);
                           isShowEmoticons.value = false;
                         }
-                      }, vue.toDisplayString(emoji), 9, _hoisted_20$3);
+                      }, vue.toDisplayString(emoji), 9, _hoisted_20$2);
                     }), 256))
                   ])
                 ], 64);
@@ -3402,14 +3480,14 @@
       };
     }
   };
-  const PostEditor = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["__scopeId", "data-v-0612e02f"]]);
-  const _hoisted_1$f = {
+  const PostEditor = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["__scopeId", "data-v-0612e02f"]]);
+  const _hoisted_1$e = {
     key: 0,
     class: "html-wrapper"
   };
-  const _hoisted_2$d = ["innerHTML"];
+  const _hoisted_2$b = ["innerHTML"];
   const checkHeight = 900;
-  const _sfc_main$f = {
+  const _sfc_main$e = {
     __name: "BaseHtmlRender",
     props: ["html"],
     setup(__props) {
@@ -3454,7 +3532,7 @@
         htmlMask.value = rect.height >= checkHeight;
       }
       return (_ctx, _cache) => {
-        return props.html ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$f, [
+        return props.html ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$e, [
           vue.createElementVNode("div", {
             class: vue.normalizeClass({ htmlMask: htmlMask.value })
           }, [
@@ -3463,7 +3541,7 @@
               ref: contentRef,
               innerHTML: props.html,
               onMouseup: mouseup
-            }, null, 40, _hoisted_2$d)
+            }, null, 40, _hoisted_2$b)
           ], 2),
           htmlMask.value ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 0,
@@ -3477,11 +3555,11 @@
       };
     }
   };
-  const BaseHtmlRender = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["__scopeId", "data-v-f8165980"]]);
-  const _sfc_main$e = {
+  const BaseHtmlRender = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["__scopeId", "data-v-f8165980"]]);
+  const _sfc_main$d = {
     name: "Comment",
     components: { MoreIcon, BaseHtmlRender, Author, PostEditor, Point },
-    inject: ["post", "postDetailWidth", "show", "isNight", "config"],
+    inject: ["post", "show", "isNight", "config"],
     props: {
       modelValue: {
         reply_content: ""
@@ -3534,23 +3612,22 @@
       }
     },
     mounted() {
-      this.checkIsTooLong(this.postDetailWidth);
+      this.checkIsTooLong();
     },
     methods: {
-      checkIsTooLong(postDetailWidth) {
-        if (postDetailWidth !== 0) {
-          let rect = this.$refs.comment.getBoundingClientRect();
-          let ban = postDetailWidth / 2;
-          if (ban < rect.width && rect.width < ban + 25 && this.modelValue.children.length) {
-            this.expand = false;
-            let padding = 2;
-            this.cssStyle = {
-              padding: "1rem 0",
-              width: `calc(${postDetailWidth}px - ${padding}rem)`,
-              transform: `translateX(calc(${rect.width - postDetailWidth}px + ${padding}rem))`,
-              background: this.isNight ? "#18222d" : "white"
-            };
-          }
+      checkIsTooLong() {
+        let rect = this.$refs.comment.getBoundingClientRect();
+        let postDetailWidth = document.body.clientWidth;
+        let ban = postDetailWidth / 2;
+        if (ban < rect.width && rect.width < ban + 25 && this.modelValue.children.length) {
+          this.expand = false;
+          let padding = 2;
+          this.cssStyle = {
+            padding: "1rem 0",
+            width: `calc(${postDetailWidth}px - ${padding}rem)`,
+            transform: `translateX(calc(${rect.width - postDetailWidth}px + ${padding}rem))`,
+            background: this.isNight ? "#18222d" : "white"
+          };
         }
       },
       //高亮一下
@@ -3565,35 +3642,36 @@
       }
     }
   };
-  const _withScopeId$a = (n2) => (vue.pushScopeId("data-v-d6a88e6f"), n2 = n2(), vue.popScopeId(), n2);
-  const _hoisted_1$e = ["data-floor"];
-  const _hoisted_2$c = { class: "comment-content" };
-  const _hoisted_3$b = { class: "w" };
-  const _hoisted_4$9 = {
+  const _withScopeId$9 = (n2) => (vue.pushScopeId("data-v-312e9541"), n2 = n2(), vue.popScopeId(), n2);
+  const _hoisted_1$d = ["data-floor"];
+  const _hoisted_2$a = { class: "comment-content" };
+  const _hoisted_3$9 = { class: "right" };
+  const _hoisted_4$8 = { class: "w" };
+  const _hoisted_5$6 = {
     key: 0,
     class: "wrong-wrapper"
   };
-  const _hoisted_5$6 = ["href"];
-  const _hoisted_6$6 = { class: "del-line" };
-  const _hoisted_7$5 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("i", {
+  const _hoisted_6$6 = ["href"];
+  const _hoisted_7$5 = { class: "del-line" };
+  const _hoisted_8$5 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("i", {
     class: "fa fa-question-circle-o wrong-icon",
     "aria-hidden": "true"
   }, null, -1));
-  const _hoisted_8$5 = {
+  const _hoisted_9$5 = {
     key: 0,
     class: "warning"
   };
-  const _hoisted_9$5 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
-  const _hoisted_10$4 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
-  const _hoisted_11$4 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
-  const _hoisted_12$4 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
-  const _hoisted_13$4 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
-  const _hoisted_14$3 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("a", {
+  const _hoisted_10$4 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
+  const _hoisted_11$4 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
+  const _hoisted_12$4 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
+  const _hoisted_13$4 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
+  const _hoisted_14$3 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
+  const _hoisted_15$3 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("a", {
     href: "https://github.com/zyronon/web-scripts/issues",
     target: "_blank"
   }, "这里", -1));
-  const _hoisted_15$3 = { class: "simple-wrapper" };
-  function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+  const _hoisted_16$3 = { class: "simple-wrapper" };
+  function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Author = vue.resolveComponent("Author");
     const _component_BaseHtmlRender = vue.resolveComponent("BaseHtmlRender");
     const _component_Comment = vue.resolveComponent("Comment", true);
@@ -3623,40 +3701,37 @@
           class: "more ago",
           onClick: _cache[2] || (_cache[2] = ($event) => $data.expand = !$data.expand)
         }, " 由于嵌套回复层级太深，自动将以下回复移至可见范围 ")) : vue.createCommentVNode("", true),
-        vue.createElementVNode("div", _hoisted_2$c, [
+        vue.createElementVNode("div", _hoisted_2$a, [
           vue.createElementVNode("div", {
             class: "left expand-line",
             onClick: _cache[3] || (_cache[3] = (...args) => $options.toggle && $options.toggle(...args))
           }),
-          vue.createElementVNode("div", {
-            class: "right",
-            onClick: _cache[5] || (_cache[5] = vue.withModifiers(($event) => $options.eventBus.emit($options.CMD.SHOW_EDITOR, $props.modelValue), ["stop"]))
-          }, [
-            vue.createElementVNode("div", _hoisted_3$b, [
-              $props.modelValue.isWrong ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_4$9, [
+          vue.createElementVNode("div", _hoisted_3$9, [
+            vue.createElementVNode("div", _hoisted_4$8, [
+              $props.modelValue.isWrong ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_5$6, [
                 vue.createElementVNode("span", {
                   onClick: _cache[4] || (_cache[4] = ($event) => $data.expandWrong = !$data.expandWrong),
                   title: "点击楼层号查看提示"
                 }, [
                   vue.createElementVNode("a", {
                     href: "/member/" + $props.modelValue.replyUsers[0]
-                  }, "@" + vue.toDisplayString($props.modelValue.replyUsers[0]) + "  ", 9, _hoisted_5$6),
-                  vue.createElementVNode("span", _hoisted_6$6, "#" + vue.toDisplayString($props.modelValue.replyFloor), 1),
-                  _hoisted_7$5
+                  }, "@" + vue.toDisplayString($props.modelValue.replyUsers[0]) + "  ", 9, _hoisted_6$6),
+                  vue.createElementVNode("span", _hoisted_7$5, "#" + vue.toDisplayString($props.modelValue.replyFloor), 1),
+                  _hoisted_8$5
                 ]),
-                $data.expandWrong ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_8$5, [
+                $data.expandWrong ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9$5, [
                   vue.createTextVNode(" 这条回复似乎有点问题，指定的楼层号与@的人对应不上 "),
-                  _hoisted_9$5,
-                  vue.createTextVNode(" 原因可能有下面几种： "),
                   _hoisted_10$4,
-                  vue.createTextVNode(" 一、屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1 "),
+                  vue.createTextVNode(" 原因可能有下面几种： "),
                   _hoisted_11$4,
-                  vue.createTextVNode(" 二、忽略回复导致楼层塌陷：原理同上 "),
+                  vue.createTextVNode(" 一、屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1 "),
                   _hoisted_12$4,
-                  vue.createTextVNode(" 三、层主回复时指定错了楼层号（同一，层主屏蔽了别人，导致楼层塌陷） "),
+                  vue.createTextVNode(" 二、忽略回复导致楼层塌陷：原理同上 "),
                   _hoisted_13$4,
-                  vue.createTextVNode(" 四、脚本解析错误，请在 "),
+                  vue.createTextVNode(" 三、层主回复时指定错了楼层号（同一，层主屏蔽了别人，导致楼层塌陷） "),
                   _hoisted_14$3,
+                  vue.createTextVNode(" 四、脚本解析错误，请在 "),
+                  _hoisted_15$3,
                   vue.createTextVNode("反馈 ")
                 ])) : vue.createCommentVNode("", true)
               ])) : vue.createCommentVNode("", true),
@@ -3670,7 +3745,7 @@
                 html: $props.modelValue.reply_content
               }, null, 8, ["html"]))
             ]),
-            vue.createElementVNode("div", _hoisted_15$3, [
+            vue.createElementVNode("div", _hoisted_16$3, [
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($props.modelValue.children, (item, index2) => {
                 return vue.openBlock(), vue.createBlock(_component_Comment, {
                   modelValue: $props.modelValue.children[index2],
@@ -3684,13 +3759,13 @@
         $data.cssStyle ? (vue.openBlock(), vue.createElementBlock("div", {
           key: 1,
           class: "more ago",
-          onClick: _cache[6] || (_cache[6] = ($event) => $data.expand = !$data.expand)
+          onClick: _cache[5] || (_cache[5] = ($event) => $data.expand = !$data.expand)
         }, " 由于嵌套回复层级太深，自动将以上回复移至可见范围 ")) : vue.createCommentVNode("", true)
       ], 4)) : vue.createCommentVNode("", true)
-    ], 10, _hoisted_1$e);
+    ], 10, _hoisted_1$d);
   }
-  const Comment = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$6], ["__scopeId", "data-v-d6a88e6f"]]);
-  const _sfc_main$d = {
+  const Comment = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$5], ["__scopeId", "data-v-312e9541"]]);
+  const _sfc_main$c = {
     name: "Toolbar",
     components: { Icon, BaseLoading },
     inject: [
@@ -3740,18 +3815,18 @@
       }
     }
   };
-  const _hoisted_1$d = { class: "toolbar" };
-  const _hoisted_2$b = { class: "left" };
-  const _hoisted_3$a = { class: "right" };
-  const _hoisted_4$8 = { key: 2 };
-  function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+  const _hoisted_1$c = { class: "toolbar" };
+  const _hoisted_2$9 = { class: "left" };
+  const _hoisted_3$8 = { class: "right" };
+  const _hoisted_4$7 = { key: 2 };
+  function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_BaseLoading = vue.resolveComponent("BaseLoading");
     const _component_Icon = vue.resolveComponent("Icon");
-    return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$d, [
-      vue.createElementVNode("div", _hoisted_2$b, [
+    return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$c, [
+      vue.createElementVNode("div", _hoisted_2$9, [
         vue.createElementVNode("div", null, vue.toDisplayString($options.post.createDate.substring(0, 16)), 1)
       ]),
-      vue.createElementVNode("div", _hoisted_3$a, [
+      vue.createElementVNode("div", _hoisted_3$8, [
         vue.createElementVNode("div", {
           class: vue.normalizeClass(["tool", { disabled: $data.loading }]),
           onClick: _cache[0] || (_cache[0] = (...args) => $options.toggleFavorite && $options.toggleFavorite(...args))
@@ -3769,7 +3844,7 @@
               icon: "iconoir:star"
             }))
           ], 64)),
-          $options.post.collectCount !== 0 ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_4$8, vue.toDisplayString($options.post.collectCount), 1)) : vue.createCommentVNode("", true)
+          $options.post.collectCount !== 0 ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_4$7, vue.toDisplayString($options.post.collectCount), 1)) : vue.createCommentVNode("", true)
         ], 2),
         vue.createElementVNode("div", {
           class: "tool",
@@ -3780,103 +3855,14 @@
       ])
     ]);
   }
-  const Toolbar = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$5], ["__scopeId", "data-v-6234240d"]]);
-  const _sfc_main$c = {
-    name: "PopConfirm",
-    components: { BaseButton },
-    props: {
-      title: {
-        type: String,
-        default() {
-          return "";
-        }
-      },
-      disabled: {
-        type: Boolean,
-        default() {
-          return false;
-        }
-      }
-    },
-    data() {
-      return {
-        show: false
-      };
-    },
-    methods: {
-      showPop(e2) {
-        if (this.disabled)
-          return;
-        let rect = e2.target.getBoundingClientRect();
-        this.show = true;
-        vue.nextTick(() => {
-          this.$refs.tip.style.top = rect.top + "px";
-          this.$refs.tip.style.left = rect.left + rect.width / 2 - 50 + "px";
-        });
-      },
-      confirm() {
-        this.show = false;
-        this.$emit("confirm");
-      }
-    }
-  };
-  const _hoisted_1$c = { class: "pop-confirm" };
-  const _hoisted_2$a = {
-    key: 0,
-    ref: "tip",
-    class: "pop-confirm-content"
-  };
-  const _hoisted_3$9 = { class: "text" };
-  const _hoisted_4$7 = { class: "options" };
-  function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
-    const _component_BaseButton = vue.resolveComponent("BaseButton");
-    return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$c, [
-      (vue.openBlock(), vue.createBlock(vue.Teleport, { to: "body" }, [
-        vue.createVNode(vue.Transition, null, {
-          default: vue.withCtx(() => [
-            $data.show ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$a, [
-              vue.createElementVNode("div", _hoisted_3$9, vue.toDisplayString($props.title), 1),
-              vue.createElementVNode("div", _hoisted_4$7, [
-                vue.createVNode(_component_BaseButton, {
-                  type: "link",
-                  size: "small",
-                  onClick: _cache[0] || (_cache[0] = ($event) => $data.show = false)
-                }, {
-                  default: vue.withCtx(() => [
-                    vue.createTextVNode("取消")
-                  ]),
-                  _: 1
-                }),
-                vue.createVNode(_component_BaseButton, {
-                  size: "small",
-                  onClick: $options.confirm
-                }, {
-                  default: vue.withCtx(() => [
-                    vue.createTextVNode("确认")
-                  ]),
-                  _: 1
-                }, 8, ["onClick"])
-              ])
-            ], 512)) : vue.createCommentVNode("", true)
-          ]),
-          _: 1
-        })
-      ])),
-      vue.createElementVNode("span", {
-        onClick: _cache[1] || (_cache[1] = (...args) => $options.showPop && $options.showPop(...args))
-      }, [
-        vue.renderSlot(_ctx.$slots, "default", {}, void 0, true)
-      ])
-    ]);
-  }
-  const PopConfirm = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$4], ["__scopeId", "data-v-05424197"]]);
-  const _withScopeId$9 = (n2) => (vue.pushScopeId("data-v-0869dab5"), n2 = n2(), vue.popScopeId(), n2);
+  const Toolbar = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$4], ["__scopeId", "data-v-6234240d"]]);
+  const _withScopeId$8 = (n2) => (vue.pushScopeId("data-v-0869dab5"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$b = {
     class: "comment",
     ref: "comment"
   };
-  const _hoisted_2$9 = ["href"];
-  const _hoisted_3$8 = ["src"];
+  const _hoisted_2$8 = ["href"];
+  const _hoisted_3$7 = ["src"];
   const _hoisted_4$6 = { class: "texts" };
   const _hoisted_5$5 = {
     key: 0,
@@ -3884,7 +3870,7 @@
   };
   const _hoisted_6$5 = { class: "link-num" };
   const _hoisted_7$4 = { class: "my-tag" };
-  const _hoisted_8$4 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
+  const _hoisted_8$4 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
   const _hoisted_9$4 = {
     key: 2,
     class: "ago"
@@ -3911,19 +3897,19 @@
     class: "ago"
   };
   const _hoisted_16$2 = { class: "my-tag" };
-  const _hoisted_17$2 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
-  const _hoisted_18$2 = {
+  const _hoisted_17$1 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
+  const _hoisted_18$1 = {
     key: 9,
     class: "point"
   };
-  const _hoisted_19$2 = { class: "link-num" };
-  const _hoisted_20$2 = ["href"];
-  const _hoisted_21$2 = ["src"];
-  const _hoisted_22$2 = { class: "Author-right" };
-  const _hoisted_23$2 = { class: "floor" };
-  const _hoisted_24$2 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("span", null, "跳转", -1));
-  const _hoisted_25$2 = [
-    _hoisted_24$2
+  const _hoisted_19$1 = { class: "link-num" };
+  const _hoisted_20$1 = ["href"];
+  const _hoisted_21$1 = ["src"];
+  const _hoisted_22$1 = { class: "Author-right" };
+  const _hoisted_23$1 = { class: "floor" };
+  const _hoisted_24$1 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("span", null, "跳转", -1));
+  const _hoisted_25$1 = [
+    _hoisted_24$1
   ];
   const _sfc_main$b = {
     __name: "SingleComment",
@@ -3959,8 +3945,8 @@
             vue.createElementVNode("img", {
               src: __props.comment.avatar,
               alt: ""
-            }, null, 8, _hoisted_3$8)
-          ], 8, _hoisted_2$9)) : vue.createCommentVNode("", true),
+            }, null, 8, _hoisted_3$7)
+          ], 8, _hoisted_2$8)) : vue.createCommentVNode("", true),
           vue.createElementVNode("div", {
             class: vue.normalizeClass(["comment-body", { isRight: __props.isRight }])
           }, [
@@ -3995,11 +3981,11 @@
               !__props.isRight ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_15$2, vue.toDisplayString(__props.comment.date), 1)) : vue.createCommentVNode("", true),
               vue.unref(isLogin) && vue.unref(config2).openTag && !__props.isRight ? (vue.openBlock(true), vue.createElementBlock(vue.Fragment, { key: 8 }, vue.renderList(myTags.value, (i) => {
                 return vue.openBlock(), vue.createElementBlock("span", _hoisted_16$2, [
-                  _hoisted_17$2,
+                  _hoisted_17$1,
                   vue.createElementVNode("span", null, vue.toDisplayString(i), 1)
                 ]);
               }), 256)) : vue.createCommentVNode("", true),
-              __props.comment.thankCount && !__props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_18$2, [
+              __props.comment.thankCount && !__props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_18$1, [
                 __props.comment.isThanked ? (vue.openBlock(), vue.createBlock(vue.unref(Icon), {
                   key: 0,
                   color: "red",
@@ -4009,7 +3995,7 @@
                   color: "rgb(224,42,42)",
                   icon: "icon-park-outline:like"
                 })),
-                vue.createElementVNode("div", _hoisted_19$2, vue.toDisplayString(__props.comment.thankCount), 1)
+                vue.createElementVNode("div", _hoisted_19$1, vue.toDisplayString(__props.comment.thankCount), 1)
               ])) : vue.createCommentVNode("", true)
             ]),
             vue.createVNode(BaseHtmlRender, {
@@ -4025,14 +4011,14 @@
             vue.createElementVNode("img", {
               src: __props.comment.avatar,
               alt: ""
-            }, null, 8, _hoisted_21$2)
-          ], 8, _hoisted_20$2)) : vue.createCommentVNode("", true),
-          vue.createElementVNode("div", _hoisted_22$2, [
-            vue.createElementVNode("div", _hoisted_23$2, vue.toDisplayString(__props.comment.floor) + "楼", 1),
+            }, null, 8, _hoisted_21$1)
+          ], 8, _hoisted_20$1)) : vue.createCommentVNode("", true),
+          vue.createElementVNode("div", _hoisted_22$1, [
+            vue.createElementVNode("div", _hoisted_23$1, vue.toDisplayString(__props.comment.floor) + "楼", 1),
             vue.createElementVNode("div", {
               class: "tool jump",
               onClick: jump
-            }, _hoisted_25$2)
+            }, _hoisted_25$1)
           ])
         ], 512);
       };
@@ -4110,7 +4096,7 @@
           });
           page.appendChild(mask[0]);
         } else {
-          page.style.overflow = "auto";
+          page.style.overflow = "unset";
           let mask = $(".mask");
           mask.removeClass("fade-in");
           mask.addClass("fade-out");
@@ -4203,7 +4189,7 @@
   };
   const __injectCSSVars__ = () => {
     vue.useCssVars((_ctx) => ({
-      "72fc3da4": _ctx.borderRadius
+      "0013fa15": _ctx.borderRadius
     }));
   };
   const __setup__ = _sfc_main$a.setup;
@@ -4211,12 +4197,12 @@
     __injectCSSVars__();
     return __setup__(props, ctx);
   } : __injectCSSVars__;
-  const _withScopeId$8 = (n2) => (vue.pushScopeId("data-v-90461695"), n2 = n2(), vue.popScopeId(), n2);
-  const _hoisted_1$a = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "gang-content" }, null, -1));
-  const _hoisted_2$8 = [
+  const _withScopeId$7 = (n2) => (vue.pushScopeId("data-v-3a54f208"), n2 = n2(), vue.popScopeId(), n2);
+  const _hoisted_1$a = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "gang-content" }, null, -1));
+  const _hoisted_2$7 = [
     _hoisted_1$a
   ];
-  const _hoisted_3$7 = { class: "dialog-wrapper" };
+  const _hoisted_3$6 = { class: "dialog-wrapper" };
   function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createBlock(vue.Transition, {
       onBeforeEnter: $options.beforeEnter,
@@ -4241,8 +4227,8 @@
           $props.showHengGang ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 0,
             class: vue.normalizeClass(["heng-gang", $props.mode])
-          }, _hoisted_2$8, 2)) : vue.createCommentVNode("", true),
-          vue.createElementVNode("div", _hoisted_3$7, [
+          }, _hoisted_2$7, 2)) : vue.createCommentVNode("", true),
+          vue.createElementVNode("div", _hoisted_3$6, [
             vue.renderSlot(_ctx.$slots, "default", {}, void 0, true)
           ])
         ], 38)) : vue.createCommentVNode("", true)
@@ -4250,60 +4236,24 @@
       _: 3
     }, 8, ["onBeforeEnter", "onEnter", "onAfterEnter", "onBeforeLeave", "onLeave", "onAfterLeave"]);
   }
-  const FromBottomDialog = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$3], ["__scopeId", "data-v-90461695"]]);
-  const _withScopeId$7 = (n2) => (vue.pushScopeId("data-v-f5c7e39b"), n2 = n2(), vue.popScopeId(), n2);
+  const FromBottomDialog = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$3], ["__scopeId", "data-v-3a54f208"]]);
+  const _withScopeId$6 = (n2) => (vue.pushScopeId("data-v-ce52828d"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$9 = { class: "wrapper" };
-  const _hoisted_2$7 = { class: "options" };
-  const _hoisted_3$6 = { class: "icon-wrap" };
-  const _hoisted_4$5 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("span", null, "分享", -1));
+  const _hoisted_2$6 = { class: "options" };
+  const _hoisted_3$5 = { class: "icon-wrap" };
+  const _hoisted_4$5 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("span", null, "分享", -1));
   const _hoisted_5$4 = { class: "icon-wrap" };
   const _hoisted_6$4 = { class: "icon-wrap" };
-  const _hoisted_7$3 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("span", null, "回复", -1));
+  const _hoisted_7$3 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("span", null, "回复", -1));
   const _hoisted_8$3 = { class: "icon-wrap" };
   const _hoisted_9$3 = { class: "icon-wrap" };
   const _hoisted_10$2 = { class: "icon-wrap" };
   const _hoisted_11$2 = { class: "icon-wrap" };
-  const _hoisted_12$2 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("span", null, "复制链接", -1));
+  const _hoisted_12$2 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("span", null, "复制链接", -1));
   const _hoisted_13$2 = { class: "icon-wrap" };
-  const _hoisted_14$1 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("span", null, "复制内容", -1));
+  const _hoisted_14$1 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("span", null, "复制内容", -1));
   const _hoisted_15$1 = { class: "icon-wrap" };
-  const _hoisted_16$1 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("span", null, "刷新", -1));
-  const _hoisted_17$1 = { class: "font-size" };
-  const _hoisted_18$1 = { class: "steps" };
-  const _hoisted_19$1 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", {
-    class: "text",
-    style: { "font-size": "1.2rem" }
-  }, "小", -1));
-  const _hoisted_20$1 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "point" }, null, -1));
-  const _hoisted_21$1 = [
-    _hoisted_19$1,
-    _hoisted_20$1
-  ];
-  const _hoisted_22$1 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "text" }, "标准", -1));
-  const _hoisted_23$1 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "point" }, null, -1));
-  const _hoisted_24$1 = [
-    _hoisted_22$1,
-    _hoisted_23$1
-  ];
-  const _hoisted_25$1 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", {
-    class: "text",
-    style: { "font-size": "1.8rem" }
-  }, "大", -1));
-  const _hoisted_26$1 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "point" }, null, -1));
-  const _hoisted_27$1 = [
-    _hoisted_25$1,
-    _hoisted_26$1
-  ];
-  const _hoisted_28$1 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", {
-    class: "text",
-    style: { "font-size": "2.2rem" }
-  }, "特大", -1));
-  const _hoisted_29$1 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "point" }, null, -1));
-  const _hoisted_30$1 = [
-    _hoisted_28$1,
-    _hoisted_29$1
-  ];
-  const _hoisted_31$1 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "line" }, null, -1));
+  const _hoisted_16$1 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("span", null, "刷新", -1));
   const _sfc_main$9 = /* @__PURE__ */ vue.defineComponent({
     __name: "PostOptions",
     props: {
@@ -4312,7 +4262,6 @@
     },
     emits: ["close", "reply", "refresh", "merge", "update:modelValue"],
     setup(__props, { emit: __emit }) {
-      let fs = vue.ref(0);
       let state = vue.reactive({
         timer: null,
         loading: false,
@@ -4369,9 +4318,9 @@
         if (state.loading2)
           return;
         let isIgnore = props.post.isIgnore;
-        let url = `${window.baseUrl}/${isIgnore ? "unignore" : "ignore"}/topic/${props.post.id}?once=${props.post.once}`;
+        let url = `${location.origin}/${isIgnore ? "unignore" : "ignore"}/topic/${props.post.id}?once=${props.post.once}`;
         state.loading2 = true;
-        let apiRes = await window.win().fetch(url);
+        let apiRes = await fetch(url);
         state.loading2 = false;
         if (apiRes.redirected) {
           eventBus.emit(CMD.SHOW_MSG, { type: "success", text: isIgnore ? "取消成功" : "忽略成功" });
@@ -4399,7 +4348,7 @@
         if (state.loading)
           return;
         let isFavorite = props.post.isFavorite;
-        let url = `${window.baseUrl}/${isFavorite ? "unfavorite" : "favorite"}/topic/${props.post.id}?once=${props.post.once}`;
+        let url = `${location.origin}/${isFavorite ? "unfavorite" : "favorite"}/topic/${props.post.id}?once=${props.post.once}`;
         state.loading = true;
         let apiRes = await fetch(url);
         state.loading = false;
@@ -4458,7 +4407,7 @@
         if (state.loading4)
           return;
         eventBus.emit(CMD.MERGE, { isThanked: !isThanked });
-        let url = `${window.baseUrl}/thank/reply/${props.post.id}?once=${props.post.once}`;
+        let url = `${location.origin}/thank/reply/${props.post.id}?once=${props.post.once}`;
         state.loading4 = true;
         await fetch(url);
         state.loading4 = false;
@@ -4481,16 +4430,16 @@
           "page-id": "post-detail",
           height: "40rem",
           "model-value": _ctx.modelValue,
-          onCancel: _cache[5] || (_cache[5] = ($event) => emit("update:modelValue", false))
+          onCancel: _cache[1] || (_cache[1] = ($event) => emit("update:modelValue", false))
         }, {
           default: vue.withCtx(() => [
             vue.createElementVNode("div", _hoisted_1$9, [
-              vue.createElementVNode("div", _hoisted_2$7, [
+              vue.createElementVNode("div", _hoisted_2$6, [
                 vue.createElementVNode("div", {
                   class: "item",
                   onClick: share
                 }, [
-                  vue.createElementVNode("div", _hoisted_3$6, [
+                  vue.createElementVNode("div", _hoisted_3$5, [
                     vue.createVNode(vue.unref(Icon), {
                       color: "rgb(57,174,85)",
                       icon: "ph:share-fat-fill"
@@ -4571,7 +4520,7 @@
                   vue.createElementVNode("div", _hoisted_10$2, [
                     vue.unref(state).loading1 ? (vue.openBlock(), vue.createBlock(BaseLoading, { key: 0 })) : (vue.openBlock(), vue.createBlock(vue.unref(Icon), {
                       key: 1,
-                      color: "black",
+                      class: "black",
                       icon: "solar:danger-triangle-outline"
                     }))
                   ]),
@@ -4583,7 +4532,7 @@
                 }, [
                   vue.createElementVNode("div", _hoisted_11$2, [
                     vue.createVNode(vue.unref(Icon), {
-                      color: "black",
+                      class: "black",
                       icon: "solar:link-broken"
                     })
                   ]),
@@ -4595,7 +4544,7 @@
                 }, [
                   vue.createElementVNode("div", _hoisted_13$2, [
                     vue.createVNode(vue.unref(Icon), {
-                      color: "black",
+                      class: "black",
                       icon: "octicon:copy-24"
                     })
                   ]),
@@ -4607,34 +4556,14 @@
                 }, [
                   vue.createElementVNode("div", _hoisted_15$1, [
                     vue.createVNode(vue.unref(Icon), {
-                      color: "black",
+                      class: "black",
                       icon: "ion:refresh"
                     })
                   ]),
                   _hoisted_16$1
                 ])
               ]),
-              vue.createElementVNode("div", _hoisted_17$1, [
-                vue.createElementVNode("div", _hoisted_18$1, [
-                  vue.createElementVNode("div", {
-                    class: vue.normalizeClass(["step", [vue.unref(fs) === 0 && "active"]]),
-                    onClick: _cache[1] || (_cache[1] = ($event) => vue.isRef(fs) ? fs.value = 0 : fs = 0)
-                  }, _hoisted_21$1, 2),
-                  vue.createElementVNode("div", {
-                    class: vue.normalizeClass(["step", [vue.unref(fs) === 1 && "active"]]),
-                    onClick: _cache[2] || (_cache[2] = ($event) => vue.isRef(fs) ? fs.value = 1 : fs = 1)
-                  }, _hoisted_24$1, 2),
-                  vue.createElementVNode("div", {
-                    class: vue.normalizeClass(["step", [vue.unref(fs) === 2 && "active"]]),
-                    onClick: _cache[3] || (_cache[3] = ($event) => vue.isRef(fs) ? fs.value = 2 : fs = 2)
-                  }, _hoisted_27$1, 2),
-                  vue.createElementVNode("div", {
-                    class: vue.normalizeClass(["step", [vue.unref(fs) === 3 && "active"]]),
-                    onClick: _cache[4] || (_cache[4] = ($event) => vue.isRef(fs) ? fs.value = 3 : fs = 3)
-                  }, _hoisted_30$1, 2)
-                ]),
-                _hoisted_31$1
-              ]),
+              vue.createVNode(FontSizeType),
               vue.createElementVNode("div", {
                 class: "cancel",
                 onClick: close
@@ -4646,21 +4575,21 @@
       };
     }
   });
-  const PostOptions = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["__scopeId", "data-v-f5c7e39b"]]);
-  const _withScopeId$6 = (n2) => (vue.pushScopeId("data-v-23ff5e1e"), n2 = n2(), vue.popScopeId(), n2);
+  const PostOptions = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["__scopeId", "data-v-ce52828d"]]);
+  const _withScopeId$5 = (n2) => (vue.pushScopeId("data-v-8ef13a81"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$8 = { class: "wrapper" };
-  const _hoisted_2$6 = { class: "options" };
-  const _hoisted_3$5 = { class: "icon-wrap" };
-  const _hoisted_4$4 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("span", null, "忽略", -1));
+  const _hoisted_2$5 = { class: "options" };
+  const _hoisted_3$4 = { class: "icon-wrap" };
+  const _hoisted_4$4 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("span", null, "忽略", -1));
   const _hoisted_5$3 = { class: "icon-wrap" };
-  const _hoisted_6$3 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("span", null, "复制", -1));
+  const _hoisted_6$3 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("span", null, "复制", -1));
   const _hoisted_7$2 = { class: "icon-wrap" };
-  const _hoisted_8$2 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("span", null, "上下文", -1));
+  const _hoisted_8$2 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("span", null, "上下文", -1));
   const _hoisted_9$2 = { class: "icon-wrap" };
   const _hoisted_10$1 = { class: "icon-wrap" };
-  const _hoisted_11$1 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("span", null, "回复", -1));
+  const _hoisted_11$1 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("span", null, "回复", -1));
   const _hoisted_12$1 = { class: "icon-wrap" };
-  const _hoisted_13$1 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("span", null, "跳转", -1));
+  const _hoisted_13$1 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("span", null, "跳转", -1));
   const _sfc_main$8 = /* @__PURE__ */ vue.defineComponent({
     __name: "CommentOptions",
     props: {
@@ -4760,12 +4689,12 @@
         }, {
           default: vue.withCtx(() => [
             vue.createElementVNode("div", _hoisted_1$8, [
-              vue.createElementVNode("div", _hoisted_2$6, [
+              vue.createElementVNode("div", _hoisted_2$5, [
                 vue.createElementVNode("div", {
                   class: "item",
                   onClick: hide
                 }, [
-                  vue.createElementVNode("div", _hoisted_3$5, [
+                  vue.createElementVNode("div", _hoisted_3$4, [
                     vue.createVNode(vue.unref(Icon), { icon: "solar:forbidden-circle-outline" })
                   ]),
                   _hoisted_4$4
@@ -4834,7 +4763,7 @@
       };
     }
   });
-  const CommentOptions = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["__scopeId", "data-v-23ff5e1e"]]);
+  const CommentOptions = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["__scopeId", "data-v-8ef13a81"]]);
   const _hoisted_1$7 = { class: "comments" };
   const _sfc_main$7 = /* @__PURE__ */ vue.defineComponent({
     __name: "RelationReply",
@@ -4885,7 +4814,6 @@
       MoreIcon,
       BaseButton,
       SingleComment,
-      PopConfirm,
       Comment,
       PostEditor,
       Point,
@@ -4895,12 +4823,7 @@
       BaseLoading,
       Icon
     },
-    inject: ["allReplyUsers", "user", "post", "isMobile", "tags", "isLogin", "config", "pageType", "isNight"],
-    provide() {
-      return {
-        postDetailWidth: vue.computed(() => this.postDetailWidth)
-      };
-    },
+    inject: ["allReplyUsers", "user", "post", "tags", "isLogin", "config", "pageType", "isNight"],
     props: {
       modelValue: {
         type: Boolean,
@@ -4928,7 +4851,6 @@
         showPostOptions: false,
         showCommentOptions: false,
         selectCallIndex: 0,
-        postDetailWidth: 0,
         showCallList: false,
         showRelationReply: false,
         replyText: "",
@@ -5040,8 +4962,7 @@
         if (this.$refs["post-editor"]) {
           this.$refs["post-editor"].content = "";
           vue.nextTick(() => {
-            var _a, _b;
-            (_b = (_a = this.$refs) == null ? void 0 : _a.detail) == null ? void 0 : _b.scrollTo({ top: 0 });
+            this.scrollTop();
           });
         }
       },
@@ -5119,7 +5040,12 @@
         this.showCommentOptions = true;
       });
       eventBus.on(CMD.SHOW_EDITOR, (comment) => {
-        return;
+        this.currentComment = comment;
+        this.isSticky = true;
+        setTimeout(() => {
+          var _a;
+          (_a = this.$refs["post-editor"]) == null ? void 0 : _a.focus();
+        }, 300);
       });
     },
     beforeUnmount() {
@@ -5224,18 +5150,11 @@
       goBottom() {
         this.isSticky = false;
         setTimeout(() => {
-          if (this.isPost) {
-            let body = $("body , html");
-            let scrollHeight = body.prop("scrollHeight");
-            body.animate({ scrollTop: scrollHeight - 850 }, 300);
-          } else {
-            this.$refs.detail.scrollTo({ top: this.$refs.detail.scrollHeight, behavior: "smooth" });
-          }
+          let postWrapper = document.querySelector(".post-wrapper");
+          postWrapper.scrollTo({ top: this.$refs["detail"].clientHeight, behavior: "smooth" });
         });
       },
       close() {
-        if (this.isPost)
-          return;
         this.$emit("update:modelValue", false);
       },
       setCall(e2) {
@@ -5268,18 +5187,14 @@
         }
       },
       scrollTop() {
-        if (this.isPost) {
-          $("body , html").animate({ scrollTop: 0 }, 300);
-        } else {
-          this.$refs.detail.scrollTo({ top: 0, behavior: "smooth" });
-        }
+        document.querySelector(".post-wrapper").scrollTo({ top: 0, behavior: "smooth" });
       }
     }
   };
-  const _withScopeId$5 = (n2) => (vue.pushScopeId("data-v-bdb6b650"), n2 = n2(), vue.popScopeId(), n2);
+  const _withScopeId$4 = (n2) => (vue.pushScopeId("data-v-2ae4681d"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$6 = { class: "left" };
-  const _hoisted_2$5 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("a", { href: "/" }, "V2EX", -1));
-  const _hoisted_3$4 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("span", { class: "chevron" }, "  ›  ", -1));
+  const _hoisted_2$4 = /* @__PURE__ */ _withScopeId$4(() => /* @__PURE__ */ vue.createElementVNode("a", { href: "/" }, "V2EX", -1));
+  const _hoisted_3$3 = /* @__PURE__ */ _withScopeId$4(() => /* @__PURE__ */ vue.createElementVNode("span", { class: "chevron" }, "  ›  ", -1));
   const _hoisted_4$3 = ["href"];
   const _hoisted_5$2 = { class: "right" };
   const _hoisted_6$2 = ["src"];
@@ -5297,12 +5212,12 @@
     class: "center"
   };
   const _hoisted_17 = { class: "my-tag" };
-  const _hoisted_18 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
+  const _hoisted_18 = /* @__PURE__ */ _withScopeId$4(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
   const _hoisted_19 = ["onClick"];
   const _hoisted_20 = { class: "bottom" };
   const _hoisted_21 = ["title"];
   const _hoisted_22 = ["href"];
-  const _hoisted_23 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-info-circle" }, null, -1));
+  const _hoisted_23 = /* @__PURE__ */ _withScopeId$4(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-info-circle" }, null, -1));
   const _hoisted_24 = [
     _hoisted_23
   ];
@@ -5311,8 +5226,8 @@
     key: 0,
     class: "my-box"
   };
-  const _hoisted_27 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("span", { class: "" }, "高赞回复", -1));
-  const _hoisted_28 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "top-reply" }, [
+  const _hoisted_27 = /* @__PURE__ */ _withScopeId$4(() => /* @__PURE__ */ vue.createElementVNode("span", { class: "" }, "高赞回复", -1));
+  const _hoisted_28 = /* @__PURE__ */ _withScopeId$4(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "top-reply" }, [
     /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-compress" })
   ], -1));
   const _hoisted_29 = [
@@ -5358,10 +5273,13 @@
     const _component_relation_reply = vue.resolveComponent("relation-reply");
     return vue.openBlock(), vue.createBlock(vue.Teleport, { to: ".post-wrapper" }, [
       vue.createElementVNode("div", {
-        class: vue.normalizeClass(["post-detail", [$options.isNight ? "isNight" : "", $options.pageType, $options.isMobile ? "mobile" : ""]]),
+        class: vue.normalizeClass(["post-detail", [
+          $options.isNight ? "isNight" : "",
+          $options.pageType
+        ]]),
         ref: "detail",
         id: "post-detail",
-        onScroll: _cache[21] || (_cache[21] = (...args) => $data.debounceScroll && $data.debounceScroll(...args))
+        onScroll: _cache[20] || (_cache[20] = (...args) => $data.debounceScroll && $data.debounceScroll(...args))
       }, [
         vue.createElementVNode("div", {
           class: "my-box nav-bar",
@@ -5373,8 +5291,8 @@
               onClick: vue.withModifiers($options.close, ["stop"])
             }, null, 8, ["onClick"])) : vue.createCommentVNode("", true),
             $options.isPost ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 1 }, [
-              _hoisted_2$5,
-              _hoisted_3$4
+              _hoisted_2$4,
+              _hoisted_3$3
             ], 64)) : vue.createCommentVNode("", true),
             vue.createElementVNode("a", {
               href: $options.post.node.url
@@ -5461,12 +5379,11 @@
               vue.createElementVNode("h1", null, vue.toDisplayString($options.post.title), 1)
             ]),
             vue.createVNode(_component_BaseHtmlRender, {
-              onClick: _cache[4] || (_cache[4] = vue.withModifiers(($event) => $options.eventBus.emit($options.CMD.SHOW_EDITOR, null), ["stop"])),
               html: $options.post.headerTemplate
             }, null, 8, ["html"])
           ]),
           vue.createVNode(_component_Toolbar, {
-            onReply: _cache[5] || (_cache[5] = ($event) => {
+            onReply: _cache[4] || (_cache[4] = ($event) => {
               $data.isSticky = !$data.isSticky;
               $data.currentComment = null;
             })
@@ -5475,7 +5392,7 @@
         $options.topReply.length && $options.config.showTopReply ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_26, [
           vue.createElementVNode("div", {
             class: "my-cell flex",
-            onClick: _cache[6] || (_cache[6] = (...args) => $options.collapseTopReplyList && $options.collapseTopReplyList(...args))
+            onClick: _cache[5] || (_cache[5] = (...args) => $options.collapseTopReplyList && $options.collapseTopReplyList(...args))
           }, _hoisted_29),
           vue.createElementVNode("div", _hoisted_30, [
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($options.topReply, (item, index2) => {
@@ -5492,7 +5409,7 @@
           vue.createElementVNode("span", null, vue.toDisplayString($options.post.replyCount) + " 条回复", 1),
           vue.createVNode(_component_BaseSelect, {
             "display-type": $props.displayType,
-            "onUpdate:displayType": _cache[7] || (_cache[7] = (e2) => _ctx.$emit("update:displayType", e2))
+            "onUpdate:displayType": _cache[6] || (_cache[6] = (e2) => _ctx.$emit("update:displayType", e2))
           }, null, 8, ["display-type"])
         ])) : vue.createCommentVNode("", true),
         $options.replyList.length || $props.loading ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_32, [
@@ -5520,13 +5437,13 @@
               $data.isSticky ? (vue.openBlock(), vue.createElementBlock("a", {
                 key: 0,
                 style: { "margin-right": "2rem" },
-                onClick: _cache[8] || (_cache[8] = ($event) => {
+                onClick: _cache[7] || (_cache[7] = ($event) => {
                   $data.isSticky = false;
                   $data.currentComment = null;
                 })
               }, "取消回复框停靠")) : vue.createCommentVNode("", true),
               vue.createElementVNode("a", {
-                onClick: _cache[9] || (_cache[9] = (...args) => $options.scrollTop && $options.scrollTop(...args))
+                onClick: _cache[8] || (_cache[8] = (...args) => $options.scrollTop && $options.scrollTop(...args))
               }, "回到顶部")
             ])
           ]),
@@ -5537,7 +5454,7 @@
               useType: $data.currentComment ? "reply-comment" : "reply-post",
               replyUser: $options.replyUser,
               replyFloor: $options.replyFloor,
-              onClick: _cache[10] || (_cache[10] = ($event) => $data.isSticky = true)
+              onClick: _cache[9] || (_cache[9] = ($event) => $data.isSticky = true)
             }, null, 8, ["onClose", "useType", "replyUser", "replyFloor"])
           ])
         ], 2)) : vue.createCommentVNode("", true),
@@ -5556,39 +5473,39 @@
           }), 256))
         ], 4)) : vue.createCommentVNode("", true),
         vue.createVNode(_component_post_options, {
-          onMerge: _cache[11] || (_cache[11] = (val) => {
+          onMerge: _cache[10] || (_cache[10] = (val) => {
             $options.post = Object.assign($options.post, val);
             console.log("va", val, $options.post);
           }),
           post: $options.post,
-          onReply: _cache[12] || (_cache[12] = ($event) => ($options.eventBus.emit($options.CMD.SHOW_EDITOR, null), $data.showPostOptions = false)),
-          onRefresh: _cache[13] || (_cache[13] = ($event) => _ctx.$emit("refresh")),
+          onReply: _cache[11] || (_cache[11] = ($event) => ($options.eventBus.emit($options.CMD.SHOW_EDITOR, null), $data.showPostOptions = false)),
+          onRefresh: _cache[12] || (_cache[12] = ($event) => _ctx.$emit("refresh")),
           modelValue: $data.showPostOptions,
-          "onUpdate:modelValue": _cache[14] || (_cache[14] = ($event) => $data.showPostOptions = $event)
+          "onUpdate:modelValue": _cache[13] || (_cache[13] = ($event) => $data.showPostOptions = $event)
         }, null, 8, ["post", "modelValue"]),
         vue.createVNode(_component_comment_options, {
-          onMerge: _cache[15] || (_cache[15] = (val) => $data.currentComment = Object.assign($data.currentComment, val)),
-          onRecallThank: _cache[16] || (_cache[16] = ($event) => $data.currentComment.isThanked = false),
+          onMerge: _cache[14] || (_cache[14] = (val) => $data.currentComment = Object.assign($data.currentComment, val)),
+          onRecallThank: _cache[15] || (_cache[15] = ($event) => $data.currentComment.isThanked = false),
           post: $options.post,
           comment: $data.currentComment,
-          onClose: _cache[17] || (_cache[17] = ($event) => $data.currentComment = null),
-          onReply: _cache[18] || (_cache[18] = ($event) => ($options.eventBus.emit($options.CMD.SHOW_EDITOR, $data.currentComment), $data.showCommentOptions = false)),
+          onClose: _cache[16] || (_cache[16] = ($event) => $data.currentComment = null),
+          onReply: _cache[17] || (_cache[17] = ($event) => ($options.eventBus.emit($options.CMD.SHOW_EDITOR, $data.currentComment), $data.showCommentOptions = false)),
           modelValue: $data.showCommentOptions,
-          "onUpdate:modelValue": _cache[19] || (_cache[19] = ($event) => $data.showCommentOptions = $event)
+          "onUpdate:modelValue": _cache[18] || (_cache[18] = ($event) => $data.showCommentOptions = $event)
         }, null, 8, ["post", "comment", "modelValue"]),
         vue.createVNode(_component_relation_reply, {
           post: $options.post,
           "relation-reply": $options.relationReply,
           modelValue: $data.showRelationReply,
-          "onUpdate:modelValue": _cache[20] || (_cache[20] = ($event) => $data.showRelationReply = $event),
+          "onUpdate:modelValue": _cache[19] || (_cache[19] = ($event) => $data.showRelationReply = $event),
           "target-user": $data.targetUser
         }, null, 8, ["post", "relation-reply", "modelValue", "target-user"])
       ], 34)
     ]);
   }
-  const PostDetail = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$2], ["__scopeId", "data-v-bdb6b650"]]);
-  const _withScopeId$4 = (n2) => (vue.pushScopeId("data-v-1988f33b"), n2 = n2(), vue.popScopeId(), n2);
-  const _hoisted_1$5 = /* @__PURE__ */ _withScopeId$4(() => /* @__PURE__ */ vue.createElementVNode("svg", {
+  const PostDetail = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$2], ["__scopeId", "data-v-2ae4681d"]]);
+  const _withScopeId$3 = (n2) => (vue.pushScopeId("data-v-1988f33b"), n2 = n2(), vue.popScopeId(), n2);
+  const _hoisted_1$5 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("svg", {
     width: "24",
     height: "24",
     viewBox: "0 0 48 48",
@@ -5617,7 +5534,7 @@
       "stroke-linejoin": "round"
     })
   ], -1));
-  const _hoisted_2$4 = { key: 1 };
+  const _hoisted_2$3 = { key: 1 };
   const _sfc_main$5 = {
     __name: "Base64Tooltip",
     setup(__props) {
@@ -5676,7 +5593,7 @@
           !decodeText.value ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
             vue.createTextVNode(" Base64解码：" + vue.toDisplayString(originalText.value) + " ", 1),
             _hoisted_1$5
-          ], 64)) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$4, [
+          ], 64)) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$3, [
             vue.createElementVNode("span", null, vue.toDisplayString(decodeText.value), 1),
             vue.createVNode(BaseButton, {
               class: "btn",
@@ -5698,6 +5615,7 @@
   const Base64Tooltip = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["__scopeId", "data-v-1988f33b"]]);
   const _sfc_main$4 = {
     name: "Msg",
+    components: { Icon },
     props: {
       type: "",
       text: ""
@@ -5708,45 +5626,22 @@
       }, 3e3);
     }
   };
-  const _withScopeId$3 = (n2) => (vue.pushScopeId("data-v-31e55c59"), n2 = n2(), vue.popScopeId(), n2);
-  const _hoisted_1$4 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("svg", {
-    width: "24",
-    height: "24",
-    viewBox: "0 0 48 48",
-    fill: "none",
-    xmlns: "http://www.w3.org/2000/svg"
-  }, [
-    /* @__PURE__ */ vue.createElementVNode("path", {
-      d: "M14 14L34 34",
-      stroke: "#ffffff",
-      "stroke-width": "4",
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round"
-    }),
-    /* @__PURE__ */ vue.createElementVNode("path", {
-      d: "M14 34L34 14",
-      stroke: "#ffffff",
-      "stroke-width": "4",
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round"
-    })
-  ], -1));
-  const _hoisted_2$3 = [
-    _hoisted_1$4
-  ];
-  const _hoisted_3$3 = { class: "right" };
+  const _hoisted_1$4 = { class: "right" };
   function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_Icon = vue.resolveComponent("Icon");
     return vue.openBlock(), vue.createElementBlock("div", {
       class: vue.normalizeClass(["msg", $props.type])
     }, [
       vue.createElementVNode("div", {
         class: "left",
         onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("close"))
-      }, _hoisted_2$3),
-      vue.createElementVNode("div", _hoisted_3$3, vue.toDisplayString($props.text), 1)
+      }, [
+        vue.createVNode(_component_Icon, { icon: "ic:round-close" })
+      ]),
+      vue.createElementVNode("div", _hoisted_1$4, vue.toDisplayString($props.text), 1)
     ], 2);
   }
-  const Msg = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$1], ["__scopeId", "data-v-31e55c59"]]);
+  const Msg = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$1], ["__scopeId", "data-v-0dcc0508"]]);
   const _withScopeId$2 = (n2) => (vue.pushScopeId("data-v-674b86aa"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$3 = {
     key: 0,
@@ -6050,11 +5945,12 @@
     topReplyLoveMinCount: 3,
     topReplyCount: 3,
     autoJumpLastReadFloor: false,
-    rememberLastReadFloor: true,
+    rememberLastReadFloor: false,
     autoSignin: true,
     customBgColor: "",
     version: 1,
-    collectBrowserNotice: false
+    collectBrowserNotice: false,
+    fontSizeType: "normal"
   };
   const functions = {
     //获取所有回复
@@ -6291,6 +6187,9 @@
       } catch (e2) {
         console.error("无法使用Tampermonkey");
       }
+    },
+    clone(val) {
+      return JSON.parse(JSON.stringify(val));
     }
   };
   const _sfc_main = {
@@ -6388,6 +6287,21 @@
             $(this).removeClass("preview");
           });
         }
+      },
+      "config.fontSizeType": {
+        handler(newVal) {
+          switch (newVal) {
+            case "small":
+              return $("html").css("font-size", "8px");
+            case "normal":
+              return $("html").css("font-size", "10px");
+            case "large":
+              return $("html").css("font-size", "12px");
+            case "big-large":
+              return $("html").css("font-size", "14px");
+          }
+        },
+        deep: true
       },
       show(n2) {
         if (n2)
@@ -6525,7 +6439,9 @@
         e2.stopPropagation();
       },
       saveReadList() {
-        window.parse.saveReadList(this.readList);
+        if (this.config.rememberLastReadFloor) {
+          window.parse.saveReadList(this.readList);
+        }
       },
       async clickPost(e2, id, href, title = "") {
         if (id) {
@@ -6618,18 +6534,18 @@
           });
         }
         if (type === "postContent") {
-          this.current = value;
+          this.current = Object.assign(this.current, value);
           this.current.inList = true;
           this.showPost();
         }
         if (type === "postReplies") {
-          console.log("当前帖子", this.current);
+          this.current = Object.assign(this.current, value);
           this.list.push(this.clone(this.current));
           this.loading = false;
         }
       },
       clone(val) {
-        return window.clone(val);
+        return functions.clone(val);
       },
       regenerateReplyList() {
         if (this.current.replyList.length) {
@@ -6711,6 +6627,9 @@
           if (rIndex > -1) {
             this.list[rIndex] = this.clone(this.current);
           }
+        });
+        eventBus.on(CMD.MERGE_CONFIG, (val) => {
+          this.config = Object.assign(this.config, val);
         });
         eventBus.on(CMD.ADD_READ, (val) => {
           this.readList[this.current.id] = val;
@@ -6822,7 +6741,7 @@
       }
     }
   };
-  const _withScopeId = (n2) => (vue.pushScopeId("data-v-34a1bac1"), n2 = n2(), vue.popScopeId(), n2);
+  const _withScopeId = (n2) => (vue.pushScopeId("data-v-b2b0badd"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1 = {
     key: 0,
     class: "target-user-tags p1"
@@ -6923,7 +6842,7 @@
       ], 64)) : vue.createCommentVNode("", true)
     ], 64);
   }
-  const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-34a1bac1"]]);
+  const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-b2b0badd"]]);
   let $section = document.createElement("section");
   $section.id = "app";
   function run() {
@@ -7089,32 +7008,23 @@
         if (body.find("#no-comments-yet").length) {
           return post;
         }
-        let wrapperClass = window.vals.isMobile ? "Wrapper" : "Main";
+        let wrapperClass = "Wrapper";
         let boxs;
         let box;
-        if (window.vals.isMobile) {
-          if (body.length > 1) {
-            body.each(function() {
-              if (this.id === wrapperClass) {
-                boxs = this.querySelectorAll(".box");
-                box = boxs[2];
-              }
-            });
-          } else {
-            boxs = body.find(`#${wrapperClass} .box`);
-            box = boxs[2];
-          }
+        if (body.length > 1) {
+          body.each(function() {
+            if (this.id === wrapperClass) {
+              boxs = this.querySelectorAll(".box");
+              box = boxs[2];
+            }
+          });
         } else {
           boxs = body.find(`#${wrapperClass} .box`);
-          box = boxs[1];
+          box = boxs[2];
         }
         let cells = box.querySelectorAll(".cell");
         if (cells && cells.length) {
-          if (window.vals.isMobile) {
-            post.fr = boxs[1].querySelector(".inner").innerHTML;
-          } else {
-            post.fr = cells[0].querySelector(".cell .fr").innerHTML;
-          }
+          post.fr = boxs[1].querySelector(".inner").innerHTML;
           cells = Array.from(cells);
           let snow = cells[0].querySelector(".snow");
           post.createDate = ((_b = (_a = snow == null ? void 0 : snow.nextSibling) == null ? void 0 : _a.nodeValue) == null ? void 0 : _b.trim()) || "";
@@ -7168,17 +7078,13 @@
         return new Promise((resolve) => {
           $.get(href).then((res) => {
             let s = res.match(/<body[^>]*>([\s\S]+?)<\/body>/g);
-            let wrapperClass = window.vals.isMobile ? "Wrapper" : "Main";
+            let wrapperClass = "Wrapper";
             let box;
-            if (window.vals.isMobile) {
-              $(s[0]).each(function() {
-                if (this.id === wrapperClass) {
-                  box = this.querySelectorAll(".box")[2];
-                }
-              });
-            } else {
-              box = $(s[0]).find("#Main .box")[1];
-            }
+            $(s[0]).each(function() {
+              if (this.id === wrapperClass) {
+                box = this.querySelectorAll(".box")[2];
+              }
+            });
             let cells = box.querySelectorAll(".cell");
             cells = Array.from(cells);
             resolve({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) });
@@ -7213,14 +7119,8 @@
           }
           item.replyUsers = users;
           item.replyFloor = floor;
-          let spans;
-          let ago;
-          if (window.vals.isMobile) {
-            spans = node.querySelectorAll("span");
-            ago = spans[1];
-          } else {
-            ago = node.querySelector(".ago");
-          }
+          let spans = node.querySelectorAll("span");
+          let ago = spans[1];
           item.date = ago.textContent;
           let userNode = node.querySelector("strong a");
           item.username = userNode.textContent;
@@ -7232,12 +7132,7 @@
           if (thank_area) {
             item.isThanked = thank_area.classList.contains("thanked");
           }
-          let small;
-          if (window.vals.isMobile) {
-            small = spans[2];
-          } else {
-            small = node.querySelector(".small");
-          }
+          let small = spans[2];
           if (small) {
             item.thankCount = Number(small.textContent);
           }
@@ -7299,17 +7194,20 @@
         list.forEach((itemDom) => {
           let item = window.clone(window.initPost);
           let item_title = itemDom.querySelector(".item_title");
+          itemDom.classList.add("post-item");
+          if (!item_title)
+            return;
           let a = item_title.querySelector("a");
           let { href, id } = functions.parseA(a);
           item.id = id;
           a.href = item.href = href;
           item.url = location.origin + "/api/topics/show.json?id=" + item.id;
-          itemDom.classList.add("post-item");
           itemDom.classList.add(`id_${id}`);
           itemDom.dataset["href"] = href;
           itemDom.dataset["id"] = id;
           window.postList.push(item);
-          let headerWrap = $(`
+          if (![PageType.Member].includes(window.pageType)) {
+            let headerWrap = $(`
 <div class="new-item">
         <div class="left">
            <div class="top">
@@ -7322,19 +7220,24 @@
         </div>
         <div class="right"></div>
 </div>`);
-          headerWrap.find(".bottom").append(item_title);
-          headerWrap.find(".right").append(itemDom.querySelector(".count_livid"));
-          headerWrap.find(".top").prepend(itemDom.querySelector("td:first-child a"));
-          let info = itemDom.querySelector("td:nth-child(3)");
-          let s1 = info.querySelector("span:first-child");
-          let t = headerWrap.find(".top .r div:first");
-          t.append(s1.querySelector("strong"));
-          t.append(`  •  `);
-          t.append(s1.querySelector("a"));
-          let b = headerWrap.find(".top .r div:last");
-          b.append(info.querySelector("span:last-child").innerHTML);
-          itemDom.append(headerWrap[0]);
-          itemDom.querySelector("table").remove();
+            headerWrap.find(".bottom").append(item_title);
+            headerWrap.find(".right").append(itemDom.querySelector(".count_livid"));
+            headerWrap.find(".top").prepend(itemDom.querySelector("td:first-child a"));
+            let info = itemDom.querySelector("td:nth-child(3)");
+            if (window.pageType === PageType.Node)
+              ;
+            if ([PageType.Changes, PageType.Home].includes(window.pageType)) {
+              let s1 = info.querySelector("span:first-child");
+              let t = headerWrap.find(".top .r div:first");
+              t.append(s1.querySelector("strong"));
+              t.append(`  •  `);
+              t.append(s1.querySelector("a"));
+            }
+            let b = headerWrap.find(".top .r div:last");
+            b.append(info.querySelector("span:last-child").innerHTML);
+            itemDom.append(headerWrap[0]);
+            itemDom.querySelector("table").remove();
+          }
         });
         Promise.allSettled(window.postList.map((item) => $.get(item.url))).then((res) => {
           let ok = res.filter((r2) => r2.status === "fulfilled").map((v) => v.value[0]);
@@ -7513,14 +7416,16 @@
       let l = window.location;
       if (l.pathname === "/") {
         window.pageType = PageType.Home;
+      } else if (l.pathname === "/changes") {
+        window.pageType = PageType.Changes;
+      } else if (l.pathname === "/recent") {
+        window.pageType = PageType.Changes;
       } else if (l.href.match(/.com\/?tab=/)) {
         window.pageType = PageType.Home;
       } else if (l.href.match(/.com\/go\//)) {
         if (!l.href.includes("/links")) {
           window.pageType = PageType.Node;
         }
-      } else if (l.href.match(/.com\/recent/)) {
-        window.pageType = PageType.Home;
       } else if (l.href.match(/.com\/member/)) {
         window.pageType = PageType.Member;
       } else {
@@ -7561,21 +7466,25 @@
         let bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g);
         let body = $(bodyText[0]);
         let items = body.find("#Main .box .note_item_title a");
-        let tagItem = Array.from(items).find((v) => v.innerText.includes(window.user.tagPrefix));
-        if (tagItem) {
-          window.user.tagsId = tagItem.href.substr(-5);
-          window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix);
-        } else {
-          let r22 = await window.parse.createNoteItem(window.user.tagPrefix);
-          r22 && (window.user.tagsId = r22);
+        if (window.config.openTag) {
+          let tagItem = Array.from(items).find((v) => v.innerText.includes(window.user.tagPrefix));
+          if (tagItem) {
+            window.user.tagsId = tagItem.href.substr(-5);
+            window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix);
+          } else {
+            let r22 = await window.parse.createNoteItem(window.user.tagPrefix);
+            r22 && (window.user.tagsId = r22);
+          }
         }
-        let readItem = Array.from(items).find((v) => v.innerText.includes(window.user.readPrefix));
-        if (readItem) {
-          window.user.readNoteItemId = readItem.href.substr(-5);
-          window.user.readList = await getNoteItemContent(window.user.readNoteItemId, window.user.readPrefix);
-        } else {
-          let r22 = await window.parse.createNoteItem(window.user.readPrefix);
-          r22 && (window.user.readNoteItemId = r22);
+        if (window.config.rememberLastReadFloor) {
+          let readItem = Array.from(items).find((v) => v.innerText.includes(window.user.readPrefix));
+          if (readItem) {
+            window.user.readNoteItemId = readItem.href.substr(-5);
+            window.user.readList = await getNoteItemContent(window.user.readNoteItemId, window.user.readPrefix);
+          } else {
+            let r22 = await window.parse.createNoteItem(window.user.readPrefix);
+            r22 && (window.user.readNoteItemId = r22);
+          }
         }
         let imgurItem = Array.from(items).find((v) => v.innerText.includes(window.user.imgurPrefix));
         if (imgurItem) {
@@ -7645,7 +7554,6 @@
       if (top2.length && ["个人主页", "Profile"].includes(top2.text())) {
         window.user.username = top2.attr("href").replace("/member/", "");
         window.user.avatar = $("#menu-entry .avatar").attr("src");
-        initNoteData();
       }
       initConfig().then((r2) => {
         initStyle();
@@ -7656,17 +7564,31 @@
         } catch (e2) {
           console.log("签到失败");
         }
-        if (window.user.username)
-          ;
+        if (window.user.username) {
+          initNoteData();
+        }
       });
       let box;
       let list;
+      let first;
+      let last;
       switch (window.pageType) {
         case PageType.Node:
-          box = window.win().doc.querySelectorAll("#Wrapper #Main .box");
-          let topics = box[1].querySelector("#TopicsNode");
-          list = topics.querySelectorAll(".cell");
-          list[0].before($section);
+          box = document.querySelectorAll("#Wrapper .box");
+          box[1].style.background = "unset";
+          box[1].style.borderBottom = "none";
+          box[1].style["border-radius"] = "0";
+          box[1].style["box-shadow"] = "none";
+          first = $(box[1]).children().first();
+          first.addClass("cell post-item");
+          if (window.config.viewType === "card")
+            first[0].classList.add("preview");
+          last = $(box[1]).children().last();
+          last.addClass("cell post-item");
+          if (window.config.viewType === "card")
+            last[0].classList.add("preview");
+          list = box[1].querySelectorAll(".cell");
+          box[0].before($section);
           window.parse.parsePagePostList(list, box[1]);
           break;
         case PageType.Home:
@@ -7678,7 +7600,27 @@
           $(box).children().slice(1, 3).each(function() {
             headerWrap.append(this);
           });
-          let last = $(box).children().last();
+          last = $(box).children().last();
+          last.addClass("cell post-item");
+          if (window.config.viewType === "card")
+            last[0].classList.add("preview");
+          box.style.background = "unset";
+          box.style["border-radius"] = "0";
+          box.style["box-shadow"] = "none";
+          list = box.querySelectorAll(".item");
+          list[0].before($section);
+          window.parse.parsePagePostList(list, box);
+          break;
+        case PageType.Changes:
+          box = document.querySelector("#Wrapper .box");
+          box.style.background = "unset";
+          box.style["border-radius"] = "0";
+          box.style["box-shadow"] = "none";
+          first = $(box).children().first();
+          first.addClass("cell post-item");
+          if (window.config.viewType === "card")
+            first[0].classList.add("preview");
+          last = $(box).children().last();
           last.addClass("cell post-item");
           if (window.config.viewType === "card")
             last[0].classList.add("preview");
@@ -7687,22 +7629,25 @@
           window.parse.parsePagePostList(list, box);
           break;
         case PageType.Post:
-          if (window.vals.isMobile) {
-            box = document.querySelector("#Wrapper .box");
-          } else {
-            box = document.querySelector("#Wrapper #Main .box");
-          }
+          box = document.querySelector("#Wrapper .box");
           box.after($section);
-          let post = window.clone(window.initPost);
+          let r2 = await functions.checkPostReplies(window.pageData.id, false);
+          if (r2) {
+            window.stopMe = true;
+            functions.cbChecker({ type: "syncData" });
+            functions.cbChecker({ type: "warningNotice", value: "由于回复数量较多，脚本已停止解析楼中楼" });
+            return;
+          }
+          let post = functions.clone(window.initPost);
           post.id = window.pageData.id;
-          let body = $(window.document.body);
-          let htmlText = window.document.documentElement.outerHTML;
+          let body = $(document.body);
+          let htmlText = document.documentElement.outerHTML;
           window.parse.parsePostContent(
             post,
             body,
             htmlText
           ).then(async (res) => {
-            await functions.cbChecker({ type: "postContent", value: res }, 0);
+            await functions.cbChecker({ type: "postContent", value: res });
             await window.parse.parseOp(res);
           });
           window.parse.getPostAllReplies(
@@ -7710,25 +7655,21 @@
             body,
             htmlText,
             window.pageData.pageNo
-          ).then(async (res) => {
-            await functions.cbChecker({ type: "postReplies" });
+          ).then(async (res1) => {
+            await functions.cbChecker({ type: "postReplies", value: res1 });
           });
           break;
         case PageType.Member:
-          if (window.vals.isMobile) {
-            box = document.querySelector("#Wrapper .box");
-          } else {
-            box = document.querySelector("#Wrapper #Main .box");
-          }
+          box = document.querySelectorAll("#Wrapper .box");
           window.targetUserName = box[0].querySelector("h1").textContent;
           if (window.config.openTag) {
             box[0].style.borderBottom = "none";
             box[0].style["border-bottom-left-radius"] = "0";
             box[0].style["border-bottom-right-radius"] = "0";
           }
-          list = box[1].querySelectorAll(".cell");
+          list = box[2].querySelectorAll(".cell");
           box[0].after($section);
-          window.parse.parsePagePostList(list, box[1]);
+          window.parse.parsePagePostList(list, box[2]);
           break;
         default:
           window.stopMe = true;
