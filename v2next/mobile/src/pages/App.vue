@@ -102,6 +102,21 @@ export default {
         })
       }
     },
+    'config.fontSizeType': {
+      handler(newVal) {
+        switch (newVal) {
+          case 'small':
+            return $('html').css('font-size', '8px')
+          case 'normal':
+            return $('html').css('font-size', '10px')
+          case 'large':
+            return $('html').css('font-size', '12px')
+          case 'big-large':
+            return $('html').css('font-size', '14px')
+        }
+      },
+      deep: true
+    },
     show(n) {
       if (n) this.step++
       else this.step--
@@ -360,19 +375,20 @@ export default {
       }
 
       if (type === 'postContent') {
-        this.current = value
+        this.current = Object.assign(this.current, value)
         this.current.inList = true
         //这时有正文了，再打开，体验比较好
         this.showPost()
       }
       if (type === 'postReplies') {
-        console.log('当前帖子', this.current)
+        this.current = Object.assign(this.current, value)
+        // console.log('当前帖子', this.current)
         this.list.push(this.clone(this.current))
         this.loading = false
       }
     },
     clone(val) {
-      return window.clone(val)
+      return functions.clone(val)
     },
     regenerateReplyList() {
       // console.log('重新生成列表')
@@ -460,6 +476,9 @@ export default {
         if (rIndex > -1) {
           this.list[rIndex] = this.clone(this.current)
         }
+      })
+      eventBus.on(CMD.MERGE_CONFIG, (val) => {
+        this.config = Object.assign(this.config, val)
       })
       eventBus.on(CMD.ADD_READ, (val) => {
         this.readList[this.current.id] = val

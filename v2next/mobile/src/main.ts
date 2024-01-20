@@ -6,7 +6,6 @@ import { GM_notification } from "gmApi"
 import './global.d.ts'
 import { PageType, Post, Reply } from "@v2next/core/types"
 import { DefaultConfig, DefaultPost, DefaultUser, functions } from "@v2next/core";
-import * as eruda from "eruda";
 
 // eruda.init()
 
@@ -203,33 +202,25 @@ function run() {
                 return post
             }
 
-            let wrapperClass = window.vals.isMobile ? 'Wrapper' : 'Main'
+            let wrapperClass = 'Wrapper'
             let boxs
             let box: any
-            if (window.vals.isMobile) {
-                if (body.length > 1) {
-                    body.each(function () {
-                        if (this.id === wrapperClass) {
-                            boxs = this.querySelectorAll('.box')
-                            box = boxs[2]
-                        }
-                    })
-                } else {
-                    boxs = body.find(`#${wrapperClass} .box`)
-                    box = boxs[2]
-                }
+            if (body.length > 1) {
+                body.each(function () {
+                    if (this.id === wrapperClass) {
+                        boxs = this.querySelectorAll('.box')
+                        box = boxs[2]
+                    }
+                })
             } else {
                 boxs = body.find(`#${wrapperClass} .box`)
-                box = boxs[1]
+                box = boxs[2]
             }
+
 
             let cells: any = box.querySelectorAll('.cell')
             if (cells && cells.length) {
-                if (window.vals.isMobile) {
-                    post.fr = boxs[1].querySelector('.inner')!.innerHTML
-                } else {
-                    post.fr = cells[0].querySelector('.cell .fr')!.innerHTML
-                }
+                post.fr = boxs[1].querySelector('.inner')!.innerHTML
 
                 cells = Array.from(cells)
                 //获取创建时间
@@ -286,17 +277,13 @@ function run() {
             return new Promise(resolve => {
                 $.get(href).then(res => {
                     let s = res.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-                    let wrapperClass = window.vals.isMobile ? 'Wrapper' : 'Main'
+                    let wrapperClass = 'Wrapper'
                     let box: any
-                    if (window.vals.isMobile) {
-                        $(s[0]).each(function () {
-                            if (this.id === wrapperClass) {
-                                box = this.querySelectorAll('.box')[2]
-                            }
-                        })
-                    } else {
-                        box = $(s[0]).find('#Main .box')[1]
-                    }
+                    $(s[0]).each(function () {
+                        if (this.id === wrapperClass) {
+                            box = this.querySelectorAll('.box')[2]
+                        }
+                    })
                     let cells: any = box!.querySelectorAll('.cell')
                     cells = Array.from(cells)
                     resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
@@ -333,14 +320,8 @@ function run() {
                 item.replyUsers = users
                 item.replyFloor = floor
 
-                let spans
-                let ago
-                if (window.vals.isMobile) {
-                    spans = node.querySelectorAll('span')
-                    ago = spans[1]
-                } else {
-                    ago = node.querySelector('.ago')
-                }
+                let spans = node.querySelectorAll('span')
+                let ago = spans[1]
                 item.date = ago!.textContent!
 
                 let userNode = node.querySelector('strong a')
@@ -355,12 +336,7 @@ function run() {
                 if (thank_area) {
                     item.isThanked = thank_area.classList.contains('thanked')
                 }
-                let small
-                if (window.vals.isMobile) {
-                    small = spans[2]
-                } else {
-                    small = node.querySelector('.small')
-                }
+                let small = spans[2]
                 if (small) {
                     item.thankCount = Number(small.textContent)
                 }
@@ -439,7 +415,10 @@ function run() {
                 itemDom.dataset['href'] = href
                 itemDom.dataset['id'] = id
                 window.postList.push(item)
-                let headerWrap = $(`
+
+                //用户界面没有头像，后面有空适配吧
+                if (![PageType.Member].includes(window.pageType)) {
+                    let headerWrap = $(`
 <div class="new-item">
         <div class="left">
            <div class="top">
@@ -452,20 +431,28 @@ function run() {
         </div>
         <div class="right"></div>
 </div>`)
-                headerWrap.find('.bottom').append(item_title)
-                headerWrap.find('.right').append(itemDom.querySelector('.count_livid'))
-                headerWrap.find('.top').prepend(itemDom.querySelector('td:first-child a'))
-                let info = itemDom.querySelector('td:nth-child(3)')
-                let s1 = info.querySelector('span:first-child')
-                let t = headerWrap.find('.top .r div:first');
-                t.append(s1.querySelector('strong'))
-                t.append(`  •  `)
-                t.append(s1.querySelector('a'))
-                let b = headerWrap.find('.top .r div:last');
-                b.append(info.querySelector('span:last-child').innerHTML)
+                    headerWrap.find('.bottom').append(item_title)
+                    headerWrap.find('.right').append(itemDom.querySelector('.count_livid'))
+                    headerWrap.find('.top').prepend(itemDom.querySelector('td:first-child a'))
+                    let info = itemDom.querySelector('td:nth-child(3)')
 
-                itemDom.append(headerWrap[0])
-                itemDom.querySelector('table').remove()
+                    if (window.pageType === PageType.Node) {
+
+                    }
+                    if ([PageType.Changes, PageType.Home].includes(window.pageType)) {
+                        let s1 = info.querySelector('span:first-child')
+                        let t = headerWrap.find('.top .r div:first');
+                        t.append(s1.querySelector('strong'))
+                        t.append(`  •  `)
+                        t.append(s1.querySelector('a'))
+                    }
+
+                    let b = headerWrap.find('.top .r div:last');
+                    b.append(info.querySelector('span:last-child').innerHTML)
+
+                    itemDom.append(headerWrap[0])
+                    itemDom.querySelector('table').remove()
+                }
             })
             Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
                 let ok = res.filter((r) => r.status === "fulfilled").map((v: any) => v.value[0])
@@ -663,14 +650,16 @@ function run() {
         let l = window.location
         if (l.pathname === '/') {
             window.pageType = PageType.Home
+        } else if (l.pathname === '/changes') {
+            window.pageType = PageType.Changes
+        } else if (l.pathname === '/recent') {
+            window.pageType = PageType.Changes
         } else if (l.href.match(/.com\/?tab=/)) {
             window.pageType = PageType.Home
         } else if (l.href.match(/.com\/go\//)) {
             if (!l.href.includes('/links')) {
                 window.pageType = PageType.Node
             }
-        } else if (l.href.match(/.com\/recent/)) {
-            window.pageType = PageType.Home
         } else if (l.href.match(/.com\/member/)) {
             window.pageType = PageType.Member
         } else {
@@ -839,20 +828,27 @@ function run() {
 
         let box: any
         let list
+        let first
+        let last
         // console.log(window.pageType)
         // window.pageType = PageType.Post
         // window.pageData.id = 1007682
 
         switch (window.pageType!) {
-            case  PageType.Node:
-                box = window.win().doc.querySelectorAll('#Wrapper #Main .box')
+            case PageType.Node:
+                box = document.querySelectorAll('#Wrapper .box')
 
-                let topics = box[1].querySelector('#TopicsNode')
-                list = topics.querySelectorAll('.cell')
-                list[0].before($section)
+                //移除box的样式，使卡片样式时能显示出背景
+                box[1].style.background = 'unset'
+                box[1].style.borderBottom = 'none'
+                box[1].style['border-radius'] = '0'
+                box[1].style['box-shadow'] = 'none'
+
+                list = box[1].querySelectorAll('.cell')
+                box[0].before($section)
                 window.parse.parsePagePostList(list, box[1])
                 break
-            case  PageType.Home:
+            case PageType.Home:
                 box = document.querySelector('#Wrapper .box')
 
                 //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
@@ -862,7 +858,32 @@ function run() {
                 $(box).children().slice(1, 3).each(function () {
                     headerWrap.append(this)
                 })
-                let last = $(box).children().last()
+                last = $(box).children().last()
+                last.addClass('cell post-item')
+                if (window.config.viewType === 'card') last[0].classList.add('preview')
+
+                //移除box的样式，使卡片样式时能显示出背景
+                box.style.background = 'unset'
+                box.style['border-radius'] = '0'
+                box.style['box-shadow'] = 'none'
+
+
+                list = box!.querySelectorAll('.item')
+                list[0].before($section)
+                window.parse.parsePagePostList(list, box)
+                break
+            case PageType.Changes:
+                box = document.querySelector('#Wrapper .box')
+
+                //移除box的样式，使卡片样式时能显示出背景
+                box.style.background = 'unset'
+                box.style['border-radius'] = '0'
+                box.style['box-shadow'] = 'none'
+
+                first = $(box).children().first()
+                first.addClass('cell post-item')
+                if (window.config.viewType === 'card') first[0].classList.add('preview')
+                last = $(box).children().last()
                 last.addClass('cell post-item')
                 if (window.config.viewType === 'card') last[0].classList.add('preview')
 
@@ -870,27 +891,23 @@ function run() {
                 list[0].before($section)
                 window.parse.parsePagePostList(list, box)
                 break
-            case  PageType.Post:
-                if (window.vals.isMobile) {
-                    box = document.querySelector('#Wrapper .box')
-                } else {
-                    box = document.querySelector('#Wrapper #Main .box')
-                }
+            case PageType.Post:
+                box = document.querySelector('#Wrapper .box')
                 // @ts-ignore
                 box.after($section)
 
-                // let r = await functions.checkPostReplies(window.pageData.id, false)
-                // if (r) {
-                //   window.stopMe = true
-                //   functions.cbChecker({type: 'syncData'})
-                //   functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
-                //   return
-                // }
+                let r = await functions.checkPostReplies(window.pageData.id, false)
+                if (r) {
+                    window.stopMe = true
+                    functions.cbChecker({type: 'syncData'})
+                    functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
+                    return
+                }
 
-                let post = window.clone(window.initPost)
+                let post = functions.clone(window.initPost)
                 post.id = window.pageData.id
-                let body = $(window.document.body)
-                let htmlText = window.document.documentElement.outerHTML
+                let body = $(document.body)
+                let htmlText = document.documentElement.outerHTML
 
                 window.parse.parsePostContent(
                     post,
@@ -898,7 +915,7 @@ function run() {
                     htmlText
                 ).then(async (res: any) => {
                     // console.log('详情页-基本信息解析完成', Date.now())
-                    await functions.cbChecker({type: 'postContent', value: res}, 0)
+                    await functions.cbChecker({type: 'postContent', value: res})
                     //引用修改
                     await window.parse.parseOp(res)
                     // console.log('详情页-OP信息解析完成', Date.now())
@@ -910,17 +927,14 @@ function run() {
                     body,
                     htmlText,
                     window.pageData.pageNo
-                ).then(async (res: any) => {
+                ).then(async (res1: any) => {
                     // console.log('详情页-回复解析完成', Date.now())
-                    await functions.cbChecker({type: 'postReplies'})
+                    await functions.cbChecker({type: 'postReplies', value: res1})
                 })
                 break
             case PageType.Member:
-                if (window.vals.isMobile) {
-                    box = document.querySelector('#Wrapper .box')
-                } else {
-                    box = document.querySelector('#Wrapper #Main .box')
-                }
+                box = document.querySelectorAll('#Wrapper .box')
+
                 window.targetUserName = box[0].querySelector('h1')!.textContent!
                 if (window.config.openTag) {
                     //移除box的bottom样式，让和vue的div融为一体
@@ -929,9 +943,9 @@ function run() {
                     box[0].style['border-bottom-right-radius'] = '0'
                 }
 
-                list = box[1].querySelectorAll('.cell')
+                list = box[2].querySelectorAll('.cell')
                 box[0].after($section)
-                window.parse.parsePagePostList(list, box[1])
+                window.parse.parsePagePostList(list, box[2])
                 break
             default:
                 window.stopMe = true

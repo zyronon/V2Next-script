@@ -3,7 +3,7 @@ import { Icon } from "@iconify/vue";
 import FromBottomDialog from "@/components/Modal/FromBottomDialog.vue";
 import { copy } from '@/utils/index'
 import { inject, reactive, ref, watch } from "vue";
-import { Post } from "@v2next/core/types";
+import { Config, Post } from "@v2next/core/types";
 import eventBus from '@/utils/eventBus'
 import { CMD } from '@/utils/type'
 import { PageType } from "@v2next/core/types";
@@ -32,7 +32,7 @@ const emit = defineEmits<{
 
 const isLogin = inject('isLogin')
 const pageType: any = inject('pageType')
-const config: any = inject('config')
+const config = inject<Config>('config')
 
 function close() {
   emit('close')
@@ -194,6 +194,8 @@ async function thank() {
   })
   close()
 }
+
+
 </script>
 
 <template>
@@ -274,19 +276,23 @@ async function thank() {
       </div>
       <div class="font-size">
         <div class="steps">
-          <div class="step" :class="[fs=== 0 && 'active']" @click="fs = 0">
+          <div class="step" :class="[config.fontSizeType === 'small' && 'active']"
+               @click="eventBus.emit(CMD.MERGE_CONFIG,{fontSizeType:'small'})">
             <div class="text" style="font-size: 1.2rem;">小</div>
             <div class="point"></div>
           </div>
-          <div class="step" :class="[fs=== 1 && 'active']" @click="fs = 1">
+          <div class="step" :class="[config.fontSizeType === 'normal' && 'active']"
+               @click="eventBus.emit(CMD.MERGE_CONFIG,{fontSizeType:'normal'})">
             <div class="text">标准</div>
             <div class="point"></div>
           </div>
-          <div class="step" :class="[fs=== 2 && 'active']" @click="fs = 2">
+          <div class="step" :class="[config.fontSizeType === 'large' && 'active']"
+               @click="eventBus.emit(CMD.MERGE_CONFIG,{fontSizeType:'large'})">
             <div class="text" style="font-size: 1.8rem;">大</div>
             <div class="point"></div>
           </div>
-          <div class="step" :class="[fs=== 3 && 'active']" @click="fs = 3">
+          <div class="step" :class="[config.fontSizeType === 'big-large' && 'active']"
+               @click="eventBus.emit(CMD.MERGE_CONFIG,{fontSizeType:'big-large'})">
             <div class="text" style="font-size: 2.2rem;">特大</div>
             <div class="point"></div>
           </div>

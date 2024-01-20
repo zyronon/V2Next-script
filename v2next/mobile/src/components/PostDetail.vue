@@ -3,7 +3,10 @@
     <div class="post-detail"
          ref="detail"
          id="post-detail"
-         :class="[isNight?'isNight':'',pageType,isMobile?'mobile':'']"
+         :class="[
+             isNight?'isNight':'',
+             pageType,
+         ]"
          @scroll="debounceScroll">
       <div class="my-box nav-bar" @dblclick.stop="scrollTop">
         <div class="left">
@@ -176,10 +179,9 @@ import Toolbar from "./Toolbar.vue";
 import BaseHtmlRender from "./BaseHtmlRender.vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
-import {computed, nextTick} from "vue";
+import {nextTick} from "vue";
 import {CommentDisplayType, PageType} from "@v2next/core/types.ts";
 import Tooltip from "./Tooltip.vue";
-import PopConfirm from "./PopConfirm.vue";
 import SingleComment from "./SingleComment.vue";
 import {debounce} from "../utils/index.js";
 import BaseLoading from "./BaseLoading.vue";
@@ -206,7 +208,6 @@ export default {
     MoreIcon,
     BaseButton,
     SingleComment,
-    PopConfirm,
     Comment,
     PostEditor,
     Point,
@@ -216,7 +217,7 @@ export default {
     BaseLoading,
     Icon
   },
-  inject: ['allReplyUsers', 'user', 'post', 'isMobile', 'tags', 'isLogin', 'config', 'pageType', 'isNight'],
+  inject: ['allReplyUsers', 'user', 'post', 'tags', 'isLogin', 'config', 'pageType', 'isNight'],
   props: {
     modelValue: {
       type: Boolean,
@@ -554,7 +555,6 @@ export default {
       })
     },
     close() {
-      if (this.isPost) return
       this.$emit('update:modelValue', false)
     },
     setCall(e) {
@@ -619,7 +619,7 @@ export default {
 .post-detail {
   text-align: start;
   background: #f1f1f1;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -671,6 +671,7 @@ export default {
       padding: 0 .5rem;
 
       h1 {
+        font-size: 2.2rem;
         font-weight: bold;
       }
 
@@ -701,7 +702,7 @@ export default {
     font-weight: bold;
     text-align: center;
     width: 100%;
-    margin-bottom: 2rem;
+    margin: 2rem 1rem;
     box-sizing: border-box;
   }
 

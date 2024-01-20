@@ -1,15 +1,13 @@
-html, body {
-  font-size: 62.5%;
+html {
+  font-size: 10px;
 }
 
 :root {
   --box-border-radius: 8px;
 }
 
-#Wrapper .box:first-child {
-  background: unset;
-  box-shadow: unset;
-  overflow: hidden;
+#site-header {
+  height: 4rem;
 }
 
 #site-header #site-header-menu #menu-body {
@@ -42,12 +40,26 @@ a {
       .top {
         display: flex;
         align-items: center;
-        line-height: 1.1;
+        line-height: 1.2;
         gap: 1rem;
+      }
+
+      .small {
+        font-size: 1.2rem;
+      }
+
+      a.node {
+        font-size: 1.2rem;
       }
 
       .bottom {
         margin: 1rem 0;
+        margin-bottom: .5rem;
+
+        .item_title {
+          font-size: 1.6rem;
+        }
+
         a {
           text-decoration: none !important;
         }
@@ -61,7 +73,10 @@ a {
       align-items: center;
 
       .count_livid {
+        font-size: 1.4rem !important;
         margin-right: 0;
+        padding: .3rem 1rem !important;
+        border-radius: .5rem !important;
       }
     }
   }
