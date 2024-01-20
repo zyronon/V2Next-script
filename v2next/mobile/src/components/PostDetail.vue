@@ -618,7 +618,7 @@ export default {
 
 .post-detail {
   text-align: start;
-  background: #f1f1f1;
+  background: var(--color-main-bg);
   font-size: 1.6rem;
   display: flex;
   justify-content: center;

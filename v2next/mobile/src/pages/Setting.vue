@@ -102,6 +102,11 @@
           <label class="main-title">其他设置</label>
         </div>
         <div class="row">
+          <label class="item-title">字体设置</label>
+        </div>
+        <font-size-type/>
+
+        <div class="row">
           <label class="item-title">用户打标签(跨平台，数据保存在自己的记事本)：</label>
           <div class="wrapper">
             <BaseSwitch v-model="config.openTag"/>
@@ -144,10 +149,12 @@ import BaseSwitch from "../components/BaseSwitch.vue";
 import NavBar from "@/components/NavBar.vue";
 import {Icon} from "@iconify/vue";
 import BaseSelect from "@/components/BaseSelect.vue";
+import FontSizeType from "@/components/FontSizeType.vue";
 
 export default {
   name: "Setting",
   components: {
+    FontSizeType,
     BaseSelect,
     NavBar,
     BaseSwitch,
@@ -239,6 +246,7 @@ export default {
 
   .item-title {
     font-size: 1.8rem;
+    color: var(--color-font);
   }
 }
 

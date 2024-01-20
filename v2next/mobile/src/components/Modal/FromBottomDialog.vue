@@ -181,56 +181,16 @@ export default {
 </script>
 
 <style scoped lang="less">
-
-@main-bg: rgb(21, 23, 36);
-@active-main-bg: rgb(31, 37, 52);
-@second-text-color: rgb(143, 143, 158);
-@second-btn-color: rgb(58, 58, 70);
-@second-btn-color-tran: rgba(58, 58, 70, .4);
-@line-color: rgb(37, 45, 66);
-@line-color2: rgb(56, 54, 67);
-@footer-color: black;
-
-@primary-btn-color: rgb(252, 47, 86);
-@disable-primary-btn-color: rgba(252, 47, 86, .5);
-
-@mask-dark: #000000bb;
-@mask-light: transparent;
-@mask-white: transparent;
-@mask-lightgray: rgba(0, 0, 0, 0.25);
-
-.second-text-color {
-  color: @second-text-color;
-}
-
-//消息页面
-@msg-bg: rgb(22, 22, 22);
-@msg-subpage-card-bg: rgb(28, 30, 43); //二级页面，卡片背景
-
 .FromBottomDialog {
   z-index: 11;
   position: fixed;
   width: 100%;
   overflow-y: auto;
   bottom: 0;
-  //left: 0;
   box-sizing: border-box;
   border-radius: v-bind(borderRadius);
   transition: all .3s;
-  //display: flex;
-  //flex-direction: column;
-
-  &.dark {
-    background: @main-bg;
-  }
-
-  &.light {
-    background: whitesmoke;
-  }
-
-  &.white {
-    background: white;
-  }
+  background: var(--color-main-bg);
 
   &.no-heng-gang {
     padding-top: 0;
@@ -247,38 +207,15 @@ export default {
     justify-content: center;
     align-items: center;
 
-    &.dark {
-      background: @main-bg;
-
-      .gang-content {
-        background: @second-btn-color;
-      }
-    }
-
-    &.light {
-      background: whitesmoke;
-
-      .gang-content {
-        background: darkgray;
-      }
-    }
-
-    &.white {
-      background: white;
-
-      .gang-content {
-        background: darkgray;
-      }
-    }
-
     .gang-content {
+      background: darkgray;
       border-radius: 2px;
       height: .4rem;
       width: 3rem;
     }
   }
 
-  .dialog-wrapper{
+  .dialog-wrapper {
     margin-top: 3rem;
   }
 }

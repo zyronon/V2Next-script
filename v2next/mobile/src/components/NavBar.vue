@@ -29,6 +29,7 @@ const emit = defineEmits<{
   justify-content: center;
   position: relative;
   font-size: 2rem;
+  color: var(--color-font-pure);
 
   :deep(.back-icon) {
     left: var(--space);
