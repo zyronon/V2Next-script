@@ -8,7 +8,6 @@
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
       <div class="main-wrapper" ref="mainWrapper"
-           @click="close('space')"
            :style="{width:config.postWidth}">
         <div class="my-box post-wrapper">
           <div class="header">
@@ -78,13 +77,6 @@
           <div class="my-cell flex ">
             <span class=" ">高赞回复</span>
             <div class="top-reply">
-              <Tooltip :title="`统计点赞数大于等于${config.topReplyLoveMinCount}个的回复，可在设置中调整`">
-                <i class="fa fa-info" @click="showConfig()"/>
-              </Tooltip>
-              <PopConfirm title="关闭后不再默认显示，可在设置里重新打开，确认关闭？"
-                          @confirm="config.showTopReply = false">
-                <i class="fa fa-times"/>
-              </PopConfirm>
               <Tooltip title="收起高赞回复">
                 <i class="fa fa-compress" @click="collapseTopReplyList"/>
               </Tooltip>
@@ -246,7 +238,7 @@ import BaseHtmlRender from "./BaseHtmlRender.vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import {computed, nextTick} from "vue";
-import {CommentDisplayType, PageType} from "../types.ts";
+import {CommentDisplayType, PageType} from "@v2next/core/types.ts";
 import Tooltip from "./Tooltip.vue";
 import PopConfirm from "./PopConfirm.vue";
 import SingleComment from "./SingleComment.vue";
@@ -268,7 +260,7 @@ export default {
     Tooltip,
     BaseLoading
   },
-  inject: ['allReplyUsers', 'post', 'isMobile', 'tags', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
+  inject: ['allReplyUsers', 'post', 'isMobile', 'tags', 'isLogin', 'config', 'pageType', 'isNight'],
   provide() {
     return {
       postDetailWidth: computed(() => this.postDetailWidth)

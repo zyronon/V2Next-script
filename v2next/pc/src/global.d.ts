@@ -1,4 +1,4 @@
-import { Config, PageType, Post } from "./types"
+import { Config, PageType, Post } from "@v2next/core/types"
 
 declare global {
   interface Window {

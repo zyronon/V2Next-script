@@ -1,5 +1,5 @@
 <script>
-import {MAX_REPLY_LIMIT, PageType} from "./types.ts"
+import {MAX_REPLY_LIMIT, PageType} from "@v2next/core/types.ts"
 import {computed, nextTick} from "vue";
 import Setting from "./components/Modal/SettingModal.vue";
 import eventBus from "./utils/eventBus.js";
@@ -162,7 +162,8 @@ export default {
     };
 
     window.onbeforeunload = () => {
-      this.saveReadList()
+      //TODO
+      // this.saveReadList()
     }
 
     window.deleteNotification = (nId, token) => {
@@ -277,7 +278,9 @@ export default {
       e.stopPropagation()
     },
     saveReadList() {
-      window.parse.saveReadList(this.readList)
+      if (this.config.rememberLastReadFloor) {
+        window.parse.saveReadList(this.readList)
+      }
     },
     async clickPost(e, id, href, title = '') {
       // id = '976890'
@@ -374,15 +377,17 @@ export default {
       }
 
       if (type === 'postContent') {
-        this.current = value
+        this.current = Object.assign(this.current, value)
         this.current.inList = true
         //这时有正文了，再打开，体验比较好
         if (this.config.autoOpenDetail) {
           this.showPost()
         }
       }
+
       if (type === 'postReplies') {
-        console.log('当前帖子', this.current)
+        this.current = Object.assign(this.current, value)
+        // console.log('当前帖子', this.current)
         this.list.push(this.clone(this.current))
         this.loading = false
       }
@@ -645,8 +650,10 @@ export default {
   </template>
 </template>
 
+<style lang="less">
+@import "assets/less/index";
+</style>
 <style scoped lang="less">
-@import "assets/less/variable";
 
 .target-user-tags {
   background: var(--color-second-bg);

@@ -9,7 +9,7 @@
         <div class="row">
           <label class="item-title">GitHub</label>
           <div class="wrapper">
-            <a :href="DefaultVal.git" target="_blank">{{ DefaultVal.git }}</a>
+            <a :href="DefaultVal.git" target="_blank">{{ DefaultVal.shortGit }}</a>
           </div>
         </div>
         <div class="row">

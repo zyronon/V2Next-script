@@ -13,6 +13,8 @@ export default defineConfig({
     vue(),
     vueJsx(),
     monkey({
+      //这里不能使用默认值$，会和vue/macros的冲突
+      clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
         version: '7.9.1',

@@ -322,7 +322,7 @@
 
 <script>
 import Tooltip from "../Tooltip.vue";
-import {CommentDisplayType} from "../../types.ts";
+import {CommentDisplayType} from "@v2next/core/types.ts";
 import BaseSwitch from "../BaseSwitch.vue";
 
 export default {

@@ -266,7 +266,7 @@ export default {
       e.stopPropagation()
     },
     saveReadList() {
-      if (this.config.rememberLastReadFloor){
+      if (this.config.rememberLastReadFloor) {
         window.parse.saveReadList(this.readList)
       }
     },
@@ -658,8 +658,11 @@ export default {
   </template>
 </template>
 
+<style lang="less">
+@import "../assets/less/index";
+</style>
+
 <style scoped lang="less">
-@import "../assets/less/variable";
 
 .target-user-tags {
   background: var(--color-second-bg);

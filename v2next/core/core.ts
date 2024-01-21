@@ -84,6 +84,7 @@ export const DefaultVal = {
   stopMe: null,
   postList: [],
   git: 'https://github.com/zyronon/web-scripts',
+  shortGit: 'zyronon/web-scripts',
   issue: 'https://github.com/zyronon/web-scripts/issues'
 }
 

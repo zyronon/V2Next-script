@@ -1,6 +1,4 @@
 import {createApp} from 'vue';
-import './assets/less/index.less'
-
 import App from './pages/App.vue';
 import {GM_notification} from "gmApi"
 import './global.d.ts'
