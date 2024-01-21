@@ -352,7 +352,7 @@ export default {
       if (this.$refs["post-editor"]) {
         this.$refs["post-editor"].content = ''
         nextTick(() => {
-          this.scrollTop()
+          this.scrollTop(false)
         })
       }
     },
@@ -582,8 +582,8 @@ export default {
         e.preventDefault()
       }
     },
-    scrollTop() {
-      document.querySelector('.post-wrapper').scrollTo({top: 0, behavior: 'smooth'})
+    scrollTop(anim = true) {
+      document.querySelector('.post-wrapper').scrollTo({top: 0, behavior: anim ? 'smooth' : 'instant'})
     },
   }
 }
@@ -614,6 +614,7 @@ export default {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  padding-bottom: 10rem;
 
   :deep(.subtle) {
     background-color: rgb(236 253 245 / 90%);

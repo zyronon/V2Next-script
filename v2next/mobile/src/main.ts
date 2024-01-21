@@ -6,9 +6,6 @@ import {GM_notification} from "gmApi"
 import './global.d.ts'
 import {PageType, Post, Reply} from "@v2next/core/types"
 import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core";
-import * as eruda from "eruda";
-
-eruda.init()
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -153,7 +150,7 @@ function run() {
 
       let header = $(boxs[0])
       let temp = header.clone()
-      console.log('temp', temp)
+      // console.log('temp', temp)
       temp.find('.topic_buttons').remove()
       temp.find('.inner').remove()
       temp.find('.header').remove()
@@ -984,6 +981,21 @@ function run() {
     }
   }
 }
+
+;(function () {
+  if (/eruda=1/.test(location.href) || localStorage.getItem('active-eruda')) {
+    let src = '//cdn.jsdelivr.net/npm/eruda@3.0.1';
+    console.log(1)
+    let s = document.createElement('script');
+    s.src = src
+    s.onload = () => {
+      let s1 = document.createElement('script');
+      s1.innerText = `eruda.init();`
+      document.body.append(s1);
+    }
+    document.body.append(s);
+  }
+})();
 
 run()
 let vueApp = createApp(App)

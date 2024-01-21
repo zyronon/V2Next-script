@@ -137,6 +137,15 @@
         <div class="desc">
           V站帐号一旦被封禁，则无法登录，无法查看账号收藏了
         </div>
+        <div class="row">
+          <label class="item-title">调试模式</label>
+          <div class="wrapper">
+            <BaseSwitch v-model="activeEruda"/>
+          </div>
+        </div>
+        <div class="desc">
+          开启此项会显示调试控制台，刷新页面生效
+        </div>
       </div>
     </div>
   </Teleport>
@@ -161,7 +170,7 @@ export default {
     Tooltip,
     Icon
   },
-  emits:['back'],
+  emits: ['back'],
   props: {
     modelValue: {
       type: Object,
@@ -184,14 +193,11 @@ export default {
   },
   data() {
     return {
-      tabIndex: 0,
+      activeEruda: !!localStorage.getItem('active-eruda'),
       config: window.clone(this.modelValue),
     }
   },
   computed: {
-    windowConst() {
-      return window.const
-    },
     CommentDisplayType() {
       return CommentDisplayType
     },
@@ -209,6 +215,13 @@ export default {
         this.$emit('update:modelValue', n)
       },
       deep: true
+    },
+    activeEruda(n) {
+      if (n) {
+        localStorage.setItem('active-eruda', 1)
+      } else {
+        localStorage.setItem('active-eruda', '')
+      }
     }
   },
 }

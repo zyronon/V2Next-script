@@ -17,12 +17,12 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '7.9.1',
+        version: '8.0.3',
         name: 'V2Next-Mobile',
-        icon: 'https://www.google.com/s2/favicons?sz=64&domain=v2ex.com',
+        icon: 'https://v2next.netlify.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
         require: [
-          'tampermonkey://vendor/jquery.js'
+          'http://code.jquery.com/jquery-3.7.1.min.js'
         ],
         match: [
           'https://v2ex.com/',
@@ -39,13 +39,15 @@ export default defineConfig({
           'https://*.v2ex.com/go/*',
           'https://*.v2ex.com/member/*',
           'https://*.v2ex.com/changes*',
-          'http://localhost:8000/*'
         ],
         description: '楼中楼、简洁模式、高赞回复排序、查看回复上下文、发送图片和表情、UI美化、base64 解码等功能',
         author: 'zyronon',
         license: 'GPL License',
-        updateURL: 'https://github.com/zyronon/v2ex-script/raw/master/dist/vite-project.user.js',
-        downloadURL: 'https://github.com/zyronon/v2ex-script/raw/master/dist/vite-project.user.js',
+        updateURL: 'https://update.greasyfork.org/scripts/485356/V2Next-Mobile.user.js',
+        downloadURL: 'https://update.greasyfork.org/scripts/485356/V2Next-Mobile.user.js',
+        supportURL: 'https://update.greasyfork.org/scripts/485356/V2Next-Mobile.user.js',
+        homepageURL: 'https://github.com/zyronon/web-scripts',
+        homepage: 'https://github.com/zyronon/web-scripts'
       },
       build: {
         externalGlobals: {
