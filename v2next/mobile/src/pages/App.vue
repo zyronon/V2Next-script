@@ -26,7 +26,6 @@ export default {
   provide() {
     return {
       user: computed(() => window.user),
-      isMobile: computed(() => window.vals.isMobile),
       isLogin: computed(() => this.isLogin),
       isNight: computed(() => this.isNight),
       pageType: computed(() => this.pageType),

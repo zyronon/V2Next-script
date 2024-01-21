@@ -335,23 +335,27 @@ input {
 
 .page1 {
   overflow: hidden !important;
-
-  .post-wrapper, .setting-wrapper {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    background: var(--color-main-bg);
-    overflow: auto;
-  }
 }
 
-.setting-wrapper2 {
+.post-wrapper, .setting-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
   background: var(--color-main-bg);
+  overflow: auto;
+}
+
+.setting-wrapper, .setting-wrapper2 {
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-second-bg);
 }
 
 .mobile-page {
+  height: 100%;
+  overflow: hidden;
   font-size: 1.8rem;
   display: flex;
   flex-direction: column;

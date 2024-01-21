@@ -4,6 +4,22 @@
       <NavBar title="设置" @back="$emit('back')"/>
       <div class="page-content ">
         <div class="row">
+          <label class="main-title">关于脚本</label>
+        </div>
+        <div class="row">
+          <label class="item-title">GitHub</label>
+          <div class="wrapper">
+            <a :href="DefaultVal.git" target="_blank">{{ DefaultVal.git }}</a>
+          </div>
+        </div>
+        <div class="row">
+          <label class="item-title">反馈 & 建议</label>
+          <div class="wrapper">
+            <a :href="DefaultVal.issue" target="_blank">点此填写Issue</a>
+          </div>
+        </div>
+
+        <div class="row">
           <label class="main-title">列表设置</label>
         </div>
         <div class="row">
@@ -159,6 +175,7 @@ import NavBar from "@/components/NavBar.vue";
 import {Icon} from "@iconify/vue";
 import BaseSelect from "@/components/BaseSelect.vue";
 import FontSizeType from "@/components/FontSizeType.vue";
+import {DefaultVal, functions} from "@v2next/core/core.ts";
 
 export default {
   name: "Setting",
@@ -198,6 +215,12 @@ export default {
     }
   },
   computed: {
+    DefaultVal() {
+      return DefaultVal
+    },
+    functions() {
+      return functions
+    },
     CommentDisplayType() {
       return CommentDisplayType
     },
@@ -234,6 +257,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: var(--color-font-8);
 
   .wrapper {
     height: 3rem;
@@ -242,24 +266,15 @@ export default {
     justify-content: flex-end;
     align-items: center;
     gap: var(--space);
-
-    span {
-      text-align: right;
-      //width: 30rem;
-      font-size: 1.4rem;
-      color: gray;
-    }
   }
 
   .main-title {
     font-size: 2.2rem;
     font-weight: bold;
-    color: var(--color-font-8);
   }
 
   .item-title {
     font-size: 1.8rem;
-    color: var(--color-font);
   }
 }
 

@@ -7,6 +7,8 @@ import './global.d.ts'
 import {PageType, Post, Reply} from "@v2next/core/types"
 import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core";
 
+let isMobile = !document.querySelector('#Rightbar');
+
 let $section = document.createElement('section')
 $section.id = 'app'
 
@@ -542,13 +544,8 @@ function run() {
       return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
     },
   }
-  window.vals = {
-    isMobile: !document.querySelector('#Rightbar'),
-  }
+  window.vals = {}
   window.functions = {
-    feedback() {
-      functions.openNewTab(window.const.issue)
-    },
     clickAvatar(prex: string) {
       let menu = $(`${prex}#menu-body`)
       if (menu.css('--show-dropdown') === 'block') {
@@ -622,7 +619,7 @@ function run() {
           text: '自动签到失败！请关闭其他插件或脚本。\n如果连续几天都签到失败，请联系作者解决！',
           timeout: 4000,
           onclick() {
-            window.functions.feedback()
+            functions.feedback()
           }
         });
         console.warn('[V2EX 增强] 自动签到失败！请关闭其他插件或脚本。如果连续几天都签到失败，请联系作者解决！')
@@ -758,7 +755,7 @@ function run() {
   }
 
   function addSettingText() {
-    let setting = $(`<a href="/script-setting" class="top">脚本设置</a>`)
+    let setting = $(`<a href="/script-setting" class="top">脚本管理</a>`)
     $('#menu-body .cell:first').append(setting)
   }
 
@@ -982,22 +979,25 @@ function run() {
   }
 }
 
-;(function () {
-  if (/eruda=1/.test(location.href) || localStorage.getItem('active-eruda')) {
-    let src = '//cdn.jsdelivr.net/npm/eruda@3.0.1';
-    console.log(1)
-    let s = document.createElement('script');
-    s.src = src
-    s.onload = () => {
-      let s1 = document.createElement('script');
-      s1.innerText = `eruda.init();`
-      document.body.append(s1);
+if (isMobile) {
+  console.log('V2EX 移动端')
+  ;(function () {
+    if (/eruda=1/.test(location.href) || localStorage.getItem('active-eruda')) {
+      let src = '//cdn.jsdelivr.net/npm/eruda@3.0.1';
+      console.log(1)
+      let s = document.createElement('script');
+      s.src = src
+      s.onload = () => {
+        let s1 = document.createElement('script');
+        s1.innerText = `eruda.init();`
+        document.body.append(s1);
+      }
+      document.body.append(s);
     }
-    document.body.append(s);
-  }
-})();
+  })();
 
-run()
-let vueApp = createApp(App)
-vueApp.config.unwrapInjectedRef = true
-vueApp.mount($section);
+  run()
+  let vueApp = createApp(App)
+  vueApp.config.unwrapInjectedRef = true
+  vueApp.mount($section);
+}

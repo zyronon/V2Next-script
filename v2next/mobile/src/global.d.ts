@@ -50,7 +50,6 @@ declare global {
     query: any
     stopMe: boolean
     vals: {
-      isMobile: boolean,
     }
   }
 }
