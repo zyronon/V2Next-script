@@ -1,9 +1,9 @@
-import {createApp} from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue';
-import {GM_notification, GM_openInTab, GM_registerMenuCommand} from "gmApi"
+import { GM_notification, GM_openInTab, GM_registerMenuCommand } from "gmApi"
 import './global.d.ts'
-import {MAX_REPLY_LIMIT, PageType, Post, Reply} from "@v2next/core/types"
-import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core/core";
+import { MAX_REPLY_LIMIT, PageType, Post, Reply } from "@v2next/core/types"
+import { DefaultConfig, DefaultPost, DefaultUser, DefaultVal, functions } from "@v2next/core/core";
 
 let isMobile = !document.querySelector('#Rightbar');
 
@@ -725,7 +725,7 @@ function run() {
           if (res) {
             if (res[0]?.replies > MAX_REPLY_LIMIT) {
               if (needOpen) {
-                window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1&script=1`)
+                functions.openNewTab(`https://www.v2ex.com/t/${id}?p=1&script=1`)
               }
               return resolve(true)
             }
@@ -734,29 +734,11 @@ function run() {
         resolve(false)
       })
     },
-    //打开新标签页
-    openNewTab(href: string) {
-      GM_openInTab(href, {active: true});
-      // let tempId = 'a_blank_' + Date.now()
-      // let a = document.createElement("a");
-      // a.setAttribute("href", href);
-      // a.setAttribute("target", "_blank");
-      // a.setAttribute("id", tempId);
-      // a.setAttribute("script", '1');
-      // // 防止反复添加
-      // if (!document.getElementById(tempId)) {
-      //   document.body.appendChild(a);
-      // }
-      // a.click();
-    }
   }
   window.vals = {
     isMobile: !document.querySelector('#Rightbar')
   }
   window.functions = {
-    feedback() {
-      window.parse.openNewTab(window.const.issue)
-    },
   }
 
   async function sleep(time: number) {
@@ -785,9 +767,9 @@ function run() {
         cbChecker({type: 'openSetting'})
       });
       GM_registerMenuCommand('仓库地址', () => {
-        window.parse.openNewTab(window.const.git)
+        functions.openNewTab(DefaultVal.git)
       });
-      GM_registerMenuCommand('反馈 & 建议', window.functions.feedback);
+      GM_registerMenuCommand('反馈 & 建议', functions.feedback);
     } catch (e) {
       console.error('无法使用Tampermonkey')
     }
@@ -1037,7 +1019,7 @@ function run() {
           text: '自动签到失败！请关闭其他插件或脚本。\n如果连续几天都签到失败，请联系作者解决！',
           timeout: 4000,
           onclick() {
-            window.functions.feedback()
+            functions.feedback()
           }
         });
         console.warn('[V2EX 增强] 自动签到失败！请关闭其他插件或脚本。如果连续几天都签到失败，请联系作者解决！')

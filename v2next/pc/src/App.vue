@@ -15,6 +15,7 @@ import BaseSwitch from "./components/BaseSwitch.vue";
 import BaseLoading from "./components/BaseLoading.vue";
 import NotificationModal from "./components/Modal/NotificationModal.vue";
 import BaseButton from "./components/BaseButton.vue";
+import {functions} from "@v2next/core/core.ts";
 
 export default {
   components: {
@@ -269,7 +270,7 @@ export default {
       } else {
         if (that.config.newTabOpen) {
           that.stopEvent(e)
-          window.parse.openNewTab(href)
+          functions.openNewTab(href)
         }
       }
     },
@@ -301,7 +302,7 @@ export default {
           //如果在列表里面，直接判断大小即可
           if (postItem.inList) {
             if (postItem.replyCount > MAX_REPLY_LIMIT) {
-              return window.parse.openNewTab(`${location.origin}/t/${id}?p=1&script=1`)
+              return functions.openNewTab(`${location.origin}/t/${id}?p=1&script=1`)
             }
           }
 
@@ -325,7 +326,7 @@ export default {
         }
         if (this.config.newTabOpen) {
           this.stopEvent(e)
-          window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1`)
+          functions.openNewTab(`https://www.v2ex.com/t/${id}?p=1`)
         }
       }
     },
@@ -563,7 +564,7 @@ export default {
       }
       if (apiRes.status === 403) {
         this.refreshLoading = this.show = this.loading = false
-        window.parse.openNewTab(`${location.origin}/t/${post.id}?p=1&script=0`)
+        functions.openNewTab(`${location.origin}/t/${post.id}?p=1&script=0`)
         return
       }
       //如果是重定向了，那么就是没权限

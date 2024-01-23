@@ -15,7 +15,7 @@ import BaseSwitch from "../components/BaseSwitch.vue";
 import BaseLoading from "../components/BaseLoading.vue";
 import NotificationModal from "../components/Modal/NotificationModal.vue";
 import BaseButton from "../components/BaseButton.vue";
-import {functions} from "../../../core/core.ts";
+import {functions} from "@v2next/core/core.ts";
 
 export default {
   components: {

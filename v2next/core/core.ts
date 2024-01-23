@@ -345,7 +345,7 @@ export const functions = {
   },
   //打开新标签页
   openNewTab(href: string) {
-    GM_openInTab(href, {active: true});
+    GM_openInTab(href, {active: false});
     // let tempId = 'a_blank_' + Date.now()
     // let a = document.createElement("a");
     // a.setAttribute("href", href);
