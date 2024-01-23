@@ -636,6 +636,7 @@ function run() {
     },
     //创建记事本子条目
     async createNoteItem(itemName: string) {
+      return
       return new Promise(async resolve => {
         let data: any = new FormData()
         data.append('content', itemName)
@@ -652,6 +653,7 @@ function run() {
     },
     //编辑记事本子条目
     async editNoteItem(val: string, id: string) {
+      return
       let data: any = new FormData()
       data.append('content', val)
       data.append('syntax', 0)
@@ -662,6 +664,7 @@ function run() {
     },
     //标签操作
     async saveTags(val: any) {
+      return
       for (const [key, value] of Object.entries(val)) {
         if (!(value as any[]).length) delete val[key]
       }
@@ -669,10 +672,12 @@ function run() {
     },
     //已读楼层操作
     async saveReadList(val: any) {
+      return
       return await this.editNoteItem(window.user.readPrefix + JSON.stringify(val), window.user.readNoteItemId)
     },
     //imgur图片删除hash操作
     async saveImgurList(val: any) {
+      return
       return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
     },
     //图片链接转Img标签
@@ -1201,7 +1206,7 @@ function run() {
       window.user.username = top2.textContent
       window.user.avatar = $('#Rightbar .box .avatar').attr('src')
 
-      initNoteData()
+      // initNoteData()
     }
 
     initConfig().then(r => {
@@ -1236,13 +1241,13 @@ function run() {
         let topics = box[1].querySelector('#TopicsNode')
         list = topics.querySelectorAll('.cell')
         list[0].before($section)
-        window.parse.parsePagePostList(list, box[1])
+        // window.parse.parsePagePostList(list, box[1])
         break
       case  PageType.Home:
         box = document.querySelector('#Wrapper #Main .box')
         list = box!.querySelectorAll('.item')
         list[0].before($section)
-        window.parse.parsePagePostList(list, box)
+        // window.parse.parsePagePostList(list, box)
         break
       case  PageType.Post:
         box = document.querySelector('#Wrapper #Main .box')
@@ -1316,7 +1321,7 @@ function run() {
 
         list = box[1].querySelectorAll('.cell')
         box[0].after($section)
-        window.parse.parsePagePostList(list, box[1])
+        // window.parse.parsePagePostList(list, box[1])
         break
       default:
         window.stopMe = true
