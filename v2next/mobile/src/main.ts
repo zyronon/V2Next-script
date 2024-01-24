@@ -27,7 +27,7 @@ function run() {
   window.targetUserName = ''
   window.pageType = undefined
   window.pageData = {pageNo: 1}
-  window.config = DefaultConfig
+  window.config = {...DefaultConfig, ...{viewType: 'card'}}
   window.const = {
     git: 'https://github.com/zyronon/v2ex-script',
     issue: 'https://github.com/zyronon/v2ex-script/issues'
@@ -400,6 +400,18 @@ function run() {
     },
     //解析页面帖子列表
     parsePagePostList(list: any[], box: any) {
+      let cacheDataStr = localStorage.getItem('cacheData')
+      let cacheData = []
+      if (cacheDataStr) {
+        cacheData = JSON.parse(cacheDataStr)
+
+        let now = Date.now()
+        //筛掉3天前的数据，一直存会存不下
+        cacheData = cacheData.filter(v => {
+          return v.created > (now / 1000 - 60 * 60 * 24 * 3)
+        })
+      }
+
       list.forEach(itemDom => {
         let item = window.clone(window.initPost)
         let item_title = itemDom.querySelector('.item_title')
@@ -408,7 +420,7 @@ function run() {
         if (!item_title) return
         let a = item_title.querySelector('a')
         let {href, id} = functions.parseA(a)
-        item.id = id
+        item.id = Number(id)
         a.href = item.href = href
         item.url = location.origin + '/api/topics/show.json?id=' + item.id
         itemDom.classList.add(`id_${id}`)
@@ -453,51 +465,65 @@ function run() {
           itemDom.append(headerWrap[0])
           itemDom.querySelector('table').remove()
         }
+
       })
-      Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
-        let ok = res.filter((r) => r.status === "fulfilled").map((v: any) => v.value[0])
-        // let fail = res.filter((r) => r.status === "rejected")
-        if (window.config.viewType === 'card') {
-          list.forEach(itemDom => itemDom.classList.add('preview'))
+
+      const setF = (res) => {
+        let rIndex = window.postList.findIndex(w => w.id === res.id)
+        if (rIndex > -1) {
+          window.postList[rIndex] = Object.assign(window.postList[rIndex], res)
         }
-        ok.map(postItem => {
-          if (postItem?.id) {
-            let itemDom = box.querySelector(`.id_${postItem.id}`)
 
-            let index = window.postList.findIndex(v => v.id == postItem.id)
-            if (index > -1) {
-              let obj = window.postList[index]
-              postItem.replyCount = postItem.replies
-              window.postList[index] = Object.assign({}, obj, postItem)
+        let itemDom = box.querySelector(`.id_${res.id}`)
 
-              if (postItem.content_rendered) {
-                let a = document.createElement('a')
-                a.href = obj.href
-                a.classList.add('post-content')
-                let div = document.createElement('div')
-                div.innerHTML = postItem.content_rendered
-                a.append(div)
-                // console.log(div.clientHeight)
-                itemDom.append(a)
-                // show More
-                if (div.clientHeight < 300) {
-                  a.classList.add('show-all')
-                } else {
-                  let showMore = document.createElement('div')
-                  showMore.classList.add('show-more')
-                  showMore.innerHTML = '显示更多/收起'
-                  showMore.onclick = function (e) {
-                    e.stopPropagation()
-                    a.classList.toggle('show-all')
-                  }
-                  a.parentNode?.append(showMore)
-                }
-              }
+        if (window.config.viewType === 'card') {
+          itemDom.classList.add('preview')
+        }
+
+        if (res.content_rendered) {
+          let a = document.createElement('a')
+          a.href = res.href
+          a.classList.add('post-content')
+          let div = document.createElement('div')
+          div.innerHTML = res.content_rendered
+          a.append(div)
+          // console.log(div.clientHeight)
+          itemDom.append(a)
+          // show More
+          if (div.clientHeight < 300) {
+            a.classList.add('show-all')
+          } else {
+            let showMore = document.createElement('div')
+            showMore.classList.add('show-more')
+            showMore.innerHTML = '显示更多/收起'
+            showMore.onclick = function (e) {
+              e.stopPropagation()
+              a.classList.toggle('show-all')
             }
+            a.parentNode?.append(showMore)
           }
-        })
-        functions.cbChecker({type: 'syncData'})
-      })
+        }
+      }
+
+      let fetchIndex = 0
+      for (let i = 0; i < window.postList.length; i++) {
+        let item = window.postList[i]
+        let rItem = cacheData.find(w => w.id === item.id)
+        if (rItem) {
+          setF(rItem)
+        } else {
+          fetchIndex++
+          setTimeout(() => {
+            $.get(item.url).then(v => {
+              let res = v[0]
+              res.href = item.href
+              cacheData.push(res)
+              localStorage.setItem('cacheData', JSON.stringify(cacheData))
+              setF(res)
+            })
+          }, fetchIndex < 4 ? 0 : (fetchIndex - 4) * 1000)
+        }
+      }
     },
 
     //创建记事本子条目
