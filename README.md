@@ -1,7 +1,10 @@
 # <p align="center">V2Next</p>
 ## <p align="center">UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图片和表情 emoji、base64 解码</p> 
 ## <p align="center">这或许就是你需要的 V2EX 脚本</p>
-- 脚本油猴安装地址：[https://greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)
+## 现已支持移动端
+
+- PC脚本安装地址：[https://greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)
+- 手机端脚本安装地址：[https://greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)，安装教程:[https://v2next.netlify.app/mobile-install.html](https://v2next.netlify.app/mobile-install.html)
 - git仓库地址：[https://github.com/zyronon/web-scripts](https://github.com/zyronon/web-scripts)
 
 ***本项目完全开源，目前由我一个人维护，如果您觉得好用，请帮我点一个Star，您的Star是对我最大的鼓励***
