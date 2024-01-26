@@ -876,7 +876,7 @@ function run() {
         
         #Main .cell .count_livid { 
             font-size: 14px;
-            font-weight: 500; 
+            font-weight: bold;
             padding: 3px 10px; 
             border-radius: 5px; 
         }

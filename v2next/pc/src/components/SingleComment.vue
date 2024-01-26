@@ -164,7 +164,7 @@ function jump() {
     display: flex;
     gap: .5rem;
     align-items: center;
-    font-weight: 700;
+    font-weight: bold;
     color: black;
   }
 }
