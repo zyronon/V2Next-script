@@ -572,8 +572,8 @@ async function submit() {
   // return console.log('item', item)
 
   let url = `${window.baseUrl}/t/${post.value.id}`
-  // $.post(url, {content: submit_content, once: post.value.once}).then(
-  $.post(url, {content: submit_content, once: 123}).then(
+  $.post(url, {content: submit_content, once: post.value.once}).then(
+  // $.post(url, {content: submit_content, once: 123}).then(
       res => {
         // console.log('回复', res)
         loading.value = false

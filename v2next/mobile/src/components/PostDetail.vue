@@ -1,241 +1,136 @@
 <template>
-  <div class="post-detail"
-       ref="detail"
-       v-show="modelValue"
-       :class="[isNight?'isNight':'',pageType,isMobile?'mobile':'']"
-       @scroll="debounceScroll"
-       @click="close('space')">
-    <div ref="main" class="main" tabindex="1" @click.stop="stop">
-      <div class="my-box nav-bar">
+  <Teleport to=".post-wrapper">
+    <div class="post-detail"
+         ref="detail"
+         id="post-detail"
+         :class="[
+             isNight?'isNight':'',
+             pageType,
+         ]"
+         @scroll="debounceScroll">
+      <div class="my-box nav-bar" @dblclick.stop="scrollTop">
         <div class="left">
-          <svg
-              @click="close('btn')"
-              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M20 12H4m0 0l6-6m-6 6l6 6"/>
-          </svg>
-          <a href="/v2next/pc/public">V2EX</a>
-          <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
+          <BackIcon
+              v-if="!isPost"
+              @click.stop="close"
+          />
+          <template v-if="isPost">
+            <a href="/">V2EX</a>
+            <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
+          </template>
           <a :href="post.node.url">{{ post.node.title }}</a>
-
         </div>
         <div class="right">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="m20 20l-4.05-4.05m0 0a7 7 0 1 0-9.9-9.9a7 7 0 0 0 9.9 9.9"/>
-          </svg>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
-                  d="M41.5 10h-6m-8-4v8m0-4h-22m8 14h-8m16-4v8m22-4h-22m20 14h-6m-8-4v8m0-4h-22"/>
-          </svg>
-          <MoreIcon/>
+          <BaseLoading v-if="refreshLoading"/>
+          <MoreIcon @click.stop="showPostOptions = true"/>
+          <img v-if="user.avatar"
+               @click="clickAvatar"
+               style="margin-right: 0;"
+               class="avatar mobile"
+               :src="user.avatar">
         </div>
       </div>
 
-      <div class="main-wrapper" ref="mainWrapper"
-           :style="{width:config.postWidth}">
-        <div class="my-box post-wrapper">
-          <div class="box-content">
-            <div class="header">
-              <h1>{{ post.title }}</h1>
-              <small class="gray">
-                <a class="avatar"
-                   :href="`/member/${post.member.username}`"
-                   v-if="post.member.avatar_large">
-                  <img :src="post.member.avatar_large"
-                       border="0" align="default" :alt="post.member.username"></a>
-                <div class="info">
-                  <div class="top">
-                    <a :href="`/member/${post.member.username}`">{{ post.member.username }}</a> ·
-                    <template v-if="post.member.createDate">
-                      <span :class="post.member.isNew && 'danger'">{{ post.member.createDate }}</span>
-                    </template>
-                  </div>
-                  <div class="center" v-if="isLogin && config.openTag ">
+      <div class="my-box post-main-body">
+        <div class="box-content">
+          <div class="box-header">
+            <small class="gray">
+              <a class="base-avatar"
+                 :href="`/member/${post.member.username}`"
+                 v-if="post.member.avatar_large">
+                <img :src="post.member.avatar_large"/>
+              </a>
+              <div class="info">
+                <div class="top">
+                  <a :href="`/member/${post.member.username}`">{{ post.member.username }}</a>
+                  <template v-if="post.member.createDate">
+                    · <span :class="post.member.isNew && 'danger'">{{ post.member.createDate }}</span>
+                  </template>
+                </div>
+                <div class="center" v-if="isLogin && config.openTag ">
                     <span class="my-tag" v-for="i in myTags">
                       <i class="fa fa-tag"></i>
                       <span>{{ i }}</span>
                       <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
                     </span>
-                    <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
-                  </div>
-                  <div class="bottom">
-                    <template v-if="post.createDateAgo">
-                      <span :title="post.createDate">{{ post.createDateAgo }}</span> ·
-                    </template>
-                    {{ post.clickCount }} 次点击
-                    <template v-if="isMy">&nbsp;&nbsp;
-                      <a :href="`/t/${post.id}/info`">
-                        <li class="fa fa-info-circle"></li>
-                      </a>&nbsp;&nbsp;
-                      <a :href="`/append/topic/${post.id}`" class="op">APPEND</a>
-                    </template>
-                  </div>
+                  <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
                 </div>
-              </small>
-            </div>
-            <BaseHtmlRender :html="post.headerTemplate"/>
-          </div>
-          <Toolbar @reply="isSticky = !isSticky">
-            <Point
-                @addThank="addThank"
-                @recallThank="recallThank"
-                :full="false"
-                :item="{
-                isThanked:post.isThanked,
-                thankCount:post.thankCount,
-                username:post.username
-              }"
-                :api-url="'topic/'+post.id"/>
-          </Toolbar>
-        </div>
-
-        <div class="my-box" v-if="topReply.length && config.showTopReply">
-          <div class="my-cell flex ">
-            <span class=" ">高赞回复</span>
-            <div class="top-reply">
-              <Tooltip :title="`统计点赞数大于等于${config.topReplyLoveMinCount}个的回复，可在设置中调整`">
-                <i class="fa fa-info" @click="showConfig()"/>
-              </Tooltip>
-              <PopConfirm title="关闭后不再默认显示，可在设置里重新打开，确认关闭？"
-                          @confirm="config.showTopReply = false">
-                <i class="fa fa-times"/>
-              </PopConfirm>
-              <Tooltip title="收起高赞回复">
-                <i class="fa fa-compress" @click="collapseTopReplyList"/>
-              </Tooltip>
-            </div>
-          </div>
-          <div ref="topReply">
-            <Comment v-for="(item,index) in topReply"
-                     :key="item.floor"
-                     type="top"
-                     v-model="topReply[index]"/>
-          </div>
-        </div>
-
-        <div class="my-box my-cell" v-if="isMobile && false">
-          <div class="inner" v-html="post.fr"></div>
-        </div>
-
-        <div class="my-box comment-wrapper">
-          <div class="my-cell flex">
-            <span>{{ post.replyCount }} 条回复</span>
-            <div class="display-type">
-              <div>最新</div>
-              <div>最热</div>
-              <div class="active">
-                <span>楼中楼</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-                  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="4" d="M36 18L24 30L12 18"/>
-                </svg>
-                <div class="list">
-                  <div class="item">楼中楼</div>
-                  <div class="item">楼中楼(@)</div>
-                  <div class="item">冗余楼中楼</div>
-                  <div class="item">只看楼主</div>
-                  <div class="item">V2原版</div>
+                <div class="bottom">
+                  <template v-if="post.createDateAgo">
+                    <span :title="post.createDate">{{ post.createDateAgo }}</span> ·
+                  </template>
+                  {{ post.clickCount }} 次点击
+                  <template v-if="isMy">&nbsp;&nbsp;
+                    <a :href="`/t/${post.id}/info`">
+                      <i class="fa fa-info-circle"></i>
+                    </a>&nbsp;&nbsp;
+                    <a :href="`/append/topic/${post.id}`" class="op">APPEND</a>
+                  </template>
                 </div>
               </div>
-            </div>
+            </small>
+            <h1>{{ post.title }}</h1>
           </div>
-          <template v-if="post.replyList.length ||loading">
-            <div class="my-cell flex" v-if="config.showToolbar">
-              <div class="radio-group2">
-                <Tooltip title="不隐藏@用户">
-                  <div class="radio"
-                       @click="changeOption(CommentDisplayType.FloorInFloor)"
-                       :class="displayType === CommentDisplayType.FloorInFloor?'active':''">楼中楼(@)
-                  </div>
-                </Tooltip>
-                <Tooltip title="隐藏第一个@用户，双击内容可显示原文">
-                  <div class="radio"
-                       @click="changeOption(CommentDisplayType.FloorInFloorNoCallUser)"
-                       :class="displayType === CommentDisplayType.FloorInFloorNoCallUser?'active':''">楼中楼
-                  </div>
-                </Tooltip>
-                <Tooltip title="重复显示楼中楼的回复">
-                  <div class="radio"
-                       @click="changeOption(CommentDisplayType.FloorInFloorNested)"
-                       :class="displayType === CommentDisplayType.FloorInFloorNested?'active':''">冗余楼中楼
-                  </div>
-                </Tooltip>
-                <div class="radio"
-                     @click="changeOption(CommentDisplayType.Like)"
-                     :class="displayType ===CommentDisplayType.Like?'active':''">感谢
-                </div>
-                <div class="radio"
-                     @click="changeOption(CommentDisplayType.OnlyOp)"
-                     :class="displayType === CommentDisplayType.OnlyOp?'active':''">只看楼主
-                </div>
-                <div class="radio"
-                     @click="changeOption(CommentDisplayType.V2exOrigin)"
-                     :class="displayType === CommentDisplayType.V2exOrigin?'active':''">V2原版
-                </div>
-              </div>
-              <div class="read-notice" v-if="read.floor || read.total">
-                <span>上次打开：</span>
-                <template v-if="read.floor">
-                  <span>阅读到<b>{{ read.floor }}</b>楼</span>
-                  <div class="jump jump1" @click="jump(read.floor)">
-                    <i class="fa fa-long-arrow-down"/>
-                  </div>
-                </template>
-                <span>总楼层<b>{{ read.total }}</b></span>
-                <div class="jump" @click="jump(read.total)">
-                  <i class="fa fa-long-arrow-down"/>
-                </div>
-              </div>
-            </div>
-          </template>
-
-          <template v-if="replyList.length || loading">
-            <div class="loading-wrapper" v-if="loading">
-              <BaseLoading size="large"/>
-            </div>
-            <div class="comments" v-else>
-              <template v-if="modelValue">
-                <Comment v-for="(item,index) in replyList"
-                         :key="item.floor"
-                         v-model="replyList[index]"/>
-              </template>
-            </div>
-          </template>
+          <BaseHtmlRender
+              :html="post.headerTemplate"/>
         </div>
+        <Toolbar @reply="isSticky = !isSticky;currentComment = null"></Toolbar>
+      </div>
 
-        <div v-if="!(replyList.length || loading)" id="no-comments-yet">目前尚无回复</div>
-
-        <div v-if="isLogin" class="my-box" ref="replyBox" :class="{'sticky':isSticky}">
-          <div class="my-cell flex">
-            <span>添加一条新回复</span>
-            <div class="notice-right gray">
-              <a style="margin-right: 2rem;" v-if="isSticky" @click="isSticky = false">取消回复框停靠</a>
-              <a @click="scrollTop">回到顶部</a>
-            </div>
+      <div class="my-box" v-if="topReply.length && config.showTopReply">
+        <div class="my-cell flex " @click="collapseTopReplyList">
+          <span class=" ">高赞回复</span>
+          <div class="top-reply">
+            <i class="fa fa-compress"/>
           </div>
-          <div class="p1">
-            <PostEditor
-                @close="goBottom"
-                ref="post-editor"
-                useType="reply-post"
-                @click="isSticky = true"/>
-          </div>
+        </div>
+        <div ref="topReply">
+          <Comment v-for="(item,index) in topReply"
+                   :key="item.floor"
+                   type="top"
+                   v-model="topReply[index]"/>
         </div>
       </div>
 
-      <div class="relationReply" v-if="showRelationReply" @click="close('space')">
-        <div class="my-cell flex" @click.stop="stop">
-          <span class="gray">上下文</span>
-          <div class="top-reply">
-            <i class="fa fa-times" @click="showRelationReply = false"/>
+      <div class="my-cell flex comments-header" v-if="post.replyList.length ||loading">
+        <span>{{ post.replyCount }} 条回复</span>
+        <BaseSelect :display-type="displayType"
+                    @update:display-type="e => $emit('update:displayType', e)"
+        />
+      </div>
+
+      <div class="my-box comment-wrapper" v-if="replyList.length || loading">
+        <div class="loading-wrapper" v-if="loading">
+          <BaseLoading size="large"/>
+        </div>
+        <div class="comments" v-else>
+          <template v-if="modelValue">
+            <Comment v-for="(item,index) in replyList"
+                     :key="item.floor"
+                     v-model="replyList[index]"/>
+          </template>
+        </div>
+      </div>
+
+      <div v-if="!(replyList.length || loading)" id="no-comments-yet">目前尚无回复</div>
+
+      <div v-if="isLogin" class="my-box" ref="replyBox" :class="{'sticky':isSticky}">
+        <div class="my-cell flex">
+          <span>{{ currentComment ? `回复${currentComment.floor}楼` : '回复主题' }}</span>
+          <div class="notice-right gray">
+            <a style="margin-right: 2rem;" v-if="isSticky"
+               @click="isSticky = false; currentComment = null">取消回复框停靠</a>
+            <a @click="scrollTop">回到顶部</a>
           </div>
         </div>
-        <div class="comments" @click.stop="stop">
-          <SingleComment v-for="(item,index) in relationReply"
-                         :is-right="item.username === targetUser.right"
-                         :key="item.floor"
-                         :comment="item"/>
+        <div class="p1">
+          <PostEditor
+              @close="goBottom"
+              ref="post-editor"
+              :useType="currentComment?'reply-comment':'reply-post'"
+              :replyUser="replyUser"
+              :replyFloor="replyFloor"
+              @click="isSticky = true"/>
         </div>
       </div>
 
@@ -249,21 +144,32 @@
           <a>{{ item }}</a>
         </div>
       </div>
-      <div class="scroll-top gray" @click.stop="scrollTop">
-        <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
-      </div>
-      <div class="refresh gray" @click.stop="$emit('refresh')">
-        <BaseLoading v-if="refreshLoading"/>
-        <i v-else class="fa fa-refresh" aria-hidden="true"></i>
-      </div>
-      <div class="scroll-to gray" @click.stop="jump(currentFloor)">
-        <i class="fa fa-long-arrow-down"/>
-        <input type="text" v-model="currentFloor"
-               @click.stop="stop"
-               @keydown.enter="jump(currentFloor)">
-      </div>
+
+      <post-options
+          @merge="val => {
+            post = Object.assign( post,val)
+            console.log('va',val,post)
+          }"
+          :post="post"
+          @reply="eventBus.emit(CMD.SHOW_EDITOR,null),showPostOptions = false"
+          @refresh="$emit('refresh')"
+          v-model="showPostOptions"/>
+
+      <comment-options
+          @merge="val => currentComment = Object.assign(currentComment,val)"
+          @recall-thank="currentComment.isThanked = false"
+          :post="post"
+          :comment="currentComment"
+          @close="currentComment = null"
+          @reply="eventBus.emit(CMD.SHOW_EDITOR,currentComment),showCommentOptions = false"
+          v-model="showCommentOptions"/>
+
+      <relation-reply :post="post"
+                      :relation-reply="relationReply"
+                      v-model="showRelationReply"
+                      :target-user="targetUser"/>
     </div>
-  </div>
+  </Teleport>
 </template>
 <script>
 import Comment from './Comment.vue'
@@ -273,37 +179,45 @@ import Toolbar from "./Toolbar.vue";
 import BaseHtmlRender from "./BaseHtmlRender.vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
-import {computed, nextTick} from "vue";
-import {CommentDisplayType, PageType} from "../types.ts";
+import {nextTick} from "vue";
+import {CommentDisplayType, PageType} from "@v2next/core/types.ts";
 import Tooltip from "./Tooltip.vue";
-import PopConfirm from "./PopConfirm.vue";
 import SingleComment from "./SingleComment.vue";
 import {debounce} from "../utils/index.js";
 import BaseLoading from "./BaseLoading.vue";
 import BaseButton from "./BaseButton.vue";
 import MoreIcon from "@/components/MoreIcon.vue";
+import PostOptions from "@/components/Modal/PostOptions.vue";
+import FromBottomDialog from "@/components/Modal/FromBottomDialog.vue";
+import CommentOptions from "@/components/Modal/CommentOptions.vue";
+import RelationReply from "@/components/Modal/RelationReply.vue";
+import {Icon} from "@iconify/vue";
+import BaseSelect from "@/components/BaseSelect.vue";
+import BackIcon from "@/components/BackIcon.vue";
 
 export default {
   name: "detail",
+  emits: ['saveReadList', 'refresh'],
   components: {
+    BackIcon,
+    BaseSelect,
+    RelationReply,
+    CommentOptions,
+    FromBottomDialog,
+    PostOptions,
     MoreIcon,
     BaseButton,
     SingleComment,
-    PopConfirm,
     Comment,
     PostEditor,
     Point,
     Toolbar,
     BaseHtmlRender,
     Tooltip,
-    BaseLoading
+    BaseLoading,
+    Icon
   },
-  inject: ['allReplyUsers', 'post', 'isMobile', 'tags', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
-  provide() {
-    return {
-      postDetailWidth: computed(() => this.postDetailWidth)
-    }
-  },
+  inject: ['allReplyUsers', 'user', 'post', 'tags', 'isLogin', 'config', 'pageType', 'isNight'],
   props: {
     modelValue: {
       type: Boolean,
@@ -328,8 +242,9 @@ export default {
   data() {
     return {
       isSticky: false,
+      showPostOptions: false,
+      showCommentOptions: false,
       selectCallIndex: 0,
-      postDetailWidth: 0,
       showCallList: false,
       showRelationReply: false,
       replyText: '',
@@ -349,10 +264,25 @@ export default {
         total: 0
       },
       currentFloor: '',
-      showOpTag: false
+      showOpTag: false,
+      currentComment: null
     }
   },
   computed: {
+    eventBus() {
+      return eventBus
+    },
+    CMD() {
+      return CMD
+    },
+    replyUser() {
+      if (this.currentComment) return this.currentComment.username
+      return null
+    },
+    replyFloor() {
+      if (this.currentComment) return this.currentComment.floor
+      return null
+    },
     isMy() {
       return this.post.member.username === window.user.username
     },
@@ -422,7 +352,7 @@ export default {
       if (this.$refs["post-editor"]) {
         this.$refs["post-editor"].content = ''
         nextTick(() => {
-          this.$refs?.detail?.scrollTo({top: 0})
+          this.scrollTop(false)
         })
       }
     },
@@ -439,21 +369,18 @@ export default {
           return
         }
         if (newVal) {
-          document.body.style.overflow = 'hidden'
           if (!window.history.state) {
             // console.log('执行了pushState')
-            window.history.pushState({}, 0, this.post.url);
+            window.history.pushState({}, 0, this.post.href);
           }
 
           this.read = this.post.read
           this.currentFloor = ''
           nextTick(() => {
             window.document.title = this.post.title ?? 'V2EX'
-            this.$refs?.main?.focus()
           })
         } else {
           this.$emit('saveReadList')
-          document.body.style.overflow = 'unset'
           window.document.title = 'V2EX'
           this.isSticky = false
           this.showRelationReply = false
@@ -466,9 +393,6 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {
-      this.postDetailWidth = this.$refs.mainWrapper?.getBoundingClientRect().width || 0
-    })
     this.debounceScroll = debounce(this.scroll, 300, false)
     if (this.isLogin) {
       const observer = new IntersectionObserver(
@@ -508,12 +432,27 @@ export default {
     if (this.isPost) {
       window.addEventListener('scroll', this.debounceScroll)
     }
+    eventBus.on(CMD.SHOW_COMMENT_OPTIONS, (comment) => {
+      this.currentComment = comment
+      this.showCommentOptions = true
+    })
+
+    eventBus.on(CMD.SHOW_EDITOR, (comment) => {
+      this.currentComment = comment
+      this.isSticky = true
+      setTimeout(() => {
+        this.$refs["post-editor"]?.focus()
+      }, 300)
+    })
   },
   beforeUnmount() {
     window.removeEventListener('keydown', this.onKeyDown)
     eventBus.off(CMD.SHOW_CALL)
   },
   methods: {
+    clickAvatar() {
+      window.functions.clickAvatar('.post-wrapper ')
+    },
     addTag() {
       eventBus.emit(CMD.ADD_TAG, this.post.member.username)
     },
@@ -549,8 +488,6 @@ export default {
           total: this.post.replyList.length
         })
       }
-    },
-    stop(e) {
     },
     jump(floor) {
       let lastItem = this.replyList[this.replyList.length - 1]
@@ -608,24 +545,12 @@ export default {
     goBottom() {
       this.isSticky = false
       setTimeout(() => {
-        if (this.isPost) {
-          let body = $('body , html')
-          let scrollHeight = body.prop("scrollHeight");
-          body.animate({scrollTop: scrollHeight - 850}, 300);
-        } else {
-          this.$refs.detail.scrollTo({top: this.$refs.detail.scrollHeight, behavior: 'smooth'})
-        }
+        let postWrapper = document.querySelector('.post-wrapper')
+        postWrapper.scrollTo({top: this.$refs['detail'].clientHeight, behavior: 'smooth'})
       })
     },
-    close(from) {
-      if (this.isPost) return
-      if (from === 'space') {
-        if (this.config.closePostDetailBySpace) {
-          this.$emit('update:modelValue', false)
-        }
-      } else {
-        this.$emit('update:modelValue', false)
-      }
+    close() {
+      this.$emit('update:modelValue', false)
     },
     setCall(e) {
       eventBus.emit(CMD.SET_CALL, e)
@@ -657,21 +582,8 @@ export default {
         e.preventDefault()
       }
     },
-    changeOption(item) {
-      this.$emit('update:displayType', item)
-    },
-    addThank() {
-      eventBus.emit(CMD.CHANGE_POST_THANK, {id: this.post.id, type: 'add'})
-    },
-    recallThank() {
-      eventBus.emit(CMD.CHANGE_POST_THANK, {id: this.post.id, type: 'recall'})
-    },
-    scrollTop() {
-      if (this.isPost) {
-        $("body , html").animate({scrollTop: 0}, 300);
-      } else {
-        this.$refs.detail.scrollTo({top: 0, behavior: 'smooth'})
-      }
+    scrollTop(anim = true) {
+      document.querySelector('.post-wrapper').scrollTo({top: 0, behavior: anim ? 'smooth' : 'instant'})
     },
   }
 }
@@ -695,44 +607,14 @@ export default {
 @import "src/assets/less/index.less";
 @import "src/assets/less/variable.less";
 
-.Post {
-  position: unset !important;
-  background: transparent !important;
-  overflow: unset !important;
-
-  .main {
-    background: transparent !important;
-    padding: unset !important;
-    width: 100% !important;
-  }
-
-  .close-btn {
-    display: none;
-  }
-}
-
-.mobile {
-  .main {
-    padding: unset !important;
-    width: 100% !important;
-  }
-}
-
 .post-detail {
   text-align: start;
-  position: fixed;
-  z-index: 99;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  background: rgba(46, 47, 48, .8);
-  overflow: auto;
-  font-size: 1.4rem;
-
+  background: var(--color-main-bg);
+  font-size: 1.6rem;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  padding-bottom: 10rem;
 
   :deep(.subtle) {
     background-color: rgb(236 253 245 / 90%);
@@ -744,284 +626,144 @@ export default {
       background-color: rgb(26, 51, 50);
       border-left: 4px solid #047857;
     }
-
   }
 
-  @width: 77rem;
+  @nav-height: 4.6rem;
 
-  .main {
-    display: flex;
-    justify-content: flex-end;
-    padding: 3rem 8rem 15rem 8rem;
-    //margin: auto;
-    //box-sizing: border-box;
-    //min-height: 100%;
-    //background: #e2e2e2;
-    background: var(--color-main-bg);
-    position: relative;
-    outline: none;
-
-    @nav-height: 4rem;
-
-    .nav-bar {
-      position: fixed;
-      top: 0;
-      z-index: 9999;
-      //background: red;
-      height: @nav-height;
-
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      margin-bottom: -1px;
-
-      svg {
-        @w: 2rem;
-        width: @w;
-        height: @w;
-        color: var(--color-font);
-      }
-
-      .left, .right {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-    }
-
-    .main-wrapper {
-      width: @width;
-      padding-top: @nav-height;
-      padding-bottom: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-
-      .post-wrapper {
-        .box-content {
-          padding-top: 0;
-        }
-
-        .header {
-          padding-top: 0;
-
-          h1 {
-            margin: 0;
-            margin-bottom: 1rem;
-          }
-
-          //var(--color-gray)
-          small {
-            display: flex;
-            align-items: center;
-          }
-        }
-      }
-
-      .loading-wrapper {
-        height: 20rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .display-type {
-        height: 2.8rem;
-        padding: 0 .4rem;
-        //gap: .5rem;
-        background: #f1f1f1;
-        border-radius: 1rem;
-        display: flex;
-        font-size: 1.2rem;
-        align-items: center;
-        @sw: 1.5rem;
-
-        & > div {
-          border-radius: .8rem;
-          padding: 0 1.3rem;
-          height: 2.3rem;
-          align-items: center;
-          display: flex;
-          position: relative;
-
-          .list {
-            position: absolute;
-            background: red;
-            right: 0;
-            top: 0;
-
-          }
-        }
-
-        .active {
-          background: white;
-          color: black;
-          box-shadow: 0 0 6px 0px var(--color-tooltip-shadow);
-        }
-
-        svg {
-          width: @sw;
-        }
-      }
-
-      #no-comments-yet {
-        color: #a9a9a9;
-        font-weight: bold;
-        text-align: center;
-        width: 100%;
-        margin-bottom: 2rem;
-        box-sizing: border-box;
-      }
-    }
-
-    .relationReply {
-      position: fixed;
-      width: 25vw;
-      top: 6.5rem;
-      bottom: 15rem;
-      z-index: 100;
-      transform: translateX(calc(100% + 2rem));
-      font-size: 2rem;
-      overflow: hidden;
-
-      .my-cell {
-        background: var(--color-second-bg);
-        border-radius: var(--box-border-radius) var(--box-border-radius) 0 0;
-      }
-
-      .comments {
-        max-height: calc(100% - 4.2rem);
-        overflow: auto;
-        background: var(--color-second-bg);
-        border-radius: 0 0 var(--box-border-radius) var(--box-border-radius);
-      }
-    }
-
-    .call-list {
-      z-index: 9;
-      position: absolute;
-      top: 12rem;
-      border: 1px solid var(--color-main-bg);
-      background: var(--color-call-list-bg);
-      box-shadow: 0 5px 15px rgb(0 0 0 / 10%);
-      overflow: auto;
-      max-height: 30rem;
-      border-radius: var(--box-border-radius);
-      min-width: 8rem;
-      box-sizing: content-box;
-
-      .call-item {
-        border-top: 1px solid var(--color-main-bg);
-        height: 3rem;
-        display: flex;
-        padding: 0 1rem;
-        align-items: center;
-        cursor: pointer;
-        font-size: 14px;
-        box-sizing: border-box;
-
-        .select {
-          //background: #f0f0f0;
-          background: var(--color-main-bg);
-          text-decoration: none;
-        }
-
-        &:hover {
-          .select();
-        }
-
-        &.select {
-          .select();
-        }
-
-        &:nth-child(1) {
-          border-top: 1px solid transparent;
-        }
-      }
-    }
-  }
-
-  @media screen and (max-width: 1500px) {
-    @width: 65vw;
-    .main-wrapper {
-      width: @width !important;
-    }
-  }
-  @media screen and (max-width: 1280px) {
-    @width: 75vw;
-    .main-wrapper {
-      width: @width !important;
-    }
-  }
-  @media screen and (max-width: 960px) {
-    @width: 100vw;
-    .main-wrapper {
-      width: @width !important;
-    }
-  }
-
-  .scroll-top {
-    cursor: pointer;
+  .nav-bar {
     position: fixed;
-    border-radius: .6rem;
+    top: 0;
+    z-index: 9;
+    //background: red;
+    height: @nav-height;
+
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    bottom: 10rem;
-    z-index: 99;
-    padding: .8rem 0;
-    gap: 1rem;
-    width: 4.5rem;
-    font-size: 2rem;
-    background: var(--color-sp-btn-bg);
-  }
+    padding: 1rem;
+    margin-bottom: -1px;
 
-  .refresh {
-    .scroll-top;
-    bottom: 23.5rem;
-  }
+    svg {
+      @w: 2rem;
+      width: @w;
+      height: @w;
+      color: var(--color-font);
+    }
 
-  .scroll-to {
-    .scroll-top;
-    bottom: 15rem;
-    display: flex;
-    flex-direction: column;
-
-    input {
-      height: 2.6rem;
-      width: 3.6rem;
-      font-size: 1.4rem;
-      text-align: center;
-      color: gray;
+    .left, .right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
   }
 
-  .read-notice {
-    display: flex;
-    align-items: center;
-    color: gray;
+  .post-main-body {
 
-    .jump {
-      background: var(--color-third-bg);
-      color: gray;
-      padding: 0.3rem 1rem;
-      border-radius: .4rem;
-      margin: 0 1rem;
-      cursor: pointer;
+    .box-header {
+      padding: 0 .5rem;
+
+      h1 {
+        font-size: 2.2rem;
+        font-weight: bold;
+      }
+
+      //var(--color-gray)
+      small {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+
+  .loading-wrapper {
+    height: 20rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .comments-header {
+    width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    background: var(--box-background-color);
+  }
+
+  #no-comments-yet {
+    color: #a9a9a9;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    margin: 2rem 1rem;
+    box-sizing: border-box;
+  }
+
+  .relationReply {
+    position: fixed;
+    width: 25vw;
+    top: 6.5rem;
+    bottom: 15rem;
+    z-index: 100;
+    transform: translateX(calc(100% + 2rem));
+    font-size: 2rem;
+    overflow: hidden;
+
+    .my-cell {
+      background: var(--color-second-bg);
+      border-radius: var(--box-border-radius) var(--box-border-radius) 0 0;
+    }
+
+    .comments {
+      max-height: calc(100% - 4.2rem);
+      overflow: auto;
+      background: var(--color-second-bg);
+      border-radius: 0 0 var(--box-border-radius) var(--box-border-radius);
+    }
+  }
+
+  .call-list {
+    z-index: 9;
+    position: absolute;
+    top: 12rem;
+    border: 1px solid var(--color-main-bg);
+    background: var(--color-call-list-bg);
+    box-shadow: 0 5px 15px rgb(0 0 0 / 10%);
+    overflow: auto;
+    max-height: 30rem;
+    border-radius: var(--box-border-radius);
+    min-width: 8rem;
+    box-sizing: content-box;
+
+    .call-item {
+      border-top: 1px solid var(--color-main-bg);
+      height: 3rem;
+      display: flex;
+      padding: 0 1rem;
+      align-items: center;
+
+      font-size: 14px;
+      box-sizing: border-box;
+
+      .select {
+        //background: #f0f0f0;
+        background: var(--color-main-bg);
+        text-decoration: none;
+      }
+
+      &.select {
+        .select();
+      }
+
+      &:nth-child(1) {
+        border-top: 1px solid transparent;
+      }
     }
   }
 
   .top-reply {
     color: var(--color-font-3);
-    cursor: pointer;
     font-size: 2rem;
-    display: flex;
-
-    i {
-      padding: 0 1rem;
-    }
+    margin-right: 1rem;
   }
 }
 </style>

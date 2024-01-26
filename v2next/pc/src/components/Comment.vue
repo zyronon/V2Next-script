@@ -37,8 +37,8 @@
                 <br>
                 三、层主回复时指定错了楼层号（同一，层主屏蔽了别人，导致楼层塌陷）
                 <br>
-                四、脚本解析错误，请在<a href="https://github.com/zyronon/v2ex-script/discussions/7"
-                                       target="_blank">这里</a>反馈
+                四、脚本解析错误，请在
+                <a href="https://github.com/zyronon/web-scripts/issues" target="_blank">这里</a>反馈
               </div>
             </div>
             <template v-if="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser && this.type !== 'top'">
@@ -77,7 +77,7 @@ import Point from "./Point.vue";
 import eventBus from "../utils/eventBus.js";
 import BaseHtmlRender from "./BaseHtmlRender.vue";
 import {CMD} from "../utils/type.js";
-import {CommentDisplayType} from "../types.ts";
+import {CommentDisplayType} from "@v2next/core/types.ts";
 
 export default {
   name: "Comment",

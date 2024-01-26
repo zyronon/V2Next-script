@@ -162,7 +162,7 @@
 <!--    margin-top: 1.1rem;-->
 <!--    border: 1px solid @border;-->
 <!--    border-radius: @border-radius;-->
-<!--    cursor: pointer;-->
+<!--    -->
 
 <!--    &:hover {-->
 <!--      border: 1px solid @border-hover;-->
@@ -240,7 +240,7 @@
 <!--      -webkit-border-radius: 12px;-->
 <!--      border-radius: 12px;-->
 <!--      text-decoration: none;-->
-<!--      cursor: pointer;-->
+<!--      -->
 
 <!--      &:hover {-->
 <!--        background-color: #969cb1;-->

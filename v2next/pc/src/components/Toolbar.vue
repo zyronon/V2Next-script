@@ -82,7 +82,7 @@
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import BaseLoading from "./BaseLoading.vue";
-import {PageType} from "../types.ts";
+import {PageType} from "@v2next/core/types.ts";
 
 export default {
   name: "Toolbar",

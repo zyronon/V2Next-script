@@ -1,17 +1,13 @@
 <template>
-  <div class="comment" :class="{isSimple:config.viewType === 'simple'}" ref="comment">
-    <a class="avatar" v-if="!isRight" :href="`/member/${comment.username}`">
+  <div class="comment" ref="comment">
+    <a class="base-avatar" v-if="!isRight" :href="`/member/${comment.username}`">
       <img :src="comment.avatar" alt="">
     </a>
     <div class="comment-body" :class="{isRight}">
       <div class="texts">
         <div class="point" v-if="comment.thankCount && isRight">
-          <svg width="19" height="19" viewBox="0 0 48 48" fill="none">
-            <path
-                d="M15 8C8.92487 8 4 12.9249 4 19C4 30 17 40 24 42.3262C31 40 44 30 44 19C44 12.9249 39.0751 8 33 8C29.2797 8 25.9907 9.8469 24 12.6738C22.0093 9.8469 18.7203 8 15 8Z"
-                fill="#E02A2A" stroke="#E02A2A" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round"/>
-          </svg>
+          <Icon v-if="comment.isThanked" color="red" icon="icon-park-solid:like"/>
+          <Icon v-else color="rgb(224,42,42)" icon="icon-park-outline:like"/>
           <div class="link-num">{{ comment.thankCount }}</div>
         </div>
         <template v-if="isLogin && config.openTag  && isRight">
@@ -34,23 +30,18 @@
             </span>
         </template>
         <div class="point" v-if="comment.thankCount && !isRight">
-          <svg width="19" height="19" viewBox="0 0 48 48" fill="none">
-            <path
-                d="M15 8C8.92487 8 4 12.9249 4 19C4 30 17 40 24 42.3262C31 40 44 30 44 19C44 12.9249 39.0751 8 33 8C29.2797 8 25.9907 9.8469 24 12.6738C22.0093 9.8469 18.7203 8 15 8Z"
-                fill="#E02A2A" stroke="#E02A2A" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round"/>
-          </svg>
+          <Icon v-if="comment.isThanked" color="red" icon="icon-park-solid:like"/>
+          <Icon v-else color="rgb(224,42,42)" icon="icon-park-outline:like"/>
           <div class="link-num">{{ comment.thankCount }}</div>
         </div>
       </div>
       <BaseHtmlRender class="reply_content" :html="comment.reply_content"/>
     </div>
-    <a class="avatar" v-if="isRight" :href="`/member/${comment.username}`">
+    <a class="base-avatar" v-if="isRight" :href="`/member/${comment.username}`">
       <img :src="comment.avatar" alt="">
     </a>
     <div class="Author-right">
-      <div class="floor">{{ comment.floor }}</div>
-
+      <div class="floor">{{ comment.floor }}楼</div>
       <div class="tool jump" @click="jump">
         <span>跳转</span>
       </div>
@@ -62,6 +53,7 @@ import BaseHtmlRender from "./BaseHtmlRender.vue";
 import {computed, inject} from "vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
+import {Icon} from "@iconify/vue";
 
 const config = inject('config')
 const isLogin = inject('isLogin')
@@ -97,21 +89,12 @@ function jump() {
   padding: 1rem;
   border-bottom: 1px solid var(--color-line);
 
-  &.isSimple {
-    .avatar {
-      display: none;
-    }
-
-    .reply_content {
-      margin-top: 0.5rem !important;
-    }
-  }
-
-  .avatar {
+  .base-avatar {
     display: flex;
+    margin-right: 0;
 
     img {
-      @w: 3.8rem;
+      @w: 2.8rem;
       width: @w;
       height: @w;
       border-radius: .3rem;
@@ -148,7 +131,10 @@ function jump() {
     align-items: center;
 
     .floor {
-      margin-left: 0;
+      margin: 0;
+      border-radius: .5rem;
+      background-color: var(--color-floor);
+      padding: 3px 9px;
     }
 
     .jump {
@@ -159,13 +145,14 @@ function jump() {
   }
 
   .point {
-    margin: 0 .5rem;
-    font-size: 1.4rem;
+    margin: 0 1rem;
     display: flex;
     gap: .5rem;
     align-items: center;
-    font-weight: 700;
-    color: black;
+
+    svg {
+      font-size: 1.6rem;
+    }
   }
 }
 

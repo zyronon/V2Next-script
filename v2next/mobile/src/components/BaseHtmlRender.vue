@@ -8,7 +8,7 @@ const config = inject('config')
 const props = defineProps(['html'])
 const contentRef = ref(null)
 const checkHeight = 900
-const mask = ref(false)
+const htmlMask = ref(false)
 const handOpen = ref(false)
 
 function mouseup(e) {
@@ -29,7 +29,7 @@ function mouseup(e) {
 
 watch(config.value, (newVale) => {
   if (!newVale.contentAutoCollapse) {
-    mask.value = false
+    htmlMask.value = false
   }
 })
 
@@ -48,16 +48,16 @@ function checkContentHeight() {
   if (handOpen.value) return;
   let rect = contentRef.value.getBoundingClientRect()
   // console.log('rect', rect.height)
-  mask.value = rect.height >= checkHeight
+  htmlMask.value = rect.height >= checkHeight
 }
 
 </script>
 <template>
   <div class="html-wrapper" v-if="props.html">
-    <div :class="{mask}">
+    <div :class="{htmlMask}">
       <div ref="contentRef" v-html="props.html" @mouseup="mouseup"></div>
     </div>
-    <div v-if="mask" class="expand" @click="mask = false;handOpen = true">展开</div>
+    <div v-if="htmlMask" class="expand" @click="htmlMask = false;handOpen = true">展开</div>
   </div>
 </template>
 <style lang="less" scoped>
@@ -66,7 +66,7 @@ function checkContentHeight() {
 .html-wrapper {
   position: relative;
 
-  .mask {
+  .htmlMask {
     max-height: 90rem;
     overflow: hidden;
     -webkit-mask-image: linear-gradient(180deg, #000 80%, transparent);
@@ -83,7 +83,7 @@ function checkContentHeight() {
     color: gray;
     left: 50%;
     transform: translateX(-50%);
-    cursor: pointer;
+
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <script>
-import {MAX_REPLY_LIMIT, PageType} from "./types.ts"
-import {computed, nextTick} from "vue";
+import {MAX_REPLY_LIMIT, PageType} from "@v2next/core/types.ts"
+import {computed} from "vue";
 import Setting from "./components/Modal/SettingModal.vue";
 import eventBus from "./utils/eventBus.js";
 import {CMD} from "./utils/type.js";
@@ -15,6 +15,7 @@ import BaseSwitch from "./components/BaseSwitch.vue";
 import BaseLoading from "./components/BaseLoading.vue";
 import NotificationModal from "./components/Modal/NotificationModal.vue";
 import BaseButton from "./components/BaseButton.vue";
+import {functions} from "@v2next/core/core.ts";
 
 export default {
   components: {
@@ -55,7 +56,6 @@ export default {
       list: [],
       config: window.clone(window.config),
       tags: window.user.tags,
-      readList: window.user.readList,
       configModal: {
         show: false
       },
@@ -161,10 +161,6 @@ export default {
       }
     };
 
-    window.onbeforeunload = () => {
-      this.saveReadList()
-    }
-
     window.deleteNotification = (nId, token) => {
       console.log('deleteNotification', nId, token)
       let item = $("#n_" + nId)
@@ -199,7 +195,6 @@ export default {
     // console.log('unmounted')
     eventBus.clear()
     $(document).off('click', 'a', this.clickA)
-
   },
   methods: {
     async getUnreadMessagesCount() {
@@ -226,7 +221,7 @@ export default {
       if (that.stopMe) return true
       let {href, id, title} = window.parse.parseA(e.currentTarget)
 
-      console.log('click-a', e.currentTarget, e, href, id, title)
+      // console.log('click-a', e.currentTarget, e, href, id, title)
       //夜间模式切换
       if (href.includes('/settings/night/toggle')) return
       if (href.includes('/?tab=')) return
@@ -268,16 +263,13 @@ export default {
       } else {
         if (that.config.newTabOpen) {
           that.stopEvent(e)
-          window.parse.openNewTab(href)
+          functions.openNewTab(href)
         }
       }
     },
     stopEvent(e) {
       e.preventDefault()
       e.stopPropagation()
-    },
-    saveReadList() {
-      window.parse.saveReadList(this.readList)
     },
     async clickPost(e, id, href, title = '') {
       // id = '976890'
@@ -286,43 +278,19 @@ export default {
           this.stopEvent(e)
           let index = this.list.findIndex(v => v.id == id)
           let postItem = this.clone(window.initPost)
-
           if (index > -1) {
             postItem = this.list[index]
           }
-          if (!postItem.title) {
-            postItem.title = title ?? '加载中'
-          }
-          postItem.inList = index > -1
-
-          //如果在列表里面，直接判断大小即可
-          if (postItem.inList) {
-            if (postItem.replyCount > MAX_REPLY_LIMIT) {
-              return window.parse.openNewTab(`${location.origin}/t/${id}?p=1&script=1`)
-            }
-          }
-
+          if (!postItem.title) postItem.title = title ?? '加载中'
           // console.log('postItem', postItem)
           postItem.id = id
           postItem.href = href
-          if (!postItem.headerTemplate) {
-            let template = `
-            <div class="cell">
-              <div class="topic_content">
-                <div class="markdown_body">
-                 ${postItem?.content_rendered ?? ''}
-                </div>
-              </div>
-            </div>
-            `
-            postItem.headerTemplate = template
-          }
           this.getPostDetail(postItem)
           return
         }
         if (this.config.newTabOpen) {
           this.stopEvent(e)
-          window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1`)
+          functions.openNewTab(`https://www.v2ex.com/t/${id}?p=1`)
         }
       }
     },
@@ -345,17 +313,6 @@ export default {
         this.config = window.config
         this.stopMe = window.stopMe
         this.tags = window.user.tags
-        this.readList = window.user.readList
-        this.current.read = this.readList[this.current.id] ?? {}
-        if (this.show && this.isPost && this.current.read.floor) {
-          this.$refs.postDetail.read = this.current.read
-          //单独打开，如果不去点击到标签页，Chrome无法跳转。不知道是为什么
-          // nextTick(() => {
-          //   this.$refs.postDetail.jumpLastRead(this.current.read.floor)
-          // })
-        }
-        // console.log('this.readList', this.readList)
-        // console.log(this.tags)
       }
 
       if (type === 'warningNotice') {
@@ -374,15 +331,17 @@ export default {
       }
 
       if (type === 'postContent') {
-        this.current = value
+        this.current = Object.assign(this.current, value)
         this.current.inList = true
         //这时有正文了，再打开，体验比较好
         if (this.config.autoOpenDetail) {
           this.showPost()
         }
       }
+
       if (type === 'postReplies') {
-        console.log('当前帖子', this.current)
+        this.current = Object.assign(this.current, value)
+        // console.log('当前帖子', this.current)
         this.list.push(this.clone(this.current))
         this.loading = false
       }
@@ -475,9 +434,7 @@ export default {
           this.list[rIndex] = this.clone(this.current)
         }
       })
-      eventBus.on(CMD.ADD_READ, (val) => {
-        this.readList[this.current.id] = val
-      })
+
       eventBus.on(CMD.ADD_REPLY, (item) => {
         this.current.replyList.push(item)
         this.regenerateReplyList()
@@ -523,30 +480,45 @@ export default {
     async getPostDetail(post) {
       // console.log('getPostDetail')
       this.current = post
-      this.current.read = this.readList[this.current.id] ?? {floor: 0, total: 0}
       this.show = true
-
-      //如果不在列表里面，则调用接口判断,调接口比请求html正则判断来得快，他接口有缓存的
-      if (!this.current.inList) {
-        this.loading = true
-        let r = await window.parse.checkPostReplies(post.id, true)
-        if (r) {
-          eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '由于回复数量较多，已为您单独打开此主题'})
-          this.loading = this.show = false
-          return
-        }
-      }
-
-      let url = window.baseUrl + '/t/' + post.id
+      let url = window.baseUrl + '/t/' + this.current.id
       this.current.url = url
 
       let alreadyHasReply = this.current.replyList.length
       //如果有数据，显示右侧的loading
       if (alreadyHasReply) {
         this.refreshLoading = true
-        this.$refs.postDetail.jumpLastRead(this.current.read.floor)
       } else {
         this.loading = true
+
+        let showJsonUrl = `${location.origin}/api/topics/show.json?id=${this.current.id}`
+        let r = await fetch(showJsonUrl)
+        if (r) {
+          let res = await r.json()
+          if (res) {
+            let d = res[0]
+            d.replyCount = d.replies
+            this.current = Object.assign(this.current, d)
+            if (this.current.replyCount > MAX_REPLY_LIMIT) {
+              functions.openNewTab(`${location.origin}/t/${this.current.id}?p=1&script=1`)
+              eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '由于回复数量较多，已为您单独打开此主题'})
+              this.loading = this.show = false
+              return
+            } else {
+              if (!this.current.headerTemplate) {
+                this.current.headerTemplate = `
+            <div class="cell">
+              <div class="topic_content">
+                <div class="markdown_body">
+                 ${d?.content_rendered ?? ''}
+                </div>
+              </div>
+            </div>
+            `
+              }
+            }
+          }
+        }
       }
 
       //ajax不能判断是否跳转
@@ -558,7 +530,7 @@ export default {
       }
       if (apiRes.status === 403) {
         this.refreshLoading = this.show = this.loading = false
-        window.parse.openNewTab(`${location.origin}/t/${post.id}?p=1&script=0`)
+        functions.openNewTab(`${location.origin}/t/${post.id}?p=1&script=0`)
         return
       }
       //如果是重定向了，那么就是没权限
@@ -572,6 +544,7 @@ export default {
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '你要查看的页面需要先登录'})
         return this.refreshLoading = this.loading = false
       }
+
       let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let body = $(bodyText[0])
 
@@ -585,11 +558,7 @@ export default {
         this.list.push(this.clone(this.current))
       }
       this.refreshLoading = this.loading = false
-      if (!alreadyHasReply) {
-        nextTick(() => {
-          this.$refs.postDetail.jumpLastRead(this.current.read.floor)
-        })
-      }
+
       await window.parse.parseOp(this.current)
       console.log('当前帖子', this.current)
     },
@@ -609,7 +578,6 @@ export default {
   <PostDetail v-model="show"
               ref="postDetail"
               v-model:displayType="config.commentDisplayType"
-              @saveReadList="saveReadList"
               @refresh="getPostDetail(current)"
               :loading="loading"
               :refreshLoading="refreshLoading"
@@ -645,8 +613,10 @@ export default {
   </template>
 </template>
 
+<style lang="less">
+@import "assets/less/index";
+</style>
 <style scoped lang="less">
-@import "assets/less/variable";
 
 .target-user-tags {
   background: var(--color-second-bg);

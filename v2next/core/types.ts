@@ -68,6 +68,7 @@ export interface Config {
     customBgColor: string
     version: number
     collectBrowserNotice: boolean// 收藏时，浏览器提醒
+    fontSizeType: 'normal' | 'small' | 'large' | 'big-large'//字体大小
 }
 
 export enum PageType {
@@ -75,6 +76,7 @@ export enum PageType {
     Node = "Node",
     Post = "Post",
     Member = "Member",
+    Changes = "Changes",
 }
 
 export enum CommentDisplayType {
@@ -84,6 +86,7 @@ export enum CommentDisplayType {
     Like = 1,//感谢
     V2exOrigin = 2,//V2原版
     OnlyOp = 3,//只看楼主
+    New = 6,//最新
 }
 
 export interface Reply {
@@ -106,4 +109,4 @@ export interface Reply {
 }
 
 //最大回复限制，超出脚本停止运行
-export const MAX_REPLY_LIMIT = 300
+export const MAX_REPLY_LIMIT = 400

@@ -1,7 +1,9 @@
 <template>
-  <div class="msgs">
-    <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
-  </div>
+  <teleport to="body">
+    <div class="msgs">
+      <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
+    </div>
+  </teleport>
 </template>
 
 <script setup>
@@ -32,8 +34,8 @@ function removeMsg(id) {
 <style scoped lang="less">
 .msgs {
   position: fixed;
-  margin-left: calc(50% - 25rem);
-  width: 50rem;
+  margin-left: calc(50% - 40vw);
+  width: 80vw;
   z-index: 9999;
   bottom: 0;
   left: 0;

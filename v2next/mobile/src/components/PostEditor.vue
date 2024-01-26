@@ -44,13 +44,6 @@
       </div>
       <div class="right">
         <BaseButton
-            type="link"
-            size="small"
-            v-if="useType === 'reply-comment'" style="margin-right: 1rem;cursor: pointer;"
-            @click="emits('close')">
-          关闭
-        </BaseButton>
-        <BaseButton
             size="small"
             :disabled="disabled"
             :loading="loading"
@@ -83,7 +76,7 @@ import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import BaseButton from "./BaseButton.vue";
 
-const props = defineProps({
+let props = defineProps({
   replyUser: null,
   replyFloor: null,
   useType: {
@@ -93,14 +86,13 @@ const props = defineProps({
     }
   },
 })
-const {replyUser, replyFloor, useType} = props
-const replyInfo = replyUser ? `@${replyUser} #${replyFloor} ` : ''
+let {replyUser, replyFloor, useType} = props
+let replyInfo = replyUser ? `@${replyUser} #${replyFloor} ` : ''
 const emits = defineEmits(['close'])
 
 const post = inject('post')
 const show = inject('show')
 const isNight = inject('isNight')
-const pageType = inject('pageType')
 const allReplyUsers = inject('allReplyUsers')
 let isFocus = ref(false)
 const loading = ref(false)
@@ -112,6 +104,15 @@ const txtRef = ref(null)
 const cursorRef = ref(null)
 const emoticonsRef = ref(null)
 const none = ref('<span style="white-space:pre-wrap;"> </span>')
+
+watch(props, n => {
+  replyUser = props.replyUser
+  replyFloor = props.replyFloor
+  useType = props.useType
+  replyInfo = replyUser ? `@${replyUser} #${replyFloor} ` : ''
+  content.value = replyInfo
+})
+
 /** emoji表情数据 */
 const emojiEmoticons = [
   {
@@ -442,10 +443,8 @@ const imgurClientIdPool = [
   '81be04b9e4a08ce',
 ]
 
-defineExpose({content, isFocus: () => isFocus.value})
-
 const editorClass = computed(() => {
-  return [useType, isFocus.value ? 'isFocus' : '', isNight.value ? 'isNight' : '']
+  return [isFocus.value ? 'isFocus' : '', isNight.value ? 'isNight' : '']
 })
 
 const cursorHtml = computed(() => {
@@ -465,6 +464,12 @@ const disabled = computed(() => {
     return true
   }
 })
+
+function focus() {
+  txtRef.value.focus()
+}
+
+defineExpose({content, focus})
 
 function drop(e) {
   e.preventDefault()
@@ -509,7 +514,6 @@ async function submit() {
     }
     return match
   })
-
 
   //转换上传的图片
   let show_content = content.value.replace(/https?:\/\/(i\.)?imgur\.com\/((?!http).)+\.(gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG)/g, function (match) {
@@ -572,8 +576,8 @@ async function submit() {
   // return console.log('item', item)
 
   let url = `${window.baseUrl}/t/${post.value.id}`
-  // $.post(url, {content: submit_content, once: post.value.once}).then(
-  $.post(url, {content: submit_content, once: 123}).then(
+  $.post(url, {content: submit_content, once: post.value.once}).then(
+      // $.post(url, {content: submit_content, once: 123}).then(
       res => {
         // console.log('回复', res)
         loading.value = false
@@ -808,13 +812,6 @@ onMounted(() => {
     this.style.height = 0;
     this.style.height = (this.scrollHeight) + "px";
   });
-  if (useType === 'reply-comment') {
-    txtRef.value && txtRef.value.focus()
-  }
-})
-
-onBeforeUnmount(() => {
-  $(`.${editorId.value}`).off()
 })
 
 </script>
@@ -830,33 +827,14 @@ onBeforeUnmount(() => {
   transition: all .3s;
   color: var(--color-font);
 
-  &.reply-post {
+  &.isFocus {
     .post-editor {
-      border: 1px solid var(--color-line);
-    }
-
-    &.isFocus {
-      .post-editor {
-        border: 1px solid var(--color-active);
-      }
-    }
-  }
-
-  &.reply-comment {
-    border-radius: var(--box-border-radius);
-    overflow: hidden;
-    border: 1px solid var(--color-line);
-
-    &.isFocus {
       border: 1px solid var(--color-active);
-    }
-
-    .toolbar {
-      background: var(--color-editor-toolbar);
     }
   }
 
   .post-editor {
+    border: 1px solid var(--color-line);
     border-radius: var(--box-border-radius);
     transition: border .3s;
     width: 100%;
@@ -865,12 +843,11 @@ onBeforeUnmount(() => {
     box-sizing: border-box;
     outline: none;
     font-family: Avenir, Helvetica, Arial, sans-serif;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     min-height: 13rem;
     resize: none;
     background: var(--box-background-color);
     color: var(--color-font-pure);
-    border: 1px solid transparent;
   }
 
   .toolbar {
@@ -887,12 +864,12 @@ onBeforeUnmount(() => {
       gap: 1rem;
 
       svg {
-        cursor: pointer;
+
       }
 
       .upload {
         input {
-          cursor: pointer;
+
           position: absolute;
           width: 20px;
           height: 20px;
@@ -931,7 +908,6 @@ onBeforeUnmount(() => {
     left: 14rem;
 
     i {
-      cursor: pointer;
       position: absolute;
       right: 2rem;
       font-size: 2rem;
@@ -947,7 +923,6 @@ onBeforeUnmount(() => {
     }
 
     img {
-      cursor: pointer;
       @w: 3rem;
       width: @w;
       height: @w;
@@ -956,7 +931,6 @@ onBeforeUnmount(() => {
 
     span {
       display: inline-block;
-      cursor: pointer;
       font-size: 2.3rem;
       padding: .5rem;
     }
