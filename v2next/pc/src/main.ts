@@ -187,12 +187,12 @@ function run() {
         return post
       }
 
-      console.log('body', body)
+      // console.log('body', body)
 
       let boxs = body.find(`#Main .box`)
       let box = boxs[1]
 
-      console.log('box', box)
+      // console.log('box', box)
 
       let cells: any = box.querySelectorAll('.cell')
       if (cells && cells.length) {
@@ -1108,17 +1108,6 @@ function run() {
         } else {
           let r = await window.parse.createNoteItem(window.user.tagPrefix)
           r && (window.user.tagsId = r);
-        }
-      }
-
-      if (window.config.rememberLastReadFloor) {
-        let readItem = Array.from(items).find(v => v.innerText.includes(window.user.readPrefix))
-        if (readItem) {
-          window.user.readNoteItemId = readItem.href.substr(-5)
-          window.user.readList = await getNoteItemContent(window.user.readNoteItemId, window.user.readPrefix)
-        } else {
-          let r = await window.parse.createNoteItem(window.user.readPrefix)
-          r && (window.user.readNoteItemId = r);
         }
       }
 

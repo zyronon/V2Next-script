@@ -13,8 +13,9 @@
           <div class="header">
             <div class="fr">
               <a :href="`/member/${post.member.username}`"
-                 v-if="post.member.avatar_large">
+                 style="width: 73px;height: 73px;display:inline-block;">
                 <img :src="post.member.avatar_large"
+                     v-if="post.member.avatar_large"
                      class="avatar"
                      style="width: 73px;height: 73px;"
                      border="0" align="default" :alt="post.member.username"></a>
@@ -129,19 +130,6 @@
                      :class="displayType === CommentDisplayType.V2exOrigin?'active':''">V2原版
                 </div>
               </div>
-              <div class="read-notice" v-if="read.floor || read.total">
-                <span>上次打开：</span>
-                <template v-if="read.floor">
-                  <span>阅读到<b>{{ read.floor }}</b>楼</span>
-                  <div class="jump jump1" @click="jump(read.floor)">
-                    <i class="fa fa-long-arrow-down"/>
-                  </div>
-                </template>
-                <span>总楼层<b>{{ read.total }}</b></span>
-                <div class="jump" @click="jump(read.total)">
-                  <i class="fa fa-long-arrow-down"/>
-                </div>
-              </div>
             </div>
             <div class="my-cell flex">
                 <span>{{ post.replyCount }} 条回复
@@ -210,7 +198,7 @@
           <a>{{ item }}</a>
         </div>
       </div>
-      <div class="close-btn"  @click="close('btn')">
+      <div class="close-btn" @click="close('btn')">
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
       <div class="scroll-top gray" @click.stop="scrollTop">
@@ -304,12 +292,6 @@ export default {
         right: '',
         rightFloor: -1
       },
-      debounceScroll: () => {
-      },
-      read: {
-        floor: 0,
-        total: 0
-      },
       currentFloor: '',
       showOpTag: false
     }
@@ -342,7 +324,7 @@ export default {
           .slice(0, this.config.topReplyCount)
     },
     replyList() {
-      console.log('this.post.nestedReplies', this.post.nestedReplies)
+      // console.log('this.post.nestedReplies', this.post.nestedReplies)
       if ([CommentDisplayType.FloorInFloor, CommentDisplayType.FloorInFloorNoCallUser].includes(this.displayType)) return this.post.nestedReplies
       if (this.displayType === CommentDisplayType.Like) {
         return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
@@ -403,18 +385,16 @@ export default {
         if (newVal) {
           document.body.style.overflow = 'hidden'
           if (!window.history.state) {
-            // console.log('执行了pushState')
-            window.history.pushState({}, 0, this.post.url);
+            // console.log('执行了pushState', this.post.href)
+            window.history.pushState({}, 0, this.post.href);
           }
 
-          this.read = this.post.read
           this.currentFloor = ''
           nextTick(() => {
             window.document.title = this.post.title ?? 'V2EX'
             this.$refs?.main?.focus()
           })
         } else {
-          this.$emit('saveReadList')
           document.body.style.overflow = 'unset'
           window.document.title = 'V2EX'
           this.isSticky = false
@@ -431,7 +411,6 @@ export default {
     setTimeout(() => {
       this.postDetailWidth = this.$refs.mainWrapper?.getBoundingClientRect().width || 0
     })
-    this.debounceScroll = debounce(this.scroll, 300, false)
     if (this.isLogin) {
       const observer = new IntersectionObserver(
           ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1),
@@ -482,36 +461,6 @@ export default {
     removeTag(tag) {
       eventBus.emit(CMD.REMOVE_TAG, {username: this.post.member.username, tag})
     },
-    scroll() {
-      if (!this.config.rememberLastReadFloor) return
-      let height = window.innerHeight * 0.3
-      let comments = $('.comments  .comment')
-      let forCount = 0
-      for (let i = 0; i < comments.length; i++) {
-        forCount++
-        let ins = comments[i]
-        let rect = ins.getBoundingClientRect()
-        if (rect.top > height) {
-          let lastReadFloor = Number(ins.dataset['floor']);
-          console.log('当前阅读楼层', lastReadFloor)
-          eventBus.emit(CMD.ADD_READ, {
-            floor: lastReadFloor > 3 ? lastReadFloor : 0,
-            total: this.post.replyList.length
-          })
-          if (lastReadFloor > 3) {
-            this.read.floor = 0
-          }
-          break
-        }
-      }
-      if (forCount === comments.length) {
-        console.log('看到最后了')
-        eventBus.emit(CMD.ADD_READ, {
-          floor: forCount,
-          total: this.post.replyList.length
-        })
-      }
-    },
     stop(e) {
     },
     jump(floor) {
@@ -532,37 +481,23 @@ export default {
 
       if (!this.post.replyList.length) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '没有回复可跳转！'})
-        this.read.floor = 0
         return
       }
       if (floor > this.post.replyList.length) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '没有找到对应回复！'})
-        this.read.floor = 0
         return;
       }
       let comment = $(`.c_${floor}`)
       if (!comment.length) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '没有找到对应回复！'})
-        this.read.floor = 0
         return
       }
       comment[0].scrollIntoView({behavior: "smooth", block: "center", inline: "center"})
       comment.addClass('ding')
-      this.read.floor = 0
       this.currentFloor = floor + 1
       setTimeout(() => {
         comment.removeClass('ding')
       }, 2000)
-    },
-    jumpLastRead(floor) {
-      if (this.config.autoJumpLastReadFloor) {
-        if (!floor) return
-        setTimeout(() => {
-          console.log('上次跳转', floor)
-          this.jump(floor)
-          eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '已跳转到上次阅读位置'})
-        }, 300)
-      }
     },
     collapseTopReplyList() {
       $(this.$refs.topReply).slideToggle('fast')
@@ -872,21 +807,6 @@ export default {
       font-size: 1.4rem;
       text-align: center;
       color: gray;
-    }
-  }
-
-  .read-notice {
-    display: flex;
-    align-items: center;
-    color: gray;
-
-    .jump {
-      background: var(--color-third-bg);
-      color: gray;
-      padding: 0.3rem 1rem;
-      border-radius: .4rem;
-      margin: 0 1rem;
-      cursor: pointer;
     }
   }
 

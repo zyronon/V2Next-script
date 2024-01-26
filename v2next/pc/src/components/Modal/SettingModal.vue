@@ -188,24 +188,6 @@
                     <input type="number" min="1" v-model="config.topReplyLoveMinCount">
                   </div>
                 </div>
-                <div class="row">
-                  <label class="main-title">记忆阅读</label>
-                </div>
-                <div class="row">
-                  <label class="item-title">记录上次阅读楼层（误差1层左右）：</label>
-                  <div class="wrapper">
-                    <BaseSwitch :model-value="config.rememberLastReadFloor"
-                                @update:modelValue="config.rememberLastReadFloor = !config.rememberLastReadFloor;
-                                config.autoJumpLastReadFloor = false"
-                    />
-                  </div>
-                </div>
-                <div class="row">
-                  <label class="item-title">打开帖子自动跳转到上次阅读楼层</label>
-                  <div class="wrapper">
-                    <BaseSwitch v-model="config.autoJumpLastReadFloor"/>
-                  </div>
-                </div>
               </div>
               <div v-if="tabIndex === 2">
                 <div class="row">
