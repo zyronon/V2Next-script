@@ -40,7 +40,7 @@ export default defineConfig({
           'https://*.v2ex.com/member/*',
           'https://*.v2ex.com/changes*',
         ],
-        description: 'V2Next - 一个好用的V2EX脚本',
+        description: 'V2Next - 一个好用的V2EX脚本！ 移动端专用',
         author: 'zyronon',
         license: 'GPL License',
         updateURL: 'https://update.greasyfork.org/scripts/485356/V2Next-Mobile.user.js',

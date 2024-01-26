@@ -738,8 +738,7 @@ function run() {
   window.vals = {
     isMobile: !document.querySelector('#Rightbar')
   }
-  window.functions = {
-  }
+  window.functions = {}
 
   async function sleep(time: number) {
     return new Promise(resolve => {
@@ -1042,34 +1041,6 @@ function run() {
     })
   }
 
-  //检测页面类型
-  function checkPageType() {
-    let l = window.location
-    if (l.pathname === '/') {
-      window.pageType = PageType.Home
-    } else if (l.href.match(/.com\/?tab=/)) {
-      window.pageType = PageType.Home
-    } else if (l.href.match(/.com\/go\//)) {
-      if (!l.href.includes('/links')) {
-        window.pageType = PageType.Node
-      }
-    } else if (l.href.match(/.com\/recent/)) {
-      window.pageType = PageType.Home
-    } else if (l.href.match(/.com\/member/)) {
-      window.pageType = PageType.Member
-    } else {
-      let r = l.href.match(/.com\/t\/([\d]+)/)
-      if (r) {
-        window.pageType = PageType.Post
-        window.pageData.id = r[1]
-        if (l.search) {
-          let pr = l.href.match(/\?p=([\d]+)/)
-          if (pr) window.pageData.pageNo = Number(pr[1])
-        }
-      }
-    }
-  }
-
   //获取记事本条目内容
   function getNoteItemContent(id: string, prefix: string) {
     return new Promise((resolve, reject) => {
@@ -1169,7 +1140,7 @@ function run() {
       document.documentElement.classList.add('dark')
     }
 
-    checkPageType()
+    functions.checkPageType()
     initMonkeyMenu()
 
     let top2 = document.querySelector('.tools .top:nth-child(2)')
@@ -1206,8 +1177,15 @@ function run() {
     // window.pageData.id = 1007682
 
     switch (window.pageType!) {
+      case  PageType.Changes:
+        box = document.querySelector('#Wrapper #Main .box')
+
+        list = box!.querySelectorAll('.item')
+        list[0].before($section)
+        // window.parse.parsePagePostList(list, box[1])
+        break
       case  PageType.Node:
-        box = window.win().doc.querySelectorAll('#Wrapper #Main .box')
+        box = document.querySelectorAll('#Wrapper #Main .box')
 
         let topics = box[1].querySelector('#TopicsNode')
         list = topics.querySelectorAll('.cell')

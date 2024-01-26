@@ -666,36 +666,6 @@ function run() {
     })
   }
 
-  //检测页面类型
-  function checkPageType() {
-    let l = window.location
-    if (l.pathname === '/') {
-      window.pageType = PageType.Home
-    } else if (l.pathname === '/changes') {
-      window.pageType = PageType.Changes
-    } else if (l.pathname === '/recent') {
-      window.pageType = PageType.Changes
-    } else if (l.href.match(/.com\/?tab=/)) {
-      window.pageType = PageType.Home
-    } else if (l.href.match(/.com\/go\//)) {
-      if (!l.href.includes('/links')) {
-        window.pageType = PageType.Node
-      }
-    } else if (l.href.match(/.com\/member/)) {
-      window.pageType = PageType.Member
-    } else {
-      let r = l.href.match(/.com\/t\/([\d]+)/)
-      if (r) {
-        window.pageType = PageType.Post
-        window.pageData.id = r[1]
-        if (l.search) {
-          let pr = l.href.match(/\?p=([\d]+)/)
-          if (pr) window.pageData.pageNo = Number(pr[1])
-        }
-      }
-    }
-  }
-
   //获取记事本条目内容
   function getNoteItemContent(id: string, prefix: string) {
     return new Promise((resolve, reject) => {
@@ -801,7 +771,7 @@ function run() {
     if (window.isNight) {
       document.documentElement.classList.add('dark')
     }
-    checkPageType()
+    functions.checkPageType()
     addSettingText()
     functions.initMonkeyMenu()
 
