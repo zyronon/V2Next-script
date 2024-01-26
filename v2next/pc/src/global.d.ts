@@ -1,4 +1,4 @@
-import { Config, PageType, Post } from "./types"
+import { Config, PageType, Post } from "@v2next/core/types"
 
 declare global {
   interface Window {
@@ -19,7 +19,6 @@ declare global {
     clone: (val: any) => any
     postList: any[]
     functions: {
-      feedback: () => void
     },
     parse: {
       parsePostContent: Function,
@@ -42,7 +41,6 @@ declare global {
       saveImgurList: Function,
       checkPhotoLink2Img: Function,
       checkPostReplies: Promise,
-      openNewTab: Function,
     }
     cb: any
     win: any

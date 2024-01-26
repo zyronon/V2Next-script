@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
+import {Icon} from "@iconify/vue";
 import FromBottomDialog from "@/components/Modal/FromBottomDialog.vue";
-import { copy } from '@/utils/index'
-import { inject, reactive, ref, watch } from "vue";
-import { Post } from "@v2next/core/types";
+import {copy} from '@/utils/index'
+import {inject, reactive, ref, watch} from "vue";
+import {Config, Post} from "@v2next/core/types";
 import eventBus from '@/utils/eventBus'
-import { CMD } from '@/utils/type'
-import { PageType } from "@/types";
+import {CMD} from '@/utils/type'
+import {PageType} from "@v2next/core/types";
 import BaseLoading from "@/components/BaseLoading.vue";
+import FontSizeType from "@/components/FontSizeType.vue";
 
-let fs = ref(0)
 let state = reactive({
   timer: null,
   loading: false,
@@ -29,9 +29,10 @@ const emit = defineEmits<{
   merge: [val: any],
   'update:modelValue': [val: boolean]
 }>()
+
 const isLogin = inject<boolean>('isLogin')
-const pageType: any = inject('pageType')
-const config: any = inject('config')
+const pageType = inject<PageType>('pageType')
+const config = inject<Config>('config')
 
 function close() {
   emit('close')
@@ -79,9 +80,9 @@ async function toggleIgnore() {
   if (state.loading2) return
   //先单独保存，eventBus.emit(CMD.IGNORE)会把current清空。isIgnore也没了
   let isIgnore = props.post.isIgnore
-  let url = `${window.baseUrl}/${isIgnore ? 'unignore' : 'ignore'}/topic/${props.post.id}?once=${props.post.once}`
+  let url = `${location.origin}/${isIgnore ? 'unignore' : 'ignore'}/topic/${props.post.id}?once=${props.post.once}`
   state.loading2 = true
-  let apiRes = await window.win().fetch(url)
+  let apiRes = await fetch(url)
   state.loading2 = false
 
   if (apiRes.redirected) {
@@ -116,7 +117,7 @@ async function toggleFavorite() {
   if (state.loading) return
   // return eventBus.emit('merge', 'isFavorite')
   let isFavorite = props.post.isFavorite
-  let url = `${window.baseUrl}/${isFavorite ? 'unfavorite' : 'favorite'}/topic/${props.post.id}?once=${props.post.once}`
+  let url = `${location.origin}/${isFavorite ? 'unfavorite' : 'favorite'}/topic/${props.post.id}?once=${props.post.once}`
   state.loading = true
   let apiRes = await fetch(url)
   state.loading = false
@@ -174,25 +175,27 @@ async function thank() {
   if (state.loading4) return
   eventBus.emit(CMD.MERGE, {isThanked: !isThanked})
   //https://www.v2ex.com/thank/topic/886147?once=38719
-  let url = `${window.baseUrl}/thank/reply/${props.post.id}?once=${props.post.once}`
+  let url = `${location.origin}/thank/reply/${props.post.id}?once=${props.post.once}`
   state.loading4 = true
   let apiRes = await fetch(url)
   state.loading4 = false
 
-  // $.post(url).then(res => {
-  //   if (!res.success) {
-  //     eventBus.emit(CMD.MERGE, {isThanked: !isThanked})
-  //     eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: res.message})
-  //   }
-  //   eventBus.emit(CMD.REFRESH_ONCE, res.once)
-  // }, err => {
-  //   state.loading4 = false
-  //   eventBus.emit(CMD.MERGE, {isThanked: !isThanked})
-  //   eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '感谢失败'})
-  //   eventBus.emit(CMD.REFRESH_ONCE)
-  // })
-  // close()
+  $.post(url).then(res => {
+    if (!res.success) {
+      eventBus.emit(CMD.MERGE, {isThanked: !isThanked})
+      eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: res.message})
+    }
+    eventBus.emit(CMD.REFRESH_ONCE, res.once)
+  }, err => {
+    state.loading4 = false
+    eventBus.emit(CMD.MERGE, {isThanked: !isThanked})
+    eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '感谢失败'})
+    eventBus.emit(CMD.REFRESH_ONCE)
+  })
+  close()
 }
+
+
 </script>
 
 <template>
@@ -247,57 +250,31 @@ async function thank() {
           <div class="icon-wrap">
             <BaseLoading v-if="state.loading1"/>
             <template v-else>
-              <Icon color="black" icon="solar:danger-triangle-outline"/>
+              <Icon class="black" icon="solar:danger-triangle-outline"/>
             </template>
           </div>
           <span>{{ post.isReport ? '已报告' : '报告问题' }}</span>
         </div>
         <div class="item" @click="copyLink">
           <div class="icon-wrap">
-            <Icon color="black" icon="solar:link-broken"/>
+            <Icon class="black" icon="solar:link-broken"/>
           </div>
           <span>复制链接</span>
         </div>
         <div class="item" @click="copyContent">
           <div class="icon-wrap">
-            <Icon color="black" icon="octicon:copy-24"/>
+            <Icon class="black" icon="octicon:copy-24"/>
           </div>
           <span>复制内容</span>
         </div>
-        <div class="item">
-          <div class="icon-wrap">
-            <Icon color="black" icon="iconoir:page-search"/>
-          </div>
-          <span>跳转</span>
-        </div>
         <div class="item" @click="emit('refresh'),close()">
           <div class="icon-wrap">
-            <Icon color="black" icon="ion:refresh"/>
+            <Icon class="black" icon="ion:refresh"/>
           </div>
           <span>刷新</span>
         </div>
       </div>
-      <div class="font-size">
-        <div class="steps">
-          <div class="step" :class="[fs=== 0 && 'active']" @click="fs = 0">
-            <div class="text" style="font-size: 1.2rem;">小</div>
-            <div class="point"></div>
-          </div>
-          <div class="step" :class="[fs=== 1 && 'active']" @click="fs = 1">
-            <div class="text">标准</div>
-            <div class="point"></div>
-          </div>
-          <div class="step" :class="[fs=== 2 && 'active']" @click="fs = 2">
-            <div class="text" style="font-size: 1.8rem;">大</div>
-            <div class="point"></div>
-          </div>
-          <div class="step" :class="[fs=== 3 && 'active']" @click="fs = 3">
-            <div class="text" style="font-size: 2.2rem;">特大</div>
-            <div class="point"></div>
-          </div>
-        </div>
-        <div class="line"></div>
-      </div>
+      <font-size-type/>
       <div class="cancel" @click="close">取消</div>
     </div>
   </from-bottom-dialog>
@@ -347,72 +324,14 @@ async function thank() {
         }
       }
     }
-  }
 
-  .steps {
-    width: 100%;
-    border-radius: 10rpx;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    z-index: 2;
-
-    .step {
-      width: 100%;
-      font-size: 20rpx;
-      color: gray;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      height: 4.8rem;
-      gap: 1.5rem;
-      color: gray;
-
-      .text {
-        font-size: 1.4rem;
-      }
-
-      .point {
-        @w: 6px;
-        border-radius: 50%;
-        min-width: @w;
-        min-height: @w;
-        background: #adadad;
-      }
-
-      &.active {
-        color: black;
-
-        .point {
-          box-shadow: 0 0 1px 1px #f1f1f1;
-          background: white;
-          transform: scale(3);
-        }
-      }
-    }
-  }
-
-  .font-size {
-    margin-bottom: 3rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    .line {
-      position: relative;
-      z-index: 1;
-      margin-top: -4px;
-      height: 2px;
-      width: 76%;
-      background: #dadada;
+    .black{
+      color: var(--color-font-pure);
     }
   }
 
   .cancel {
-    border-top: 1px solid #e3e3e3;
+    border-top: 1px solid var(--color-tooltip-bg);
     display: flex;
     align-items: center;
     justify-content: center;

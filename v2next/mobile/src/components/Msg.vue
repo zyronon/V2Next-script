@@ -1,18 +1,18 @@
 <template>
   <div class="msg" :class="type">
     <div class="left" @click="$emit('close')">
-      <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14 14L34 34" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M14 34L34 14" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <Icon icon="ic:round-close"/>
     </div>
     <div class="right">{{ text }}</div>
   </div>
 </template>
 
 <script>
+import {Icon} from '@iconify/vue'
+
 export default {
   name: "Msg",
+  components: {Icon},
   props: {
     type: '',
     text: '',
@@ -36,6 +36,7 @@ export default {
   color: var(--color-font-8);
   background: var(--color-tooltip-bg);
   box-shadow: 0 0 6px 1px var(--color-tooltip-shadow);
+
 
   &.success {
     .left {
@@ -62,7 +63,9 @@ export default {
     background: var(--color-active);
 
     svg {
-      margin: 0 .3rem;
+      color: white;
+      font-size: 2.2rem;
+      margin: 0 0.6rem;
     }
   }
 

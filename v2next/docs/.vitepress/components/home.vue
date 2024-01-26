@@ -17,10 +17,9 @@ import SearchIcon from "./search-icon.vue";
 
       <div class="actions">
         <div class="action">
-          <a href="https://greasyfork.org/zh-CN/scripts/458024" target="_blank">直接安装</a></div>
-        <div class="action" v-if="false">
-          <a href="">立即开始</a>
-        </div>
+          <a href="/pc-install">安装到PC</a></div>
+        <div class="action">
+          <a href="/mobile-install">安装到手机</a></div>
         <div class="action">
           <a href="https://github.com/zyronon/web-scripts" target="_blank" rel="noreferrer">GitHub</a>
         </div>
@@ -28,10 +27,10 @@ import SearchIcon from "./search-icon.vue";
 
       <div class="notice">
         <div>
-          <strong>尊重用户隐私</strong> ━ 绝不私自收集任何用户数据，安全可靠
+          <strong>尊重用户隐私</strong> ━ 绝不收集用户数据
         </div>
         <div>
-          <strong>轻量便捷</strong> ━ 安装体积小于 0.3M，即装即用
+          <strong>跨端通用</strong> ━ PC、手机均可使用
         </div>
         <div>
           <strong>免费使用</strong> ━ 代码开源，所有功能均免费使用
@@ -425,7 +424,7 @@ import SearchIcon from "./search-icon.vue";
         background-color: var(--vp-button-brand-hover-bg)
       }
 
-      &:nth-child(2) {
+      &:nth-child(3) {
         border-color: var(--vp-button-alt-border);
         color: var(--vp-button-alt-text);
         background-color: var(--vp-button-alt-bg);
@@ -441,7 +440,7 @@ import SearchIcon from "./search-icon.vue";
 
   .notice {
     margin-top: 32px;
-    width: 60vw;
+    width: 65vw;
     display: flex;
     justify-content: space-between;
   }

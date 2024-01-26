@@ -11,17 +11,15 @@ export default defineConfig({
     //   {text: 'Home', link: '/'},
     //   {text: 'Examples', link: '/markdown-examples'}
     // ],
-
     sidebar: [
       {
-        text: 'Examples1',
+        text: '简介',
         items: [
-          {text: 'Markdown Examples', link: '/markdown-examples'},
-          {text: 'Runtime API Examples', link: '/api-examples'}
+          {text: '安装到PC浏览器', link: '/pc-install'},
+          {text: '安装到手机浏览器', link: '/mobile-install'}
         ]
       }
     ],
-
     socialLinks: [
       {icon: 'github', link: 'https://github.com/zyronon/v2ex-script'}
     ],

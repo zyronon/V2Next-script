@@ -12,9 +12,8 @@
         由于嵌套回复层级太深，自动将以下回复移至可见范围
       </div>
       <div class="comment-content">
-        <div class="left expand-line"  @click="toggle"></div>
-        <div class="right"
-             @click.stop="eventBus.emit(CMD.SHOW_EDITOR,modelValue)">
+        <div class="left expand-line" @click="toggle"></div>
+        <div class="right" >
           <div class="w">
             <div class="wrong-wrapper" v-if="modelValue.isWrong">
               <span @click="expandWrong = !expandWrong" title="点击楼层号查看提示">
@@ -63,13 +62,13 @@ import Point from "./Point.vue";
 import eventBus from "../utils/eventBus.js";
 import BaseHtmlRender from "./BaseHtmlRender.vue";
 import {CMD} from "../utils/type.js";
-import {CommentDisplayType} from "../types.ts";
+import {CommentDisplayType} from "@v2next/core/types.ts";
 import MoreIcon from "@/components/MoreIcon.vue";
 
 export default {
   name: "Comment",
   components: {MoreIcon, BaseHtmlRender, Author, PostEditor, Point},
-  inject: ['post', 'postDetailWidth', 'show', 'isNight', 'config'],
+  inject: ['post', 'show', 'isNight', 'config'],
   props: {
     modelValue: {
       reply_content: ''
@@ -115,7 +114,6 @@ export default {
     myClass() {
       return {
         isOp: this.modelValue.isOp,
-        isSimple: this.config.viewType === 'simple',
         ding: this.ding,
         isLevelOne: this.modelValue.level === 0,
         ['c_' + this.floor]: this.type !== 'top'
@@ -123,26 +121,25 @@ export default {
     }
   },
   mounted() {
-    this.checkIsTooLong(this.postDetailWidth)
+    this.checkIsTooLong()
   },
   methods: {
-    checkIsTooLong(postDetailWidth) {
-      if (postDetailWidth !== 0) {
-        let rect = this.$refs.comment.getBoundingClientRect()
-        let ban = postDetailWidth / 2
-        // console.log('ban', ban)
-        if (ban < rect.width && rect.width < ban + 25 && this.modelValue.children.length) {
-          this.expand = false
-          // console.log(rect.width - this.postDetailWidth)
-          let padding = 2
-          this.cssStyle = {
-            padding: '1rem 0',
-            width: `calc(${postDetailWidth}px - ${padding}rem)`,
-            transform: `translateX(calc(${rect.width - postDetailWidth}px + ${padding}rem))`,
-            background: this.isNight ? '#18222d' : 'white'
-          }
-          // console.log(this.cssStyle)
+    checkIsTooLong() {
+      let rect = this.$refs.comment.getBoundingClientRect()
+      let postDetailWidth = document.body.clientWidth
+      let ban = postDetailWidth / 2
+      // console.log('ban', ban, rect)
+      if (ban < rect.width && rect.width < ban + 25 && this.modelValue.children.length) {
+        this.expand = false
+        // console.log(rect.width - this.postDetailWidth)
+        let padding = 2
+        this.cssStyle = {
+          padding: '1rem 0',
+          width: `calc(${postDetailWidth}px - ${padding}rem)`,
+          transform: `translateX(calc(${rect.width - postDetailWidth}px + ${padding}rem))`,
+          background: this.isNight ? '#18222d' : 'white'
         }
+        // console.log(this.cssStyle)
       }
     },
     //高亮一下
@@ -176,31 +173,15 @@ export default {
     margin-top: 0;
   }
 
-
   &.ding {
     @bg: rgb(yellow, .3);
     background: @bg !important;
   }
 
-  &.isSimple {
-    .avatar, .expand-line {
-      display: none;
-    }
-
-    .simple-wrapper {
-      padding-left: 2.8rem;
-    }
-
-    .w {
-      padding-left: 0 !important;
-      padding-top: .5rem;
-    }
-  }
-
   .comment-content-w {
     .more {
       text-align: center;
-      margin: 2rem 0;
+      margin: 1rem 0;
     }
   }
 
@@ -210,14 +191,14 @@ export default {
 
     .expand-line {
       margin-top: .6rem;
-      @w: 2.8rem;
+      @w: 1.8rem;
       width: @w;
       min-width: @w;
       position: relative;
 
       &:after {
         position: absolute;
-        left: 50%;
+        left: 30%;
         content: " ";
         height: 100%;
         width: 0;
@@ -230,11 +211,7 @@ export default {
       width: calc(100% - 3rem);
 
       .w {
-        padding-left: 1rem;
-
-        .post-editor-wrapper {
-          margin-top: 1rem;
-        }
+        margin: .5rem 0;
       }
     }
   }
@@ -243,10 +220,6 @@ export default {
 .wrong-wrapper {
   font-size: 1.4rem;
   margin-bottom: 1rem;
-
-  span {
-
-  }
 
   .del-line {
     text-decoration: line-through;

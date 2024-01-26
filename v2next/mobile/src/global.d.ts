@@ -1,4 +1,4 @@
-import { Config, PageType, Post } from "./types"
+import { Config, PageType, Post } from "@v2next/core/types"
 
 declare global {
   interface Window {
@@ -20,6 +20,7 @@ declare global {
     postList: any[]
     functions: {
       feedback: () => void
+      clickAvatar: (prex?:string) => void
     },
     parse: {
       parsePostContent: Function,
@@ -49,7 +50,6 @@ declare global {
     query: any
     stopMe: boolean
     vals: {
-      isMobile: boolean
     }
   }
 }

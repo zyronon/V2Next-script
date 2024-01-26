@@ -1,11 +1,13 @@
 @import "variable";
 @import "anim";
 @import "user";
+@import "v2";
 
 :root {
   --color-main-bg: rgb(226, 226, 226);
   --color-second-bg: white;
   --color-third-bg: rgb(226, 226, 226);
+  --color-four-bg: rgb(231, 233, 235);
 
   --color-item-bg: white;
 
@@ -29,6 +31,7 @@
   --color-scrollbar: rgb(147, 173, 227);
 
   --color-line: rgb(226, 226, 226);
+  --color-line2: rgb(206, 206, 206);
 
   --color-loading-1: #00000033;
   --color-loading-2: #000;
@@ -41,12 +44,15 @@
   --color-sp-btn-bg: #f1f1f1;
 
   --color-call-list-bg: white;
+
+  --space: 1rem;
 }
 
 html.dark {
   --color-main-bg: #22303f;
   --color-second-bg: rgb(24, 34, 45);
   --color-third-bg: rgb(49, 71, 94);
+  --color-four-bg: #22303f;
 
   --color-item-bg: rgb(24, 34, 45);
 
@@ -83,10 +89,6 @@ html.dark {
 
   --color-call-list-bg: rgb(49, 71, 94);
 
-}
-
-html, body {
-  font-size: 62.5%;
 }
 
 .flex {
@@ -239,8 +241,8 @@ a {
   }
 
   .active {
-    background: var(--color-third-bg);
-    color: var(--color-font);
+    background: var(--color-active);
+    color: white;
   }
 }
 
@@ -251,6 +253,7 @@ a {
 }
 
 input {
+  width: 10rem;
   height: 3rem;
   outline: unset;
   border: 1px solid var(--color-input-border);
@@ -283,9 +286,8 @@ input {
   z-index: 10;
   position: fixed;
   top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100vw;
+  height: 100vh;
   background: @mask-dark;
 
   &.dark {
@@ -302,5 +304,66 @@ input {
 
   &.white {
     background: @mask-white;
+  }
+}
+
+
+.slide {
+  flex: 1;
+  width: 100vw;
+  height: 100vh;
+  transition: height .3s;
+  position: relative;
+  overflow: hidden;
+
+  .slide-list {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    position: relative;
+    transition: transform .3s;
+
+    .slide-item {
+      height: 100%;
+      width: 100%;
+      flex-shrink: 0;
+      position: relative;
+      overflow: auto;
+    }
+  }
+}
+
+.page1 {
+  overflow: hidden !important;
+}
+
+.post-wrapper, .setting-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: var(--color-main-bg);
+  overflow: auto;
+}
+
+.setting-wrapper, .setting-wrapper2 {
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-second-bg);
+}
+
+.mobile-page {
+  height: 100%;
+  overflow: hidden;
+  font-size: 1.8rem;
+  display: flex;
+  flex-direction: column;
+
+  & > .page-content {
+    padding: 1rem;
+    padding-top: 0;
+    box-sizing: border-box;
+    overflow: auto;
   }
 }

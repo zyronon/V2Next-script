@@ -1,21 +1,21 @@
 <script>
-import {MAX_REPLY_LIMIT, PageType} from "./types.ts"
+import {MAX_REPLY_LIMIT, PageType} from "@v2next/core/types.ts"
 import {computed, nextTick} from "vue";
-import Setting from "./components/Modal/SettingModal.vue";
-import eventBus from "./utils/eventBus.js";
-import {CMD} from "./utils/type.js";
-import PostDetail from "./components/PostDetail.vue";
-import Base64Tooltip from "./components/Base64Tooltip.vue";
-import Msg from './components/Msg.vue';
-import Tooltip from "./components/Tooltip.vue";
-import TagModal from "./components/Modal/TagModal.vue";
-import MsgModal from "./components/Modal/MsgModal.vue";
-import {decodeEmail} from "./utils/email-decode.js";
-import BaseSwitch from "./components/BaseSwitch.vue";
-import BaseLoading from "./components/BaseLoading.vue";
-import NotificationModal from "./components/Modal/NotificationModal.vue";
-import BaseButton from "./components/BaseButton.vue";
-import {functions} from "../../core/core.ts";
+import Setting from "./Setting.vue";
+import eventBus from "../utils/eventBus.js";
+import {CMD} from "../utils/type.js";
+import PostDetail from "../components/PostDetail.vue";
+import Base64Tooltip from "../components/Base64Tooltip.vue";
+import Msg from '../components/Msg.vue';
+import Tooltip from "../components/Tooltip.vue";
+import TagModal from "../components/Modal/TagModal.vue";
+import MsgModal from "../components/Modal/MsgModal.vue";
+import {decodeEmail} from "../utils/email-decode.js";
+import BaseSwitch from "../components/BaseSwitch.vue";
+import BaseLoading from "../components/BaseLoading.vue";
+import NotificationModal from "../components/Modal/NotificationModal.vue";
+import BaseButton from "../components/BaseButton.vue";
+import {functions} from "@v2next/core/core.ts";
 
 export default {
   components: {
@@ -26,7 +26,6 @@ export default {
   provide() {
     return {
       user: computed(() => window.user),
-      isMobile: computed(() => window.vals.isMobile),
       isLogin: computed(() => this.isLogin),
       isNight: computed(() => this.isNight),
       pageType: computed(() => this.pageType),
@@ -40,7 +39,6 @@ export default {
         }
         return []
       }),
-      showConfig: this.showConfig
     }
   },
   data() {
@@ -58,13 +56,11 @@ export default {
       config: window.clone(window.config),
       tags: window.user.tags,
       readList: window.user.readList,
-      configModal: {
-        show: false
-      },
       notificationModal: {
         show: false,
         h: ''
       },
+      step: 0,
     }
   },
   computed: {
@@ -105,6 +101,26 @@ export default {
         })
       }
     },
+    'config.fontSizeType': {
+      handler(newVal) {
+        switch (newVal) {
+          case 'small':
+            return $('html').css('font-size', '8px')
+          case 'normal':
+            return $('html').css('font-size', '10px')
+          case 'large':
+            return $('html').css('font-size', '12px')
+          case 'big-large':
+            return $('html').css('font-size', '14px')
+        }
+      },
+      deep: true
+    },
+    show(n) {
+      if (n) this.step++
+      else this.step--
+      this.slide('post')
+    }
   },
   created() {
     let that = this
@@ -115,7 +131,7 @@ export default {
     // fetch(location.origin)
 
     //A标签的
-    $(document).on('click', 'a', this.clickA)
+    document.addEventListener('click', this.clickA, true)
     //帖子的
     $(document).on('click', '.post-item', function (e) {
       // console.log('click-post-item')
@@ -129,8 +145,6 @@ export default {
         if (e.target.tagName !== 'A'
             &&
             e.target.tagName !== 'IMG'
-            &&
-            !e.target.classList.contains('toggle')
         ) {
           console.log('点空白处', this)
           let id = this.dataset['id']
@@ -141,17 +155,6 @@ export default {
             if (href) location.href = href
           }
         }
-      }
-    })
-    //展开或收起的点击事件
-    $(document).on('click', '.toggle', (e) => {
-      if (this.stopMe) return true
-      let id = e.currentTarget.dataset['id']
-      let itemDom = window.win().query(`.id_${id}`)
-      if (itemDom.classList.contains('preview')) {
-        itemDom.classList.remove('preview')
-      } else {
-        itemDom.classList.add('preview')
       }
     })
 
@@ -167,7 +170,6 @@ export default {
       //TODO
       // this.saveReadList()
     }
-
     window.deleteNotification = (nId, token) => {
       console.log('deleteNotification', nId, token)
       let item = $("#n_" + nId)
@@ -201,8 +203,7 @@ export default {
   beforeUnmount() {
     // console.log('unmounted')
     eventBus.clear()
-    $(document).off('click', 'a', this.clickA)
-
+    document.removeEventListener('click', this.clickA, true)
   },
   methods: {
     async getUnreadMessagesCount() {
@@ -223,13 +224,15 @@ export default {
       throw new Error('无法获取未读消息数量')
     },
     clickA(e) {
+      if (!e?.target) return
+      if (e.target.tagName !== 'A') return
       let that = this
       //有script表示是脚本生成的a标签用于新开页面的
-      if (e.currentTarget.getAttribute('script')) return
+      if (e.target.getAttribute('script')) return
       if (that.stopMe) return true
-      let {href, id, title} = functions.parseA(e.currentTarget)
+      let {href, id, title} = functions.parseA(e.target)
 
-      console.log('click-a', e.currentTarget, e, href, id, title)
+      // console.log('click-a', e.target, e, href, id, title)
       //夜间模式切换
       if (href.includes('/settings/night/toggle')) return
       if (href.includes('/?tab=')) return
@@ -238,32 +241,15 @@ export default {
       if (href === window.origin + '/#;') return
       //主页
       if (href === window.origin + '/') return
-
+      //最近
+      if (href === window.origin + '/recent') return
       //未读提醒
-      if (href.includes('/notifications')) {
-        // this.notificationModal.show = true
-        //
-        // let clientWidth = window.document.body.clientWidth
-        // let windowWidth = 1200
-        // let left = clientWidth / 2 - windowWidth / 2
-        // // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
-        // // newWin.document.write('123');
-        //
-        // fetch(href).then(async r => {
-        //   let htmlText = await r.text()
-        //   let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-        //   let res = htmlText.match(/var notificationBottom = ([\d]+);/)
-        //   if (res && res[1]) {
-        //     window.notificationBottom = Number(res[1])
-        //     console.log(' window.notificationBottom', window.notificationBottom)
-        //   }
-        //
-        //   let body = $(bodyText[0])
-        //   let h = body.find('#notifications').parent().html()
-        //   this.notificationModal.h = h
-        //
-        // })
-        // that.stopEvent(e)
+      if (href.includes('/notifications')) return
+      if (href === window.origin + '/script-setting') {
+        window.functions.clickAvatar(this.show ? '.post-wrapper ' : '')
+        this.slide('setting', this.step++)
+        that.stopEvent(e)
+        return
       }
 
       if (id) {
@@ -280,7 +266,9 @@ export default {
       e.stopPropagation()
     },
     saveReadList() {
-      window.parse.saveReadList(this.readList)
+      if (this.config.rememberLastReadFloor) {
+        window.parse.saveReadList(this.readList)
+      }
     },
     async clickPost(e, id, href, title = '') {
       // id = '976890'
@@ -330,20 +318,30 @@ export default {
       }
     },
     showPost() {
+      $('.slide-list').css('transition', `0s`)
+      setTimeout(() => {
+        $('.slide-list').css('transition', `transform .3s`)
+      }, 500)
       this.show = true
-      $('#site-header').css('margin-top','-42px')
+      $('#site-header').css('margin-top', '-42px')
       $(`#Wrapper .box:lt(5)`).each(function () {
         $(this).hide()
       })
     },
-    showConfig() {
-      this.configModal.show = true
+    slide(to = 'post', v) {
+      if (this.step === 1) {
+        if (to === 'post') {
+          $('.post-wrapper').css('z-index', 10)
+          $('.setting-wrapper').css('z-index', 9)
+        } else {
+          $('.post-wrapper').css('z-index', 9)
+          $('.setting-wrapper').css('z-index', 10)
+        }
+      }
+      $('.slide-list').css('transform', `translateX(-${this.step * 100}vw)`)
     },
     async winCb({type, value}) {
-      // console.log('回调的类型', type, value)
-      if (type === 'openSetting') {
-        this.showConfig()
-      }
+      console.log('回调的类型', type, value)
       if (type === 'syncData') {
         this.list = window.postList
         this.config = window.config
@@ -378,21 +376,20 @@ export default {
       }
 
       if (type === 'postContent') {
-        this.current = value
+        this.current = Object.assign(this.current, value)
         this.current.inList = true
         //这时有正文了，再打开，体验比较好
-        if (this.config.autoOpenDetail) {
-          this.showPost()
-        }
+        this.showPost()
       }
       if (type === 'postReplies') {
-        console.log('当前帖子', this.current)
+        this.current = Object.assign(this.current, value)
+        // console.log('当前帖子', this.current)
         this.list.push(this.clone(this.current))
         this.loading = false
       }
     },
     clone(val) {
-      return window.clone(val)
+      return functions.clone(val)
     },
     regenerateReplyList() {
       // console.log('重新生成列表')
@@ -480,6 +477,9 @@ export default {
         if (rIndex > -1) {
           this.list[rIndex] = this.clone(this.current)
         }
+      })
+      eventBus.on(CMD.MERGE_CONFIG, (val) => {
+        this.config = Object.assign(this.config, val)
       })
       eventBus.on(CMD.ADD_READ, (val) => {
         this.readList[this.current.id] = val
@@ -610,8 +610,12 @@ export default {
 </script>
 
 <template>
-  <Setting v-model="config" v-model:show="configModal.show"/>
-  <TagModal v-model:tags="tags"/>
+  <Setting v-model="config"
+           @back="slide('post', step--)"
+           to=".setting-wrapper"/>
+  <Setting v-model="config"
+           @back="slide('post', step--)"
+           to=".setting-wrapper2"/>
   <PostDetail v-model="show"
               ref="postDetail"
               v-model:displayType="config.commentDisplayType"
@@ -620,10 +624,13 @@ export default {
               :loading="loading"
               :refreshLoading="refreshLoading"
   />
+
+  <TagModal v-model:tags="tags"/>
   <Base64Tooltip/>
   <MsgModal/>
 
   <NotificationModal
+      v-if="false"
       v-model="notificationModal.show"
       :h="notificationModal.h"
   />
@@ -638,7 +645,7 @@ export default {
             </span>
       <span class="add-tag ago" @click="addTargetUserTag" title="添加标签">+</span>
     </div>
-    <div v-if="isPost && !show && config.autoOpenDetail" class="my-box p2"
+    <div v-if="isPost && !show" class="my-box p2"
          style="margin-top: 2rem;">
       <div class="flex flex-center" v-if="loading">
         <BaseLoading/>
@@ -651,8 +658,11 @@ export default {
   </template>
 </template>
 
+<style lang="less">
+@import "../assets/less/index";
+</style>
+
 <style scoped lang="less">
-@import "assets/less/variable";
 
 .target-user-tags {
   background: var(--color-second-bg);

@@ -7,7 +7,7 @@
           color="#177EC9"
           class="expand-icon"
           icon="gravity-ui:chevrons-expand-up-right"/>
-      <a class="avatar" v-if="config.viewType !== 'simple'" :href="`/member/${comment.username}`">
+      <a class="base-avatar" v-if="config.viewType !== 'simple'" :href="`/member/${comment.username}`">
         <img :src="comment.avatar" alt="">
       </a>
       <div class="info">
@@ -135,16 +135,12 @@ export default {
   .Author-left {
     display: flex;
     align-items: center;
-    max-width: 65%;
+    width: 80%;
     word-break: break-all;
 
     .info {
       display: flex;
       flex-direction: column;
-
-      .top {
-
-      }
     }
 
     .username {

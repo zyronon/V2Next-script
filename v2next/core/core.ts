@@ -1,4 +1,4 @@
-import { Config, Post, User, CommentDisplayType, Reply, MAX_REPLY_LIMIT } from "./types";
+import { Config, Post, User, CommentDisplayType, Reply, MAX_REPLY_LIMIT, PageType } from "./types";
 import { GM_openInTab, GM_registerMenuCommand } from "gmApi";
 
 export const DefaultPost: Post = {
@@ -52,7 +52,7 @@ export const DefaultConfig: Config = {
   showToolbar: true,
   showPreviewBtn: true,
   autoOpenDetail: true,
-  openTag: true,//给用户打标签
+  openTag: false,//给用户打标签
   clickPostItemOpenDetail: true,
   closePostDetailBySpace: true,//点击空白处关闭详情
   contentAutoCollapse: true,//正文超长自动折叠
@@ -66,11 +66,12 @@ export const DefaultConfig: Config = {
   topReplyLoveMinCount: 3,
   topReplyCount: 3,
   autoJumpLastReadFloor: false,
-  rememberLastReadFloor: true,
+  rememberLastReadFloor: false,
   autoSignin: true,
   customBgColor: '',
   version: 1,
   collectBrowserNotice: false,
+  fontSizeType: 'normal'
 }
 
 export const DefaultVal = {
@@ -79,10 +80,12 @@ export const DefaultVal = {
   targetUserName: '',
   currentVersion: 1,
   isNight: false,
-  isMobile: false,
   cb: null,
   stopMe: null,
   postList: [],
+  git: 'https://github.com/zyronon/web-scripts',
+  shortGit: 'zyronon/web-scripts',
+  issue: 'https://github.com/zyronon/web-scripts/issues'
 }
 
 export const functions = {
@@ -342,7 +345,7 @@ export const functions = {
   },
   //打开新标签页
   openNewTab(href: string) {
-    GM_openInTab(href, {active: true});
+    GM_openInTab(href, {active: false});
     // let tempId = 'a_blank_' + Date.now()
     // let a = document.createElement("a");
     // a.setAttribute("href", href);
@@ -375,9 +378,44 @@ export const functions = {
       GM_registerMenuCommand('仓库地址', () => {
         functions.openNewTab(window.const.git)
       });
-      GM_registerMenuCommand('反馈 & 建议', window.functions.feedback);
+      GM_registerMenuCommand('反馈 & 建议', functions.feedback);
     } catch (e) {
       console.error('无法使用Tampermonkey')
+    }
+  },
+  clone(val: any) {
+    return JSON.parse(JSON.stringify(val))
+  },
+  feedback() {
+    functions.openNewTab(DefaultVal.issue)
+  },
+  //检测页面类型
+  checkPageType() {
+    let l = window.location
+    if (l.pathname === '/') {
+      window.pageType = PageType.Home
+    } else if (l.pathname === '/changes') {
+      window.pageType = PageType.Changes
+    } else if (l.pathname === '/recent') {
+      window.pageType = PageType.Changes
+    } else if (l.href.match(/.com\/?tab=/)) {
+      window.pageType = PageType.Home
+    } else if (l.href.match(/.com\/go\//)) {
+      if (!l.href.includes('/links')) {
+        window.pageType = PageType.Node
+      }
+    } else if (l.href.match(/.com\/member/)) {
+      window.pageType = PageType.Member
+    } else {
+      let r = l.href.match(/.com\/t\/([\d]+)/)
+      if (r) {
+        window.pageType = PageType.Post
+        window.pageData.id = r[1]
+        if (l.search) {
+          let pr = l.href.match(/\?p=([\d]+)/)
+          if (pr) window.pageData.pageNo = Number(pr[1])
+        }
+      }
     }
   }
 }

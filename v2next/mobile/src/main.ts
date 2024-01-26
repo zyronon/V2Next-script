@@ -1,14 +1,11 @@
-import { createApp } from 'vue';
-import './assets/less/index.less'
-
-import App from './App.vue';
-import { GM_notification } from "gmApi"
+import {createApp} from 'vue';
+import App from './pages/App.vue';
+import {GM_notification} from "gmApi"
 import './global.d.ts'
-import { PageType, Post, Reply } from "./types"
-import { DefaultConfig, DefaultPost, DefaultUser, functions } from "@v2next/core";
-import * as eruda from "eruda";
+import {PageType, Post, Reply} from "@v2next/core/types"
+import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core";
 
-// eruda.init()
+let isMobile = !document.querySelector('#Rightbar');
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -30,7 +27,7 @@ function run() {
   window.targetUserName = ''
   window.pageType = undefined
   window.pageData = {pageNo: 1}
-  window.config = DefaultConfig
+  window.config = {...DefaultConfig, ...{viewType: 'card'}}
   window.const = {
     git: 'https://github.com/zyronon/v2ex-script',
     issue: 'https://github.com/zyronon/v2ex-script/issues'
@@ -153,7 +150,7 @@ function run() {
 
       let header = $(boxs[0])
       let temp = header.clone()
-      console.log('temp', temp)
+      // console.log('temp', temp)
       temp.find('.topic_buttons').remove()
       temp.find('.inner').remove()
       temp.find('.header').remove()
@@ -203,33 +200,25 @@ function run() {
         return post
       }
 
-      let wrapperClass = window.vals.isMobile ? 'Wrapper' : 'Main'
+      let wrapperClass = 'Wrapper'
       let boxs
       let box: any
-      if (window.vals.isMobile) {
-        if (body.length > 1) {
-          body.each(function () {
-            if (this.id === wrapperClass) {
-              boxs = this.querySelectorAll('.box')
-              box = boxs[2]
-            }
-          })
-        } else {
-          boxs = body.find(`#${wrapperClass} .box`)
-          box = boxs[2]
-        }
+      if (body.length > 1) {
+        body.each(function () {
+          if (this.id === wrapperClass) {
+            boxs = this.querySelectorAll('.box')
+            box = boxs[2]
+          }
+        })
       } else {
         boxs = body.find(`#${wrapperClass} .box`)
-        box = boxs[1]
+        box = boxs[2]
       }
+
 
       let cells: any = box.querySelectorAll('.cell')
       if (cells && cells.length) {
-        if (window.vals.isMobile) {
-          post.fr = boxs[1].querySelector('.inner')!.innerHTML
-        } else {
-          post.fr = cells[0].querySelector('.cell .fr')!.innerHTML
-        }
+        post.fr = boxs[1].querySelector('.inner')!.innerHTML
 
         cells = Array.from(cells)
         //获取创建时间
@@ -286,17 +275,13 @@ function run() {
       return new Promise(resolve => {
         $.get(href).then(res => {
           let s = res.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-          let wrapperClass = window.vals.isMobile ? 'Wrapper' : 'Main'
+          let wrapperClass = 'Wrapper'
           let box: any
-          if (window.vals.isMobile) {
-            $(s[0]).each(function () {
-              if (this.id === wrapperClass) {
-                box = this.querySelectorAll('.box')[2]
-              }
-            })
-          } else {
-            box = $(s[0]).find('#Main .box')[1]
-          }
+          $(s[0]).each(function () {
+            if (this.id === wrapperClass) {
+              box = this.querySelectorAll('.box')[2]
+            }
+          })
           let cells: any = box!.querySelectorAll('.cell')
           cells = Array.from(cells)
           resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
@@ -333,14 +318,8 @@ function run() {
         item.replyUsers = users
         item.replyFloor = floor
 
-        let spans
-        let ago
-        if (window.vals.isMobile) {
-          spans = node.querySelectorAll('span')
-          ago = spans[1]
-        } else {
-          ago = node.querySelector('.ago')
-        }
+        let spans = node.querySelectorAll('span')
+        let ago = spans[1]
         item.date = ago!.textContent!
 
         let userNode = node.querySelector('strong a')
@@ -355,12 +334,7 @@ function run() {
         if (thank_area) {
           item.isThanked = thank_area.classList.contains('thanked')
         }
-        let small
-        if (window.vals.isMobile) {
-          small = spans[2]
-        } else {
-          small = node.querySelector('.small')
-        }
+        let small = spans[2]
         if (small) {
           item.thankCount = Number(small.textContent)
         }
@@ -426,76 +400,130 @@ function run() {
     },
     //解析页面帖子列表
     parsePagePostList(list: any[], box: any) {
+      let cacheDataStr = localStorage.getItem('cacheData')
+      let cacheData = []
+      if (cacheDataStr) {
+        cacheData = JSON.parse(cacheDataStr)
+
+        let now = Date.now()
+        //筛掉3天前的数据，一直存会存不下
+        cacheData = cacheData.filter(v => {
+          return v.created > (now / 1000 - 60 * 60 * 24 * 3)
+        })
+      }
+
       list.forEach(itemDom => {
         let item = window.clone(window.initPost)
-        let item_title = itemDom.querySelector('.item_title a')
-        let {href, id} = functions.parseA(item_title)
-        item.id = id
-        item.href = href
-        item.url = location.origin + '/api/topics/show.json?id=' + item.id
+        let item_title = itemDom.querySelector('.item_title')
         itemDom.classList.add('post-item')
+
+        if (!item_title) return
+        let a = item_title.querySelector('a')
+        let {href, id} = functions.parseA(a)
+        item.id = Number(id)
+        a.href = item.href = href
+        item.url = location.origin + '/api/topics/show.json?id=' + item.id
         itemDom.classList.add(`id_${id}`)
         itemDom.dataset['href'] = href
         itemDom.dataset['id'] = id
         window.postList.push(item)
-      })
-      Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
-        let ok = res.filter((r) => r.status === "fulfilled").map((v: any) => v.value[0])
-        // let fail = res.filter((r) => r.status === "rejected")
-        box.style.boxShadow = 'unset'
-        box.style.background = 'unset'
-        if (window.config.viewType === 'card') {
-          list.forEach(itemDom => itemDom.classList.add('preview'))
-        }
-        ok.map(postItem => {
-          if (postItem?.id) {
-            let itemDom = box.querySelector(`.id_${postItem.id}`)
 
-            if (window.config.showPreviewBtn) {
-              //添加切换按钮
-              let td = itemDom.querySelector('td:nth-child(4)')
-              td.style.position = 'relative'
-              let toggle = document.createElement('div')
-              toggle.dataset['id'] = postItem.id
-              toggle.classList.add('toggle')
-              toggle.innerText = '点击展开/收起'
-              td.append(toggle)
-            }
+        //用户界面没有头像，后面有空适配吧
+        if (![PageType.Member].includes(window.pageType)) {
+          let headerWrap = $(`
+<div class="new-item">
+        <div class="left">
+           <div class="top">
+              <div class="r">
+                <div class="small fade"></div>
+                <div class="small fade"></div>
+              </div>
+            </div>
+            <div class="bottom"></div>
+        </div>
+        <div class="right"></div>
+</div>`)
+          headerWrap.find('.bottom').append(item_title)
+          headerWrap.find('.right').append(itemDom.querySelector('.count_livid'))
+          headerWrap.find('.top').prepend(itemDom.querySelector('td:first-child a'))
+          let info = itemDom.querySelector('td:nth-child(3)')
 
-            let index = window.postList.findIndex(v => v.id == postItem.id)
-            if (index > -1) {
-              let obj = window.postList[index]
-              postItem.replyCount = postItem.replies
-              window.postList[index] = Object.assign({}, obj, postItem)
+          if (window.pageType === PageType.Node) {
 
-              if (postItem.content_rendered) {
-                let a = document.createElement('a')
-                a.href = obj.href
-                a.classList.add('post-content')
-                let div = document.createElement('div')
-                div.innerHTML = postItem.content_rendered
-                a.append(div)
-                // console.log(div.clientHeight)
-                itemDom.append(a)
-                // show More
-                if (div.clientHeight < 172) {
-                  a.classList.add('show-all')
-                } else {
-                  let showMore = document.createElement('div')
-                  showMore.classList.add('show-more')
-                  showMore.innerHTML = '显示更多/收起'
-                  showMore.onclick = function (e) {
-                    e.stopPropagation()
-                    a.classList.toggle('show-all')
-                  }
-                  a.parentNode?.append(showMore)
-                }
-              }
-            }
           }
-        })
-        functions.cbChecker({type: 'syncData'})
+          if ([PageType.Changes, PageType.Home].includes(window.pageType)) {
+            let s1 = info.querySelector('span:first-child')
+            let t = headerWrap.find('.top .r div:first');
+            t.append(s1.querySelector('strong'))
+            t.append(`  •  `)
+            t.append(s1.querySelector('a'))
+          }
+
+          let b = headerWrap.find('.top .r div:last');
+          b.append(info.querySelector('span:last-child').innerHTML)
+
+          itemDom.append(headerWrap[0])
+          itemDom.querySelector('table').remove()
+        }
+
       })
+
+      const setF = (res) => {
+        let rIndex = window.postList.findIndex(w => w.id === res.id)
+        if (rIndex > -1) {
+          window.postList[rIndex] = Object.assign(window.postList[rIndex], res)
+        }
+
+        let itemDom = box.querySelector(`.id_${res.id}`)
+
+        if (window.config.viewType === 'card') {
+          itemDom.classList.add('preview')
+        }
+
+        if (res.content_rendered) {
+          let a = document.createElement('a')
+          a.href = res.href
+          a.classList.add('post-content')
+          let div = document.createElement('div')
+          div.innerHTML = res.content_rendered
+          a.append(div)
+          // console.log(div.clientHeight)
+          itemDom.append(a)
+          // show More
+          if (div.clientHeight < 300) {
+            a.classList.add('show-all')
+          } else {
+            let showMore = document.createElement('div')
+            showMore.classList.add('show-more')
+            showMore.innerHTML = '显示更多/收起'
+            showMore.onclick = function (e) {
+              e.stopPropagation()
+              a.classList.toggle('show-all')
+            }
+            a.parentNode?.append(showMore)
+          }
+        }
+      }
+
+      let fetchIndex = 0
+      for (let i = 0; i < window.postList.length; i++) {
+        let item = window.postList[i]
+        let rItem = cacheData.find(w => w.id === item.id)
+        if (rItem) {
+          setF(rItem)
+        } else {
+          fetchIndex++
+          setTimeout(() => {
+            $.get(item.url).then(v => {
+              let res = v[0]
+              res.href = item.href
+              cacheData.push(res)
+              localStorage.setItem('cacheData', JSON.stringify(cacheData))
+              setF(res)
+            })
+          }, fetchIndex < 4 ? 0 : (fetchIndex - 4) * 1000)
+        }
+      }
     },
 
     //创建记事本子条目
@@ -540,207 +568,24 @@ function run() {
       return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
     },
   }
-  window.vals = {
-    isMobile: !document.querySelector('#Rightbar')
-  }
+  window.vals = {}
   window.functions = {
-    feedback() {
-      functions.openNewTab(window.const.issue)
-    },
+    clickAvatar(prex: string) {
+      let menu = $(`${prex}#menu-body`)
+      if (menu.css('--show-dropdown') === 'block') {
+        menu.css('--show-dropdown', 'none')
+      } else {
+        menu.css('--show-dropdown', 'block')
+      }
+    }
   }
 
   //初始化样式表
   function initStyle() {
     //给Wrapper和content取消宽高，是因为好像是v2的屏蔽机制，时不时会v2会修改这两个div的宽高，让网页变形
     let style2 = `
-       html, body {
-            font-size: 62.5%;
-        }
-        
-
-        :root{
-          --box-border-radius:8px;
-        }
-        
-        #site-header #site-header-menu #menu-body{
-          position:fixed;
-          top:50px;
-        }
-        
-        #Wrapper .content{
-        padding:0;
-        }
-        
-        .box{
-          box-shadow:rgba(0, 0, 0, 0.08) 0px 4px 12px;
-        }
-        
-        #Tabs{
-            border-top-left-radius: var(--box-border-radius) !important;
-            border-top-right-radius: var(--box-border-radius) !important;
-        }
-        
-        #Main .cell .count_livid { 
-            font-size: 14px;
-            font-weight: 500; 
-            padding: 3px 10px; 
-            border-radius: 5px; 
-        }
-
-        #Wrapper {
-          height: unset !important;
-          width: unset !important;
-        }
-
-       #Wrapper > .content {
-        height: unset !important;
-        width: unset !important;
-          max-width:1100px !important;
-      }
-
-      .post-item {
-          background: white;
-      } 
-
-      .post-item > .post-content {
-          height: 0;
-          margin-top: 0;
-      }
-
-      .post-item:hover .toggle {
-          display: flex;
-      }
-
-      .toggle {
-          position: absolute;
-          right: ${window.config.viewType === 'simple' ? '5rem' : 0};
-          top: 0.5rem;
-          width: 9rem;
-          height: 100%;
-          display: flex;
-          justify-content: flex-end;
-          align-items: flex-end;
-          
-          font-size: 1.2rem;
-          color: #ccc;
-          display: none;
-      }
-
-      .preview {
-          margin: 1rem 0;
-          border: 1px solid transparent;
-          border-radius: var(--box-border-radius);
-          
-      }
-
-      .preview > .post-content {
-          height: unset !important;
-          margin-top: 0.5rem !important;
-      }
-
-      .preview > .post-content.show-all {
-          max-height: unset;
-          -webkit-mask-image:none; 
-      }
-
-      .preview  .topic-link:link {
-          color: black !important;
-      }
-
-      .post-content {
-          margin-top: 0.5rem;
-          display: block;
-          max-height: 20rem;
-          overflow: hidden;
-          text-decoration: unset !important;
-          line-break: anywhere;
-          -webkit-mask-image: linear-gradient(180deg,#000 60%,transparent);
-      }
-
-      .show-more {
-        display: none;
-      }
-
-      .preview > .show-more {
-        font-size: 1.3rem;
-        text-align: right;
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        z-index: 9;
-      }
-
-      .post-content:visited {
-          color: #afb9c1 !important;
-      }
-
-      .post-content:link {
-          color: #494949;
-      }
-
-
-      .Night .post-item {
-          background: #18222d !important;
-      }
-
-      .Night .preview {
-          border: 1px solid #3b536e;
-      }
-
-      .Night .preview > .post-content:link {
-          color: #d1d5d9;
-      }
-
-      .Night .preview > .post-content:visited {
-          color: #393f4e !important;
-      }
       
-      .Night .preview  .topic-link:link {
-          color: #c0dbff !important;
-      }
-      
-      ${
-      window.config.viewType === 'simple' ? `
-      ${window.pageType !== PageType.Member ? `
-      .item table tr td:first-child{display:none;}
-      #Rightbar .cell table:first-child tr td:first-child{display:none;}
-      .item table tr td .sep5{display:none;}
-      .item table tr td .topic_info{display:none;}
-      .item {border-bottom:none;}
-      .avatar,#avatar{display:none;}
-      ` : ''}
-      
-      #Logo {background-image:url('https://i.imgur.com/i9VgUtM.png');}
-       .bigger a, .top:nth-last-child(5){color: transparent!important;text-shadow: #b0b0b0 0 0 6px;user-select: none;}
-      // .bigger a:before,.top:nth-last-child(5):before{content:'Mona Lisa';position: absolute;background: white;}
-      #Rightbar .cell table:first-child tr td:first-child{display:none;}
-      ` : ''}
-
-      ${window.config.customBgColor ? `#Wrapper {
-          background-color: ${window.config.customBgColor} !important;
-          background-image: unset !important;
-        }` : ''}
-        
-        
-      .top{
-        position:relative;
-      }
-        
-      .new:before{
-        content:'new';
-        position: absolute;
-        background: red;
-        font-size: 10px;
-        border-radius: 4px;
-        padding: 0px 2px;
-        color: white;
-        right: -9px;
-        top: -3px;
-      }
     }
-
     `
     let addStyle2: HTMLStyleElement = document.createElement("style");
     // @ts-ignore
@@ -798,7 +643,7 @@ function run() {
           text: '自动签到失败！请关闭其他插件或脚本。\n如果连续几天都签到失败，请联系作者解决！',
           timeout: 4000,
           onclick() {
-            window.functions.feedback()
+            functions.feedback()
           }
         });
         console.warn('[V2EX 增强] 自动签到失败！请关闭其他插件或脚本。如果连续几天都签到失败，请联系作者解决！')
@@ -819,34 +664,6 @@ function run() {
         localStorage.setItem('menu_clockInTime', timeNow); //         写入签到时间以供后续比较
       }
     })
-  }
-
-  //检测页面类型
-  function checkPageType() {
-    let l = window.location
-    if (l.pathname === '/') {
-      window.pageType = PageType.Home
-    } else if (l.href.match(/.com\/?tab=/)) {
-      window.pageType = PageType.Home
-    } else if (l.href.match(/.com\/go\//)) {
-      if (!l.href.includes('/links')) {
-        window.pageType = PageType.Node
-      }
-    } else if (l.href.match(/.com\/recent/)) {
-      window.pageType = PageType.Home
-    } else if (l.href.match(/.com\/member/)) {
-      window.pageType = PageType.Member
-    } else {
-      let r = l.href.match(/.com\/t\/([\d]+)/)
-      if (r) {
-        window.pageType = PageType.Post
-        window.pageData.id = r[1]
-        if (l.search) {
-          let pr = l.href.match(/\?p=([\d]+)/)
-          if (pr) window.pageData.pageNo = Number(pr[1])
-        }
-      }
-    }
   }
 
   //获取记事本条目内容
@@ -879,33 +696,38 @@ function run() {
       let body = $(bodyText[0])
       let items: HTMLAnchorElement[] = body.find('#Main .box .note_item_title a') as any
 
-      let tagItem = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
-      if (tagItem) {
-        window.user.tagsId = tagItem.href.substr(-5)
-        window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix,)
-      } else {
-        let r = await window.parse.createNoteItem(window.user.tagPrefix)
-        r && (window.user.tagsId = r);
+      if (window.config.openTag) {
+        let tagItem = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
+        if (tagItem) {
+          window.user.tagsId = tagItem.href.substr(-5)
+          window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix,)
+        } else {
+          let r = await window.parse.createNoteItem(window.user.tagPrefix)
+          r && (window.user.tagsId = r);
+        }
       }
 
-      let readItem = Array.from(items).find(v => v.innerText.includes(window.user.readPrefix))
-      if (readItem) {
-        window.user.readNoteItemId = readItem.href.substr(-5)
-        window.user.readList = await getNoteItemContent(window.user.readNoteItemId, window.user.readPrefix)
-      } else {
-        let r = await window.parse.createNoteItem(window.user.readPrefix)
-        r && (window.user.readNoteItemId = r);
+      if (window.config.rememberLastReadFloor) {
+        let readItem = Array.from(items).find(v => v.innerText.includes(window.user.readPrefix))
+        if (readItem) {
+          window.user.readNoteItemId = readItem.href.substr(-5)
+          window.user.readList = await getNoteItemContent(window.user.readNoteItemId, window.user.readPrefix)
+        } else {
+          let r = await window.parse.createNoteItem(window.user.readPrefix)
+          r && (window.user.readNoteItemId = r);
+        }
       }
 
-      let imgurItem = Array.from(items).find(v => v.innerText.includes(window.user.imgurPrefix))
-      if (imgurItem) {
-        window.user.imgurNoteId = imgurItem.href.substr(-5)
-        window.user.imgurList = await getNoteItemContent(window.user.imgurNoteId, window.user.imgurPrefix)
-      } else {
-        let r = await window.parse.createNoteItem(window.user.imgurPrefix)
-        r && (window.user.imgurNoteId = r);
+      if (false) {
+        let imgurItem = Array.from(items).find(v => v.innerText.includes(window.user.imgurPrefix))
+        if (imgurItem) {
+          window.user.imgurNoteId = imgurItem.href.substr(-5)
+          window.user.imgurList = await getNoteItemContent(window.user.imgurNoteId, window.user.imgurPrefix)
+        } else {
+          let r = await window.parse.createNoteItem(window.user.imgurPrefix)
+          r && (window.user.imgurNoteId = r);
+        }
       }
-
       functions.cbChecker({type: 'syncData'})
     })
   }
@@ -927,12 +749,8 @@ function run() {
   }
 
   function addSettingText() {
-    let setting = $(`<a href="javascript:void 0;" class="top ${window.config.version < window.currentVersion ? 'new' : ''}">脚本设置</a>`)
-    setting.on('click', function () {
-      this.classList.remove('new')
-      functions.cbChecker({type: 'openSetting'})
-    })
-    $('.tools').prepend(setting)
+    let setting = $(`<a href="/script-setting" class="top">脚本管理</a>`)
+    $('#menu-body .cell:first').append(setting)
   }
 
   async function init() {
@@ -953,21 +771,39 @@ function run() {
     if (window.isNight) {
       document.documentElement.classList.add('dark')
     }
-
-    checkPageType()
+    functions.checkPageType()
+    addSettingText()
     functions.initMonkeyMenu()
+
+    let s = $(`
+        <div class="slide">
+            <div class="slide-list">
+                <div class="slide-item page0"></div>
+                <div class="slide-item page1">
+                    <div class="post-wrapper"></div>
+                    <div class="setting-wrapper"></div>
+                </div>
+                <div class="slide-item page2">
+                    <div class="setting-wrapper2"></div>
+                </div>
+            </div>    
+        </div>`)
+
+    $('body').append(s)
+    $('body').children().slice(0, 4).each(function () {
+      $('.page0').append(this)
+    })
+    //因为原来页面在page0下面，右上角的菜单只能显示在page0下面。所以这里复制一份到post-wrapper里面去，那边点右上角就显示这个
+    $('.post-wrapper').append($('#site-header').clone())
+
 
     let top2 = $('#menu-body .cell:first .top:first')
     if (top2.length && ['个人主页', 'Profile'].includes(top2.text())) {
       window.user.username = top2.attr('href').replace('/member/', '')
       window.user.avatar = $('#menu-entry .avatar').attr('src')
-
-      initNoteData()
     }
 
     initConfig().then(r => {
-      //这个要放后面，不然前面查找会出错
-      addSettingText()
 
       initStyle()
 
@@ -980,74 +816,99 @@ function run() {
       }
 
       if (window.user.username) {
-
+        initNoteData()
       }
     })
 
     let box: any
     let list
+    let first
+    let last
     // console.log(window.pageType)
     // window.pageType = PageType.Post
     // window.pageData.id = 1007682
 
     switch (window.pageType!) {
-      case  PageType.Node:
-        box = window.win().doc.querySelectorAll('#Wrapper #Main .box')
+      case PageType.Node:
+        box = document.querySelectorAll('#Wrapper .box')
 
-        let topics = box[1].querySelector('#TopicsNode')
-        list = topics.querySelectorAll('.cell')
-        list[0].before($section)
+        //移除box的样式，使卡片样式时能显示出背景
+        box[1].style.background = 'unset'
+        box[1].style.borderBottom = 'none'
+        box[1].style['border-radius'] = '0'
+        box[1].style['box-shadow'] = 'none'
+
+        first = $(box[1]).children().first()
+        first.addClass('cell post-item')
+        if (window.config.viewType === 'card') first[0].classList.add('preview')
+        last = $(box[1]).children().last()
+        last.addClass('cell post-item')
+        if (window.config.viewType === 'card') last[0].classList.add('preview')
+
+        list = box[1].querySelectorAll('.cell')
+        box[0].before($section)
         window.parse.parsePagePostList(list, box[1])
         break
-      case  PageType.Home:
-        if (window.vals.isMobile) {
-          box = document.querySelector('#Wrapper .box')
-        } else {
-          box = document.querySelector('#Wrapper #Main .box')
-        }
+      case PageType.Home:
+        box = document.querySelector('#Wrapper .box')
+
+        //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+        let headerWrap = $('<div class="cell post-item"></div>')
+        if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+        $(box).prepend(headerWrap)
+        $(box).children().slice(1, 3).each(function () {
+          headerWrap.append(this)
+        })
+        last = $(box).children().last()
+        last.addClass('cell post-item')
+        if (window.config.viewType === 'card') last[0].classList.add('preview')
+
+        //移除box的样式，使卡片样式时能显示出背景
+        box.style.background = 'unset'
+        box.style['border-radius'] = '0'
+        box.style['box-shadow'] = 'none'
+
+
         list = box!.querySelectorAll('.item')
         list[0].before($section)
         window.parse.parsePagePostList(list, box)
         break
-      case  PageType.Post:
-        if (window.vals.isMobile) {
-          box = document.querySelector('#Wrapper .box')
-        } else {
-          box = document.querySelector('#Wrapper #Main .box')
-        }
+      case PageType.Changes:
+        box = document.querySelector('#Wrapper .box')
+
+        //移除box的样式，使卡片样式时能显示出背景
+        box.style.background = 'unset'
+        box.style['border-radius'] = '0'
+        box.style['box-shadow'] = 'none'
+
+        first = $(box).children().first()
+        first.addClass('cell post-item')
+        if (window.config.viewType === 'card') first[0].classList.add('preview')
+        last = $(box).children().last()
+        last.addClass('cell post-item')
+        if (window.config.viewType === 'card') last[0].classList.add('preview')
+
+        list = box!.querySelectorAll('.item')
+        list[0].before($section)
+        window.parse.parsePagePostList(list, box)
+        break
+      case PageType.Post:
+        box = document.querySelector('#Wrapper .box')
         // @ts-ignore
         box.after($section)
 
-        // let r = await functions.checkPostReplies(window.pageData.id, false)
-        // if (r) {
-        //   window.stopMe = true
-        //   functions.cbChecker({type: 'syncData'})
-        //   functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
-        //   return
-        // }
-
-        //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面突然变宽或变窄
-        if (window.config.postWidth) {
-          //Rightbar的css样式是float，因为自定义帖子宽度的话需要把content改为flex。
-          //Rightbar的float就失效了，所以把他移动右边
-          let Main = $('#Main')
-          Main.css({
-            'width': window.config.postWidth,
-            margin: 'unset',
-          })
-          $('#Wrapper > .content').css({
-            'max-width': 'unset',
-            display: 'flex',
-            'justify-content': 'center',
-            gap: '20px'
-          })
-          Main.after($('#Rightbar'))
+        let r = await functions.checkPostReplies(window.pageData.id, false)
+        if (r) {
+          window.stopMe = true
+          functions.cbChecker({type: 'syncData'})
+          functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
+          return
         }
 
-        let post = window.clone(window.initPost)
+        let post = functions.clone(window.initPost)
         post.id = window.pageData.id
-        let body = $(window.document.body)
-        let htmlText = window.document.documentElement.outerHTML
+        let body = $(document.body)
+        let htmlText = document.documentElement.outerHTML
 
         window.parse.parsePostContent(
           post,
@@ -1055,7 +916,7 @@ function run() {
           htmlText
         ).then(async (res: any) => {
           // console.log('详情页-基本信息解析完成', Date.now())
-          await functions.cbChecker({type: 'postContent', value: res}, 0)
+          await functions.cbChecker({type: 'postContent', value: res})
           //引用修改
           await window.parse.parseOp(res)
           // console.log('详情页-OP信息解析完成', Date.now())
@@ -1067,17 +928,14 @@ function run() {
           body,
           htmlText,
           window.pageData.pageNo
-        ).then(async (res: any) => {
+        ).then(async (res1: any) => {
           // console.log('详情页-回复解析完成', Date.now())
-          await functions.cbChecker({type: 'postReplies'})
+          await functions.cbChecker({type: 'postReplies', value: res1})
         })
         break
       case PageType.Member:
-        if (window.vals.isMobile) {
-          box = document.querySelector('#Wrapper .box')
-        } else {
-          box = document.querySelector('#Wrapper #Main .box')
-        }
+        box = document.querySelectorAll('#Wrapper .box')
+
         window.targetUserName = box[0].querySelector('h1')!.textContent!
         if (window.config.openTag) {
           //移除box的bottom样式，让和vue的div融为一体
@@ -1086,9 +944,9 @@ function run() {
           box[0].style['border-bottom-right-radius'] = '0'
         }
 
-        list = box[1].querySelectorAll('.cell')
+        list = box[2].querySelectorAll('.cell')
         box[0].after($section)
-        window.parse.parsePagePostList(list, box[1])
+        window.parse.parsePagePostList(list, box[2])
         break
       default:
         window.stopMe = true
@@ -1115,7 +973,25 @@ function run() {
   }
 }
 
-run()
-let vueApp = createApp(App)
-vueApp.config.unwrapInjectedRef = true
-vueApp.mount($section);
+if (isMobile) {
+  console.log('V2EX 移动端')
+  ;(function () {
+    if (/eruda=1/.test(location.href) || localStorage.getItem('active-eruda')) {
+      let src = '//cdn.jsdelivr.net/npm/eruda@3.0.1';
+      console.log(1)
+      let s = document.createElement('script');
+      s.src = src
+      s.onload = () => {
+        let s1 = document.createElement('script');
+        s1.innerText = `eruda.init();`
+        document.body.append(s1);
+      }
+      document.body.append(s);
+    }
+  })();
+
+  run()
+  let vueApp = createApp(App)
+  vueApp.config.unwrapInjectedRef = true
+  vueApp.mount($section);
+}
