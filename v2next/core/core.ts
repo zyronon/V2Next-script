@@ -1,5 +1,5 @@
-import { Config, Post, User, CommentDisplayType, Reply, MAX_REPLY_LIMIT, PageType } from "./types";
-import { GM_openInTab, GM_registerMenuCommand } from "gmApi";
+import {Config, Post, User, CommentDisplayType, Reply, MAX_REPLY_LIMIT, PageType} from "./types";
+import {GM_openInTab, GM_registerMenuCommand} from "gmApi";
 
 export const DefaultPost: Post = {
   allReplyUsers: [],
@@ -85,7 +85,11 @@ export const DefaultVal = {
   postList: [],
   git: 'https://github.com/zyronon/web-scripts',
   shortGit: 'zyronon/web-scripts',
-  issue: 'https://github.com/zyronon/web-scripts/issues'
+  issue: 'https://github.com/zyronon/web-scripts/issues',
+  pcLog: 'https://greasyfork.org/zh-CN/scripts/458024/versions',
+  pcScript: 'https://greasyfork.org/zh-CN/scripts/458024',
+  mobileScript: 'https://greasyfork.org/zh-CN/scripts/485356',
+  homeUrl: 'https://v2next.netlify.app/',
 }
 
 export const functions = {

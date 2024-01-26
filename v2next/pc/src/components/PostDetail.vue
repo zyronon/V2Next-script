@@ -59,12 +59,12 @@
               <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
             </template>
           </div>
-          <BaseHtmlRender :html="post.headerTemplate"/>
+          <BaseHtmlRender v-if="post.headerTemplate" :html="post.headerTemplate "/>
+          <BaseHtmlRender v-else :html="post.jsonContent "/>
           <Toolbar @reply="isSticky = !isSticky">
             <Point
                 @addThank="addThank"
                 @recallThank="recallThank"
-                :full="false"
                 :item="{
                 isThanked:post.isThanked,
                 thankCount:post.thankCount,
@@ -75,11 +75,13 @@
         </div>
 
         <div class="my-box" v-if="topReply.length && config.showTopReply">
-          <div class="my-cell flex ">
-            <span class=" ">高赞回复</span>
+          <div class="my-cell flex " @click="collapseTopReplyList">
+            <span>高赞回复</span>
             <div class="top-reply">
               <Tooltip title="收起高赞回复">
-                <i class="fa fa-compress" @click="collapseTopReplyList"/>
+                <div class="tool">
+                  <Icon icon="gravity-ui:chevrons-collapse-vertical"/>
+                </div>
               </Tooltip>
             </div>
           </div>
@@ -97,45 +99,16 @@
 
         <div class="my-box comment-wrapper">
           <template v-if="post.replyList.length ||loading">
-            <div class="my-cell flex" v-if="config.showToolbar">
-              <div class="radio-group2">
-                <Tooltip title="不隐藏@用户">
-                  <div class="radio"
-                       @click="changeOption(CommentDisplayType.FloorInFloor)"
-                       :class="displayType === CommentDisplayType.FloorInFloor?'active':''">楼中楼(@)
-                  </div>
-                </Tooltip>
-                <Tooltip title="隐藏第一个@用户，双击内容可显示原文">
-                  <div class="radio"
-                       @click="changeOption(CommentDisplayType.FloorInFloorNoCallUser)"
-                       :class="displayType === CommentDisplayType.FloorInFloorNoCallUser?'active':''">楼中楼
-                  </div>
-                </Tooltip>
-                <Tooltip title="重复显示楼中楼的回复">
-                  <div class="radio"
-                       @click="changeOption(CommentDisplayType.FloorInFloorNested)"
-                       :class="displayType === CommentDisplayType.FloorInFloorNested?'active':''">冗余楼中楼
-                  </div>
-                </Tooltip>
-                <div class="radio"
-                     @click="changeOption(CommentDisplayType.Like)"
-                     :class="displayType ===CommentDisplayType.Like?'active':''">感谢
-                </div>
-                <div class="radio"
-                     @click="changeOption(CommentDisplayType.OnlyOp)"
-                     :class="displayType === CommentDisplayType.OnlyOp?'active':''">只看楼主
-                </div>
-                <div class="radio"
-                     @click="changeOption(CommentDisplayType.V2exOrigin)"
-                     :class="displayType === CommentDisplayType.V2exOrigin?'active':''">V2原版
-                </div>
-              </div>
-            </div>
             <div class="my-cell flex">
-                <span>{{ post.replyCount }} 条回复
-                 <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
-                </span>
-              <div class="fr" v-html="post.fr" v-if="!isMobile"></div>
+              <div>{{ post.replyCount }} 条回复
+                <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
+              </div>
+              <BaseSelect
+                  v-if="config.showToolbar"
+                  :display-type="displayType"
+                  @update:display-type="e => $emit('update:displayType', e)"
+              />
+              <div class="fr" v-html="post.fr" v-else></div>
             </div>
           </template>
 
@@ -177,7 +150,7 @@
         <div class="my-cell flex" @click.stop="stop">
           <span class="gray">上下文</span>
           <div class="top-reply">
-            <i class="fa fa-times" @click="showRelationReply = false"/>
+            <Icon icon="ic:round-close" @click="showRelationReply = false"/>
           </div>
         </div>
         <div class="comments" @click.stop="stop">
@@ -199,17 +172,17 @@
         </div>
       </div>
       <div class="close-btn" @click="close('btn')">
-        <i class="fa fa-times" aria-hidden="true"></i>
+        <Icon icon="fontisto:close-a"/>
       </div>
       <div class="scroll-top gray" @click.stop="scrollTop">
-        <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
+        <Icon icon="lucide:move-up"/>
       </div>
       <div class="refresh gray" @click.stop="$emit('refresh')">
         <BaseLoading v-if="refreshLoading"/>
-        <i v-else class="fa fa-refresh" aria-hidden="true"></i>
+        <Icon v-else icon="material-symbols:refresh"/>
       </div>
       <div class="scroll-to gray" @click.stop="jump(currentFloor)">
-        <i class="fa fa-long-arrow-down"/>
+        <Icon icon="lucide:move-down"/>
         <input type="text" v-model="currentFloor"
                @click.stop="stop"
                @keydown.enter="jump(currentFloor)">
@@ -230,13 +203,15 @@ import {CommentDisplayType, PageType} from "@v2next/core/types.ts";
 import Tooltip from "./Tooltip.vue";
 import PopConfirm from "./PopConfirm.vue";
 import SingleComment from "./SingleComment.vue";
-import {debounce} from "../utils/index.js";
 import BaseLoading from "./BaseLoading.vue";
 import BaseButton from "./BaseButton.vue";
+import {Icon} from "@iconify/vue";
+import BaseSelect from "@/components/BaseSelect.vue";
 
 export default {
   name: "detail",
   components: {
+    BaseSelect,
     BaseButton,
     SingleComment,
     PopConfirm,
@@ -246,7 +221,8 @@ export default {
     Toolbar,
     BaseHtmlRender,
     Tooltip,
-    BaseLoading
+    BaseLoading,
+    Icon
   },
   inject: ['allReplyUsers', 'post', 'isMobile', 'tags', 'isLogin', 'config', 'pageType', 'isNight'],
   provide() {
@@ -328,6 +304,9 @@ export default {
       if ([CommentDisplayType.FloorInFloor, CommentDisplayType.FloorInFloorNoCallUser].includes(this.displayType)) return this.post.nestedReplies
       if (this.displayType === CommentDisplayType.Like) {
         return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
+      }
+      if (this.displayType === CommentDisplayType.New) {
+        return window.clone(this.post.replyList).reverse()
       }
       if (this.displayType === CommentDisplayType.V2exOrigin) return this.post.replyList
       if (this.displayType === CommentDisplayType.FloorInFloorNested) return this.post.nestedRedundReplies
@@ -784,10 +763,15 @@ export default {
     z-index: 99;
     padding: .8rem 0;
     gap: 1rem;
-    width: 4.5rem;
+    width: 4.2rem;
     transform: translateX(6rem);
     font-size: 2rem;
     background: var(--color-sp-btn-bg);
+    color: var(--color-font-3);
+
+    svg {
+      font-size: 2.4rem;
+    }
   }
 
   .refresh {
@@ -811,12 +795,12 @@ export default {
   }
 
   .close-btn {
-    color: @main-color;
+    color: var(--color-font-3);
     cursor: pointer;
     position: fixed;
     top: 3rem;
     transform: translateX(4rem);
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 
   .top-reply {
@@ -825,9 +809,6 @@ export default {
     font-size: 2rem;
     display: flex;
 
-    i {
-      padding: 0 1rem;
-    }
   }
 }
 </style>

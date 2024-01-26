@@ -8,14 +8,7 @@
   >
     <template v-if="!decodeText">
       Base64解码：{{ originalText }}
-      <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M17 32L19.1875 27M31 32L28.8125 27M19.1875 27L24 16L28.8125 27M19.1875 27H28.8125" stroke="#929596"
-              stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M43.1999 20C41.3468 10.871 33.2758 4 23.5999 4C13.9241 4 5.85308 10.871 4 20L10 18" stroke="#929596"
-              stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M4 28C5.85308 37.129 13.9241 44 23.5999 44C33.2758 44 41.3468 37.129 43.1999 28L38 30" stroke="#929596"
-              stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <Icon icon="system-uicons:translate"/>
     </template>
     <div v-else>
       <span>{{ decodeText }}</span>
@@ -29,6 +22,7 @@ import {onMounted, reactive, ref} from "vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import BaseButton from "./BaseButton.vue";
+import {Icon} from '@iconify/vue'
 
 const tooltip = ref(null)
 const show = ref(false)
@@ -111,7 +105,8 @@ function decode() {
 
   svg {
     margin-left: 1rem;
-    min-width: 1.8rem;
+    font-size: 3rem;
+    color: var(--color-gray);
   }
 
   :deep(.base-button) {

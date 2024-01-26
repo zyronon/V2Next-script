@@ -1,13 +1,12 @@
 <template>
   <div class="Author" :class="{expand:!modelValue}">
     <div class="Author-left">
-      <svg class="expand-icon"
-           v-if="!modelValue"
-           @click="$emit('update:modelValue',true)"
-           width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22 42H6V26" stroke="#177EC9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M26 6H42V22" stroke="#177EC9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <Icon
+          v-if="!modelValue"
+          @click="$emit('update:modelValue',true)"
+          color="#177EC9"
+          class="expand-icon"
+          icon="gravity-ui:chevrons-expand-up-right"/>
       <a class="avatar" v-if="config.viewType !== 'simple'" :href="`/member/${comment.username}`">
         <img :src="comment.avatar" alt="">
       </a>
@@ -33,24 +32,20 @@
       <div class="toolbar" v-if="isLogin">
         <PopConfirm title="确认隐藏这条回复?" @confirm="$emit('hide')">
           <div class="tool">
+            <Icon icon="fluent:eye-hide-24-regular"/>
             <span>隐藏</span>
           </div>
         </PopConfirm>
-        <div class="tool" v-if="context"
-             @click="showRelationReply">
+        <div class="tool" v-if="context" @click="showRelationReply">
+          <Icon icon="iconoir:page-search"/>
           <span>上下文</span>
         </div>
         <div class="tool" v-if="type === 'top'" @click="jump">
+          <Icon icon="icon-park-outline:to-bottom"/>
           <span>跳转</span>
         </div>
         <div class="tool" @click="checkIsLogin('reply')">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M23 21H25.0025" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-            <path d="M33.001 21H34.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-            <path d="M13.001 21H14.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+          <Icon icon="mynaui:message"/>
           <span>回复</span>
         </div>
         <Point
@@ -62,7 +57,6 @@
         />
       </div>
       <Point
-          style="margin-left: 1rem;"
           v-show="comment.thankCount"
           :item="pointInfo"
           @addThank="addThank"
@@ -78,10 +72,11 @@ import Point from "./Point.vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import PopConfirm from "./PopConfirm.vue";
+import {Icon} from "@iconify/vue";
 
 export default {
   name: "Author",
-  components: {PopConfirm, Point},
+  components: {PopConfirm, Point, Icon},
   inject: ['isLogin', 'tags', 'config', 'isNight'],
   props: {
     modelValue: false,
@@ -263,8 +258,7 @@ export default {
       align-items: center;
       color: var(--color-gray);
       opacity: 0;
-      font-weight: bold;
-      gap: 1rem;
+      gap: .5rem;
 
       &:hover {
         opacity: 1;

@@ -3,15 +3,11 @@
       :disabled="disabled"
       :title="`确认花费 10 个铜币向 @${item.username} 的这条回复发送感谢？`"
       @confirm="thank">
-    <div class="tool" :class="disabled?'disabled':''" @click="thankError">
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-            d="M15 8C8.92487 8 4 12.9249 4 19C4 30 17 40 24 42.3262C31 40 44 30 44 19C44 12.9249 39.0751 8 33 8C29.2797 8 25.9907 9.8469 24 12.6738C22.0093 9.8469 18.7203 8 15 8Z"
-            :fill="getIsFull()" :stroke="getColor()" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round"/>
-      </svg>
-      <div class="link-num" v-if="item.thankCount">{{ item.thankCount }}</div>
-      <div v-else>感谢</div>
+    <div class="tool" :class="[disabled && 'disabled']" @click="thankError">
+      <Icon v-if="item.isThanked" color="rgb(224,42,42)" icon="icon-park-solid:like"/>
+      <Icon v-else :color="!item.thankCount ? null:'rgb(224,42,42)'" icon="icon-park-outline:like"/>
+      <span class="link-num" v-if="item.thankCount">{{ item.thankCount }}</span>
+      <span v-else>感谢</span>
     </div>
   </PopConfirm>
 </template>
@@ -19,23 +15,17 @@
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import PopConfirm from "./PopConfirm.vue";
+import {Icon} from "@iconify/vue";
 
-const loveColor = 'rgb(224,42,42)'
 export default {
   name: "Point",
-  components: {PopConfirm},
+  components: {PopConfirm, Icon},
   inject: ['post', 'isLogin'],
   props: {
     item: {
       type: Object,
       default() {
         return {}
-      }
-    },
-    full: {
-      type: Boolean,
-      default() {
-        return true
       }
     },
     apiUrl: '',
@@ -46,14 +36,6 @@ export default {
     }
   },
   methods: {
-    getColor() {
-      if (this.item.isThanked) return loveColor
-      return this.full ? loveColor : '#929596'
-    },
-    getIsFull() {
-      if (this.item.isThanked) return loveColor
-      return this.full ? loveColor : 'none'
-    },
     thankError() {
       if (!this.isLogin) {
         return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})

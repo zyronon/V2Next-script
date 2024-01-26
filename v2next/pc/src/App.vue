@@ -492,33 +492,31 @@ export default {
         this.loading = true
 
         let showJsonUrl = `${location.origin}/api/topics/show.json?id=${this.current.id}`
-        let r = await fetch(showJsonUrl)
-        if (r) {
-          let res = await r.json()
-          if (res) {
-            let d = res[0]
-            d.replyCount = d.replies
-            this.current = Object.assign(this.current, d)
-            if (this.current.replyCount > MAX_REPLY_LIMIT) {
-              functions.openNewTab(`${location.origin}/t/${this.current.id}?p=1&script=1`)
-              eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '由于回复数量较多，已为您单独打开此主题'})
-              this.loading = this.show = false
-              return
-            } else {
-              if (!this.current.headerTemplate) {
-                this.current.headerTemplate = `
+        fetch(showJsonUrl).then(async r => {
+          if (r.status === 200) {
+            let res = await r.json()
+            if (res) {
+              let d = res[0]
+              d.replyCount = d.replies
+              this.current = Object.assign(this.current, d)
+              if (this.current.replyCount > MAX_REPLY_LIMIT) {
+                functions.openNewTab(`${location.origin}/t/${this.current.id}?p=1&script=1`)
+                eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '由于回复数量较多，已为您单独打开此主题'})
+                this.loading = this.show = false
+                return
+              } else {
+                this.current.jsonContent = `
             <div class="cell">
               <div class="topic_content">
                 <div class="markdown_body">
                  ${d?.content_rendered ?? ''}
                 </div>
               </div>
-            </div>
-            `
+            </div>`
               }
             }
           }
-        }
+        })
       }
 
       //ajax不能判断是否跳转
