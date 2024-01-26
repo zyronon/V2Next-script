@@ -17,7 +17,7 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '8.0.6',
+        version: '8.0.8',
         name: 'V2Next-Mobile',
         icon: 'https://v2next.netlify.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
@@ -40,7 +40,7 @@ export default defineConfig({
           'https://*.v2ex.com/member/*',
           'https://*.v2ex.com/changes*',
         ],
-        description: '楼中楼、简洁模式、高赞回复排序、查看回复上下文、发送图片和表情、UI美化、base64 解码等功能',
+        description: 'V2Next - 一个好用的V2EX脚本',
         author: 'zyronon',
         license: 'GPL License',
         updateURL: 'https://update.greasyfork.org/scripts/485356/V2Next-Mobile.user.js',
