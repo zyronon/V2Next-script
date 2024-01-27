@@ -7,7 +7,7 @@
           <div class="title">
             脚本设置
           </div>
-          <i class="fa fa-times" @click="close"/>
+          <Icon icon="ic:round-close" @click="close"/>
         </div>
         <div class="body">
           <div class="left">
@@ -91,40 +91,7 @@
                 <div class="row">
                   <label class="item-title">回复展示方式</label>
                   <div class="wrapper">
-                    <div class="radio-group2">
-                      <Tooltip title="不隐藏@用户">
-                        <div class="radio"
-                             @click="config.commentDisplayType = CommentDisplayType.FloorInFloor"
-                             :class="config.commentDisplayType === CommentDisplayType.FloorInFloor?'active':''">楼中楼(@)
-                        </div>
-                      </Tooltip>
-                      <Tooltip title="隐藏第一个@用户，双击内容可显示原文">
-                        <div class="radio"
-                             @click="config.commentDisplayType = CommentDisplayType.FloorInFloorNoCallUser"
-                             :class="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser?'active':''">
-                          楼中楼
-                        </div>
-                      </Tooltip>
-                      <Tooltip title="重复显示楼中楼的回复">
-                        <div class="radio"
-                             @click="config.commentDisplayType = CommentDisplayType.FloorInFloorNested"
-                             :class="config.commentDisplayType === CommentDisplayType.FloorInFloorNested?'active':''">
-                          冗余楼中楼
-                        </div>
-                      </Tooltip>
-                      <div class="radio"
-                           @click="config.commentDisplayType = CommentDisplayType.Like"
-                           :class="config.commentDisplayType === CommentDisplayType.Like?'active':''">感谢
-                      </div>
-                      <div class="radio"
-                           @click="config.commentDisplayType = CommentDisplayType.OnlyOp"
-                           :class="config.commentDisplayType === CommentDisplayType.OnlyOp?'active':''">只看楼主
-                      </div>
-                      <div class="radio"
-                           @click="config.commentDisplayType = CommentDisplayType.V2exOrigin"
-                           :class="config.commentDisplayType === CommentDisplayType.V2exOrigin?'active':''">V2原版
-                      </div>
-                    </div>
+                    <BaseSelect v-model:display-type="config.commentDisplayType"/>
                   </div>
                 </div>
                 <div class="row">
@@ -270,10 +237,14 @@ import Tooltip from "../Tooltip.vue";
 import {CommentDisplayType} from "@v2next/core/types.ts";
 import BaseSwitch from "../BaseSwitch.vue";
 import {DefaultVal} from "@v2next/core/core.ts";
+import BaseSelect from "@/components/BaseSelect.vue";
+import {Icon} from "@iconify/vue";
 
 export default {
   name: "Setting",
   components: {
+    Icon,
+    BaseSelect,
     BaseSwitch,
     Tooltip
   },
@@ -353,9 +324,9 @@ export default {
         margin-bottom: 0;
       }
 
-      i {
+      svg {
         cursor: pointer;
-        font-size: 2.2rem;
+        font-size: 2.6rem;
       }
     }
 
