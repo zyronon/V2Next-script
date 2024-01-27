@@ -598,8 +598,7 @@ export default {
             </span>
       <span class="add-tag ago" @click="addTargetUserTag" title="添加标签">+</span>
     </div>
-    <div v-if="isPost && !show && config.autoOpenDetail" class="my-box p2"
-         style="margin-top: 2rem;">
+    <div v-if="isPost && !show " class="my-box p2" style="margin-top: 2rem;margin-bottom: 0;">
       <div class="flex flex-center" v-if="loading">
         <BaseLoading/>
       </div>
@@ -636,6 +635,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 1rem;
+  color: var(--color-font-pure);
 }
 </style>
 
