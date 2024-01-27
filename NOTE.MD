@@ -49,6 +49,7 @@ https://www.v2ex.com/poll_once 好像是换once的
 - 可调整字体大小
 - 关闭时，去掉saveReadList
 - 测试直接打开帖子后面几页时，能否正常获取其他页
+- 连接下划线有问题,firefox上
 
  
 
