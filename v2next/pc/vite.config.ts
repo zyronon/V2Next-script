@@ -17,7 +17,7 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '8.0.2',
+        version: '8.0.4',
         name: 'V2Next',
         icon: 'https://v2next.netlify.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
