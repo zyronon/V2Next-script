@@ -1,9 +1,9 @@
-import { createApp } from 'vue';
+import {createApp} from 'vue';
 import App from './App.vue';
-import { GM_notification, GM_openInTab, GM_registerMenuCommand } from "gmApi"
+import {GM_notification, GM_openInTab, GM_registerMenuCommand} from "gmApi"
 import './global.d.ts'
-import { MAX_REPLY_LIMIT, PageType, Post, Reply } from "@v2next/core/types"
-import { DefaultConfig, DefaultPost, DefaultUser, DefaultVal, functions } from "@v2next/core/core";
+import {MAX_REPLY_LIMIT, PageType, Post, Reply} from "@v2next/core/types"
+import {DefaultConfig, DefaultPost, DefaultUser, DefaultVal, functions} from "@v2next/core/core";
 
 let isMobile = !document.querySelector('#Rightbar');
 
@@ -66,19 +66,18 @@ function run() {
       }
 
       let aName = wrapper.find('.header small.gray a:nth-child(1)')
-      if (aName) {
+      if (aName.length) {
         post.member.username = aName[0].innerText
       }
 
       let spanEl = wrapper.find('.header small.gray span')
-      if (spanEl) {
+      if (spanEl.length) {
         post.createDateAgo = spanEl[0].innerText
       }
 
-
       let avatarEl: any = wrapper.find('.header .avatar')
       // console.log('avatarEl', avatarEl[0].src)
-      if (avatarEl) {
+      if (avatarEl.length) {
         post.member.avatar_large = avatarEl[0].src
       }
 
