@@ -5,6 +5,7 @@ export interface Post {
     allReplyUsers: any[],
     username: string,
     url: string,
+    href: string,
     member: any,
     node: {
         title: string,
@@ -47,7 +48,6 @@ export interface User {
 
 export interface Config {
     showToolbar: boolean,
-    showPreviewBtn: boolean,
     autoOpenDetail: boolean,
     openTag: boolean,//给用户打标签
     clickPostItemOpenDetail: boolean,

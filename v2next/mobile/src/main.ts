@@ -1,9 +1,9 @@
-import {createApp} from 'vue';
+import { createApp } from 'vue';
 import App from './pages/App.vue';
-import {GM_notification} from "gmApi"
+import { GM_notification } from "gmApi"
 import './global.d.ts'
-import {PageType, Post, Reply} from "@v2next/core/types"
-import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core";
+import { PageType, Post, Reply } from "@v2next/core/types"
+import { DefaultConfig, DefaultPost, DefaultUser, functions } from "@v2next/core";
 
 let isMobile = !document.querySelector('#Rightbar');
 
@@ -400,23 +400,10 @@ function run() {
     },
     //解析页面帖子列表
     parsePagePostList(list: any[], box: any) {
-      let cacheDataStr = localStorage.getItem('cacheData')
-      let cacheData = []
-      if (cacheDataStr) {
-        cacheData = JSON.parse(cacheDataStr)
-
-        let now = Date.now()
-        //筛掉3天前的数据，一直存会存不下
-        cacheData = cacheData.filter(v => {
-          return v.created > (now / 1000 - 60 * 60 * 24 * 3)
-        })
-      }
-
       list.forEach(itemDom => {
         let item = window.clone(window.initPost)
         let item_title = itemDom.querySelector('.item_title')
         itemDom.classList.add('post-item')
-
         if (!item_title) return
         let a = item_title.querySelector('a')
         let {href, id} = functions.parseA(a)
@@ -465,7 +452,6 @@ function run() {
           itemDom.append(headerWrap[0])
           itemDom.querySelector('table').remove()
         }
-
       })
 
       const setF = (res) => {
@@ -476,9 +462,7 @@ function run() {
 
         let itemDom = box.querySelector(`.id_${res.id}`)
 
-        if (window.config.viewType === 'card') {
-          itemDom.classList.add('preview')
-        }
+        itemDom.classList.add('preview')
 
         if (res.content_rendered) {
           let a = document.createElement('a')
@@ -505,27 +489,41 @@ function run() {
         }
       }
 
-      let fetchIndex = 0
-      for (let i = 0; i < window.postList.length; i++) {
-        let item = window.postList[i]
-        let rItem = cacheData.find(w => w.id === item.id)
-        if (rItem) {
-          setF(rItem)
-        } else {
-          fetchIndex++
-          setTimeout(() => {
-            $.get(item.url).then(v => {
-              let res = v[0]
-              res.href = item.href
-              cacheData.push(res)
-              localStorage.setItem('cacheData', JSON.stringify(cacheData))
-              setF(res)
-            })
-          }, fetchIndex < 4 ? 0 : (fetchIndex - 4) * 1000)
+      if (window.config.viewType === 'card') {
+        let cacheDataStr = localStorage.getItem('cacheData')
+        let cacheData = []
+        if (cacheDataStr) {
+          cacheData = JSON.parse(cacheDataStr)
+
+          let now = Date.now()
+          //筛掉3天前的数据，一直存会存不下
+          cacheData = cacheData.filter(v => {
+            return v.created > (now / 1000 - 60 * 60 * 24 * 3)
+          })
+        }
+
+        let fetchIndex = 0
+        for (let i = 0; i < window.postList.length; i++) {
+          let item = window.postList[i]
+          let rItem = cacheData.find(w => w.id === item.id)
+          if (rItem) {
+            rItem.href = item.href
+            setF(rItem)
+          } else {
+            fetchIndex++
+            setTimeout(() => {
+              $.get(item.url).then(v => {
+                let res = v[0]
+                res.href = item.href
+                cacheData.push(res)
+                localStorage.setItem('cacheData', JSON.stringify(cacheData))
+                setF(res)
+              })
+            }, fetchIndex < 4 ? 0 : (fetchIndex - 4) * 1000)
+          }
         }
       }
     },
-
     //创建记事本子条目
     async createNoteItem(itemName: string) {
       return new Promise(async resolve => {
@@ -736,7 +734,7 @@ function run() {
   function initConfig() {
     return new Promise(resolve => {
       //获取默认配置
-      let configStr = window.localStorage.getItem('v2ex-config')
+      let configStr = localStorage.getItem('v2ex-config')
       if (configStr) {
         let configObj = JSON.parse(configStr)
         configObj = configObj[window.user.username ?? 'default']
@@ -818,142 +816,142 @@ function run() {
       if (window.user.username) {
         initNoteData()
       }
-    })
 
-    let box: any
-    let list
-    let first
-    let last
-    // console.log(window.pageType)
-    // window.pageType = PageType.Post
-    // window.pageData.id = 1007682
+      let box: any
+      let list
+      let first
+      let last
+      // console.log(window.pageType)
+      // window.pageType = PageType.Post
+      // window.pageData.id = 1007682
 
-    switch (window.pageType!) {
-      case PageType.Node:
-        box = document.querySelectorAll('#Wrapper .box')
+      switch (window.pageType!) {
+        case PageType.Node:
+          box = document.querySelectorAll('#Wrapper .box')
 
-        //移除box的样式，使卡片样式时能显示出背景
-        box[1].style.background = 'unset'
-        box[1].style.borderBottom = 'none'
-        box[1].style['border-radius'] = '0'
-        box[1].style['box-shadow'] = 'none'
+          //移除box的样式，使卡片样式时能显示出背景
+          box[1].style.background = 'unset'
+          box[1].style.borderBottom = 'none'
+          box[1].style['border-radius'] = '0'
+          box[1].style['box-shadow'] = 'none'
 
-        first = $(box[1]).children().first()
-        first.addClass('cell post-item')
-        if (window.config.viewType === 'card') first[0].classList.add('preview')
-        last = $(box[1]).children().last()
-        last.addClass('cell post-item')
-        if (window.config.viewType === 'card') last[0].classList.add('preview')
+          first = $(box[1]).children().first()
+          first.addClass('cell post-item')
+          if (window.config.viewType === 'card') first[0].classList.add('preview')
+          last = $(box[1]).children().last()
+          last.addClass('cell post-item')
+          if (window.config.viewType === 'card') last[0].classList.add('preview')
 
-        list = box[1].querySelectorAll('.cell')
-        box[0].before($section)
-        window.parse.parsePagePostList(list, box[1])
-        break
-      case PageType.Home:
-        box = document.querySelector('#Wrapper .box')
+          list = box[1].querySelectorAll('.cell')
+          box[0].before($section)
+          window.parse.parsePagePostList(list, box[1])
+          break
+        case PageType.Home:
+          box = document.querySelector('#Wrapper .box')
 
-        //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
-        let headerWrap = $('<div class="cell post-item"></div>')
-        if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
-        $(box).prepend(headerWrap)
-        $(box).children().slice(1, 3).each(function () {
-          headerWrap.append(this)
-        })
-        last = $(box).children().last()
-        last.addClass('cell post-item')
-        if (window.config.viewType === 'card') last[0].classList.add('preview')
+          //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+          let headerWrap = $('<div class="cell post-item"></div>')
+          if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+          $(box).prepend(headerWrap)
+          $(box).children().slice(1, 3).each(function () {
+            headerWrap.append(this)
+          })
+          last = $(box).children().last()
+          last.addClass('cell post-item')
+          if (window.config.viewType === 'card') last[0].classList.add('preview')
 
-        //移除box的样式，使卡片样式时能显示出背景
-        box.style.background = 'unset'
-        box.style['border-radius'] = '0'
-        box.style['box-shadow'] = 'none'
+          //移除box的样式，使卡片样式时能显示出背景
+          box.style.background = 'unset'
+          box.style['border-radius'] = '0'
+          box.style['box-shadow'] = 'none'
 
 
-        list = box!.querySelectorAll('.item')
-        list[0].before($section)
-        window.parse.parsePagePostList(list, box)
-        break
-      case PageType.Changes:
-        box = document.querySelector('#Wrapper .box')
+          list = box!.querySelectorAll('.item')
+          list[0].before($section)
+          window.parse.parsePagePostList(list, box)
+          break
+        case PageType.Changes:
+          box = document.querySelector('#Wrapper .box')
 
-        //移除box的样式，使卡片样式时能显示出背景
-        box.style.background = 'unset'
-        box.style['border-radius'] = '0'
-        box.style['box-shadow'] = 'none'
+          //移除box的样式，使卡片样式时能显示出背景
+          box.style.background = 'unset'
+          box.style['border-radius'] = '0'
+          box.style['box-shadow'] = 'none'
 
-        first = $(box).children().first()
-        first.addClass('cell post-item')
-        if (window.config.viewType === 'card') first[0].classList.add('preview')
-        last = $(box).children().last()
-        last.addClass('cell post-item')
-        if (window.config.viewType === 'card') last[0].classList.add('preview')
+          first = $(box).children().first()
+          first.addClass('cell post-item')
+          if (window.config.viewType === 'card') first[0].classList.add('preview')
+          last = $(box).children().last()
+          last.addClass('cell post-item')
+          if (window.config.viewType === 'card') last[0].classList.add('preview')
 
-        list = box!.querySelectorAll('.item')
-        list[0].before($section)
-        window.parse.parsePagePostList(list, box)
-        break
-      case PageType.Post:
-        box = document.querySelector('#Wrapper .box')
-        // @ts-ignore
-        box.after($section)
+          list = box!.querySelectorAll('.item')
+          list[0].before($section)
+          window.parse.parsePagePostList(list, box)
+          break
+        case PageType.Post:
+          box = document.querySelector('#Wrapper .box')
+          // @ts-ignore
+          box.after($section)
 
-        let r = await functions.checkPostReplies(window.pageData.id, false)
-        if (r) {
+          let r = await functions.checkPostReplies(window.pageData.id, false)
+          if (r) {
+            window.stopMe = true
+            functions.cbChecker({type: 'syncData'})
+            functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
+            return
+          }
+
+          let post = functions.clone(window.initPost)
+          post.id = window.pageData.id
+          let body = $(document.body)
+          let htmlText = document.documentElement.outerHTML
+
+          window.parse.parsePostContent(
+            post,
+            body,
+            htmlText
+          ).then(async (res: any) => {
+            // console.log('详情页-基本信息解析完成', Date.now())
+            await functions.cbChecker({type: 'postContent', value: res})
+            //引用修改
+            await window.parse.parseOp(res)
+            // console.log('详情页-OP信息解析完成', Date.now())
+          })
+
+          //引用修改
+          window.parse.getPostAllReplies(
+            post,
+            body,
+            htmlText,
+            window.pageData.pageNo
+          ).then(async (res1: any) => {
+            // console.log('详情页-回复解析完成', Date.now())
+            await functions.cbChecker({type: 'postReplies', value: res1})
+          })
+          break
+        case PageType.Member:
+          box = document.querySelectorAll('#Wrapper .box')
+
+          window.targetUserName = box[0].querySelector('h1')!.textContent!
+          if (window.config.openTag) {
+            //移除box的bottom样式，让和vue的div融为一体
+            box[0].style.borderBottom = 'none'
+            box[0].style['border-bottom-left-radius'] = '0'
+            box[0].style['border-bottom-right-radius'] = '0'
+          }
+
+          list = box[2].querySelectorAll('.cell')
+          box[0].after($section)
+          window.parse.parsePagePostList(list, box[2])
+          break
+        default:
           window.stopMe = true
           functions.cbChecker({type: 'syncData'})
-          functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
-          return
-        }
-
-        let post = functions.clone(window.initPost)
-        post.id = window.pageData.id
-        let body = $(document.body)
-        let htmlText = document.documentElement.outerHTML
-
-        window.parse.parsePostContent(
-          post,
-          body,
-          htmlText
-        ).then(async (res: any) => {
-          // console.log('详情页-基本信息解析完成', Date.now())
-          await functions.cbChecker({type: 'postContent', value: res})
-          //引用修改
-          await window.parse.parseOp(res)
-          // console.log('详情页-OP信息解析完成', Date.now())
-        })
-
-        //引用修改
-        window.parse.getPostAllReplies(
-          post,
-          body,
-          htmlText,
-          window.pageData.pageNo
-        ).then(async (res1: any) => {
-          // console.log('详情页-回复解析完成', Date.now())
-          await functions.cbChecker({type: 'postReplies', value: res1})
-        })
-        break
-      case PageType.Member:
-        box = document.querySelectorAll('#Wrapper .box')
-
-        window.targetUserName = box[0].querySelector('h1')!.textContent!
-        if (window.config.openTag) {
-          //移除box的bottom样式，让和vue的div融为一体
-          box[0].style.borderBottom = 'none'
-          box[0].style['border-bottom-left-radius'] = '0'
-          box[0].style['border-bottom-right-radius'] = '0'
-        }
-
-        list = box[2].querySelectorAll('.cell')
-        box[0].after($section)
-        window.parse.parsePagePostList(list, box[2])
-        break
-      default:
-        window.stopMe = true
-        functions.cbChecker({type: 'syncData'})
-        console.error('未知页面')
-        break
-    }
+          console.error('未知页面')
+          break
+      }
+    })
   }
 
   window.canParseV2exPage = !window.location.search.includes('script')

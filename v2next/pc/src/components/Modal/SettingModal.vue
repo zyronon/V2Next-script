@@ -6,6 +6,7 @@
         <div class="modal-header">
           <div class="title">
             脚本设置
+            <div class="small"><a :href="DefaultVal.mobileScript" target="_blank">(脚本现已支持移动端！)</a></div>
           </div>
           <Icon icon="ic:round-close" @click="close"/>
         </div>
@@ -25,6 +26,14 @@
                 <span>关于脚本</span>
               </div>
             </div>
+            <div class="icons">
+              <a :href="DefaultVal.git" target="_blank">
+                <Icon icon="mdi:github"/>
+              </a>
+              <a :href="DefaultVal.homeUrl" target="_blank">
+                <Icon icon="iconamoon:home-light"/>
+              </a>
+            </div>
           </div>
           <div class="modal-content">
             <div class="scroll">
@@ -42,19 +51,10 @@
                            :class="config.viewType === 'table'?'active':''">表格
                       </div>
                       <div class="radio"
-                           @click="config.viewType = 'card'"
+                           @click="showNotice = true"
                            :class="config.viewType === 'card'?'active':''">卡片
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div class="desc danger">
-                  提示：此项需要刷新页面才能生效
-                </div>
-                <div class="row">
-                  <label class="item-title">列表hover时显示预览按钮</label>
-                  <div class="wrapper">
-                    <BaseSwitch v-model="config.showPreviewBtn"/>
                   </div>
                 </div>
                 <div class="desc danger">
@@ -214,11 +214,13 @@
                     本项目完全开源，已支持移动端！<b>好用请大家多多点Star！</b>
                   </div>
                   <br>
-                  <div style="line-height: 1.5;">
+                  <div style="line-height: 2;">
                     <div>官网：<a :href="DefaultVal.homeUrl" target="_blank">{{ DefaultVal.homeUrl }}</a></div>
                     <div>GitHub地址：<a :href="DefaultVal.git" target="_blank">{{ DefaultVal.git }}</a></div>
                     <div>PC脚本地址：<a :href="DefaultVal.pcScript" target="_blank">{{ DefaultVal.pcScript }}</a></div>
-                    <div>移动端脚本地址：<a :href="DefaultVal.mobileScript" target="_blank">{{ DefaultVal.mobileScript }}</a></div>
+                    <div>移动端脚本地址：<a :href="DefaultVal.mobileScript" target="_blank">{{
+                        DefaultVal.mobileScript
+                      }}</a></div>
                     <div>反馈: <a :href="DefaultVal.issue" target="_blank">{{ DefaultVal.issue }}</a></div>
                     <div>更新日志：<a :href="DefaultVal.pcLog" target="_blank">{{ DefaultVal.pcLog }}</a></div>
                   </div>
@@ -228,6 +230,7 @@
           </div>
         </div>
       </div>
+      <NoticeModal v-model:show="showNotice" @confirm="config.viewType = 'card'"/>
     </div>
   </Transition>
 </template>
@@ -239,10 +242,14 @@ import BaseSwitch from "../BaseSwitch.vue";
 import {DefaultVal} from "@v2next/core/core.ts";
 import BaseSelect from "@/components/BaseSelect.vue";
 import {Icon} from "@iconify/vue";
+import PopConfirm from "@/components/PopConfirm.vue";
+import NoticeModal from "@/components/Modal/NoticeModal.vue";
 
 export default {
   name: "Setting",
   components: {
+    NoticeModal,
+    PopConfirm,
     Icon,
     BaseSelect,
     BaseSwitch,
@@ -267,6 +274,7 @@ export default {
     return {
       tabIndex: 0,
       config: window.clone(this.modelValue),
+      showNotice: false
     }
   },
   computed: {
@@ -277,7 +285,7 @@ export default {
       return CommentDisplayType
     },
     isNew() {
-      return this.config.version < window.currentVersion
+      return this.config.version < DefaultVal.currentVersion
     }
   },
   watch: {
@@ -294,7 +302,7 @@ export default {
   },
   methods: {
     close() {
-      this.config.version = window.currentVersion
+      this.config.version = DefaultVal.currentVersion
       this.$emit('update:show', false)
     }
   }
@@ -360,6 +368,13 @@ export default {
               background: var(--color-item-bg);
             }
           }
+        }
+
+        .icons {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 2rem;
+          font-size: 2.4rem;
         }
       }
 

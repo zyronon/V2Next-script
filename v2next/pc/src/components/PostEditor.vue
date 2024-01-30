@@ -17,7 +17,7 @@
     </div>
     <div class="toolbar">
       <div class="left">
-        <Icon @click="showEmoticons" icon="fxemoji:smiletongue"/>
+        <Icon @click="showEmoticons" icon="streamline:smiley-happy"/>
 
         <div class="upload">
           <input type="file" accept="image/*" @change="e=>upload(e.currentTarget.files[0])">
@@ -870,7 +870,7 @@ onBeforeUnmount(() => {
       display: flex;
       align-items: center;
       gap: 1rem;
-      font-size: 2.5rem;
+      font-size: 2.6rem;
 
       svg {
         cursor: pointer;
@@ -881,6 +881,9 @@ onBeforeUnmount(() => {
         width: @w;
         height: @w;
         overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
         input {
           width: @w;

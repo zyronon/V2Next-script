@@ -15,7 +15,7 @@ import BaseSwitch from "./components/BaseSwitch.vue";
 import BaseLoading from "./components/BaseLoading.vue";
 import NotificationModal from "./components/Modal/NotificationModal.vue";
 import BaseButton from "./components/BaseButton.vue";
-import {functions} from "@v2next/core/core.ts";
+import {DefaultPost, functions, getDefaultPost} from "@v2next/core/core.ts";
 
 export default {
   components: {
@@ -144,12 +144,36 @@ export default {
     //展开或收起的点击事件
     $(document).on('click', '.toggle', (e) => {
       if (this.stopMe) return true
-      let id = e.currentTarget.dataset['id']
-      let itemDom = window.win().query(`.id_${id}`)
+      let id = e.target.dataset['id']
+      let itemDom = document.querySelector(`.id_${id}`)
       if (itemDom.classList.contains('preview')) {
+        e.target.innerText = '预览'
         itemDom.classList.remove('preview')
       } else {
-        itemDom.classList.add('preview')
+        if (this.config.viewType !== 'card') {
+          let index = this.list.findIndex(v => v.id == id)
+          if (index > -1) {
+            e.target.innerText = '收起'
+            itemDom.classList.add('preview')
+          } else {
+            e.target.innerText = '加载中'
+            functions.getPostDetailByApi(id).then(res => {
+              if (res.content_rendered) {
+                res.href = itemDom.dataset['href']
+                this.list.push(getDefaultPost(res))
+                itemDom.classList.add('preview')
+                e.target.innerText = '收起'
+                functions.appendPostContent(res, itemDom)
+              } else {
+                e.target.innerText = '预览'
+                eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '主题暂无正文！'})
+              }
+            })
+          }
+        } else {
+          e.target.innerText = '收起'
+          itemDom.classList.add('preview')
+        }
       }
     })
 
@@ -219,7 +243,7 @@ export default {
       //有script表示是脚本生成的a标签用于新开页面的
       if (e.currentTarget.getAttribute('script')) return
       if (that.stopMe) return true
-      let {href, id, title} = window.parse.parseA(e.currentTarget)
+      let {href, id, title} = functions.parseA(e.currentTarget)
 
       // console.log('click-a', e.currentTarget, e, href, id, title)
       //夜间模式切换
@@ -276,13 +300,13 @@ export default {
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
           this.stopEvent(e)
+          let postItem = getDefaultPost()
           let index = this.list.findIndex(v => v.id == id)
-          let postItem = this.clone(window.initPost)
           if (index > -1) {
             postItem = this.list[index]
           }
           if (!postItem.title) postItem.title = title ?? '加载中'
-          // console.log('postItem', postItem)
+          // console.log('postItem', JSON.stringify(postItem))
           postItem.id = id
           postItem.href = href
           this.getPostDetail(postItem)
@@ -304,12 +328,12 @@ export default {
       this.configModal.show = true
     },
     async winCb({type, value}) {
-      // console.log('回调的类型', type, value)
+      console.log('回调的类型', type, value)
       if (type === 'openSetting') {
         this.showConfig()
       }
       if (type === 'syncData') {
-        this.list = window.postList
+        this.list = Object.assign(this.list, window.postList)
         this.config = window.config
         this.stopMe = window.stopMe
         this.tags = window.user.tags
@@ -491,21 +515,16 @@ export default {
       } else {
         this.loading = true
 
-        let showJsonUrl = `${location.origin}/api/topics/show.json?id=${this.current.id}`
-        fetch(showJsonUrl).then(async r => {
-          if (r.status === 200) {
-            let res = await r.json()
-            if (res) {
-              let d = res[0]
-              d.replyCount = d.replies
-              this.current = Object.assign(this.current, d)
-              if (this.current.replyCount > MAX_REPLY_LIMIT) {
-                functions.openNewTab(`${location.origin}/t/${this.current.id}?p=1&script=1`)
-                eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '由于回复数量较多，已为您单独打开此主题'})
-                this.loading = this.show = false
-                return
-              } else {
-                this.current.jsonContent = `
+        functions.getPostDetailByApi(this.current.id).then(d=>{
+          d.replyCount = d.replies
+          this.current = Object.assign(this.current, d)
+          if (this.current.replyCount > MAX_REPLY_LIMIT) {
+            functions.openNewTab(`${location.origin}/t/${this.current.id}?p=1&script=1`)
+            eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '由于回复数量较多，已为您单独打开此主题'})
+            this.loading = this.show = false
+            return
+          } else {
+            this.current.jsonContent = `
             <div class="cell">
               <div class="topic_content">
                 <div class="markdown_body">
@@ -513,8 +532,6 @@ export default {
                 </div>
               </div>
             </div>`
-              }
-            }
           }
         })
       }
