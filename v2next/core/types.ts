@@ -18,6 +18,7 @@ export interface Post {
     id: string,
     createDate: string,
     createDateAgo: string,
+    lastReplyDate: string,
     type: string,
     once: string,
     replyCount: number,

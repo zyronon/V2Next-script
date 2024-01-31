@@ -47,7 +47,13 @@
                 <a :href="`/t/${post.id}/info`">
                   <li class="fa fa-info-circle"></li>
                 </a>&nbsp;&nbsp;
-                <a :href="`/append/topic/${post.id}`" class="op">APPEND</a>
+                <template v-if="canAppend">
+                  <a :href="`/append/topic/${post.id}`" class="op">APPEND</a>
+                </template>
+                <template v-if="canEditMove">
+                  <a :href="`/move/topic/${post.id}`" class="op">MOVE</a>&nbsp;
+                  <a :href="`/edit/topic/${post.id}`" class="op">EDIT</a>
+                </template>
               </template>
             </small>
             <template v-if="isLogin && config.openTag ">
@@ -101,7 +107,9 @@
           <template v-if="post.replyList.length ||loading">
             <div class="my-cell flex">
               <div>{{ post.replyCount }} 条回复
-                <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
+                <span v-if="post.lastReplyDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{
+                    post.lastReplyDate
+                  }}</span>
               </div>
               <BaseSelect
                   v-if="config.showToolbar"
@@ -273,6 +281,20 @@ export default {
     }
   },
   computed: {
+    canAppend() {
+      if (this.isMy) {
+        let create = new Date(this.post.createDate)
+        return (Date.now() - create.valueOf()) > 1000 * 60 * 30
+      }
+      return false
+    },
+    canEditMove() {
+      if (this.isMy) {
+        let create = new Date(this.post.createDate)
+        return (Date.now() - create.valueOf()) < 1000 * 60 * 10
+      }
+      return false
+    },
     isMy() {
       return this.post.member.username === window.user.username
     },

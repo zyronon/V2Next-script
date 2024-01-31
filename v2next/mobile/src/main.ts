@@ -526,6 +526,7 @@ function run() {
     },
     //创建记事本子条目
     async createNoteItem(itemName: string) {
+      return
       return new Promise(async resolve => {
         let data: any = new FormData()
         data.append('content', itemName)
@@ -542,6 +543,7 @@ function run() {
     },
     //编辑记事本子条目
     async editNoteItem(val: string, id: string) {
+      return
       let data: any = new FormData()
       data.append('content', val)
       data.append('syntax', 0)
@@ -552,6 +554,7 @@ function run() {
     },
     //标签操作
     async saveTags(val: any) {
+      return
       for (const [key, value] of Object.entries(val)) {
         if (!(value as any[]).length) delete val[key]
       }
@@ -559,10 +562,12 @@ function run() {
     },
     //已读楼层操作
     async saveReadList(val: any) {
+      return
       return await this.editNoteItem(window.user.readPrefix + JSON.stringify(val), window.user.readNoteItemId)
     },
     //imgur图片删除hash操作
     async saveImgurList(val: any) {
+      return
       return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
     },
   }
@@ -688,6 +693,7 @@ function run() {
 
   //初始化记事本数据
   async function initNoteData() {
+    return
     //获取或创建记事本的标签
     $.get(window.baseUrl + '/notes').then(async r => {
       let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
