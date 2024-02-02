@@ -57,6 +57,7 @@ export interface Config {
     viewType: string,
     commentDisplayType: CommentDisplayType,
     newTabOpen: boolean,//新标签打开
+    newTabOpenActive: boolean,//新标签打开默认激活
     base64: boolean,//base功能
     sov2ex: boolean,
     showTopReply: boolean,//显示高赞

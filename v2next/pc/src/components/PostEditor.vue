@@ -780,7 +780,7 @@ function onFocusin() {
   document.addEventListener('paste', onPaste);
 }
 
-//如果帖子详情关闭了，那么把表情框也关了
+//如果主题详情关闭了，那么把表情框也关了
 watch(() => show, (n) => {
   if (n.value) isShowEmoticons.value = false
 }, {deep: true})

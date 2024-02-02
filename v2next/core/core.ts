@@ -249,8 +249,8 @@ export const functions = {
     })
   },
   //打开新标签页
-  openNewTab(href: string) {
-    GM_openInTab(href, {active: false});
+  openNewTab(href: string, active = false) {
+    GM_openInTab(href, {active});
     // let tempId = 'a_blank_' + Date.now()
     // let a = document.createElement("a");
     // a.setAttribute("href", href);
@@ -442,6 +442,7 @@ export const DefaultConfig: Config = {
   viewType: 'table',
   commentDisplayType: CommentDisplayType.FloorInFloorNoCallUser,
   newTabOpen: false,//新标签打开
+  newTabOpenActive: false,
   base64: true,//base功能
   sov2ex: false,
   postWidth: '',

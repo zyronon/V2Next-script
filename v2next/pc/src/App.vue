@@ -114,7 +114,7 @@ export default {
 
     //A标签的
     $(document).on('click', 'a', this.clickA)
-    //帖子的
+    //主题的
     $(document).on('click', '.post-item', function (e) {
       // console.log('click-post-item')
       if (e.currentTarget.getAttribute('script')) return
@@ -287,7 +287,7 @@ export default {
       } else {
         if (that.config.newTabOpen) {
           that.stopEvent(e)
-          functions.openNewTab(href)
+          functions.openNewTab(href, that.config.newTabOpenActive)
         }
       }
     },
@@ -314,7 +314,7 @@ export default {
         }
         if (this.config.newTabOpen) {
           this.stopEvent(e)
-          functions.openNewTab(`https://www.v2ex.com/t/${id}?p=1`)
+          functions.openNewTab(`https://www.v2ex.com/t/${id}?p=1`, this.config.newTabOpenActive)
         }
       }
     },
@@ -365,7 +365,7 @@ export default {
 
       if (type === 'postReplies') {
         this.current = Object.assign(this.current, value)
-        // console.log('当前帖子', this.current)
+        // console.log('当前主题', this.current)
         this.list.push(this.clone(this.current))
         this.loading = false
       }
@@ -515,11 +515,11 @@ export default {
       } else {
         this.loading = true
 
-        functions.getPostDetailByApi(this.current.id).then(d=>{
+        functions.getPostDetailByApi(this.current.id).then(d => {
           d.replyCount = d.replies
           this.current = Object.assign(this.current, d)
           if (this.current.replyCount > MAX_REPLY_LIMIT) {
-            functions.openNewTab(`${location.origin}/t/${this.current.id}?p=1&script=1`)
+            functions.openNewTab(`${location.origin}/t/${this.current.id}?p=1&script=1`, true)
             eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '由于回复数量较多，已为您单独打开此主题'})
             this.loading = this.show = false
             return
@@ -545,7 +545,7 @@ export default {
       }
       if (apiRes.status === 403) {
         this.refreshLoading = this.show = this.loading = false
-        functions.openNewTab(`${location.origin}/t/${post.id}?p=1&script=0`)
+        functions.openNewTab(`${location.origin}/t/${post.id}?p=1&script=0`, true)
         return
       }
       //如果是重定向了，那么就是没权限
@@ -575,7 +575,7 @@ export default {
       this.refreshLoading = this.loading = false
 
       await window.parse.parseOp(this.current)
-      console.log('当前帖子', this.current)
+      console.log('当前主题', this.current)
     },
     addTargetUserTag() {
       eventBus.emit(CMD.ADD_TAG, window.targetUserName)

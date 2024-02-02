@@ -17,7 +17,7 @@
                 <span>列表设置</span>
               </div>
               <div class="tab" :class="tabIndex === 1 && 'active'" @click="tabIndex = 1">
-                <span>帖子设置</span>
+                <span>主题设置</span>
               </div>
               <div class="tab" :class="tabIndex === 2 && 'active'" @click="tabIndex = 2">
                 <span>其他设置</span>
@@ -62,13 +62,13 @@
                 </div>
 
                 <div class="row">
-                  <label class="item-title">帖子弹框显示</label>
+                  <label class="item-title">主题弹框显示</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.clickPostItemOpenDetail"/>
                   </div>
                 </div>
                 <div class="desc">
-                  开启此选项后，帖子始终会以弹框的方式显示。优先级大于“新标签页打开链接”
+                  开启此选项后，主题会<span class="danger">始终</span>以弹框的方式显示。优先级大于“新标签页打开链接”
                 </div>
                 <div class="row">
                   <label class="item-title">新标签页打开链接</label>
@@ -78,6 +78,12 @@
                 </div>
                 <div class="desc">
                   网页上所有链接通过新标签页打开
+                </div>
+                <div class="row">
+                  <label class="item-title">打开新标签页时立即切换过去</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.newTabOpenActive"/>
+                  </div>
                 </div>
               </div>
               <div v-if="tabIndex === 1">
@@ -95,7 +101,7 @@
                   </div>
                 </div>
                 <div class="row">
-                  <label class="item-title">单独打开帖子时默认显示楼中楼</label>
+                  <label class="item-title">单独打开主题时默认显示楼中楼</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.autoOpenDetail"/>
                   </div>
@@ -104,7 +110,7 @@
                   单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼
                 </div>
                 <div class="row">
-                  <label class="item-title">点击左右两侧透明处关闭帖子详情弹框</label>
+                  <label class="item-title">点击左右两侧透明处关闭主题详情弹框</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.closePostDetailBySpace"/>
                   </div>
@@ -116,7 +122,7 @@
                   </div>
                 </div>
                 <div class="row">
-                  <label class="item-title">帖子宽度</label>
+                  <label class="item-title">主题宽度</label>
                   <div class="wrapper">
                     <input type="text" v-model="config.postWidth">
                   </div>
@@ -128,7 +134,7 @@
                   vw代表屏幕百分比，如想要屏幕的66%，请填写66vw
                 </div>
                 <div class="desc">
-                  提示：此项设置以后，单独打开详情页时会出现帖子突然变宽（窄）的问题，暂时无解
+                  提示：此项设置以后，单独打开详情页时会出现主题突然变宽（窄）的问题，暂时无解
                 </div>
                 <div class="desc danger">
                   提示：此项需要刷新页面才能生效

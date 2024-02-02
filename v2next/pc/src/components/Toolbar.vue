@@ -101,7 +101,7 @@ export default {
     async toggleIgnore() {
       if (!this.checkIsLogin()) return
       let url = `${window.baseUrl}/${this.post.isIgnore ? 'unignore' : 'ignore'}/topic/${this.post.id}?once=${this.post.once}`
-      //如果是帖子详情页，那么直接跳转到首页
+      //如果是主题详情页，那么直接跳转到首页
       if (this.pageType === PageType.Post) {
         this.loading2 = true
         let apiRes = await window.win().fetch(url)

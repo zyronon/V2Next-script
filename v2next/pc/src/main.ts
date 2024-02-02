@@ -33,7 +33,7 @@ function run() {
   window.stopMe = false
   window.postList = []
   window.parse = {
-    //解析帖子内容
+    //解析主题内容
     async parsePostContent(post: Post, body: JQuery, htmlText: string) {
       let once = htmlText.match(/var once = "([\d]+)";/)
       // console.log(once)
@@ -176,7 +176,7 @@ function run() {
       }
       return post
     },
-    //获取帖子所有回复
+    //获取主题所有回复
     async getPostAllReplies(post: Post, body: JQuery, htmlText: string, pageNo = 1) {
       if (body.find('#no-comments-yet').length) {
         return post
@@ -243,7 +243,7 @@ function run() {
         }
       }
     },
-    //请求帖子其他页的回复
+    //请求主题其他页的回复
     fetchPostOtherPageReplies(href: string, pageNo: number) {
       return new Promise(resolve => {
         $.get(href).then(res => {
@@ -359,12 +359,12 @@ function run() {
       }
       return {users, floor}
     },
-    //获取帖子详情
+    //获取主题详情
     async getPostDetail(post: Post, body: JQuery, htmlText: string, pageNo = 1) {
       post = await this.parsePostContent(post, body, htmlText)
       return await this.getPostAllReplies(post, body, htmlText, pageNo)
     },
-    //解析页面帖子列表
+    //解析页面主题列表
     parsePagePostList(list: any[], box: any) {
       list.forEach(itemDom => {
         let item_title = itemDom.querySelector('.item_title')
@@ -498,7 +498,7 @@ function run() {
         functions.cbChecker({type: 'openSetting'})
       });
       GM_registerMenuCommand('仓库地址', () => {
-        functions.openNewTab(DefaultVal.git)
+        functions.openNewTab(DefaultVal.git,true)
       });
       GM_registerMenuCommand('反馈 & 建议', functions.feedback);
     } catch (e) {
@@ -862,8 +862,10 @@ function run() {
   }
 
   function addSettingText() {
-    let setting = $(`<a href="javascript:void 0;" class="top ${window.config.version < DefaultVal.currentVersion ? 'new' : ''}">脚本设置</a>`)
-    setting.on('click', function () {
+    let setting = $(`<a   class="top ${window.config.version < DefaultVal.currentVersion ? 'new' : ''}">脚本设置</a>`)
+    setting.on('click', function (e) {
+      e.stopPropagation()
+      e.preventDefault()
       this.classList.remove('new')
       functions.cbChecker({type: 'openSetting'})
     })
@@ -1004,7 +1006,7 @@ function run() {
 
           //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面突然变宽或变窄
           if (window.config.postWidth) {
-            //Rightbar的css样式是float，因为自定义帖子宽度的话需要把content改为flex。
+            //Rightbar的css样式是float，因为自定义主题宽度的话需要把content改为flex。
             //Rightbar的float就失效了，所以把他移动右边
             let Main = $('#Main')
             Main.css({
