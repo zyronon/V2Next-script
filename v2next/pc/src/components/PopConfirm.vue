@@ -76,7 +76,7 @@ export default {
   padding: 1.5rem;
   border-radius: .8rem;
   transform: translate(-50%, calc(-100% - 1rem));
-  z-index: 999;
+  z-index: 1001;
 
   .text {
     text-align: start;
