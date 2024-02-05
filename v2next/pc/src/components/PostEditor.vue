@@ -17,28 +17,11 @@
     </div>
     <div class="toolbar">
       <div class="left">
-        <svg @click="showEmoticons" width="20" height="20" viewBox="0 0 48 48" fill="none"
-             xmlns="http://www.w3.org/2000/svg">
-          <path
-              d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z"
-              fill="none" stroke="#929596" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M24 35C29 35 31 31 31 31H17C17 31 19 35 24 35Z" stroke="#929596" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M31 18V22" stroke="#929596" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M17 18V22" stroke="#929596" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <Icon @click="showEmoticons" icon="streamline:smiley-happy"/>
+
         <div class="upload">
           <input type="file" accept="image/*" @change="e=>upload(e.currentTarget.files[0])">
-          <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M5 10C5 8.89543 5.89543 8 7 8L41 8C42.1046 8 43 8.89543 43 10V38C43 39.1046 42.1046 40 41 40H7C5.89543 40 5 39.1046 5 38V10Z"
-                  stroke="#929596" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M14.5 18C15.3284 18 16 17.3284 16 16.5C16 15.6716 15.3284 15 14.5 15C13.6716 15 13 15.6716 13 16.5C13 17.3284 13.6716 18 14.5 18Z"
-                  stroke="#929596" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M15 24L20 28L26 21L43 34V38C43 39.1046 42.1046 40 41 40H7C5.89543 40 5 39.1046 5 38V34L15 24Z"
-                  fill="none" stroke="#929596" stroke-width="2" stroke-linejoin="round"/>
-          </svg>
+          <Icon icon="lets-icons:img-load-box-fill"/>
         </div>
         <span v-if="uploadLoading" style="color: black;font-size: 1.4rem">上传中.....</span>
       </div>
@@ -60,7 +43,7 @@
     </div>
 
     <div class="emoticon-pack" ref="emoticonsRef" v-show="isShowEmoticons">
-      <i class="fa fa-times" aria-hidden="true" @click="isShowEmoticons = false"></i>
+      <Icon icon="ic:round-close" @click="isShowEmoticons = false"/>
       <div class="title">经典表情</div>
       <div class="list">
         <img v-for="item in classicsEmoticons" :src="item.high" @click="insert(item.name);isShowEmoticons = false">
@@ -82,6 +65,7 @@ import {computed, h, inject, onBeforeUnmount, onMounted, ref, toRef, watch} from
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import BaseButton from "./BaseButton.vue";
+import {Icon} from '@iconify/vue'
 
 const props = defineProps({
   replyUser: null,
@@ -573,7 +557,7 @@ async function submit() {
 
   let url = `${window.baseUrl}/t/${post.value.id}`
   $.post(url, {content: submit_content, once: post.value.once}).then(
-  // $.post(url, {content: submit_content, once: 123}).then(
+      // $.post(url, {content: submit_content, once: 123}).then(
       res => {
         // console.log('回复', res)
         loading.value = false
@@ -796,7 +780,7 @@ function onFocusin() {
   document.addEventListener('paste', onPaste);
 }
 
-//如果帖子详情关闭了，那么把表情框也关了
+//如果主题详情关闭了，那么把表情框也关了
 watch(() => show, (n) => {
   if (n.value) isShowEmoticons.value = false
 }, {deep: true})
@@ -884,18 +868,28 @@ onBeforeUnmount(() => {
 
     .left {
       display: flex;
+      align-items: center;
       gap: 1rem;
+      font-size: 2.6rem;
 
       svg {
         cursor: pointer;
       }
 
       .upload {
+        @w: 2.6rem;
+        width: @w;
+        height: @w;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
         input {
+          width: @w;
+          height: @w;
           cursor: pointer;
           position: absolute;
-          width: 20px;
-          height: 20px;
           opacity: 0;
         }
       }
@@ -930,12 +924,11 @@ onBeforeUnmount(() => {
     bottom: 11rem;
     left: 14rem;
 
-    i {
+    svg {
       cursor: pointer;
       position: absolute;
-      right: 2rem;
-      font-size: 2rem;
-      color: @bg-color;
+      right: .8rem;
+      font-size: 2.4rem;
     }
 
     .title {

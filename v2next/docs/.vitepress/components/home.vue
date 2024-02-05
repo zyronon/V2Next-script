@@ -398,7 +398,7 @@ import SearchIcon from "./search-icon.vue";
     .desc {
       font-size: 24px;
       line-height: 1.4;
-      font-weight: 500;
+      font-weight: bold;
       white-space: pre-wrap;
       color: var(--vp-c-text-2);
     }
@@ -545,7 +545,7 @@ import SearchIcon from "./search-icon.vue";
       .title {
         line-height: 24px;
         font-size: 16px;
-        font-weight: 600;
+        font-weight: bold;
       }
 
       .details {
@@ -553,7 +553,7 @@ import SearchIcon from "./search-icon.vue";
         padding-top: 8px;
         line-height: 24px;
         font-size: 14px;
-        font-weight: 500;
+        font-weight: bold;
         color: var(--vp-c-text-2);
       }
     }
@@ -616,7 +616,7 @@ import SearchIcon from "./search-icon.vue";
         .name {
           display: flex;
           font-size: 18px;
-          font-weight: 600;
+          font-weight: bold;
           line-height: 24px;
           letter-spacing: 0;
 
@@ -637,7 +637,7 @@ import SearchIcon from "./search-icon.vue";
           opacity: 1;
           overflow: hidden;
           font-size: 20px;
-          font-weight: 500;
+          font-weight: bold;
           line-height: 24px;
           letter-spacing: 0;
           transition: all .3s;

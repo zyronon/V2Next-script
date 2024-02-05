@@ -2,6 +2,7 @@ import { Config, PageType, Post } from "@v2next/core/types"
 
 declare global {
   interface Window {
+    fetchOnce:Function,
     initPost: Post,
     user: any,
     targetUserName: string,//目标用户名字（用于在member界面添加标签）

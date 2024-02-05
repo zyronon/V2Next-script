@@ -6,8 +6,9 @@
         <div class="modal-header">
           <div class="title">
             脚本设置
+            <div class="small"><a :href="DefaultVal.mobileScript" target="_blank">(脚本现已支持移动端！)</a></div>
           </div>
-          <i class="fa fa-times" @click="close"/>
+          <Icon icon="ic:round-close" @click="close"/>
         </div>
         <div class="body">
           <div class="left">
@@ -16,7 +17,7 @@
                 <span>列表设置</span>
               </div>
               <div class="tab" :class="tabIndex === 1 && 'active'" @click="tabIndex = 1">
-                <span>帖子设置</span>
+                <span>主题设置</span>
               </div>
               <div class="tab" :class="tabIndex === 2 && 'active'" @click="tabIndex = 2">
                 <span>其他设置</span>
@@ -24,6 +25,14 @@
               <div class="tab" :class="tabIndex === 3 && 'active'" @click="tabIndex = 3">
                 <span>关于脚本</span>
               </div>
+            </div>
+            <div class="icons">
+              <a :href="DefaultVal.git" target="_blank">
+                <Icon icon="mdi:github"/>
+              </a>
+              <a :href="DefaultVal.homeUrl" target="_blank">
+                <Icon icon="iconamoon:home-light"/>
+              </a>
             </div>
           </div>
           <div class="modal-content">
@@ -42,7 +51,7 @@
                            :class="config.viewType === 'table'?'active':''">表格
                       </div>
                       <div class="radio"
-                           @click="config.viewType = 'card'"
+                           @click="showNotice = true"
                            :class="config.viewType === 'card'?'active':''">卡片
                       </div>
                     </div>
@@ -51,24 +60,15 @@
                 <div class="desc danger">
                   提示：此项需要刷新页面才能生效
                 </div>
-                <div class="row">
-                  <label class="item-title">列表hover时显示预览按钮</label>
-                  <div class="wrapper">
-                    <BaseSwitch v-model="config.showPreviewBtn"/>
-                  </div>
-                </div>
-                <div class="desc danger">
-                  提示：此项需要刷新页面才能生效
-                </div>
 
                 <div class="row">
-                  <label class="item-title">帖子弹框显示</label>
+                  <label class="item-title">主题弹框显示</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.clickPostItemOpenDetail"/>
                   </div>
                 </div>
                 <div class="desc">
-                  开启此选项后，帖子始终会以弹框的方式显示。优先级大于“新标签页打开链接”
+                  开启此选项后，主题会<span class="danger">始终</span>以弹框的方式显示。优先级大于“新标签页打开链接”
                 </div>
                 <div class="row">
                   <label class="item-title">新标签页打开链接</label>
@@ -78,6 +78,12 @@
                 </div>
                 <div class="desc">
                   网页上所有链接通过新标签页打开
+                </div>
+                <div class="row">
+                  <label class="item-title">打开新标签页时立即切换过去</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.newTabOpenActive"/>
+                  </div>
                 </div>
               </div>
               <div v-if="tabIndex === 1">
@@ -91,44 +97,11 @@
                 <div class="row">
                   <label class="item-title">回复展示方式</label>
                   <div class="wrapper">
-                    <div class="radio-group2">
-                      <Tooltip title="不隐藏@用户">
-                        <div class="radio"
-                             @click="config.commentDisplayType = CommentDisplayType.FloorInFloor"
-                             :class="config.commentDisplayType === CommentDisplayType.FloorInFloor?'active':''">楼中楼(@)
-                        </div>
-                      </Tooltip>
-                      <Tooltip title="隐藏第一个@用户，双击内容可显示原文">
-                        <div class="radio"
-                             @click="config.commentDisplayType = CommentDisplayType.FloorInFloorNoCallUser"
-                             :class="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser?'active':''">
-                          楼中楼
-                        </div>
-                      </Tooltip>
-                      <Tooltip title="重复显示楼中楼的回复">
-                        <div class="radio"
-                             @click="config.commentDisplayType = CommentDisplayType.FloorInFloorNested"
-                             :class="config.commentDisplayType === CommentDisplayType.FloorInFloorNested?'active':''">
-                          冗余楼中楼
-                        </div>
-                      </Tooltip>
-                      <div class="radio"
-                           @click="config.commentDisplayType = CommentDisplayType.Like"
-                           :class="config.commentDisplayType === CommentDisplayType.Like?'active':''">感谢
-                      </div>
-                      <div class="radio"
-                           @click="config.commentDisplayType = CommentDisplayType.OnlyOp"
-                           :class="config.commentDisplayType === CommentDisplayType.OnlyOp?'active':''">只看楼主
-                      </div>
-                      <div class="radio"
-                           @click="config.commentDisplayType = CommentDisplayType.V2exOrigin"
-                           :class="config.commentDisplayType === CommentDisplayType.V2exOrigin?'active':''">V2原版
-                      </div>
-                    </div>
+                    <BaseSelect v-model:display-type="config.commentDisplayType"/>
                   </div>
                 </div>
                 <div class="row">
-                  <label class="item-title">单独打开帖子时默认显示楼中楼</label>
+                  <label class="item-title">单独打开主题时默认显示楼中楼</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.autoOpenDetail"/>
                   </div>
@@ -137,7 +110,7 @@
                   单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼
                 </div>
                 <div class="row">
-                  <label class="item-title">点击左右两侧透明处关闭帖子详情弹框</label>
+                  <label class="item-title">点击左右两侧透明处关闭主题详情弹框</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.closePostDetailBySpace"/>
                   </div>
@@ -149,7 +122,7 @@
                   </div>
                 </div>
                 <div class="row">
-                  <label class="item-title">帖子宽度</label>
+                  <label class="item-title">主题宽度</label>
                   <div class="wrapper">
                     <input type="text" v-model="config.postWidth">
                   </div>
@@ -161,7 +134,7 @@
                   vw代表屏幕百分比，如想要屏幕的66%，请填写66vw
                 </div>
                 <div class="desc">
-                  提示：此项设置以后，单独打开详情页时会出现帖子突然变宽（窄）的问题，暂时无解
+                  提示：此项设置以后，单独打开详情页时会出现主题突然变宽（窄）的问题，暂时无解
                 </div>
                 <div class="desc danger">
                   提示：此项需要刷新页面才能生效
@@ -197,6 +170,9 @@
                   </div>
                 </div>
 
+                <div class="desc danger">
+                  2024-01-27提示：此功能暂时无法使用
+                </div>
 
                 <div class="row">
                   <label class="item-title">划词显示Base64解码框</label>
@@ -241,56 +217,18 @@
                 <h1>V2EX Next</h1>
                 <div class="project-desc">
                   <div>
-                    本项目完全开源，项目地址：<a :href="windowConst.git" target="_blank">{{ windowConst.git }}</a>，目前由我一个人维护，如果您觉得好用，<b>请帮我点一个Star，您的Star是对我最大的鼓励</b>
+                    本项目完全开源，已支持移动端！<b>好用请大家多多点Star！</b>
                   </div>
-                  <div>
-                    <h2>为什么选择这个，而不是其他？</h2>
-                    <h3>其他脚本：</h3>
-                    大多只是对V2EX修修补补、美化UI，在使用体验上依旧是10年前的网站，太多脚本年久失修无人维护。楼中楼只能解析当前页，如果有多页回复，楼中楼就会前言不搭后语莫名其妙的
-                    <h3>本脚本：</h3>
-                    <b>最好用的楼中楼、查看回复上下文、高赞回复、简洁模式等特色功能。</b>
-                    对V2EX进行了整体改造，如预览、点赞、回复、屏蔽等等都走异步请求，使用体验上已和现代网站无异，同时也集成了市面上常见的增强（辅助）功能，
-
-                    <h2>特色功能</h2>
-                    <ul>
-                      <li>楼中楼
-                        <ol>
-                          <li>可按高赞排序显示</li>
-                          <li>可只看楼主</li>
-                        </ol>
-                      </li>
-                      <li>简洁模式</li>
-                      <li>查看回复上下文</li>
-                      <li>高赞回复</li>
-                    </ul>
-
-                    <h2>增强（辅助）功能</h2>
-                    <ul>
-                      <li>预览帖子正文</li>
-                      <li>弹框显示帖子正文和回复</li>
-                      <li>帖子显示OP注册时间</li>
-                      <li>链接自动转图片</li>
-                      <li>快捷发送贴吧表情、emoji、图片</li>
-                      <li>新标签页打开链接，默认打开，可单独关闭</li>
-                      <li>对用户打标签</li>
-                      <li>划词 base64 解码，支持解码中文</li>
-                      <li>一键@所有人，@管理员：回复时，可一键@所有人和@管理员</li>
-                      <li>自适应屏幕宽度，支持黑暗模式</li>
-                      <li>记忆上次阅读位置</li>
-                      <li>按钮异步请求：操作按钮（感谢、收藏、回复、隐藏）异步请求，不会刷新页面</li>
-                      <li>收藏时提醒添加到浏览器书签，防止账号被封无法查看收藏</li>
-                      <li>自动签到</li>
-                      <li>正文超长自动折叠</li>
-                    </ul>
-
-
-                    <h2>如何帮助我</h2>
-                    这个项目花了我很多精力，如果对您有用：
-                    点个 <a :href="windowConst.git">Star ⭐️</a> 或分享给他人，让更多的人知道我的存在。
-                    <div>提供反馈，帮助我改进，以持续完善脚本。在 <a :href="windowConst.issue">这里</a> 提出。</div>
-                    <div>
-                      更新日志：<a href="https://greasyfork.org/zh-CN/scripts/458024/versions" target="_blank">https://greasyfork.org/zh-CN/scripts/458024/versions</a>
-                    </div>
+                  <br>
+                  <div style="line-height: 2;">
+                    <div>官网：<a :href="DefaultVal.homeUrl" target="_blank">{{ DefaultVal.homeUrl }}</a></div>
+                    <div>GitHub地址：<a :href="DefaultVal.git" target="_blank">{{ DefaultVal.git }}</a></div>
+                    <div>PC脚本地址：<a :href="DefaultVal.pcScript" target="_blank">{{ DefaultVal.pcScript }}</a></div>
+                    <div>移动端脚本地址：<a :href="DefaultVal.mobileScript" target="_blank">{{
+                        DefaultVal.mobileScript
+                      }}</a></div>
+                    <div>反馈: <a :href="DefaultVal.issue" target="_blank">{{ DefaultVal.issue }}</a></div>
+                    <div>更新日志：<a :href="DefaultVal.pcLog" target="_blank">{{ DefaultVal.pcLog }}</a></div>
                   </div>
                 </div>
               </div>
@@ -298,6 +236,7 @@
           </div>
         </div>
       </div>
+      <NoticeModal v-model:show="showNotice" @confirm="config.viewType = 'card'"/>
     </div>
   </Transition>
 </template>
@@ -306,10 +245,19 @@
 import Tooltip from "../Tooltip.vue";
 import {CommentDisplayType} from "@v2next/core/types.ts";
 import BaseSwitch from "../BaseSwitch.vue";
+import {DefaultVal} from "@v2next/core/core.ts";
+import BaseSelect from "@/components/BaseSelect.vue";
+import {Icon} from "@iconify/vue";
+import PopConfirm from "@/components/PopConfirm.vue";
+import NoticeModal from "@/components/Modal/NoticeModal.vue";
 
 export default {
   name: "Setting",
   components: {
+    NoticeModal,
+    PopConfirm,
+    Icon,
+    BaseSelect,
     BaseSwitch,
     Tooltip
   },
@@ -332,17 +280,18 @@ export default {
     return {
       tabIndex: 0,
       config: window.clone(this.modelValue),
+      showNotice: false
     }
   },
   computed: {
-    windowConst() {
-      return window.const
+    DefaultVal() {
+      return DefaultVal
     },
     CommentDisplayType() {
       return CommentDisplayType
     },
     isNew() {
-      return this.config.version < window.currentVersion
+      return this.config.version < DefaultVal.currentVersion
     }
   },
   watch: {
@@ -359,7 +308,7 @@ export default {
   },
   methods: {
     close() {
-      this.config.version = window.currentVersion
+      this.config.version = DefaultVal.currentVersion
       this.$emit('update:show', false)
     }
   }
@@ -389,9 +338,9 @@ export default {
         margin-bottom: 0;
       }
 
-      i {
+      svg {
         cursor: pointer;
-        font-size: 2.2rem;
+        font-size: 2.6rem;
       }
     }
 
@@ -425,6 +374,13 @@ export default {
               background: var(--color-item-bg);
             }
           }
+        }
+
+        .icons {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 2rem;
+          font-size: 2.4rem;
         }
       }
 

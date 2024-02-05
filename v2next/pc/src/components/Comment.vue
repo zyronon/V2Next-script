@@ -41,15 +41,9 @@
                 <a href="https://github.com/zyronon/web-scripts/issues" target="_blank">这里</a>反馈
               </div>
             </div>
-            <template v-if="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser && this.type !== 'top'">
-              <div v-if="showOrigin" @dblclick="toggleContent">
-                <p>---原文---</p>
-                <BaseHtmlRender class="reply_content" :html="modelValue.reply_content"/>
-                <p>-----------</p>
-              </div>
-              <BaseHtmlRender class="reply_content" @dblclick="toggleContent"
-                              :html="modelValue.hideCallUserReplyContent"/>
-            </template>
+            <BaseHtmlRender
+                v-if="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser && this.type !== 'top'"
+                class="reply_content" :html="modelValue.hideCallUserReplyContent"/>
             <BaseHtmlRender v-else class="reply_content" :html="modelValue.reply_content"/>
             <PostEditor v-if="edit"
                         @close="edit = false"
@@ -96,7 +90,6 @@ export default {
   },
   data() {
     return {
-      showOrigin: false,
       edit: false,
       ding: false,
       expand: true,
@@ -172,10 +165,6 @@ export default {
     },
     toggle() {
       this.expand = !this.expand
-    },
-    toggleContent() {
-      if (this.modelValue.level === 0 && this.modelValue.replyUsers.length === 0) return
-      this.showOrigin = !this.showOrigin
     },
   }
 }

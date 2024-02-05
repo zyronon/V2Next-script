@@ -3,7 +3,7 @@ import App from './App.vue';
 import { GM_notification, GM_openInTab, GM_registerMenuCommand } from "gmApi"
 import './global.d.ts'
 import { MAX_REPLY_LIMIT, PageType, Post, Reply } from "@v2next/core/types"
-import { DefaultConfig, DefaultPost, DefaultUser, DefaultVal, functions } from "@v2next/core/core";
+import { DefaultConfig, DefaultPost, DefaultUser, DefaultVal, functions, getDefaultPost } from "@v2next/core/core";
 
 let isMobile = !document.querySelector('#Rightbar');
 
@@ -28,17 +28,12 @@ function run() {
   window.pageType = undefined
   window.pageData = {pageNo: 1}
   window.config = DefaultConfig
-  window.const = {
-    git: 'https://github.com/zyronon/v2ex-script',
-    issue: 'https://github.com/zyronon/v2ex-script/issues'
-  }
-  window.currentVersion = 1
   window.isNight = $('.Night').length === 1
   window.cb = null
   window.stopMe = false
   window.postList = []
   window.parse = {
-    //解析帖子内容
+    //解析主题内容
     async parsePostContent(post: Post, body: JQuery, htmlText: string) {
       let once = htmlText.match(/var once = "([\d]+)";/)
       // console.log(once)
@@ -66,19 +61,19 @@ function run() {
       }
 
       let aName = wrapper.find('.header small.gray a:nth-child(1)')
-      if (aName) {
+      if (aName.length) {
         post.member.username = aName[0].innerText
       }
 
       let spanEl = wrapper.find('.header small.gray span')
-      if (spanEl) {
+      if (spanEl.length) {
         post.createDateAgo = spanEl[0].innerText
+        post.createDate = spanEl[0].title
       }
-
 
       let avatarEl: any = wrapper.find('.header .avatar')
       // console.log('avatarEl', avatarEl[0].src)
-      if (avatarEl) {
+      if (avatarEl.length) {
         post.member.avatar_large = avatarEl[0].src
       }
 
@@ -142,7 +137,7 @@ function run() {
       temp.find('.inner').remove()
       temp.find('.header').remove()
       let html = temp.html()
-      html = this.checkPhotoLink2Img(html)
+      html = functions.checkPhotoLink2Img(html)
       // console.log('html', html)
       post.headerTemplate = html
       return post
@@ -181,7 +176,7 @@ function run() {
       }
       return post
     },
-    //获取帖子所有回复
+    //获取主题所有回复
     async getPostAllReplies(post: Post, body: JQuery, htmlText: string, pageNo = 1) {
       if (body.find('#no-comments-yet').length) {
         return post
@@ -199,20 +194,20 @@ function run() {
         post.fr = cells[0].querySelector('.cell .fr')!.innerHTML
 
         cells = Array.from(cells)
-        //获取创建时间
+        //获取最后一次回复时间
         let snow = cells[0].querySelector('.snow')
-        post.createDate = snow?.nextSibling?.nodeValue?.trim() || ''
+        post.lastReplyDate = snow?.nextSibling?.nodeValue?.trim() || ''
 
         let repliesMap: any[] = []
         //如果第二条有id，就说明是第二条是回复。只有一页回复
         if (cells[1].id) {
           repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
-          let replyList = this.getAllReply(repliesMap)
+          let replyList = functions.getAllReply(repliesMap)
           post.replyList = replyList
           post.replyCount = replyList.length
           post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
-          let nestedList = this.createNestedList(replyList)
-          let nestedRedundantList = this.createNestedRedundantList(replyList)
+          let nestedList = functions.createNestedList(replyList)
+          let nestedRedundantList = functions.createNestedRedundantList(replyList)
           if (nestedList) post.nestedReplies = nestedList
           if (nestedRedundantList) post.nestedRedundReplies = nestedRedundantList
           return post
@@ -233,12 +228,12 @@ function run() {
               (results) => {
                 // @ts-ignore
                 results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-                let replyList = this.getAllReply(repliesMap)
+                let replyList = functions.getAllReply(repliesMap)
                 post.replyList = replyList
                 post.replyCount = replyList.length
                 post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
-                let nestedList = this.createNestedList(replyList)
-                let nestedRedundantList = this.createNestedRedundantList(replyList)
+                let nestedList = functions.createNestedList(replyList)
+                let nestedRedundantList = functions.createNestedRedundantList(replyList)
                 if (nestedList) post.nestedReplies = nestedList
                 if (nestedRedundantList) post.nestedRedundReplies = nestedRedundantList
                 resolve(post)
@@ -248,7 +243,7 @@ function run() {
         }
       }
     },
-    //请求帖子其他页的回复
+    //请求主题其他页的回复
     fetchPostOtherPageReplies(href: string, pageNo: number) {
       return new Promise(resolve => {
         $.get(href).then(res => {
@@ -259,7 +254,7 @@ function run() {
           resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
         }).catch((r: any) => {
           if (r.status === 403) {
-            cbChecker({type: 'restorePost', value: null})
+            functions.cbChecker({type: 'restorePost', value: null})
           }
         })
       })
@@ -279,7 +274,7 @@ function run() {
         } as any
         let reply_content = node.querySelector('.reply_content')
         // console.log('reply_content',reply_content)
-        item.reply_content = this.checkPhotoLink2Img(reply_content!.innerHTML)
+        item.reply_content = functions.checkPhotoLink2Img(reply_content!.innerHTML)
         item.reply_text = reply_content!.textContent!
 
         let {users, floor} = this.parseReplyContent(item.reply_content)
@@ -364,285 +359,98 @@ function run() {
       }
       return {users, floor}
     },
-    //获取帖子详情
+    //获取主题详情
     async getPostDetail(post: Post, body: JQuery, htmlText: string, pageNo = 1) {
       post = await this.parsePostContent(post, body, htmlText)
       return await this.getPostAllReplies(post, body, htmlText, pageNo)
     },
-    //获取所有回复
-    getAllReply(repliesMap = []) {
-      return repliesMap.sort((a: any, b: any) => a.i - b.i).reduce((pre, i: any) => {
-        pre = pre.concat(i.replyList)
-        return pre
-      }, [])
-    },
-    //生成嵌套回复
-    createNestedList(allList = []) {
-      if (!allList.length) return []
-
-      // console.log('cal-createNestedList', Date.now())
-
-      let list = window.clone(allList)
-      let nestedList: any[] = []
-      list.map((item: any, index: number) => {
-        let startList = list.slice(0, index)
-        //用于918489这种情况，@不存在的人
-        let startReplyUsers = Array.from(new Set(startList.map((v: any) => v.username)))
-
-        let endList = list.slice(index + 1)
-
-        if (index === 0) {
-          nestedList.push(this.findChildren(item, endList, list))
-        } else {
-          if (!item.isUse) {
-            //是否是一级回复
-            let isOneLevelReply = false
-            if (item.replyUsers.length) {
-              if (item.replyUsers.length > 1) {
-                isOneLevelReply = true
-              } else {
-                isOneLevelReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
-              }
-            } else {
-              isOneLevelReply = true
-            }
-            if (isOneLevelReply) {
-              item.level = 0
-              nestedList.push(this.findChildren(item, endList, list))
-            }
-          }
-        }
-      })
-      // console.log('replies长度', allList)
-      // console.log('nestedList长度', nestedList)
-
-      return nestedList
-    },
-    //生成嵌套冗余回复
-    createNestedRedundantList(allList = []) {
-      if (!allList.length) return []
-
-      // console.log('cal-createNestedList', Date.now())
-
-      let list = window.clone(allList)
-      let nestedList: any[] = []
-      list.map((item: any, index: number) => {
-        let startList = list.slice(0, index)
-        //用于918489这种情况，@不存在的人
-        let startReplyUsers = Array.from(new Set(startList.map((v: any) => v.username)))
-
-        let endList = list.slice(index + 1)
-
-        if (index === 0) {
-          nestedList.push(this.findChildren(item, endList, list))
-        } else {
-          if (!item.isUse) {
-            //是否是一级回复
-            let isOneLevelReply = false
-            if (item.replyUsers.length) {
-              if (item.replyUsers.length > 1) {
-                isOneLevelReply = true
-              } else {
-                isOneLevelReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
-              }
-            } else {
-              isOneLevelReply = true
-            }
-            if (isOneLevelReply) {
-              item.level = 0
-              nestedList.push(this.findChildren(item, endList, list))
-            }
-          } else {
-            let newItem = window.clone(item)
-            newItem.children = []
-            newItem.level = 0
-            newItem.isDup = true
-            nestedList.push(newItem)
-          }
-        }
-      })
-      // console.log('replies长度', allList)
-      // console.log('nestedList长度', nestedList)
-      return nestedList
-    },
-    //查找子回复
-    findChildren(item: any, endList: any[], all: any[]) {
-      const fn = (child: any, endList2: any[], parent: any) => {
-        child.level = parent.level + 1
-        //用于标记为已使用，直接标记源数据靠谱点，标记child可能会有问题
-        let rIndex = all.findIndex(v => v.floor === child.floor)
-        if (rIndex > -1) {
-          all[rIndex].isUse = true
-        }
-        parent.children.push(this.findChildren(child, endList2, all,))
-      }
-      // console.log('endList', endList)
-      item.children = []
-      // if (item.floor === 46) debugger
-      let floorReplyList = []
-
-      //先找到指定楼层的回复，再去循环查找子回复
-      //原因：问题930155，有图
-      for (let i = 0; i < endList.length; i++) {
-        let currentItem = endList[i]
-        //如果已被使用，直接跳过
-        if (currentItem.isUse) continue
-        if (currentItem.replyFloor === item.floor) {
-          //必须楼层对应的名字和@人的名字相同。因为经常出现不相同的情况
-          if (currentItem.replyUsers.length === 1 && currentItem.replyUsers[0] === item.username) {
-            //先标记为使用，不然遇到“问题930155”，会出现重复回复
-            currentItem.isUse = true
-            floorReplyList.push({endList: endList.slice(i + 1), currentItem})
-            //问题930155：这里不能直接找子级，如果item为A，currentItem为B，但随后A又回复了B，然后C回复A。这样直接找子级就会把C归类到B的子回复，而不是直接A的子回复
-            //截图：930155.png
-            // fn(currentItem, endList.slice(i + 1), item)
-          } else {
-            currentItem.isWrong = true
-          }
-        }
-      }
-
-      //从后往前找
-      //原因：问题933080，有图
-      floorReplyList.reverse().map(({currentItem, endList}) => {
-        fn(currentItem, endList, item)
-      })
-
-      //下一个我的下标，如果有下一个我，那么当前item的子回复应在当前和下个我的区间内查找
-      let nextMeIndex = endList.findIndex(v => {
-        //必须是下一个不是”自己回复自己“的自己
-        //原因：问题887644（1-2），有图
-        return (v.username === item.username) && (v.replyUsers?.[0] !== item.username)
-      })
-      let findList = nextMeIndex > -1 ? endList.slice(0, nextMeIndex) : endList
-
-      for (let i = 0; i < findList.length; i++) {
-        let currentItem = findList[i]
-        //如果已被使用，直接跳过
-        if (currentItem.isUse) continue
-
-        if (currentItem.replyUsers.length === 1) {
-          //如果这条数据指定了楼层，并且名字也能匹配上，那么直接忽略
-          //原因：问题887644-3，有图
-          if (currentItem.replyFloor !== -1) {
-            if (all[currentItem.replyFloor - 1]?.username === currentItem.replyUsers[0]) {
-              continue
-            }
-          }
-          let endList2 = endList.slice(i + 1)
-          //如果是下一条是同一人的回复，那么跳出循环
-          if (currentItem.username === item.username) {
-            //自己回复自己的特殊情况
-            if (currentItem.replyUsers[0] === item.username) {
-              fn(currentItem, endList2, item)
-            }
-            break
-          } else {
-            if (currentItem.replyUsers[0] === item.username) {
-              fn(currentItem, endList2, item)
-            }
-          }
-        } else {
-          //下一条是同一人的回复，并且均未@人。直接跳过
-          if (currentItem.username === item.username) break
-        }
-      }
-
-      //排序，因为指定楼层时，是从后往前找的
-      item.children = item.children.sort((a: any, b: any) => a.floor - b.floor)
-      return item
-    },
-    //解析页面帖子列表
+    //解析页面主题列表
     parsePagePostList(list: any[], box: any) {
       list.forEach(itemDom => {
-        let item = window.clone(window.initPost)
-        let item_title = itemDom.querySelector('.item_title a')
-        let {href, id} = window.parse.parseA(item_title)
-        item.id = id
-        item.href = href
-        item.url = location.origin + '/api/topics/show.json?id=' + item.id
+        let item_title = itemDom.querySelector('.item_title')
+        if (!item_title) return
+        let item = getDefaultPost()
         itemDom.classList.add('post-item')
+        let a = item_title.querySelector('a')
+        let {href, id} = functions.parseA(a)
+        item.id = String(Number(id))
+        a.href = item.href = href
+        item.url = location.origin + '/api/topics/show.json?id=' + item.id
         itemDom.classList.add(`id_${id}`)
         itemDom.dataset['href'] = href
-        itemDom.dataset['id'] = id
-        window.postList.push(item)
-      })
-      Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
-        let ok = res.filter((r) => r.status === "fulfilled").map((v: any) => v.value[0])
-        // let fail = res.filter((r) => r.status === "rejected")
-        box.style.boxShadow = 'unset'
-        box.style.background = 'unset'
-        if (window.config.viewType === 'card') {
-          list.forEach(itemDom => itemDom.classList.add('preview'))
+        //添加切换按钮
+        let td = itemDom.querySelector('td:nth-child(4)')
+        if (!td) {
+          td = itemDom.querySelector('td:nth-child(2)')
         }
-        ok.map(postItem => {
-          if (postItem?.id) {
-            let itemDom = box.querySelector(`.id_${postItem.id}`)
-
-            if (window.config.showPreviewBtn) {
-              //添加切换按钮
-              let td = itemDom.querySelector('td:nth-child(4)')
-              td.style.position = 'relative'
-              let toggle = document.createElement('div')
-              toggle.dataset['id'] = postItem.id
-              toggle.classList.add('toggle')
-              toggle.innerText = '点击展开/收起'
-              td.append(toggle)
-            }
-
-            let index = window.postList.findIndex(v => v.id == postItem.id)
-            if (index > -1) {
-              let obj = window.postList[index]
-              postItem.replyCount = postItem.replies
-              window.postList[index] = Object.assign({}, obj, postItem)
-
-              if (postItem.content_rendered) {
-                let a = document.createElement('a')
-                a.href = obj.href
-                a.classList.add('post-content')
-                let div = document.createElement('div')
-                div.innerHTML = postItem.content_rendered
-                a.append(div)
-                // console.log(div.clientHeight)
-                itemDom.append(a)
-                // show More
-                if (div.clientHeight < 172) {
-                  a.classList.add('show-all')
-                } else {
-                  let showMore = document.createElement('div')
-                  showMore.classList.add('show-more')
-                  showMore.innerHTML = '显示更多/收起'
-                  showMore.onclick = function (e) {
-                    e.stopPropagation()
-                    a.classList.toggle('show-all')
-                  }
-                  a.parentNode?.append(showMore)
-                }
-              }
-            }
-          }
-        })
-        cbChecker({type: 'syncData'})
+        td.style.position = 'relative'
+        let toggle = document.createElement('div')
+        toggle.dataset['id'] = item.id
+        toggle.classList.add('toggle')
+        toggle.innerText = '预览'
+        td.append(toggle)
+        if (window.config.viewType === 'card') {
+          window.postList.push(item)
+        }
       })
-    },
-    //解析A标签
-    parseA(a: HTMLAnchorElement) {
-      let href = a.href
-      let id
-      if (href.includes('/t/')) {
-        id = a.pathname.substring('/t/'.length);
+
+      const setF = (res) => {
+        let rIndex = window.postList.findIndex(w => w.id === res.id)
+        if (rIndex > -1) {
+          window.postList[rIndex] = Object.assign(window.postList[rIndex], res)
+          functions.cbChecker({type: 'syncData'})
+        }
+        let itemDom = box.querySelector(`.id_${res.id}`)
+        itemDom.classList.add('preview')
+        if (res.content_rendered) {
+          functions.appendPostContent(res, itemDom)
+        }
       }
-      return {href, id, title: a.innerText}
+
+      if (window.config.viewType === 'card') {
+        let cacheDataStr = localStorage.getItem('cacheData')
+        let cacheData = []
+        if (cacheDataStr) {
+          cacheData = JSON.parse(cacheDataStr)
+          let now = Date.now()
+          //筛掉3天前的数据，一直存会存不下
+          cacheData = cacheData.filter(v => {
+            return v.created > (now / 1000 - 60 * 60 * 24 * 3)
+          })
+        }
+
+        let fetchIndex = 0
+        for (let i = 0; i < window.postList.length; i++) {
+          let item = window.postList[i]
+          let rItem = cacheData.find(w => w.id === item.id)
+          if (rItem) {
+            rItem.href = item.href
+            setF(rItem)
+          } else {
+            fetchIndex++
+            setTimeout(() => {
+              $.get(item.url).then(v => {
+                if (v && v.length) {
+                  let res = getDefaultPost(v[0])
+                  res.href = item.href
+                  cacheData.push(res)
+                  localStorage.setItem('cacheData', JSON.stringify(cacheData))
+                  setF(res)
+                }
+              })
+            }, fetchIndex < 4 ? 0 : (fetchIndex - 4) * 1000)
+          }
+        }
+      }
     },
     //创建记事本子条目
     async createNoteItem(itemName: string) {
-      return
       return new Promise(async resolve => {
         let data: any = new FormData()
         data.append('content', itemName)
         data.append('parent_id', 0)
         data.append('syntax', 0)
-        let apiRes = await window.win().fetch(`${window.baseUrl}/notes/new`, {method: 'post', body: data})
+        let apiRes = await fetch(`${location.origin}/notes/new`, {method: 'post', body: data})
         console.log(apiRes)
         if (apiRes.redirected && apiRes.status === 200) {
           resolve(apiRes.url.substr(-5))
@@ -653,18 +461,16 @@ function run() {
     },
     //编辑记事本子条目
     async editNoteItem(val: string, id: string) {
-      return
       let data: any = new FormData()
       data.append('content', val)
       data.append('syntax', 0)
-      let apiRes = await window.fetch(`${window.baseUrl}/notes/edit/${id}`, {
+      let apiRes = await fetch(`${location.origin}/notes/edit/${id}`, {
         method: 'post', body: data
       })
       return apiRes.redirected && apiRes.status === 200;
     },
     //标签操作
     async saveTags(val: any) {
-      return
       for (const [key, value] of Object.entries(val)) {
         if (!(value as any[]).length) delete val[key]
       }
@@ -680,93 +486,19 @@ function run() {
       return
       return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
     },
-    //图片链接转Img标签
-    checkPhotoLink2Img(str: string) {
-      if (!str) return
-      try {
-        let imgWebs = [
-          /<a((?!<a).)*href="https?:\/\/((?!<a).)*imgur.com((?!<a).)*>(((?!<a).)*)<\/a>/g,
-          /<a((?!<a).)*href="https?:\/\/((?!<a).)*\.(gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG) ((?!<a).)*>(((?!<a).)*)<\/a>/g,
-        ]
-        imgWebs.map((v, i) => {
-          let has = str.matchAll(v)
-          let res2 = [...has]
-          // console.log('总匹配', res2)
-          res2.map(r => {
-            let p = i === 0 ? r[4] : r[5]
-            if (p) {
-              let link = p.toLowerCase()
-              let src = p
-              if (
-                link.includes('.png') ||
-                link.includes('.jpg') ||
-                link.includes('.jpeg') ||
-                link.includes('.gif')
-              ) {
-              } else {
-                src = p + '.png'
-              }
-              str = str.replace(r[0], `<img src="${src}" data-originUrl="${p}" data-notice="此img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`)
-            }
-          })
-        })
-      } catch (e) {
-        console.log('正则解析html里面的a标签的图片链接出错了')
-      }
-      return str
-    },
-    //检测帖子回复长度
-    async checkPostReplies(id: string, needOpen: boolean = true) {
-      return new Promise(async resolve => {
-        let showJsonUrl = `${location.origin}/api/topics/show.json?id=${id}`
-        let r = await fetch(showJsonUrl)
-        if (r) {
-          let res = await r.json()
-          if (res) {
-            if (res[0]?.replies > MAX_REPLY_LIMIT) {
-              if (needOpen) {
-                functions.openNewTab(`https://www.v2ex.com/t/${id}?p=1&script=1`)
-              }
-              return resolve(true)
-            }
-          }
-        }
-        resolve(false)
-      })
-    },
   }
   window.vals = {
     isMobile: !document.querySelector('#Rightbar')
-  }
-  window.functions = {}
-
-  async function sleep(time: number) {
-    return new Promise(resolve => {
-      // console.log('等待vue加载完成,第' + count + '次', Date.now())
-      setTimeout(resolve, time)
-    })
-  }
-
-  async function cbChecker(val: any, count = 0) {
-    if (window.cb) {
-      window.cb(val)
-    } else {
-      while ((!window.cb) && count < 30) {
-        await sleep(500)
-        count++
-      }
-      window.cb && window.cb(val)
-    }
   }
 
   //初始化脚本菜单
   function initMonkeyMenu() {
     try {
       GM_registerMenuCommand("脚本设置", () => {
-        cbChecker({type: 'openSetting'})
+        functions.cbChecker({type: 'openSetting'})
       });
       GM_registerMenuCommand('仓库地址', () => {
-        functions.openNewTab(DefaultVal.git)
+        functions.openNewTab(DefaultVal.git, true)
       });
       GM_registerMenuCommand('反馈 & 建议', functions.feedback);
     } catch (e) {
@@ -798,7 +530,7 @@ function run() {
         
         #Main .cell .count_livid { 
             font-size: 14px;
-            font-weight: 500; 
+            font-weight: bold;
             padding: 3px 10px; 
             border-radius: 5px; 
         }
@@ -830,16 +562,17 @@ function run() {
       .toggle {
           position: absolute;
           right: ${window.config.viewType === 'simple' ? '5rem' : 0};
-          top: 0.5rem;
-          width: 9rem;
-          height: 100%;
-          display: flex;
-          justify-content: flex-end;
-          align-items: flex-end;
-          cursor: pointer;
-          font-size: 1.2rem;
-          color: #ccc;
+          top: ${window.config.viewType === 'simple' ? 0 : '0.5rem'};
+            width: 5rem;
+            height: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--link-color);
           display: none;
+            padding-right: 1rem;
       }
 
       .preview {
@@ -870,7 +603,7 @@ function run() {
       .post-content {
           margin-top: 0.5rem;
           display: block;
-          max-height: 20rem;
+          max-height: 30rem;
           overflow: hidden;
           text-decoration: unset !important;
           line-break: anywhere;
@@ -960,7 +693,6 @@ function run() {
         top: -3px;
       }
     }
-
     `
     let addStyle2: HTMLStyleElement = document.createElement("style");
     // @ts-ignore
@@ -1044,7 +776,7 @@ function run() {
   //获取记事本条目内容
   function getNoteItemContent(id: string, prefix: string) {
     return new Promise((resolve, reject) => {
-      $.get(window.baseUrl + '/notes/edit/' + id).then(r2 => {
+      $.get(location.origin + '/notes/edit/' + id).then(r2 => {
         let bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
         let body = $(bodyText[0])
         let text = body.find('.note_editor').text()
@@ -1063,19 +795,51 @@ function run() {
     })
   }
 
+  function deleteNote(tagsId: string, cb: Function) {
+    fetch(`/notes/${tagsId}`).then(r => {
+      r.text().then(a => {
+        let res = a.match(/\?once=([\d]+)/)
+        if (res && res[1]) {
+          console.log('接口返回了once-str', Number(res[1]))
+          fetch(`/notes/delete/${tagsId}?once=${Number(res[1])}`).then(r => {
+            console.log('r', r, r.url === location.origin + '/')
+            if (r.status === 200) {
+              if (r.redirected && r.url === location.origin + '/') {
+                cb()
+              }
+            } else {
+              cb()
+            }
+          })
+        }
+      })
+    })
+  }
+
   //初始化记事本数据
   async function initNoteData() {
     //获取或创建记事本的标签
-    $.get(window.baseUrl + '/notes').then(async r => {
+    $.get(location.origin + '/notes').then(async r => {
       let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let body = $(bodyText[0])
       let items: HTMLAnchorElement[] = body.find('#Main .box .note_item_title a') as any
 
       if (window.config.openTag) {
-        let tagItem = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
-        if (tagItem) {
-          window.user.tagsId = tagItem.href.substr(-5)
-          window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix,)
+        let tagItems = Array.from(items).filter(v => v.innerText.includes(window.user.tagPrefix))
+        if (tagItems.length) {
+          if (tagItems.length > 1) {
+            let next = true
+            for (let i = 1; i < tagItems.length - 1; i++) {
+              // for (let i = 0; i < 1; i++) {
+              setTimeout(() => {
+                if (!next) return
+                let tagsId = tagItems[i].href.substr(-5)
+                deleteNote(tagsId, () => next = false)
+              }, 60 * 1000 * i)
+            }
+          }
+          window.user.tagsId = tagItems[0].href.substr(-5)
+          window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix)
         } else {
           let r = await window.parse.createNoteItem(window.user.tagPrefix)
           r && (window.user.tagsId = r);
@@ -1096,27 +860,13 @@ function run() {
     })
   }
 
-  //从本地读取配置
-  function initConfig() {
-    return new Promise(resolve => {
-      //获取默认配置
-      let configStr = window.localStorage.getItem('v2ex-config')
-      if (configStr) {
-        let configObj = JSON.parse(configStr)
-        configObj = configObj[window.user.username ?? 'default']
-        if (configObj) {
-          window.config = Object.assign(window.config, configObj)
-        }
-      }
-      resolve(window.config)
-    })
-  }
-
   function addSettingText() {
-    let setting = $(`<a href="javascript:void 0;" class="top ${window.config.version < window.currentVersion ? 'new' : ''}">脚本设置</a>`)
-    setting.on('click', function () {
+    let setting = $(`<a href="/" class="top ${window.config.version < DefaultVal.currentVersion ? 'new' : ''}">脚本设置</a>`)
+    setting.on('click', function (e) {
+      e.stopPropagation()
+      e.preventDefault()
       this.classList.remove('new')
-      cbChecker({type: 'openSetting'})
+      functions.cbChecker({type: 'openSetting'})
     })
     $('.tools').prepend(setting)
   }
@@ -1140,18 +890,18 @@ function run() {
       document.documentElement.classList.add('dark')
     }
 
-    functions.checkPageType()
+    let {pageData, pageType} = functions.checkPageType()
+    window.pageType = pageType
+    window.pageData = pageData
     initMonkeyMenu()
 
     let top2 = document.querySelector('.tools .top:nth-child(2)')
     if (top2 && top2.textContent !== '注册') {
       window.user.username = top2.textContent
       window.user.avatar = $('#Rightbar .box .avatar').attr('src')
-
-      // initNoteData()
     }
 
-    initConfig().then(r => {
+    functions.initConfig().then(async r => {
       //这个要放后面，不然前面查找会出错
       addSettingText()
 
@@ -1166,118 +916,182 @@ function run() {
       }
 
       if (window.user.username) {
+        initNoteData()
+      }
 
+      let box: any
+      let list
+      let last
+      let headerWrap
+      // console.log(window.pageType)
+      // window.pageType = PageType.Post
+      // window.pageData.id = 1007682
+
+      switch (window.pageType!) {
+        case  PageType.Node:
+          box = document.querySelectorAll('#Wrapper #Main .box')
+
+          try {
+            //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+            headerWrap = $('<div class="post-item"></div>')
+            if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+            $(box[1]).prepend(headerWrap)
+            $(box[1]).children().slice(1, 3).each(function () {
+              if (this.classList.contains('cell')) {
+                headerWrap.append(this)
+              }
+            })
+            //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+            headerWrap = $('<div class="post-item"></div>')
+            if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+            $(box[1]).append(headerWrap)
+            $(box[1]).children().slice(2).each(function () {
+              if (this.classList.contains('cell')) {
+                headerWrap.append(this)
+              }
+            })
+            box[1].style.boxShadow = 'unset'
+            box[1].style.background = 'unset'
+            box[1].style.overflow = 'hidden'
+          } catch (e) {
+            console.log('PageType-Node解析报错了', e)
+          }
+
+          let topics = box[1].querySelector('#TopicsNode')
+
+          list = topics.querySelectorAll('.cell')
+          list[0].before($section)
+          window.parse.parsePagePostList(list, box[1])
+          break
+        case  PageType.Changes:
+        case  PageType.Home:
+          box = document.querySelector('#Wrapper #Main .box')
+
+          try {
+            //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+            headerWrap = $('<div class="post-item"></div>')
+            if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+            $(box).prepend(headerWrap)
+            $(box).children().slice(1, 3).each(function () {
+              if (!this.classList.contains('item')) {
+                headerWrap.append(this)
+              }
+            })
+            last = $(box).children().last()
+            last.addClass('cell post-item')
+            if (window.config.viewType === 'card') last[0].classList.add('preview')
+
+            box.style.boxShadow = 'unset'
+            box.style.background = 'unset'
+            box.style.overflow = 'hidden'
+          } catch (e) {
+            console.log('PageType-Home解析报错了', e)
+          }
+
+          list = box!.querySelectorAll('.item')
+          list[0].before($section)
+          window.parse.parsePagePostList(list, box)
+          break
+        case  PageType.Post:
+          box = document.querySelector('#Wrapper #Main .box')
+          // @ts-ignore
+          box.after($section)
+
+          let r = await functions.checkPostReplies(window.pageData.id, false)
+          if (r) {
+            window.stopMe = true
+            functions.cbChecker({type: 'syncData'})
+            functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
+            return
+          }
+
+          //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面突然变宽或变窄
+          if (window.config.postWidth) {
+            //Rightbar的css样式是float，因为自定义主题宽度的话需要把content改为flex。
+            //Rightbar的float就失效了，所以把他移动右边
+            let Main = $('#Main')
+            Main.css({
+              'width': window.config.postWidth,
+              margin: 'unset',
+            })
+            $('#Wrapper > .content').css({
+              'max-width': 'unset',
+              display: 'flex',
+              'justify-content': 'center',
+              gap: '20px'
+            })
+            Main.after($('#Rightbar'))
+          }
+
+          let post = getDefaultPost({id: window.pageData.id})
+          let body = $(document.body)
+          let htmlText = document.documentElement.outerHTML
+
+          window.parse.parsePostContent(
+            post,
+            body,
+            htmlText
+          ).then(async (res: any) => {
+            // console.log('详情页-基本信息解析完成', Date.now())
+            await functions.cbChecker({type: 'postContent', value: res})
+            //引用修改
+            await window.parse.parseOp(res)
+            // console.log('详情页-OP信息解析完成', Date.now())
+          })
+
+          //引用修改
+          window.parse.getPostAllReplies(
+            post,
+            body,
+            htmlText,
+            window.pageData.pageNo
+          ).then(async (res1: any) => {
+            // console.log('详情页-回复解析完成', Date.now())
+            await functions.cbChecker({type: 'postReplies', value: res1})
+          })
+          break
+        case PageType.Member:
+          box = document.querySelectorAll('#Wrapper #Main .box')
+          window.targetUserName = box[0].querySelector('h1')!.textContent!
+          if (window.config.openTag) {
+            //移除box的bottom样式，让和vue的div融为一体
+            box[0].style.borderBottom = 'none'
+            box[0].style['border-bottom-left-radius'] = '0'
+            box[0].style['border-bottom-right-radius'] = '0'
+          }
+
+          try {
+            //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+            headerWrap = $('<div class="post-item"></div>')
+            if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+            $(box[1]).prepend(headerWrap)
+            $(box[1]).children().slice(1, 2).each(function () {
+              if (!this.classList.contains('item')) {
+                headerWrap.append(this)
+              }
+            })
+            last = $(box[1]).children().last()
+            last.addClass('cell post-item')
+            if (window.config.viewType === 'card') last[0].classList.add('preview')
+
+            box[1].style.boxShadow = 'unset'
+            box[1].style.background = 'unset'
+            box[1].style.overflow = 'hidden'
+          } catch (e) {
+            console.log('PageType-Member解析报错了', e)
+          }
+
+          list = box[1].querySelectorAll('.cell')
+          box[0].after($section)
+          window.parse.parsePagePostList(list, box[1])
+          break
+        default:
+          window.stopMe = true
+          functions.cbChecker({type: 'syncData'})
+          console.error('未知页面')
+          break
       }
     })
-
-    let box: any
-    let list
-    console.log(window.pageType)
-    // window.pageType = PageType.Post
-    // window.pageData.id = 1007682
-
-    switch (window.pageType!) {
-      case  PageType.Changes:
-        box = document.querySelector('#Wrapper #Main .box')
-
-        list = box!.querySelectorAll('.item')
-        list[0].before($section)
-        // window.parse.parsePagePostList(list, box[1])
-        break
-      case  PageType.Node:
-        box = document.querySelectorAll('#Wrapper #Main .box')
-
-        let topics = box[1].querySelector('#TopicsNode')
-        list = topics.querySelectorAll('.cell')
-        list[0].before($section)
-        // window.parse.parsePagePostList(list, box[1])
-        break
-      case  PageType.Home:
-        box = document.querySelector('#Wrapper #Main .box')
-        list = box!.querySelectorAll('.item')
-        list[0].before($section)
-        // window.parse.parsePagePostList(list, box)
-        break
-      case  PageType.Post:
-        box = document.querySelector('#Wrapper #Main .box')
-
-        // @ts-ignore
-        box.after($section)
-
-        // let r = await window.parse.checkPostReplies(window.pageData.id, false)
-        // if (r) {
-        //   window.stopMe = true
-        //   cbChecker({type: 'syncData'})
-        //   cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
-        //   return
-        // }
-
-        //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面突然变宽或变窄
-        if (window.config.postWidth) {
-          //Rightbar的css样式是float，因为自定义帖子宽度的话需要把content改为flex。
-          //Rightbar的float就失效了，所以把他移动右边
-          let Main = $('#Main')
-          Main.css({
-            'width': window.config.postWidth,
-            margin: 'unset',
-          })
-          $('#Wrapper > .content').css({
-            'max-width': 'unset',
-            display: 'flex',
-            'justify-content': 'center',
-            gap: '20px'
-          })
-          Main.after($('#Rightbar'))
-        }
-
-        let post = window.clone(window.initPost)
-        post.id = window.pageData.id
-        let body = $(window.document.body)
-        let htmlText = window.document.documentElement.outerHTML
-
-        window.parse.parsePostContent(
-          post,
-          body,
-          htmlText
-        ).then(async (res: any) => {
-          // console.log('详情页-基本信息解析完成', Date.now())
-          await functions.cbChecker({type: 'postContent', value: res})
-          //引用修改
-          await window.parse.parseOp(res)
-          // console.log('详情页-OP信息解析完成', Date.now())
-        })
-
-        //引用修改
-        window.parse.getPostAllReplies(
-          post,
-          body,
-          htmlText,
-          window.pageData.pageNo
-        ).then(async (res1: any) => {
-          // console.log('详情页-回复解析完成', Date.now())
-          await functions.cbChecker({type: 'postReplies', value: res1})
-        })
-        break
-      case PageType.Member:
-        box = document.querySelector('#Wrapper #Main .box')
-        window.targetUserName = box[0].querySelector('h1')!.textContent!
-        if (window.config.openTag) {
-          //移除box的bottom样式，让和vue的div融为一体
-          box[0].style.borderBottom = 'none'
-          box[0].style['border-bottom-left-radius'] = '0'
-          box[0].style['border-bottom-right-radius'] = '0'
-        }
-
-        list = box[1].querySelectorAll('.cell')
-        box[0].after($section)
-        // window.parse.parsePagePostList(list, box[1])
-        break
-      default:
-        window.stopMe = true
-        cbChecker({type: 'syncData'})
-        console.error('未知页面')
-        break
-    }
   }
 
   window.canParseV2exPage = !window.location.search.includes('script')
@@ -1287,12 +1101,12 @@ function run() {
     let box: any = document.querySelector('#Wrapper #Main .box')
     box.after($section)
     window.stopMe = true
-    cbChecker({type: 'syncData'})
+    functions.cbChecker({type: 'syncData'})
     if (window.location.search.includes('script=0')) {
-      cbChecker({type: 'warningNotice', value: '脚本无法查看此主题，已为您单独打开此主题'})
+      functions.cbChecker({type: 'warningNotice', value: '脚本无法查看此主题，已为您单独打开此主题'})
     }
     if (window.location.search.includes('script=1')) {
-      cbChecker({type: 'warningNotice', value: '由于回复数量较多，已为您单独打开此主题并停止解析楼中楼'})
+      functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，已为您单独打开此主题并停止解析楼中楼'})
     }
   }
 }

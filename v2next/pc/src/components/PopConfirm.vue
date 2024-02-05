@@ -7,7 +7,7 @@
             {{ title }}
           </div>
           <div class="options">
-            <BaseButton type="link" size="small" @click="show = false">取消</BaseButton>
+            <BaseButton type="link" size="small" @click="cancel">取消</BaseButton>
             <BaseButton size="small" @click="confirm">确认</BaseButton>
           </div>
         </div>
@@ -57,6 +57,10 @@ export default {
     confirm() {
       this.show = false
       this.$emit('confirm')
+    },
+    cancel() {
+      this.show = false
+      this.$emit('cancel')
     }
   }
 }
@@ -72,7 +76,7 @@ export default {
   padding: 1.5rem;
   border-radius: .8rem;
   transform: translate(-50%, calc(-100% - 1rem));
-  z-index: 999;
+  z-index: 1001;
 
   .text {
     text-align: start;

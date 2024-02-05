@@ -110,13 +110,14 @@ async function toggleIgnore() {
 }
 
 async function toggleFavorite() {
-  if (config.value.collectBrowserNotice) {
-    eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '别忘记添加到书签哦'})
-  }
   if (!checkIsLogin()) return
   if (state.loading) return
   // return eventBus.emit('merge', 'isFavorite')
   let isFavorite = props.post.isFavorite
+
+  if (!isFavorite && config.value.collectBrowserNotice) {
+    eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '别忘记添加到书签哦'})
+  }
   let url = `${location.origin}/${isFavorite ? 'unfavorite' : 'favorite'}/topic/${props.post.id}?once=${props.post.once}`
   state.loading = true
   let apiRes = await fetch(url)
@@ -137,7 +138,6 @@ async function toggleFavorite() {
 
 async function report() {
   if (!checkIsLogin()) return
-  if (!isLogin.value) return
   if (state.loading1) return
   let isReport = props.post.isReport
   if (isReport) {
@@ -207,7 +207,7 @@ async function thank() {
       <div class="options">
         <div class="item" @click="share">
           <div class="icon-wrap">
-            <Icon color="rgb(57,174,85)" icon="ph:share-fat-fill"/>
+            <Icon color="rgb(57,174,85)" icon="uil:share"/>
           </div>
           <span>分享</span>
         </div>
@@ -325,7 +325,7 @@ async function thank() {
       }
     }
 
-    .black{
+    .black {
       color: var(--color-font-pure);
     }
   }

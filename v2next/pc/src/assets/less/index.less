@@ -1,6 +1,7 @@
 @import "variable";
 @import "anim";
 @import "user";
+@import "v2";
 
 :root {
   --color-main-bg: rgb(226, 226, 226);
@@ -131,9 +132,8 @@ html, body {
 }
 
 body :is(.topic_content, .reply_content) a[href^="http"] {
-  text-underline-offset: 0.46ex;
-  color: currentcolor;
-  text-decoration: underline 1.5px;
+  text-underline-offset: 0.70ex;
+  text-decoration: underline 1px;
 }
 
 a {
@@ -214,7 +214,6 @@ a {
   background: var(--box-background-color);
   margin-bottom: 2rem;
   width: 100%;
-  overflow: hidden;
   box-sizing: border-box;
   transition: background-color .3s;
 }
@@ -230,7 +229,7 @@ a {
 
 .modal {
   position: fixed;
-  z-index: 100;
+  z-index: 1001;
   width: 100vw;
   height: 100vh;
   left: 0;

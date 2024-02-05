@@ -1,92 +1,5 @@
-import { Config, Post, User, CommentDisplayType, Reply, MAX_REPLY_LIMIT, PageType } from "./types";
+import { CommentDisplayType, Config, MAX_REPLY_LIMIT, PageType, Post, User } from "./types";
 import { GM_openInTab, GM_registerMenuCommand } from "gmApi";
-
-export const DefaultPost: Post = {
-  allReplyUsers: [],
-  content_rendered: "",
-  createDate: "",
-  createDateAgo: '',
-  fr: "",
-  replyList: [],
-  nestedReplies: [],
-  nestedRedundReplies: [],
-  username: '',
-  url: '',
-  member: {},
-  node: {
-    title: '',
-    url: ''
-  },
-  headerTemplate: '',
-  title: '',
-  id: '',
-  type: 'post',
-  once: '',
-  replyCount: 0,
-  clickCount: 0,
-  thankCount: 0,
-  collectCount: 0,
-  lastReadFloor: 0,
-  isFavorite: false,
-  isIgnore: false,
-  isThanked: false,
-  isReport: false,
-  inList: false
-}
-
-export const DefaultUser: User = {
-  tagPrefix: '--用户标签--',
-  tags: {},
-  tagsId: '',
-  username: '',
-  avatar: '',
-  readPrefix: '--已读楼层--',
-  readNoteItemId: '',
-  readList: {},
-  imgurPrefix: '--imgur图片删除hash--',
-  imgurList: {},
-  imgurNoteId: '',
-}
-
-export const DefaultConfig: Config = {
-  showToolbar: true,
-  showPreviewBtn: true,
-  autoOpenDetail: true,
-  openTag: false,//给用户打标签
-  clickPostItemOpenDetail: true,
-  closePostDetailBySpace: true,//点击空白处关闭详情
-  contentAutoCollapse: true,//正文超长自动折叠
-  viewType: 'table',
-  commentDisplayType: CommentDisplayType.FloorInFloorNoCallUser,
-  newTabOpen: false,//新标签打开
-  base64: true,//base功能
-  sov2ex: false,
-  postWidth: '',
-  showTopReply: true,
-  topReplyLoveMinCount: 3,
-  topReplyCount: 3,
-  autoJumpLastReadFloor: false,
-  rememberLastReadFloor: false,
-  autoSignin: true,
-  customBgColor: '',
-  version: 1,
-  collectBrowserNotice: false,
-  fontSizeType: 'normal'
-}
-
-export const DefaultVal = {
-  pageType: undefined,
-  pageData: {pageNo: 1},
-  targetUserName: '',
-  currentVersion: 1,
-  isNight: false,
-  cb: null,
-  stopMe: null,
-  postList: [],
-  git: 'https://github.com/zyronon/web-scripts',
-  shortGit: 'zyronon/web-scripts',
-  issue: 'https://github.com/zyronon/web-scripts/issues'
-}
 
 export const functions = {
   //获取所有回复
@@ -205,6 +118,19 @@ export const functions = {
           //是否是一级回复
           let isOneLevelReply = false
           if (item.replyUsers.length) {
+            // if (item.replyUsers.length === 1) {
+            //   isOneLevelReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
+            // } else {
+            //   // isOneLevelReply = item.replyUsers.every(a => {
+            //   //   return startReplyUsers.find(v => v === a);
+            //   // })
+            //   // isOneLevelReply = true
+            //   item.replyUsers.map(a => {
+            //     if (startReplyUsers.find(v => v === a)) {
+            //       // list.splice(index, 0, item)
+            //     }
+            //   })
+            // }
             if (item.replyUsers.length > 1) {
               isOneLevelReply = true
             } else {
@@ -281,7 +207,6 @@ export const functions = {
     }
     return {href, id, title: a.innerText}
   },
-
   //图片链接转Img标签
   checkPhotoLink2Img(str: string) {
     if (!str) return
@@ -317,22 +242,15 @@ export const functions = {
     }
     return str
   },
-
   //检测帖子回复长度
   async checkPostReplies(id: string, needOpen: boolean = true) {
     return new Promise(async resolve => {
-      let showJsonUrl = `${location.origin}/api/topics/show.json?id=${id}`
-      let r = await fetch(showJsonUrl)
-      if (r) {
-        let res = await r.json()
-        if (res) {
-          if (res[0]?.replies > MAX_REPLY_LIMIT) {
-            if (needOpen) {
-              window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1&script=1`)
-            }
-            return resolve(true)
-          }
+      let res: any = await functions.getPostDetailByApi(id)
+      if (res?.replies > MAX_REPLY_LIMIT) {
+        if (needOpen) {
+          functions.openNewTab(`https://${location.origin}/t/${id}?p=1&script=1`)
         }
+        return resolve(true)
       }
       resolve(false)
     })
@@ -344,8 +262,8 @@ export const functions = {
     })
   },
   //打开新标签页
-  openNewTab(href: string) {
-    GM_openInTab(href, {active: false});
+  openNewTab(href: string, active = false) {
+    GM_openInTab(href, {active});
     // let tempId = 'a_blank_' + Date.now()
     // let a = document.createElement("a");
     // a.setAttribute("href", href);
@@ -390,32 +308,187 @@ export const functions = {
     functions.openNewTab(DefaultVal.issue)
   },
   //检测页面类型
-  checkPageType() {
-    let l = window.location
+  checkPageType(a?: HTMLAnchorElement) {
+    let l = a || window.location
+    let data = {pageType: null, pageData: {id: '', pageNo: null}}
     if (l.pathname === '/') {
-      window.pageType = PageType.Home
+      data.pageType = PageType.Home
     } else if (l.pathname === '/changes') {
-      window.pageType = PageType.Changes
+      data.pageType = PageType.Changes
     } else if (l.pathname === '/recent') {
-      window.pageType = PageType.Changes
+      data.pageType = PageType.Changes
     } else if (l.href.match(/.com\/?tab=/)) {
-      window.pageType = PageType.Home
+      data.pageType = PageType.Home
     } else if (l.href.match(/.com\/go\//)) {
       if (!l.href.includes('/links')) {
-        window.pageType = PageType.Node
+        data.pageType = PageType.Node
       }
     } else if (l.href.match(/.com\/member/)) {
-      window.pageType = PageType.Member
+      data.pageType = PageType.Member
     } else {
       let r = l.href.match(/.com\/t\/([\d]+)/)
-      if (r) {
-        window.pageType = PageType.Post
-        window.pageData.id = r[1]
+      if (r && !l.pathname.includes('review') && !l.pathname.includes('info')) {
+        data.pageType = PageType.Post
+        data.pageData.id = r[1]
         if (l.search) {
           let pr = l.href.match(/\?p=([\d]+)/)
-          if (pr) window.pageData.pageNo = Number(pr[1])
+          if (pr) data.pageData.pageNo = Number(pr[1])
         }
       }
     }
+    return data
+  },
+  //通过api获取主题详情
+  getPostDetailByApi(id: string) {
+    return new Promise(resolve => {
+      fetch(`${location.origin}/api/topics/show.json?id=${id}`)
+        .then(async r => {
+          if (r.status === 200) {
+            let res = await r.json()
+            if (res) {
+              let d = res[0]
+              resolve(d)
+            }
+          }
+        })
+    })
+  },
+  appendPostContent(res: any, el: Element) {
+    let a = document.createElement('a')
+    a.href = res.href
+    a.classList.add('post-content')
+    let div = document.createElement('div')
+    div.innerHTML = res.content_rendered
+    a.append(div)
+    // console.log(div.clientHeight)
+    el.append(a)
+    // show More
+    const checkHeight = () => {
+      if (div.clientHeight < 300) {
+        a.classList.add('show-all')
+      } else {
+        let showMore = document.createElement('div')
+        showMore.classList.add('show-more')
+        showMore.innerHTML = '显示更多/收起'
+        showMore.onclick = function (e) {
+          e.stopPropagation()
+          a.classList.toggle('show-all')
+        }
+        a.parentNode?.append(showMore)
+      }
+    }
+    checkHeight()
+  },
+  //从本地读取配置
+  initConfig() {
+    return new Promise(resolve => {
+      //获取默认配置
+      let configStr = localStorage.getItem('v2ex-config')
+      if (configStr) {
+        let configObj = JSON.parse(configStr)
+        configObj = configObj[window.user.username ?? 'default']
+        if (configObj) {
+          window.config = Object.assign(window.config, configObj)
+        }
+      }
+      resolve(window.config)
+    })
   }
 }
+
+export const DefaultPost: Post = {
+  allReplyUsers: [],
+  content_rendered: "",
+  createDate: "",
+  createDateAgo: '',
+  lastReplyDate: '',
+  fr: "",
+  replyList: [],
+  nestedReplies: [],
+  nestedRedundReplies: [],
+  username: '',
+  url: '',
+  href: '',
+  member: {},
+  node: {
+    title: '',
+    url: ''
+  },
+  headerTemplate: '',
+  title: '',
+  id: '',
+  type: 'post',
+  once: '',
+  replyCount: 0,
+  clickCount: 0,
+  thankCount: 0,
+  collectCount: 0,
+  lastReadFloor: 0,
+  isFavorite: false,
+  isIgnore: false,
+  isThanked: false,
+  isReport: false,
+  inList: false
+}
+export const getDefaultPost = (val: any = {}): Post => {
+  return Object.assign(functions.clone(DefaultPost), val)
+}
+
+export const DefaultUser: User = {
+  tagPrefix: '--用户标签--',
+  tags: {},
+  tagsId: '',
+  username: '',
+  avatar: '',
+  readPrefix: '--已读楼层--',
+  readNoteItemId: '',
+  readList: {},
+  imgurPrefix: '--imgur图片删除hash--',
+  imgurList: {},
+  imgurNoteId: '',
+}
+
+export const DefaultConfig: Config = {
+  showToolbar: true,
+  autoOpenDetail: true,
+  openTag: false,//给用户打标签
+  clickPostItemOpenDetail: true,
+  closePostDetailBySpace: true,//点击空白处关闭详情
+  contentAutoCollapse: true,//正文超长自动折叠
+  viewType: 'table',
+  commentDisplayType: CommentDisplayType.FloorInFloorNoCallUser,
+  newTabOpen: false,//新标签打开
+  newTabOpenActive: false,
+  base64: true,//base功能
+  sov2ex: false,
+  postWidth: '',
+  showTopReply: true,
+  topReplyLoveMinCount: 3,
+  topReplyCount: 3,
+  autoJumpLastReadFloor: false,
+  rememberLastReadFloor: false,
+  autoSignin: true,
+  customBgColor: '',
+  version: 1,
+  collectBrowserNotice: false,
+  fontSizeType: 'normal'
+}
+
+export const DefaultVal = {
+  pageType: undefined,
+  pageData: {pageNo: 1},
+  targetUserName: '',
+  currentVersion: 1,
+  isNight: false,
+  cb: null,
+  stopMe: null,
+  postList: [],
+  git: 'https://github.com/zyronon/web-scripts',
+  shortGit: 'zyronon/web-scripts',
+  issue: 'https://github.com/zyronon/web-scripts/issues',
+  pcLog: 'https://greasyfork.org/zh-CN/scripts/458024/versions',
+  pcScript: 'https://greasyfork.org/zh-CN/scripts/458024',
+  mobileScript: 'https://greasyfork.org/zh-CN/scripts/485356',
+  homeUrl: 'https://v2next.netlify.app/',
+}
+

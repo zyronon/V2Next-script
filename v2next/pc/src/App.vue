@@ -15,7 +15,7 @@ import BaseSwitch from "./components/BaseSwitch.vue";
 import BaseLoading from "./components/BaseLoading.vue";
 import NotificationModal from "./components/Modal/NotificationModal.vue";
 import BaseButton from "./components/BaseButton.vue";
-import {functions} from "@v2next/core/core.ts";
+import {DefaultPost, functions, getDefaultPost} from "@v2next/core/core.ts";
 
 export default {
   components: {
@@ -114,7 +114,7 @@ export default {
 
     //A标签的
     $(document).on('click', 'a', this.clickA)
-    //帖子的
+    //主题的
     $(document).on('click', '.post-item', function (e) {
       // console.log('click-post-item')
       if (e.currentTarget.getAttribute('script')) return
@@ -144,12 +144,36 @@ export default {
     //展开或收起的点击事件
     $(document).on('click', '.toggle', (e) => {
       if (this.stopMe) return true
-      let id = e.currentTarget.dataset['id']
-      let itemDom = window.win().query(`.id_${id}`)
+      let id = e.target.dataset['id']
+      let itemDom = document.querySelector(`.id_${id}`)
       if (itemDom.classList.contains('preview')) {
+        e.target.innerText = '预览'
         itemDom.classList.remove('preview')
       } else {
-        itemDom.classList.add('preview')
+        if (this.config.viewType !== 'card') {
+          let index = this.list.findIndex(v => v.id == id)
+          if (index > -1) {
+            e.target.innerText = '收起'
+            itemDom.classList.add('preview')
+          } else {
+            e.target.innerText = '加载中'
+            functions.getPostDetailByApi(id).then(res => {
+              if (res.content_rendered) {
+                res.href = itemDom.dataset['href']
+                this.list.push(getDefaultPost(res))
+                itemDom.classList.add('preview')
+                e.target.innerText = '收起'
+                functions.appendPostContent(res, itemDom)
+              } else {
+                e.target.innerText = '预览'
+                eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '主题暂无正文！'})
+              }
+            })
+          }
+        } else {
+          e.target.innerText = '收起'
+          itemDom.classList.add('preview')
+        }
       }
     })
 
@@ -219,52 +243,58 @@ export default {
       //有script表示是脚本生成的a标签用于新开页面的
       if (e.currentTarget.getAttribute('script')) return
       if (that.stopMe) return true
-      let {href, id, title} = window.parse.parseA(e.currentTarget)
 
-      // console.log('click-a', e.currentTarget, e, href, id, title)
-      //夜间模式切换
-      if (href.includes('/settings/night/toggle')) return
-      if (href.includes('/?tab=')) return
-      if (href.includes('/go')) return
-      //清除最近记录
-      if (href === window.origin + '/#;') return
-      //主页
-      if (href === window.origin + '/') return
+      let {pageType} = functions.checkPageType(e.currentTarget)
+      // console.log('click-a', e.currentTarget.pathname)
+      // console.log('pageType', pageType)
+      switch (pageType) {
+        case PageType.Post:
+          let {href, id, title} = functions.parseA(e.currentTarget)
+          if (id) {
+            that.clickPost(e, id, href, title)
+          }
+          break
+        case PageType.Node:
+        case PageType.Home:
+        case PageType.Changes:
+          return
+        default:
+          //夜间模式切换
+          if (e.currentTarget.href.includes('/settings/night/toggle')) return
+          //清除最近记录
+          if (e.currentTarget.href === location.origin + '/#;') return
+          //未读提醒
+          if (e.currentTarget.href.includes('/notifications')) {
+            // this.notificationModal.show = true
+            //
+            // let clientWidth = window.document.body.clientWidth
+            // let windowWidth = 1200
+            // let left = clientWidth / 2 - windowWidth / 2
+            // // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
+            // // newWin.document.write('123');
+            //
+            // fetch(href).then(async r => {
+            //   let htmlText = await r.text()
+            //   let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+            //   let res = htmlText.match(/var notificationBottom = ([\d]+);/)
+            //   if (res && res[1]) {
+            //     window.notificationBottom = Number(res[1])
+            //     console.log(' window.notificationBottom', window.notificationBottom)
+            //   }
+            //
+            //   let body = $(bodyText[0])
+            //   let h = body.find('#notifications').parent().html()
+            //   this.notificationModal.h = h
+            //
+            // })
+            // that.stopEvent(e)
+          }
 
-      //未读提醒
-      if (href.includes('/notifications')) {
-        // this.notificationModal.show = true
-        //
-        // let clientWidth = window.document.body.clientWidth
-        // let windowWidth = 1200
-        // let left = clientWidth / 2 - windowWidth / 2
-        // // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
-        // // newWin.document.write('123');
-        //
-        // fetch(href).then(async r => {
-        //   let htmlText = await r.text()
-        //   let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-        //   let res = htmlText.match(/var notificationBottom = ([\d]+);/)
-        //   if (res && res[1]) {
-        //     window.notificationBottom = Number(res[1])
-        //     console.log(' window.notificationBottom', window.notificationBottom)
-        //   }
-        //
-        //   let body = $(bodyText[0])
-        //   let h = body.find('#notifications').parent().html()
-        //   this.notificationModal.h = h
-        //
-        // })
-        // that.stopEvent(e)
-      }
-
-      if (id) {
-        that.clickPost(e, id, href, title)
-      } else {
-        if (that.config.newTabOpen) {
-          that.stopEvent(e)
-          functions.openNewTab(href)
-        }
+          if (that.config.newTabOpen) {
+            that.stopEvent(e)
+            functions.openNewTab(e.currentTarget.href, that.config.newTabOpenActive)
+          }
+          return
       }
     },
     stopEvent(e) {
@@ -276,13 +306,13 @@ export default {
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
           this.stopEvent(e)
+          let postItem = getDefaultPost()
           let index = this.list.findIndex(v => v.id == id)
-          let postItem = this.clone(window.initPost)
           if (index > -1) {
             postItem = this.list[index]
           }
           if (!postItem.title) postItem.title = title ?? '加载中'
-          // console.log('postItem', postItem)
+          // console.log('postItem', JSON.stringify(postItem))
           postItem.id = id
           postItem.href = href
           this.getPostDetail(postItem)
@@ -290,7 +320,7 @@ export default {
         }
         if (this.config.newTabOpen) {
           this.stopEvent(e)
-          functions.openNewTab(`https://www.v2ex.com/t/${id}?p=1`)
+          functions.openNewTab(`https://www.v2ex.com/t/${id}?p=1`, this.config.newTabOpenActive)
         }
       }
     },
@@ -304,12 +334,12 @@ export default {
       this.configModal.show = true
     },
     async winCb({type, value}) {
-      // console.log('回调的类型', type, value)
+      console.log('回调的类型', type, value)
       if (type === 'openSetting') {
         this.showConfig()
       }
       if (type === 'syncData') {
-        this.list = window.postList
+        this.list = Object.assign(this.list, window.postList)
         this.config = window.config
         this.stopMe = window.stopMe
         this.tags = window.user.tags
@@ -341,7 +371,7 @@ export default {
 
       if (type === 'postReplies') {
         this.current = Object.assign(this.current, value)
-        // console.log('当前帖子', this.current)
+        // console.log('当前主题', this.current)
         this.list.push(this.clone(this.current))
         this.loading = false
       }
@@ -353,11 +383,11 @@ export default {
       // console.log('重新生成列表')
       if (this.current.replyList.length) {
         this.current.replyCount = this.current.replyList.length
-        let res = window.parse.createNestedList(this.current.replyList)
+        let res = functions.createNestedList(this.current.replyList)
         if (res) {
           this.current.nestedReplies = res
         }
-        let dup_res = window.parse.createNestedRedundantList(this.current.replyList)
+        let dup_res = functions.createNestedRedundantList(this.current.replyList)
         if (dup_res) {
           this.current.nestedRedundReplies = dup_res
         }
@@ -491,34 +521,25 @@ export default {
       } else {
         this.loading = true
 
-        let showJsonUrl = `${location.origin}/api/topics/show.json?id=${this.current.id}`
-        let r = await fetch(showJsonUrl)
-        if (r) {
-          let res = await r.json()
-          if (res) {
-            let d = res[0]
-            d.replyCount = d.replies
-            this.current = Object.assign(this.current, d)
-            if (this.current.replyCount > MAX_REPLY_LIMIT) {
-              functions.openNewTab(`${location.origin}/t/${this.current.id}?p=1&script=1`)
-              eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '由于回复数量较多，已为您单独打开此主题'})
-              this.loading = this.show = false
-              return
-            } else {
-              if (!this.current.headerTemplate) {
-                this.current.headerTemplate = `
+        functions.getPostDetailByApi(this.current.id).then(d => {
+          d.replyCount = d.replies
+          this.current = Object.assign(this.current, d)
+          if (this.current.replyCount > MAX_REPLY_LIMIT) {
+            functions.openNewTab(`${location.origin}/t/${this.current.id}?p=1&script=1`, true)
+            eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '由于回复数量较多，已为您单独打开此主题'})
+            this.loading = this.show = false
+            return
+          } else {
+            this.current.jsonContent = `
             <div class="cell">
               <div class="topic_content">
                 <div class="markdown_body">
                  ${d?.content_rendered ?? ''}
                 </div>
               </div>
-            </div>
-            `
-              }
-            }
+            </div>`
           }
-        }
+        })
       }
 
       //ajax不能判断是否跳转
@@ -530,7 +551,7 @@ export default {
       }
       if (apiRes.status === 403) {
         this.refreshLoading = this.show = this.loading = false
-        functions.openNewTab(`${location.origin}/t/${post.id}?p=1&script=0`)
+        functions.openNewTab(`${location.origin}/t/${post.id}?p=1&script=0`, true)
         return
       }
       //如果是重定向了，那么就是没权限
@@ -560,7 +581,7 @@ export default {
       this.refreshLoading = this.loading = false
 
       await window.parse.parseOp(this.current)
-      console.log('当前帖子', this.current)
+      console.log('当前主题', this.current)
     },
     addTargetUserTag() {
       eventBus.emit(CMD.ADD_TAG, window.targetUserName)
@@ -600,8 +621,7 @@ export default {
             </span>
       <span class="add-tag ago" @click="addTargetUserTag" title="添加标签">+</span>
     </div>
-    <div v-if="isPost && !show && config.autoOpenDetail" class="my-box p2"
-         style="margin-top: 2rem;">
+    <div v-if="isPost && !show " class="my-box p2" style="margin-top: 2rem;margin-bottom: 0;">
       <div class="flex flex-center" v-if="loading">
         <BaseLoading/>
       </div>
@@ -638,6 +658,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 1rem;
+  color: var(--color-font-pure);
 }
 </style>
 

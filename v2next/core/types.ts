@@ -5,6 +5,7 @@ export interface Post {
     allReplyUsers: any[],
     username: string,
     url: string,
+    href: string,
     member: any,
     node: {
         title: string,
@@ -17,6 +18,7 @@ export interface Post {
     id: string,
     createDate: string,
     createDateAgo: string,
+    lastReplyDate: string,
     type: string,
     once: string,
     replyCount: number,
@@ -47,7 +49,6 @@ export interface User {
 
 export interface Config {
     showToolbar: boolean,
-    showPreviewBtn: boolean,
     autoOpenDetail: boolean,
     openTag: boolean,//给用户打标签
     clickPostItemOpenDetail: boolean,
@@ -56,6 +57,7 @@ export interface Config {
     viewType: string,
     commentDisplayType: CommentDisplayType,
     newTabOpen: boolean,//新标签打开
+    newTabOpenActive: boolean,//新标签打开默认激活
     base64: boolean,//base功能
     sov2ex: boolean,
     showTopReply: boolean,//显示高赞

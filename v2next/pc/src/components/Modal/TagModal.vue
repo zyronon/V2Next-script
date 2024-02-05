@@ -17,7 +17,7 @@
                style="width: 100%;"
                v-model="tagModal.tag" @keydown.enter="addTag">
         <div class="btns">
-          <BaseButton type="link" @click="tagModal.show = false">取消</BaseButton>
+          <BaseButton type="link" @click="tagModal.show = false;tagModal.tag=''">取消</BaseButton>
           <BaseButton @click="addTag">确定</BaseButton>
         </div>
       </div>
@@ -90,7 +90,7 @@ async function addTag() {
     padding: 2rem 4rem;
     width: 25rem;
 
-    .title{
+    .title {
       font-weight: bold;
     }
 

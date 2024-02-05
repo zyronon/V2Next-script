@@ -10,7 +10,7 @@ let Channel = {
   }
 }
 $(window.win().doc).on('click', 'a', async (e) => {
-  let {href, id, title} = window.parse.parseA(e.currentTarget);
+  let {href, id, title} = functions.parseA(e.currentTarget);
   if (id) {
     e.preventDefault();
     Channel.postMessage(id);
