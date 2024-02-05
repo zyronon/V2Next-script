@@ -3,7 +3,7 @@
        ref="detail"
        @keydown.esc="close()"
        v-show="modelValue"
-       :class="[isNight?'isNight':'',pageType,isMobile?'mobile':'']"
+       :class="[isNight?'isNight':'',pageType]"
        @scroll="debounceScroll"
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
@@ -25,7 +25,7 @@
             <a :href="post.node.url">{{ post.node.title }}</a>
             <div class="sep10"></div>
             <h1>{{ post.title }}</h1>
-            <div :id="`topic_${post.id}_votes`" class="votes" v-if="!isMobile">
+            <div :id="`topic_${post.id}_votes`" class="votes">
               <a href="javascript:" :onclick="`upVoteTopic(${post.id});`" class="vote">
                 <li class="fa fa-chevron-up"></li> &nbsp;
               </a>
@@ -97,10 +97,6 @@
                      type="top"
                      v-model="topReply[index]"/>
           </div>
-        </div>
-
-        <div class="my-box my-cell" v-if="isMobile">
-          <div class="inner" v-html="post.fr"></div>
         </div>
 
         <div class="my-box comment-wrapper">
@@ -232,7 +228,7 @@ export default {
     BaseLoading,
     Icon
   },
-  inject: ['allReplyUsers', 'post', 'isMobile', 'tags', 'isLogin', 'config', 'pageType', 'isNight'],
+  inject: ['allReplyUsers', 'post',  'tags', 'isLogin', 'config', 'pageType', 'isNight'],
   provide() {
     return {
       postDetailWidth: computed(() => this.postDetailWidth)
@@ -406,11 +402,14 @@ export default {
           }
         }
       },
-    }
+    },
+
   },
   mounted() {
-    setTimeout(() => {
-      this.postDetailWidth = this.$refs.mainWrapper?.getBoundingClientRect().width || 0
+    nextTick(() => {
+      setTimeout(() => {
+        this.postDetailWidth = this.$refs.mainWrapper?.getBoundingClientRect().width || 0
+      }, 500)
     })
     if (this.isLogin) {
       const observer = new IntersectionObserver(

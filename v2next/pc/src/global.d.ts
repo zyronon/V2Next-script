@@ -47,9 +47,6 @@ declare global {
     win: any
     query: any
     stopMe: boolean
-    vals: {
-      isMobile: boolean
-    }
   }
 }
 

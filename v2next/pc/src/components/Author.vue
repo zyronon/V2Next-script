@@ -153,6 +153,7 @@ export default {
 <style scoped lang="less">
 @import "../assets/less/variable";
 
+@mr: 0.6rem;
 .Author {
   display: flex;
   align-items: center;
@@ -172,19 +173,19 @@ export default {
 
     .username {
       font-size: 1.4rem;
-      margin-right: 1rem;
+      margin-right: @mr;
     }
 
     .expand-icon {
       cursor: pointer;
-      margin-right: .8rem;
+      margin-right: @mr;
       width: 2rem;
       height: 2rem;
       transform: rotate(90deg);
     }
 
     .avatar {
-      margin-right: 1rem;
+      margin-right: 0.8rem;
       display: flex;
 
       img {
@@ -214,7 +215,7 @@ export default {
       border: 2px solid @color;
       font-size: 1.2rem;
       font-weight: bold;
-      margin-right: 1rem;
+      margin-right: @mr;
       transform: scale(.8);
     }
 
@@ -228,7 +229,7 @@ export default {
       border: 2px solid @dup-color;
       font-size: 1.2rem;
       font-weight: bold;
-      margin-right: 1rem;
+      margin-right: @mr;
       transform: scale(.8);
     }
 
@@ -236,7 +237,7 @@ export default {
       .owner;
       background: @color;
       color: white;
-      margin-right: 1rem;
+      margin-right: @mr;
     }
 
   }
@@ -258,7 +259,7 @@ export default {
       align-items: center;
       color: var(--color-gray);
       opacity: 0;
-      gap: .5rem;
+      gap: .2rem;
 
       &:hover {
         opacity: 1;

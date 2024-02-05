@@ -371,28 +371,44 @@ function run() {
         if (!item_title) return
         let item = getDefaultPost()
         itemDom.classList.add('post-item')
-        let a = item_title.querySelector('a')
-        let {href, id} = functions.parseA(a)
-        item.id = String(Number(id))
-        a.href = item.href = href
-        item.url = location.origin + '/api/topics/show.json?id=' + item.id
-        itemDom.classList.add(`id_${id}`)
-        itemDom.dataset['href'] = href
-        //添加切换按钮
-        let td = itemDom.querySelector('td:nth-child(4)')
-        if (!td) {
-          td = itemDom.querySelector('td:nth-child(2)')
+        let a
+        if (window.config.version > 1) {
+          a = item_title.lastChild
+        } else {
+          a = item_title.querySelector('a')
         }
-        td.style.position = 'relative'
-        let toggle = document.createElement('div')
-        toggle.dataset['id'] = item.id
-        toggle.classList.add('toggle')
-        toggle.innerText = '预览'
-        td.append(toggle)
-        if (window.config.viewType === 'card') {
-          window.postList.push(item)
+        try {
+          let {href, id} = functions.parseA(a)
+          item.id = String(Number(id))
+          a.href = item.href = href
+          item.url = location.origin + '/api/topics/show.json?id=' + item.id
+          itemDom.classList.add(`id_${id}`)
+          itemDom.dataset['href'] = href
+          //添加切换按钮
+          let td = itemDom.querySelector('td:nth-child(4)')
+          if (!td) {
+            td = itemDom.querySelector('td:nth-child(2)')
+          }
+          td.style.position = 'relative'
+          let toggle = document.createElement('div')
+          toggle.dataset['id'] = item.id
+          toggle.classList.add('toggle')
+          toggle.innerText = '预览'
+          td.append(toggle)
+          if (window.config.viewType === 'card') {
+            window.postList.push(item)
+          }
+        } catch (e) {
+          window.stopMe = true
         }
       })
+
+      if (window.stopMe) {
+        // console.log('g')
+        localStorage.setItem('d', '1')
+      } else {
+        localStorage.setItem('d', '')
+      }
 
       const setF = (res) => {
         let rIndex = window.postList.findIndex(w => w.id === res.id)
@@ -407,7 +423,7 @@ function run() {
         }
       }
 
-      if (window.config.viewType === 'card') {
+      if (window.config.viewType === 'card' && !window.stopMe) {
         let cacheDataStr = localStorage.getItem('cacheData')
         let cacheData = []
         if (cacheDataStr) {
@@ -451,7 +467,6 @@ function run() {
         data.append('parent_id', 0)
         data.append('syntax', 0)
         let apiRes = await fetch(`${location.origin}/notes/new`, {method: 'post', body: data})
-        console.log(apiRes)
         if (apiRes.redirected && apiRes.status === 200) {
           resolve(apiRes.url.substr(-5))
           return
@@ -461,6 +476,7 @@ function run() {
     },
     //编辑记事本子条目
     async editNoteItem(val: string, id: string) {
+      if (!id) return
       let data: any = new FormData()
       data.append('content', val)
       data.append('syntax', 0)
@@ -486,9 +502,6 @@ function run() {
       return
       return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
     },
-  }
-  window.vals = {
-    isMobile: !document.querySelector('#Rightbar')
   }
 
   //初始化脚本菜单
@@ -713,16 +726,16 @@ function run() {
       } else if (window.win().doc.getElementById('gift_v2excellent')) { // 兼容 [V2ex Plus] 扩展
         window.win().doc.getElementById('gift_v2excellent').click();
         localStorage.setItem('menu_clockInTime', timeNow); //             写入签到时间以供后续比较
-        console.info('[V2EX - 超级增强] 自动签到完成！')
+        // console.info('[V2EX - 超级增强] 自动签到完成！')
       } else { //                                                  都没有找到，说明已经签过到了
-        console.info('[V2EX - 超级增强] 自动签到完成！')
+        // console.info('[V2EX - 超级增强] 自动签到完成！')
       }
     } else { //                                                      不在首页
       let timeOld = localStorage.getItem('menu_clockInTime')
       if (!timeOld || timeOld != timeNow) {
         qianDaoStatus_(timeNow) //                               后台获取签到状态（并判断是否需要签到）
       } else { //                                                新旧签到时间一致
-        console.info('[V2EX - 超级增强] 自动签到完成！')
+        // console.info('[V2EX - 超级增强] 自动签到完成！')
       }
     }
   }
@@ -845,6 +858,32 @@ function run() {
           r && (window.user.tagsId = r);
         }
       }
+
+      let tagItems = Array.from(items).filter(v => v.innerText.includes(window.user.configPrefix))
+      if (tagItems.length) {
+        if (tagItems.length > 1) {
+          let next = true
+          for (let i = 1; i < tagItems.length - 1; i++) {
+            // for (let i = 0; i < 1; i++) {
+            setTimeout(() => {
+              if (!next) return
+              let tagsId = tagItems[i].href.substr(-5)
+              deleteNote(tagsId, () => next = false)
+            }, 60 * 1000 * i)
+          }
+        }
+        window.user.configNoteId = tagItems[0].href.substr(-5)
+        let config: any = await getNoteItemContent(window.user.configNoteId, window.user.configPrefix)
+        window.config = Object.assign(window.config, config)
+      } else {
+        let r = await window.parse.createNoteItem(window.user.configPrefix)
+        r && (window.user.configNoteId = r);
+      }
+      if (window.config.version < DefaultVal.currentVersion) {
+        window.config.version = DefaultVal.currentVersion
+      }
+      localStorage.setItem('v2ex-config', JSON.stringify(window.config))
+      window.parse.editNoteItem(window.user.configPrefix + JSON.stringify(window.config), window.user.configNoteId)
 
       if (false) {
         let imgurItem = Array.from(items).find(v => v.innerText.includes(window.user.imgurPrefix))
@@ -993,6 +1032,12 @@ function run() {
           window.parse.parsePagePostList(list, box)
           break
         case  PageType.Post:
+          let d: string = localStorage.getItem('d')
+          if (d) {
+            window.stopMe = true
+            functions.cbChecker({type: 'syncData'})
+            return
+          }
           box = document.querySelector('#Wrapper #Main .box')
           // @ts-ignore
           box.after($section)
@@ -1112,7 +1157,7 @@ function run() {
 }
 
 if (!isMobile) {
-  console.log('V2EX PC端')
+  // console.log('V2EX PC端')
   run()
   let vueApp = createApp(App)
   vueApp.config.unwrapInjectedRef = true

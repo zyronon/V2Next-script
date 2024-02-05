@@ -15,7 +15,7 @@ import BaseSwitch from "./components/BaseSwitch.vue";
 import BaseLoading from "./components/BaseLoading.vue";
 import NotificationModal from "./components/Modal/NotificationModal.vue";
 import BaseButton from "./components/BaseButton.vue";
-import {DefaultPost, functions, getDefaultPost} from "@v2next/core/core.ts";
+import {DefaultPost, DefaultVal, functions, getDefaultPost} from "@v2next/core/core.ts";
 
 export default {
   components: {
@@ -25,7 +25,6 @@ export default {
   },
   provide() {
     return {
-      isMobile: computed(() => window.vals.isMobile),
       isLogin: computed(() => this.isLogin),
       isNight: computed(() => this.isNight),
       pageType: computed(() => this.pageType),
@@ -334,7 +333,7 @@ export default {
       this.configModal.show = true
     },
     async winCb({type, value}) {
-      console.log('回调的类型', type, value)
+      // console.log('回调的类型', type, value)
       if (type === 'openSetting') {
         this.showConfig()
       }
@@ -581,7 +580,7 @@ export default {
       this.refreshLoading = this.loading = false
 
       await window.parse.parseOp(this.current)
-      console.log('当前主题', this.current)
+      // console.log('当前主题', this.current)
     },
     addTargetUserTag() {
       eventBus.emit(CMD.ADD_TAG, window.targetUserName)

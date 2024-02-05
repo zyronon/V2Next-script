@@ -446,6 +446,26 @@ export const DefaultUser: User = {
   imgurPrefix: '--imgur图片删除hash--',
   imgurList: {},
   imgurNoteId: '',
+  configPrefix: '--config--',
+  configNoteId: '',
+}
+
+export const DefaultVal = {
+  pageType: undefined,
+  pageData: {pageNo: 1},
+  targetUserName: '',
+  currentVersion: 1,
+  isNight: false,
+  cb: null,
+  stopMe: null,
+  postList: [],
+  git: 'https://github.com/zyronon/web-scripts',
+  shortGit: 'zyronon/web-scripts',
+  issue: 'https://github.com/zyronon/web-scripts/issues',
+  pcLog: 'https://greasyfork.org/zh-CN/scripts/458024/versions',
+  pcScript: 'https://greasyfork.org/zh-CN/scripts/458024',
+  mobileScript: 'https://greasyfork.org/zh-CN/scripts/485356',
+  homeUrl: 'https://v2next.netlify.app/',
 }
 
 export const DefaultConfig: Config = {
@@ -469,26 +489,9 @@ export const DefaultConfig: Config = {
   rememberLastReadFloor: false,
   autoSignin: true,
   customBgColor: '',
-  version: 1,
+  version:  DefaultVal.currentVersion,
   collectBrowserNotice: false,
   fontSizeType: 'normal'
 }
 
-export const DefaultVal = {
-  pageType: undefined,
-  pageData: {pageNo: 1},
-  targetUserName: '',
-  currentVersion: 1,
-  isNight: false,
-  cb: null,
-  stopMe: null,
-  postList: [],
-  git: 'https://github.com/zyronon/web-scripts',
-  shortGit: 'zyronon/web-scripts',
-  issue: 'https://github.com/zyronon/web-scripts/issues',
-  pcLog: 'https://greasyfork.org/zh-CN/scripts/458024/versions',
-  pcScript: 'https://greasyfork.org/zh-CN/scripts/458024',
-  mobileScript: 'https://greasyfork.org/zh-CN/scripts/485356',
-  homeUrl: 'https://v2next.netlify.app/',
-}
 
