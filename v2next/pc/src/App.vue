@@ -243,52 +243,58 @@ export default {
       //有script表示是脚本生成的a标签用于新开页面的
       if (e.currentTarget.getAttribute('script')) return
       if (that.stopMe) return true
-      let {href, id, title} = functions.parseA(e.currentTarget)
 
-      // console.log('click-a', e.currentTarget, e, href, id, title)
-      //夜间模式切换
-      if (href.includes('/settings/night/toggle')) return
-      if (href.includes('/?tab=')) return
-      if (href.includes('/go')) return
-      //清除最近记录
-      if (href === window.origin + '/#;') return
-      //主页
-      if (href === window.origin + '/') return
+      let {pageType} = functions.checkPageType(e.currentTarget)
+      // console.log('click-a', e.currentTarget.pathname)
+      // console.log('pageType', pageType)
+      switch (pageType) {
+        case PageType.Post:
+          let {href, id, title} = functions.parseA(e.currentTarget)
+          if (id) {
+            that.clickPost(e, id, href, title)
+          }
+          break
+        case PageType.Node:
+        case PageType.Home:
+        case PageType.Changes:
+          return
+        default:
+          //夜间模式切换
+          if (e.currentTarget.href.includes('/settings/night/toggle')) return
+          //清除最近记录
+          if (e.currentTarget.href === location.origin + '/#;') return
+          //未读提醒
+          if (e.currentTarget.href.includes('/notifications')) {
+            // this.notificationModal.show = true
+            //
+            // let clientWidth = window.document.body.clientWidth
+            // let windowWidth = 1200
+            // let left = clientWidth / 2 - windowWidth / 2
+            // // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
+            // // newWin.document.write('123');
+            //
+            // fetch(href).then(async r => {
+            //   let htmlText = await r.text()
+            //   let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+            //   let res = htmlText.match(/var notificationBottom = ([\d]+);/)
+            //   if (res && res[1]) {
+            //     window.notificationBottom = Number(res[1])
+            //     console.log(' window.notificationBottom', window.notificationBottom)
+            //   }
+            //
+            //   let body = $(bodyText[0])
+            //   let h = body.find('#notifications').parent().html()
+            //   this.notificationModal.h = h
+            //
+            // })
+            // that.stopEvent(e)
+          }
 
-      //未读提醒
-      if (href.includes('/notifications')) {
-        // this.notificationModal.show = true
-        //
-        // let clientWidth = window.document.body.clientWidth
-        // let windowWidth = 1200
-        // let left = clientWidth / 2 - windowWidth / 2
-        // // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
-        // // newWin.document.write('123');
-        //
-        // fetch(href).then(async r => {
-        //   let htmlText = await r.text()
-        //   let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-        //   let res = htmlText.match(/var notificationBottom = ([\d]+);/)
-        //   if (res && res[1]) {
-        //     window.notificationBottom = Number(res[1])
-        //     console.log(' window.notificationBottom', window.notificationBottom)
-        //   }
-        //
-        //   let body = $(bodyText[0])
-        //   let h = body.find('#notifications').parent().html()
-        //   this.notificationModal.h = h
-        //
-        // })
-        // that.stopEvent(e)
-      }
-
-      if (id) {
-        that.clickPost(e, id, href, title)
-      } else {
-        if (that.config.newTabOpen) {
-          that.stopEvent(e)
-          functions.openNewTab(href, that.config.newTabOpenActive)
-        }
+          if (that.config.newTabOpen) {
+            that.stopEvent(e)
+            functions.openNewTab(e.currentTarget.href, that.config.newTabOpenActive)
+          }
+          return
       }
     },
     stopEvent(e) {

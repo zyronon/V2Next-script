@@ -373,7 +373,7 @@ function run() {
         itemDom.classList.add('post-item')
         let a = item_title.querySelector('a')
         let {href, id} = functions.parseA(a)
-        item.id = Number(id)
+        item.id = String(Number(id))
         a.href = item.href = href
         item.url = location.origin + '/api/topics/show.json?id=' + item.id
         itemDom.classList.add(`id_${id}`)
@@ -498,7 +498,7 @@ function run() {
         functions.cbChecker({type: 'openSetting'})
       });
       GM_registerMenuCommand('仓库地址', () => {
-        functions.openNewTab(DefaultVal.git,true)
+        functions.openNewTab(DefaultVal.git, true)
       });
       GM_registerMenuCommand('反馈 & 建议', functions.feedback);
     } catch (e) {
@@ -693,7 +693,6 @@ function run() {
         top: -3px;
       }
     }
-
     `
     let addStyle2: HTMLStyleElement = document.createElement("style");
     // @ts-ignore
@@ -862,7 +861,7 @@ function run() {
   }
 
   function addSettingText() {
-    let setting = $(`<a   class="top ${window.config.version < DefaultVal.currentVersion ? 'new' : ''}">脚本设置</a>`)
+    let setting = $(`<a href="/" class="top ${window.config.version < DefaultVal.currentVersion ? 'new' : ''}">脚本设置</a>`)
     setting.on('click', function (e) {
       e.stopPropagation()
       e.preventDefault()
@@ -891,7 +890,9 @@ function run() {
       document.documentElement.classList.add('dark')
     }
 
-    functions.checkPageType()
+    let {pageData, pageType} = functions.checkPageType()
+    window.pageType = pageType
+    window.pageData = pageData
     initMonkeyMenu()
 
     let top2 = document.querySelector('.tools .top:nth-child(2)')

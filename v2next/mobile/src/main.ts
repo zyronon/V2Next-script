@@ -775,7 +775,9 @@ function run() {
     if (window.isNight) {
       document.documentElement.classList.add('dark')
     }
-    functions.checkPageType()
+    let {pageData, pageType} = functions.checkPageType()
+    window.pageType = pageType
+    window.pageData = pageData
     addSettingText()
     functions.initMonkeyMenu()
 

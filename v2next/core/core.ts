@@ -118,6 +118,19 @@ export const functions = {
           //是否是一级回复
           let isOneLevelReply = false
           if (item.replyUsers.length) {
+            // if (item.replyUsers.length === 1) {
+            //   isOneLevelReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
+            // } else {
+            //   // isOneLevelReply = item.replyUsers.every(a => {
+            //   //   return startReplyUsers.find(v => v === a);
+            //   // })
+            //   // isOneLevelReply = true
+            //   item.replyUsers.map(a => {
+            //     if (startReplyUsers.find(v => v === a)) {
+            //       // list.splice(index, 0, item)
+            //     }
+            //   })
+            // }
             if (item.replyUsers.length > 1) {
               isOneLevelReply = true
             } else {
@@ -295,33 +308,35 @@ export const functions = {
     functions.openNewTab(DefaultVal.issue)
   },
   //检测页面类型
-  checkPageType() {
-    let l = window.location
+  checkPageType(a?: HTMLAnchorElement) {
+    let l = a || window.location
+    let data = {pageType: null, pageData: {id: '', pageNo: null}}
     if (l.pathname === '/') {
-      window.pageType = PageType.Home
+      data.pageType = PageType.Home
     } else if (l.pathname === '/changes') {
-      window.pageType = PageType.Changes
+      data.pageType = PageType.Changes
     } else if (l.pathname === '/recent') {
-      window.pageType = PageType.Changes
+      data.pageType = PageType.Changes
     } else if (l.href.match(/.com\/?tab=/)) {
-      window.pageType = PageType.Home
+      data.pageType = PageType.Home
     } else if (l.href.match(/.com\/go\//)) {
       if (!l.href.includes('/links')) {
-        window.pageType = PageType.Node
+        data.pageType = PageType.Node
       }
     } else if (l.href.match(/.com\/member/)) {
-      window.pageType = PageType.Member
+      data.pageType = PageType.Member
     } else {
       let r = l.href.match(/.com\/t\/([\d]+)/)
-      if (r && !location.pathname.includes('review') && !location.pathname.includes('info')) {
-        window.pageType = PageType.Post
-        window.pageData.id = r[1]
+      if (r && !l.pathname.includes('review') && !l.pathname.includes('info')) {
+        data.pageType = PageType.Post
+        data.pageData.id = r[1]
         if (l.search) {
           let pr = l.href.match(/\?p=([\d]+)/)
-          if (pr) window.pageData.pageNo = Number(pr[1])
+          if (pr) data.pageData.pageNo = Number(pr[1])
         }
       }
     }
+    return data
   },
   //通过api获取主题详情
   getPostDetailByApi(id: string) {
@@ -386,6 +401,7 @@ export const DefaultPost: Post = {
   content_rendered: "",
   createDate: "",
   createDateAgo: '',
+  lastReplyDate: '',
   fr: "",
   replyList: [],
   nestedReplies: [],

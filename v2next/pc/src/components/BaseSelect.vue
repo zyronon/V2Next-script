@@ -135,7 +135,7 @@ const currentDisplayType = computed(() => {
 
   .type-list {
     position: absolute;
-    background: white;
+    background: var(--color-sp-btn-bg);
     right: 0;
     top: 3rem;
     font-size: 1.4rem;
