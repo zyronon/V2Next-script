@@ -809,7 +809,7 @@ function run() {
       window.user.avatar = $('#menu-entry .avatar').attr('src')
     }
 
-    initConfig().then(r => {
+    initConfig().then(async r => {
 
       initStyle()
 
