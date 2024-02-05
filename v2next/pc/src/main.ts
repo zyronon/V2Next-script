@@ -895,7 +895,10 @@ function run() {
           r && (window.user.imgurNoteId = r);
         }
       }
-      functions.cbChecker({type: 'syncData'})
+      await functions.cbChecker({type: 'syncData'})
+      setTimeout(() => [
+        window.initConfig = true
+      ])
     })
   }
 

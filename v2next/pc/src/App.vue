@@ -84,6 +84,9 @@ export default {
         let config = {[window.user.username ?? 'default']: newVal}
         localStorage.setItem('v2ex-config', JSON.stringify(config))
         window.config = newVal
+        if (window.initConfig) {
+          window.parse.editNoteItem(window.user.configPrefix + JSON.stringify(window.config), window.user.configNoteId)
+        }
       },
       deep: true
     },

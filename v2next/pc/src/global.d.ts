@@ -2,7 +2,7 @@ import { Config, PageType, Post } from "@v2next/core/types"
 
 declare global {
   interface Window {
-    fetchOnce:Function,
+    fetchOnce: Function,
     initPost: Post,
     user: any,
     targetUserName: string,//目标用户名字（用于在member界面添加标签）
@@ -15,12 +15,12 @@ declare global {
     config: Config,
     currentVersion: number,
     isNight: boolean,
+    initConfig: boolean,
     canParseV2exPage: boolean,
     pageType?: PageType,
     clone: (val: any) => any
     postList: any[]
-    functions: {
-    },
+    functions: {},
     parse: {
       parsePostContent: Function,
       parseOp: Function,
