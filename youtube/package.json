@@ -1,0 +1,12 @@
+{
+  "name": "vite-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev-youtube-next": "vite",
+    "build-youtube-next": "vue-tsc --noEmit && vite build",
+    "build-youtube-next2": "vite build",
+    "preview--youtube-next": "vite preview"
+  }
+}
