@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         Youtube Next
+// @name         Youtube Mobile Enhance 油管移动端增强
 // @namespace    http://tampermonkey.net/
-// @version      8.0.3
+// @version      1.0
 // @author       zyronon
-// @description  Youtube Next - 一个好用的V2EX脚本！ 已适配移动端
+// @description  针对油管移动端，点击视频新标签页打开，记忆播放速度，突破播放速度限制
 // @license      GPL License
 // @icon         https://v2next.netlify.app/favicon.ico
 // @homepage     https://github.com/zyronon/web-scripts
@@ -11,57 +11,63 @@
 // @supportURL   https://update.greasyfork.org/scripts/458024/V2Next.user.js
 // @downloadURL  https://update.greasyfork.org/scripts/458024/V2Next.user.js
 // @updateURL    https://update.greasyfork.org/scripts/458024/V2Next.user.js
-// @match        https://youtube.com/*
-// @match        https://*.youtube.com/*
+// @match        https://m.youtube.com/*
 // @require      https://cdn.jsdelivr.net/npm/vue@3.4.14/dist/vue.global.prod.js
+// @grant        GM_addStyle
 // @grant        GM_openInTab
 // ==/UserScript==
+
+(t=>{if(typeof GM_addStyle=="function"){GM_addStyle(t);return}const e=document.createElement("style");e.textContent=t,document.head.append(e)})(" .next{font-size:1.4rem;display:flex;gap:1rem}.next .btn{color:#f1f1f1;background-color:#ffffff1a;padding:0 16px;height:36px;font-size:14px;line-height:36px;border-radius:18px}.msg{position:fixed;z-index:999;font-size:2.4rem;left:0;top:50px;color:#fff}@media (min-width: 1280px) and (orientation: landscape){.player-container,.player-container.sticky-player{right:400px!important;top:0!important}.sticky-player{padding-top:0!important}ytm-watch{margin-right:400px!important}ytm-engagement-panel{width:400px!important;top:0!important}.playlist-entrypoint-background-protection,.slide-in-animation-entry-point{width:400px!important}ytm-single-column-watch-next-results-renderer [section-identifier=related-items],ytm-single-column-watch-next-results-renderer>ytm-playlist{width:400px!important;padding:0 0 8px 8px}ytm-single-column-watch-next-results-renderer .playlist-content{width:400px!important}} ");
 
 (function (vue) {
   'use strict';
 
   var _GM_openInTab = /* @__PURE__ */ (() => typeof GM_openInTab != "undefined" ? GM_openInTab : void 0)();
-  const _export_sfc = (sfc, props) => {
-    const target = sfc.__vccOpts || sfc;
-    for (const [key, val] of props) {
-      target[key] = val;
-    }
-    return target;
+  const _hoisted_2 = {
+    key: 1,
+    class: "msg"
   };
-  const _sfc_main = {};
-  function _sfc_render(_ctx, _cache) {
-    return vue.openBlock(), vue.createElementBlock("div", null, "123123123");
-  }
-  const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-  function stop(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    return true;
-  }
-  function openNewTab(href, active = false) {
-    _GM_openInTab(href, { active });
-  }
-  function getBrowserType() {
-    let userAgent = navigator.userAgent;
-    if (userAgent.indexOf("Opera") > -1) {
-      return "Opera";
-    }
-    if (userAgent.indexOf("Firefox") > -1) {
-      return "FF";
-    }
-    if (userAgent.indexOf("Chrome") > -1) {
-      return "Chrome";
-    }
-    if (userAgent.indexOf("Safari") > -1) {
-      return "Safari";
-    }
-    if (userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera) {
-      return "IE";
-    }
-  }
-  function initStyle(type) {
-    let style2 = `
+  const _sfc_main = /* @__PURE__ */ vue.defineComponent({
+    __name: "App",
+    setup(__props) {
+      let refVideo = vue.ref(null);
+      let rate = vue.ref(1);
+      let lastRate = vue.ref(1);
+      let pageType = vue.ref("");
+      let msg = vue.reactive({
+        show: false,
+        content: "",
+        timer: -1
+      });
+      function stop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return true;
+      }
+      function openNewTab(href, active = false) {
+        _GM_openInTab(href, { active });
+      }
+      function getBrowserType() {
+        let userAgent = navigator.userAgent;
+        if (userAgent.indexOf("Opera") > -1) {
+          return "Opera";
+        }
+        if (userAgent.indexOf("Firefox") > -1) {
+          return "FF";
+        }
+        if (userAgent.indexOf("Chrome") > -1) {
+          return "Chrome";
+        }
+        if (userAgent.indexOf("Safari") > -1) {
+          return "Safari";
+        }
+        if (userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera) {
+          return "IE";
+        }
+      }
+      function initStyle(type) {
+        let style2 = `
   :root {
   --color-scrollbar: rgb(147, 173, 227);
 }
@@ -92,50 +98,194 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
   border-radius: 1rem;
 }`}
   `;
-    let addStyle2 = document.createElement("style");
-    addStyle2.rel = "stylesheet";
-    addStyle2.type = "text/css";
-    addStyle2.innerHTML = style2;
-    window.document.head.append(addStyle2);
-  }
-  function findA(target, e) {
-    let parentNode = target.parentNode;
-    let count = 0;
-    while (parentNode.tagName !== "A" && count < 10) {
-      count++;
-      parentNode = parentNode.parentNode;
+        let addStyle2 = document.createElement("style");
+        addStyle2.rel = "stylesheet";
+        addStyle2.type = "text/css";
+        addStyle2.innerHTML = style2;
+        window.document.head.append(addStyle2);
+      }
+      function findA(target, e) {
+        let parentNode = target.parentNode;
+        let count = 0;
+        while (parentNode.tagName !== "A" && count < 10) {
+          count++;
+          parentNode = parentNode.parentNode;
+        }
+        console.log(parentNode);
+        openNewTab(parentNode.href);
+        return stop(e);
+      }
+      function checkPageType() {
+        let header = document.querySelector("#header-bar");
+        if (location.pathname === "/watch") {
+          if (header)
+            header.style["display"] = "none";
+          return pageType.value = "watch";
+        } else {
+          if (header)
+            header.style["display"] = "block";
+        }
+        if (location.pathname === "/") {
+          return pageType.value = "home";
+        }
+        if (location.pathname.startsWith("/@")) {
+          return pageType.value = "user";
+        }
+      }
+      function checkVideo() {
+        let v = document.querySelector("video");
+        if (v) {
+          v.playbackRate = rate.value;
+          refVideo.value = v;
+        }
+      }
+      function playbackRateToggle() {
+        checkVideo();
+        if (refVideo.value) {
+          if (refVideo.value.playbackRate !== 1) {
+            lastRate.value = rate.value;
+            rate.value = refVideo.value.playbackRate = 1;
+            showMsg("播放速度: 1");
+          } else {
+            showMsg("播放速度: " + lastRate.value);
+            rate.value = refVideo.value.playbackRate = lastRate.value;
+          }
+        }
+      }
+      function toggle() {
+        checkVideo();
+        if (refVideo.value) {
+          if (refVideo.value.paused) {
+            refVideo.value.play();
+          } else {
+            refVideo.value.pause();
+          }
+        }
+      }
+      function setPlaybackRate(val) {
+        checkVideo();
+        if (refVideo.value) {
+          rate.value = refVideo.value.playbackRate = Number(val.toFixed(1));
+          showMsg("播放速度: " + rate.value);
+        }
+      }
+      function showMsg(text) {
+        if (msg.show) {
+          msg.show = false;
+          clearTimeout(msg.timer);
+        }
+        msg.show = true;
+        msg.content = text;
+        msg.timer = setTimeout(() => {
+          msg.show = false;
+        }, 3e3);
+      }
+      function checkWatch() {
+        checkPageType();
+        if (pageType.value === "watch") {
+          setTimeout(() => {
+            checkVideo();
+            if (refVideo.value) {
+              refVideo.value.play();
+              refVideo.value.playbackRate = rate.value;
+            }
+            setTimeout(() => {
+              let wrapper = document.querySelector(".slim-video-action-bar-actions");
+              if (!wrapper)
+                return;
+              let dom = document.createElement("div");
+              dom.classList.add("next");
+              dom.innerHTML = `
+         <div class="btn" onclick="window.cb('toggle')">暂停/播放</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle')">速度切换</div>
+    <div class="btn" onclick="window.cb('addRate')">速度 +</div>
+    <div class="btn" onclick="window.cb('removeRate')">速度 -</div>
+        `;
+              wrapper.append(dom);
+            }, 1e3);
+          }, 500);
+          return true;
+        }
+      }
+      function checkA(e) {
+        let target = e.target;
+        let tagName = target.tagName;
+        let classList = target.classList;
+        console.log("e", e, target, tagName, classList);
+        if (tagName === "IMG" && Array.from(classList).some((v) => v.includes("yt-core-image"))) {
+          console.log("封面");
+          if (checkWatch())
+            return;
+          return findA(target, e);
+        }
+        if (tagName === "SPAN" && Array.from(classList).some((v) => v.includes("yt-core-attributed-string"))) {
+          console.log("标题");
+          if (checkWatch())
+            return;
+          return findA(target, e);
+        }
+        if (tagName === "BUTTON" && Array.from(classList).some((v) => v.includes("ytp-large-play-button"))) {
+          console.log("播放按钮");
+          if (checkWatch())
+            return;
+        }
+        if (tagName === "DIV" && Array.from(classList).some((v) => v.includes("ytp-cued-thumbnail-overlay-image"))) {
+          console.log("播放按钮");
+          if (checkWatch())
+            return;
+        }
+      }
+      vue.watch(rate, (value) => {
+        localStorage.setItem("youtube-rate", value);
+      });
+      vue.onMounted(() => {
+        console.log("Youtube Next start");
+        let browserType = getBrowserType();
+        initStyle(browserType);
+        let youtubeRate = localStorage.getItem("youtube-rate");
+        if (youtubeRate) {
+          rate.value = Number(youtubeRate);
+          console.log("r", rate.value);
+        }
+        window.cb = (type) => {
+          console.log("type", type);
+          switch (type) {
+            case "toggle":
+              toggle();
+              break;
+            case "playbackRateToggle":
+              playbackRateToggle();
+              break;
+            case "addRate":
+              setPlaybackRate(rate.value + 0.1);
+              break;
+            case "removeRate":
+              setPlaybackRate(rate.value - 0.1);
+              break;
+          }
+        };
+        window.addEventListener("click", checkA, true);
+        window.addEventListener("visibilitychange", stop, true);
+      });
+      vue.onUnmounted(() => {
+        window.removeEventListener("click", checkA, true);
+        window.removeEventListener("visibilitychange", stop, true);
+      });
+      return (_ctx, _cache) => {
+        return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
+          vue.createCommentVNode("", true),
+          vue.unref(msg).show ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2, vue.toDisplayString(vue.unref(msg).content), 1)) : vue.createCommentVNode("", true)
+        ], 64);
+      };
     }
-    console.log(parentNode);
-    openNewTab(parentNode.href);
-    return stop(e);
-  }
-  function init() {
-    let browserType = getBrowserType();
-    initStyle(browserType);
-    console.log("Youtube Next start");
-    window.addEventListener("click", function(e) {
-      let target = e.target;
-      let tagName = target.tagName;
-      let classList = target.classList;
-      console.log("e", e, target, tagName, classList);
-      if (tagName === "IMG" && Array.from(classList).some((v) => v.includes("yt-core-image"))) {
-        console.log("封面");
-        return findA(target, e);
-      }
-      if (tagName === "SPAN" && Array.from(classList).some((v) => v.includes("yt-core-attributed-string"))) {
-        console.log("标题");
-        return findA(target, e);
-      }
-    }, true);
-  }
-  init();
+  });
   let isMobile = !document.querySelector("#Rightbar");
   isMobile = false;
   let $section = document.createElement("section");
   $section.id = "vue-app";
   document.body.append($section);
   if (!isMobile) {
-    let vueApp = vue.createApp(App);
+    let vueApp = vue.createApp(_sfc_main);
     vueApp.config.unwrapInjectedRef = true;
     vueApp.mount($section);
   }

@@ -1,28 +1,138 @@
-<script setup>
-
-import {onMounted, onUnmounted, ref} from "vue";
+<script setup lang="ts">
+import {onMounted, onUnmounted, reactive, ref, watch} from "vue";
+import {GM_openInTab, GM_registerMenuCommand} from "gmApi";
 
 let refVideo = ref(null)
-onMounted(() => {
+let rate = ref(1)
+let lastRate = ref(1)
+let pageType = ref<string>('')
+
+let msg = reactive({
+  show: false,
+  content: '',
+  timer: -1
 })
 
-onUnmounted(() => {
-})
+function stop(e) {
+  e.preventDefault()
+  e.stopPropagation()
+  e.stopImmediatePropagation()
+  return true
+}
+
+//打开新标签页
+function openNewTab(href: string, active = false) {
+  GM_openInTab(href, {active});
+}
+
+function getBrowserType() {
+  let userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+  if (userAgent.indexOf("Opera") > -1) { //判断是否Opera浏览器
+    return "Opera"
+  }
+  if (userAgent.indexOf("Firefox") > -1) { //判断是否Firefox浏览器
+    return "FF";
+  }
+  if (userAgent.indexOf("Chrome") > -1) {
+    return "Chrome";
+  }
+  if (userAgent.indexOf("Safari") > -1) { //判断是否Safari浏览器
+    return "Safari";
+  }
+  if (userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera) { //判断是否IE浏览器
+    return "IE";
+  }
+}
+
+//初始化样式表
+function initStyle(type) {
+  let style2 = `
+  :root {
+  --color-scrollbar: rgb(147, 173, 227);
+}
+
+html[darker-dark-theme] {
+  --color-scrollbar: rgb(92, 93, 94);
+}
+
+${type === 'FF' ?
+      `/* 火狐美化滚动条 */
+* {
+  scrollbar-color: var(--color-scrollbar);
+  /* 滑块颜色  滚动条背景颜色 */
+  scrollbar-width: thin;
+  /* 滚动条宽度有三种：thin、auto、none */
+}` :
+      `
+  ::-webkit-scrollbar {
+  width: 1rem;
+  height: 1rem;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: .2rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar);
+  border-radius: 1rem;
+}`}
+  `
+  let addStyle2: HTMLStyleElement = document.createElement("style");
+  // @ts-ignore
+  addStyle2.rel = "stylesheet";
+  addStyle2.type = "text/css";
+  addStyle2.innerHTML = style2
+  window.document.head.append(addStyle2)
+}
+
+function findA(target: HTMLDivElement, e: Event) {
+  let parentNode: any = target.parentNode
+  let count = 0
+  while (parentNode.tagName !== 'A' && count < 10) {
+    count++
+    parentNode = parentNode.parentNode
+  }
+  console.log(parentNode)
+  openNewTab(parentNode.href)
+  return stop(e)
+}
+
+function checkPageType() {
+  let header = document.querySelector('#header-bar')
+  if (location.pathname === '/watch') {
+    if (header) header.style['display'] = 'none'
+    return pageType.value = 'watch'
+  } else {
+    if (header) header.style['display'] = 'block'
+  }
+  if (location.pathname === '/') {
+    return pageType.value = 'home'
+  }
+  if (location.pathname.startsWith('/@')) {
+    return pageType.value = 'user'
+  }
+}
 
 function checkVideo() {
-  if (!refVideo.value) {
-    let v = document.querySelector('video')
-    if (v) refVideo.value = v
+  let v = document.querySelector('video')
+  if (v) {
+    v.playbackRate = rate.value
+    refVideo.value = v
   }
 }
 
 function playbackRateToggle() {
   checkVideo()
   if (refVideo.value) {
-    if (refVideo.value.playbackRate === 2) {
-      refVideo.value.playbackRate = 1
+    if (refVideo.value.playbackRate !== 1) {
+      lastRate.value = rate.value
+      rate.value = refVideo.value.playbackRate = 1
+      showMsg('播放速度: 1')
     } else {
-      refVideo.value.playbackRate = 2
+      showMsg('播放速度: ' + lastRate.value)
+      rate.value = refVideo.value.playbackRate = lastRate.value
     }
   }
 }
@@ -37,13 +147,137 @@ function toggle() {
     }
   }
 }
+
+function setPlaybackRate(val: number) {
+  checkVideo()
+  if (refVideo.value) {
+    rate.value = refVideo.value.playbackRate = Number(val.toFixed(1))
+    showMsg('播放速度: ' + rate.value)
+  }
+}
+
+function showMsg(text: string) {
+  if (msg.show) {
+    msg.show = false
+    clearTimeout(msg.timer)
+  }
+  msg.show = true
+  msg.content = text
+  msg.timer = setTimeout(() => {
+    msg.show = false
+  }, 3000)
+}
+
+function checkWatch() {
+  checkPageType()
+  if (pageType.value === 'watch') {
+    setTimeout(() => {
+      checkVideo()
+      if (refVideo.value) {
+        refVideo.value.play()
+        refVideo.value.playbackRate = rate.value
+      }
+      setTimeout(() => {
+        let wrapper = document.querySelector('.slim-video-action-bar-actions')
+        // console.log('w', wrapper)
+        if (!wrapper) return
+        let dom = document.createElement('div')
+        dom.classList.add('next')
+        dom.innerHTML = `
+         <div class="btn" onclick="window.cb('toggle')">暂停/播放</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle')">速度切换</div>
+    <div class="btn" onclick="window.cb('addRate')">速度 +</div>
+    <div class="btn" onclick="window.cb('removeRate')">速度 -</div>
+        `
+        wrapper.append(dom)
+      }, 1000)
+
+    }, 500)
+    return true
+  }
+}
+
+function checkA(e: Event) {
+  let target: HTMLDivElement = <HTMLDivElement>e.target;
+  let tagName = target.tagName;
+  let classList = target.classList
+  console.log('e', e, target, tagName, classList)
+  if (tagName === 'IMG' && Array.from(classList).some(v => v.includes('yt-core-image'))) {
+    console.log('封面',)
+    if (checkWatch()) return
+    return findA(target, e)
+  }
+  // if (tagName === 'DIV' && Array.from(classList).some(v => v.includes('collections-v2'))) {
+  //   console.log('播放合辑')
+  // }
+  if (tagName === 'SPAN' && Array.from(classList).some(v => v.includes('yt-core-attributed-string'))) {
+    console.log('标题',)
+    if (checkWatch()) return
+    return findA(target, e)
+  }
+  if (tagName === 'BUTTON' && Array.from(classList).some(v => v.includes('ytp-large-play-button'))) {
+    console.log('播放按钮',)
+    if (checkWatch()) return
+  }
+  if (tagName === 'DIV' && Array.from(classList).some(v => v.includes('ytp-cued-thumbnail-overlay-image'))) {
+    console.log('播放按钮',)
+    if (checkWatch()) return
+  }
+  // return stop(e)
+}
+
+watch(rate, (value) => {
+  localStorage.setItem('youtube-rate', value)
+})
+
+onMounted(() => {
+  console.log('Youtube Next start')
+  let browserType = getBrowserType()
+  initStyle(browserType)
+
+  let youtubeRate = localStorage.getItem('youtube-rate')
+  if (youtubeRate) {
+    rate.value = Number(youtubeRate)
+    console.log('r', rate.value)
+  }
+
+  window.cb = (type: string) => {
+    console.log('type', type)
+    switch (type) {
+      case 'toggle':
+        toggle()
+        break
+      case 'playbackRateToggle':
+        playbackRateToggle()
+        break
+      case 'addRate':
+        setPlaybackRate(rate.value + 0.1)
+        break
+      case 'removeRate':
+        setPlaybackRate(rate.value - 0.1)
+        break
+    }
+  }
+
+  // checkWatch()
+  window.addEventListener('click', checkA, true);
+  window.addEventListener('visibilitychange', stop, true)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('click', checkA, true);
+  window.removeEventListener('visibilitychange', stop, true)
+})
 </script>
 
 <template>
-  <div class="next">
+  <div class="next" v-if="false">
     <div class="btn" @click="toggle">暂停/播放</div>
-    <div class="btn" @click="playbackRateToggle">速度/切换</div>
+    <div class="btn" @click="playbackRateToggle">速度切换</div>
+    <div class="btn" @click="setPlaybackRate(rate + 0.1)">速度 +</div>
+    <div class="btn" @click="setPlaybackRate(rate - 0.1)">速度 -</div>
   </div>
+  <div class="msg" v-if="msg.show">{{ msg.content }}</div>
 </template>
 
 <style lang="less">
@@ -62,13 +296,28 @@ function toggle() {
     border-radius: 18px;
   }
 }
+
+.msg {
+  position: fixed;
+  z-index: 999;
+  font-size: 2.4rem;
+  left: 0;
+  top: 50px;
+  color: white;
+}
 </style>
 <style lang="less">
-@w: 370px;
+@w: 400px;
 @media (min-width: 1280px) and (orientation: landscape) {
   //播放器
   .player-container, .player-container.sticky-player {
     right: @w !important;
+    top: 0 !important;
+    //z-index: 999!important;
+  }
+
+  .sticky-player {
+    padding-top: 0 !important;
   }
 
   //左侧，主是要播放器下面的一坨
@@ -79,11 +328,17 @@ function toggle() {
   //右侧推荐
   ytm-engagement-panel {
     width: @w !important;
+    top: 0 !important;
   }
 
-  //未知
-  .player-placeholder-wrapper {
-    width: calc(100% - @w) !important;
+  //右下部的一个黑色区域，不知道干啥的
+  .playlist-entrypoint-background-protection {
+    //display: none;
+    width: @w !important;
+  }
+
+  .slide-in-animation-entry-point {
+    width: @w !important;
   }
 
   //右侧历史推荐

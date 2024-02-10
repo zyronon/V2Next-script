@@ -17,15 +17,14 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '8.0.3',
-        name: 'Youtube Next',
+        version: '1.0',
+        name: 'Youtube Mobile Enhance 油管移动端增强',
         icon: 'https://v2next.netlify.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
         match: [
-          'https://youtube.com/*',
-          'https://*.youtube.com/*',
+          'https://m.youtube.com/*',
         ],
-        description: 'Youtube Next - 一个好用的V2EX脚本！ 已适配移动端',
+        description: '针对油管移动端，点击视频新标签页打开，记忆播放速度，突破播放速度限制',
         author: 'zyronon',
         license: 'GPL License',
         updateURL: 'https://update.greasyfork.org/scripts/458024/V2Next.user.js',
@@ -47,4 +46,8 @@ export default defineConfig({
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   },
+  server: {
+    host: '0.0.0.0',
+    port: 5552
+  }
 });
