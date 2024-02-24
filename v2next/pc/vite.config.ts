@@ -1,7 +1,7 @@
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import monkey, {cdn} from 'vite-plugin-monkey';
-import {resolve} from 'path'
+import monkey, { cdn } from 'vite-plugin-monkey';
+import { resolve } from 'path'
 import vueJsx from "@vitejs/plugin-vue-jsx";
 
 function pathResolve(dir) {
@@ -17,7 +17,7 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '8.1.1',
+        version: '8.1.3',
         name: 'V2Next',
         icon: 'https://v2next.netlify.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
@@ -53,6 +53,9 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    minify: true
+  },
   resolve: {
     alias: {
       "@": pathResolve("src"),

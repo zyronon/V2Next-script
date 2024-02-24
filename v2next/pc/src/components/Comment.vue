@@ -128,9 +128,10 @@ export default {
   },
   methods: {
     checkIsTooLong(postDetailWidth) {
+      // console.log('postDetailWidth', postDetailWidth)
       if (postDetailWidth !== 0) {
         let rect = this.$refs.comment.getBoundingClientRect()
-        let ban = postDetailWidth / 2
+        let ban = postDetailWidth * 0.6
         // console.log('ban', ban)
         if (ban < rect.width && rect.width < ban + 25 && this.modelValue.children.length) {
           this.expand = false
@@ -222,7 +223,7 @@ export default {
     .expand-line {
       cursor: pointer;
       margin-top: .6rem;
-      @w: 2.8rem;
+      @w: 2.0rem;
       width: @w;
       min-width: @w;
       position: relative;

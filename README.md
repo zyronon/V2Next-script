@@ -1,45 +1,37 @@
-# V2Next
+# <p align="center">V2Next</p>
+## <p align="center">UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图片和表情 emoji、base64 解码</p> 
+## <p align="center">这或许就是你需要的 V2EX 脚本</p>
+## 现已支持移动端
 
-本项目完全开源，目前由我一个人维护，如果您觉得好用，***请帮我点一个Star，您的Star是对我最大的鼓励***
+- PC脚本安装地址：[https://greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)
+- 手机端脚本安装地址：[https://greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)，安装教程:[https://v2next.netlify.app/mobile-install.html](https://v2next.netlify.app/mobile-install.html)
+- git仓库地址：[https://github.com/zyronon/web-scripts](https://github.com/zyronon/web-scripts)
 
-1. 脚本油猴安装地址：[https://greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)
-2. git仓库地址：[https://github.com/zyronon/v2ex-script](https://github.com/zyronon/v2ex-script)
+***本项目完全开源，目前由我一个人维护，如果您觉得好用，请帮我点一个Star，您的Star是对我最大的鼓励***
 
-## 为什么选择这个，而不是其他？
 
-#### 其他脚本：
+https://github.com/zyronon/web-scripts/assets/19986642/6db8a9ef-825a-4ef2-bbfe-17dd13dfc232
 
-大多只是对V2EX修修补补、美化UI，在使用体验上依旧是10年前的网站，太多脚本年久失修无人维护。楼中楼只能解析当前页，如果有多页回复，楼中楼就会前言不搭后语莫名其妙的
+<br/>
 
-#### 本脚本：
+## UI美化和卡片模式
+![image](https://github.com/zyronon/web-scripts/assets/19986642/bf4986c8-889c-4408-8149-af85e557dd06)
 
-***最好用的楼中楼、查看回复上下文、高赞回复、简洁模式等特色功能。***
-对V2EX进行了整体改造，如预览、点赞、回复、屏蔽等等都走异步请求，使用体验上已和现代网站无异，同时也集成了市面上常见的增强（辅助）功能，
+<br/>
 
-## 特色功能
+## 楼中楼、主题显示OP注册时间
+![image](https://github.com/zyronon/web-scripts/assets/19986642/c5598b53-c0d4-4a0a-b1ad-c9e4740644c1)
 
-- 楼中楼
-    - 可按高赞排序显示
-    - 可只看楼主
-- 简洁模式
-- 查看回复上下文
-- 高赞回复
-- 弹框查看帖子
+<br/>
 
-## 其他功能
-- 预览帖子正文
-- 帖子显示OP注册时间
-- 链接自动转图片
-- 快捷发送贴吧表情、emoji、图片
-- 新标签页打开链接，默认打开，可单独关闭
-- 对用户打标签
-- 划词 base64 解码，支持解码中文
-- 一键@所有人，@管理员：回复时，可一键@所有人和@管理员
-- 自适应屏幕宽度，支持黑暗模式
-- 按钮异步请求：操作按钮（感谢、收藏、回复、隐藏）异步请求，不会刷新页面
-- 收藏提醒：添加到浏览器书签，防止账号被封无法查看收藏
-- 自动签到
-- 正文超长自动折叠
+## 高赞回复、回复上下文
+![image](https://github.com/zyronon/web-scripts/assets/19986642/8977a5d5-2842-433c-8c95-e9663a462684)
+ 
+# <p align="center">特色功能</p>
+![image](https://github.com/zyronon/web-scripts/assets/19986642/7b166d88-7684-49f0-ade1-b8fd295df3d7)
+
+# <p align="center">其他功能</p>
+![image](https://github.com/zyronon/web-scripts/assets/19986642/47e6cfbe-7151-4de1-ad2d-965c95fd35e1)
 
 # 常见问题
 
@@ -76,3 +68,4 @@
 - 提供反馈，帮助我改进，以持续完善脚本。在[这里](https://github.com/zyronon/v2ex-script/issues)提出。
 
 #### 更新日志：[https://greasyfork.org/zh-CN/scripts/458024/versions](https://greasyfork.org/zh-CN/scripts/458024/versions)
+
