@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted, reactive, ref, watch} from "vue";
-import {GM_openInTab, GM_registerMenuCommand} from "gmApi";
+import {GM_openInTab, GM_registerMenuCommand,unsafeWindow} from "gmApi";
 
 let refVideo = ref(null)
 let rate = ref(1)
@@ -168,13 +168,17 @@ function showMsg(text: string) {
   }, 3000)
 }
 
-function checkWatch() {
+function checkWatch(init = false) {
   checkPageType()
   if (pageType.value === 'watch') {
     setTimeout(() => {
       checkVideo()
       if (refVideo.value) {
-        refVideo.value.play()
+        if (init) {
+          refVideo.value.muted = false
+        } else {
+          refVideo.value.play()
+        }
         refVideo.value.playbackRate = rate.value
       }
       setTimeout(() => {
@@ -238,10 +242,10 @@ onMounted(() => {
   let youtubeRate = localStorage.getItem('youtube-rate')
   if (youtubeRate) {
     rate.value = Number(youtubeRate)
-    console.log('r', rate.value)
+    // console.log('r', rate.value)
   }
 
-  window.cb = (type: string) => {
+  unsafeWindow.cb = (type: string) => {
     console.log('type', type)
     switch (type) {
       case 'toggle':
@@ -259,7 +263,7 @@ onMounted(() => {
     }
   }
 
-  // checkWatch()
+  checkWatch()
   window.addEventListener('click', checkA, true);
   window.addEventListener('visibilitychange', stop, true)
 })

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Mobile Enhance 油管移动端增强
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.2
 // @author       zyronon
 // @description  针对油管移动端，点击视频新标签页打开，记忆播放速度，突破播放速度限制
 // @license      GPL License
@@ -15,6 +15,7 @@
 // @require      https://cdn.jsdelivr.net/npm/vue@3.4.14/dist/vue.global.prod.js
 // @grant        GM_addStyle
 // @grant        GM_openInTab
+// @grant        unsafeWindow
 // ==/UserScript==
 
 (t=>{if(typeof GM_addStyle=="function"){GM_addStyle(t);return}const e=document.createElement("style");e.textContent=t,document.head.append(e)})(" .next{font-size:1.4rem;display:flex;gap:1rem}.next .btn{color:#f1f1f1;background-color:#ffffff1a;padding:0 16px;height:36px;font-size:14px;line-height:36px;border-radius:18px}.msg{position:fixed;z-index:999;font-size:2.4rem;left:0;top:50px;color:#fff}@media (min-width: 1280px) and (orientation: landscape){.player-container,.player-container.sticky-player{right:400px!important;top:0!important}.sticky-player{padding-top:0!important}ytm-watch{margin-right:400px!important}ytm-engagement-panel{width:400px!important;top:0!important}.playlist-entrypoint-background-protection,.slide-in-animation-entry-point{width:400px!important}ytm-single-column-watch-next-results-renderer [section-identifier=related-items],ytm-single-column-watch-next-results-renderer>ytm-playlist{width:400px!important;padding:0 0 8px 8px}ytm-single-column-watch-next-results-renderer .playlist-content{width:400px!important}} ");
@@ -23,6 +24,7 @@
   'use strict';
 
   var _GM_openInTab = /* @__PURE__ */ (() => typeof GM_openInTab != "undefined" ? GM_openInTab : void 0)();
+  var _unsafeWindow = /* @__PURE__ */ (() => typeof unsafeWindow != "undefined" ? unsafeWindow : void 0)();
   const _hoisted_2 = {
     key: 1,
     class: "msg"
@@ -180,13 +182,17 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
           msg.show = false;
         }, 3e3);
       }
-      function checkWatch() {
+      function checkWatch(init = false) {
         checkPageType();
         if (pageType.value === "watch") {
           setTimeout(() => {
             checkVideo();
             if (refVideo.value) {
-              refVideo.value.play();
+              if (init) {
+                refVideo.value.muted = false;
+              } else {
+                refVideo.value.play();
+              }
               refVideo.value.playbackRate = rate.value;
             }
             setTimeout(() => {
@@ -245,9 +251,8 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
         let youtubeRate = localStorage.getItem("youtube-rate");
         if (youtubeRate) {
           rate.value = Number(youtubeRate);
-          console.log("r", rate.value);
         }
-        window.cb = (type) => {
+        _unsafeWindow.cb = (type) => {
           console.log("type", type);
           switch (type) {
             case "toggle":
@@ -264,6 +269,7 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
               break;
           }
         };
+        checkWatch();
         window.addEventListener("click", checkA, true);
         window.addEventListener("visibilitychange", stop, true);
       });
