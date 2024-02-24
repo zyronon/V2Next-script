@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Mobile Enhance 油管移动端增强
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @author       zyronon
 // @description  针对油管移动端，点击视频新标签页打开，记忆播放速度，突破播放速度限制
 // @license      GPL License
@@ -18,7 +18,7 @@
 // @grant        unsafeWindow
 // ==/UserScript==
 
-(t=>{if(typeof GM_addStyle=="function"){GM_addStyle(t);return}const e=document.createElement("style");e.textContent=t,document.head.append(e)})(" .next{font-size:1.4rem;display:flex;gap:1rem}.next .btn{color:#f1f1f1;background-color:#ffffff1a;padding:0 16px;height:36px;font-size:14px;line-height:36px;border-radius:18px}.msg{position:fixed;z-index:999;font-size:2.4rem;left:0;top:50px;color:#fff}@media (min-width: 1280px) and (orientation: landscape){.player-container,.player-container.sticky-player{right:400px!important;top:0!important}.sticky-player{padding-top:0!important}ytm-watch{margin-right:400px!important}ytm-engagement-panel{width:400px!important;top:0!important}.playlist-entrypoint-background-protection,.slide-in-animation-entry-point{width:400px!important}ytm-single-column-watch-next-results-renderer [section-identifier=related-items],ytm-single-column-watch-next-results-renderer>ytm-playlist{width:400px!important;padding:0 0 8px 8px}ytm-single-column-watch-next-results-renderer .playlist-content{width:400px!important}} ");
+(t=>{if(typeof GM_addStyle=="function"){GM_addStyle(t);return}const e=document.createElement("style");e.textContent=t,document.head.append(e)})(" .next{font-size:1.4rem;display:flex;gap:1rem}.next .btn{color:#f1f1f1;background-color:#ffffff1a;padding:0 16px;height:36px;font-size:14px;line-height:36px;border-radius:18px}.msg{position:fixed;z-index:999;font-size:3rem;left:0;top:0;color:#000;background:white;padding:1rem 2rem}@media (min-width: 1280px) and (orientation: landscape){.player-container,.player-container.sticky-player{right:400px!important;top:0!important}ytm-watch{margin-right:400px!important}ytm-engagement-panel{width:400px!important;top:0!important}.playlist-entrypoint-background-protection,.slide-in-animation-entry-point{width:400px!important}ytm-single-column-watch-next-results-renderer [section-identifier=related-items],ytm-single-column-watch-next-results-renderer>ytm-playlist{width:400px!important;padding:0 0 8px 8px}ytm-single-column-watch-next-results-renderer .playlist-content{width:400px!important}} ");
 
 (function (vue) {
   'use strict';
@@ -119,18 +119,31 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
       }
       function checkPageType() {
         let header = document.querySelector("#header-bar");
+        let stickyPlayer = document.querySelector("#app.sticky-player");
         if (location.pathname === "/watch") {
           if (header)
             header.style["display"] = "none";
+          if (stickyPlayer)
+            stickyPlayer.style["padding-top"] = "0";
           return pageType.value = "watch";
         } else {
+          if (stickyPlayer)
+            stickyPlayer.style["padding-top"] = "48px";
           if (header)
             header.style["display"] = "block";
         }
         if (location.pathname === "/") {
+          if (stickyPlayer)
+            stickyPlayer.style["padding-top"] = "48px";
+          if (header)
+            header.style["display"] = "block";
           return pageType.value = "home";
         }
         if (location.pathname.startsWith("/@")) {
+          if (stickyPlayer)
+            stickyPlayer.style["padding-top"] = "48px";
+          if (header)
+            header.style["display"] = "block";
           return pageType.value = "user";
         }
       }
@@ -149,8 +162,8 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
             rate.value = refVideo.value.playbackRate = 1;
             showMsg("播放速度: 1");
           } else {
-            showMsg("播放速度: " + lastRate.value);
-            rate.value = refVideo.value.playbackRate = lastRate.value;
+            rate.value = refVideo.value.playbackRate = lastRate.value === 1 ? 2 : lastRate.value;
+            showMsg("播放速度: " + rate.value);
           }
         }
       }
@@ -194,7 +207,10 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
                 refVideo.value.play();
               }
               refVideo.value.playbackRate = rate.value;
+              showMsg("播放速度: " + rate.value);
             }
+            if (!init)
+              return;
             setTimeout(() => {
               let wrapper = document.querySelector(".slim-video-action-bar-actions");
               if (!wrapper)
@@ -202,10 +218,13 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
               let dom = document.createElement("div");
               dom.classList.add("next");
               dom.innerHTML = `
-         <div class="btn" onclick="window.cb('toggle')">暂停/播放</div>
-    <div class="btn" onclick="window.cb('playbackRateToggle')">速度切换</div>
-    <div class="btn" onclick="window.cb('addRate')">速度 +</div>
-    <div class="btn" onclick="window.cb('removeRate')">速度 -</div>
+         <div class="btn" onclick="window.cb('toggle')">视频</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle')">切换</div>
+    <div class="btn" onclick="window.cb('addRate')">&nbsp;+&nbsp;</div>
+    <div class="btn" onclick="window.cb('removeRate')">&nbsp;-&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle2')">&nbsp;2&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle25')">&nbsp;2.5&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle3')">&nbsp;3&nbsp;</div>
         `;
               wrapper.append(dom);
             }, 1e3);
@@ -251,6 +270,7 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
         let youtubeRate = localStorage.getItem("youtube-rate");
         if (youtubeRate) {
           rate.value = Number(youtubeRate);
+          console.log("r", rate.value);
         }
         _unsafeWindow.cb = (type) => {
           console.log("type", type);
@@ -261,6 +281,15 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
             case "playbackRateToggle":
               playbackRateToggle();
               break;
+            case "playbackRateToggle2":
+              setPlaybackRate(2);
+              break;
+            case "playbackRateToggle25":
+              setPlaybackRate(2.5);
+              break;
+            case "playbackRateToggle3":
+              setPlaybackRate(3);
+              break;
             case "addRate":
               setPlaybackRate(rate.value + 0.1);
               break;
@@ -269,7 +298,7 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
               break;
           }
         };
-        checkWatch();
+        checkWatch(true);
         window.addEventListener("click", checkA, true);
         window.addEventListener("visibilitychange", stop, true);
       });

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted, reactive, ref, watch} from "vue";
-import {GM_openInTab, GM_registerMenuCommand,unsafeWindow} from "gmApi";
+import {GM_openInTab, GM_registerMenuCommand, unsafeWindow} from "gmApi";
 
 let refVideo = ref(null)
 let rate = ref(1)
@@ -100,17 +100,24 @@ function findA(target: HTMLDivElement, e: Event) {
 }
 
 function checkPageType() {
-  let header = document.querySelector('#header-bar')
+  let header: any = document.querySelector('#header-bar')
+  let stickyPlayer: any = document.querySelector('#app.sticky-player')
   if (location.pathname === '/watch') {
     if (header) header.style['display'] = 'none'
+    if (stickyPlayer) stickyPlayer.style['padding-top'] = '0'
     return pageType.value = 'watch'
   } else {
+    if (stickyPlayer) stickyPlayer.style['padding-top'] = '48px'
     if (header) header.style['display'] = 'block'
   }
   if (location.pathname === '/') {
+    if (stickyPlayer) stickyPlayer.style['padding-top'] = '48px'
+    if (header) header.style['display'] = 'block'
     return pageType.value = 'home'
   }
   if (location.pathname.startsWith('/@')) {
+    if (stickyPlayer) stickyPlayer.style['padding-top'] = '48px'
+    if (header) header.style['display'] = 'block'
     return pageType.value = 'user'
   }
 }
@@ -131,8 +138,8 @@ function playbackRateToggle() {
       rate.value = refVideo.value.playbackRate = 1
       showMsg('播放速度: 1')
     } else {
-      showMsg('播放速度: ' + lastRate.value)
-      rate.value = refVideo.value.playbackRate = lastRate.value
+      rate.value = refVideo.value.playbackRate = (lastRate.value === 1 ? 2 : lastRate.value)
+      showMsg('播放速度: ' + rate.value)
     }
   }
 }
@@ -180,7 +187,9 @@ function checkWatch(init = false) {
           refVideo.value.play()
         }
         refVideo.value.playbackRate = rate.value
+        showMsg('播放速度: ' + rate.value)
       }
+      if (!init) return
       setTimeout(() => {
         let wrapper = document.querySelector('.slim-video-action-bar-actions')
         // console.log('w', wrapper)
@@ -188,14 +197,16 @@ function checkWatch(init = false) {
         let dom = document.createElement('div')
         dom.classList.add('next')
         dom.innerHTML = `
-         <div class="btn" onclick="window.cb('toggle')">暂停/播放</div>
-    <div class="btn" onclick="window.cb('playbackRateToggle')">速度切换</div>
-    <div class="btn" onclick="window.cb('addRate')">速度 +</div>
-    <div class="btn" onclick="window.cb('removeRate')">速度 -</div>
+         <div class="btn" onclick="window.cb('toggle')">视频</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle')">切换</div>
+    <div class="btn" onclick="window.cb('addRate')">&nbsp;+&nbsp;</div>
+    <div class="btn" onclick="window.cb('removeRate')">&nbsp;-&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle2')">&nbsp;2&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle25')">&nbsp;2.5&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle3')">&nbsp;3&nbsp;</div>
         `
         wrapper.append(dom)
       }, 1000)
-
     }, 500)
     return true
   }
@@ -234,6 +245,7 @@ watch(rate, (value) => {
   localStorage.setItem('youtube-rate', value)
 })
 
+
 onMounted(() => {
   console.log('Youtube Next start')
   let browserType = getBrowserType()
@@ -242,7 +254,7 @@ onMounted(() => {
   let youtubeRate = localStorage.getItem('youtube-rate')
   if (youtubeRate) {
     rate.value = Number(youtubeRate)
-    // console.log('r', rate.value)
+    console.log('r', rate.value)
   }
 
   unsafeWindow.cb = (type: string) => {
@@ -254,6 +266,15 @@ onMounted(() => {
       case 'playbackRateToggle':
         playbackRateToggle()
         break
+      case 'playbackRateToggle2':
+        setPlaybackRate(2)
+        break
+      case 'playbackRateToggle25':
+        setPlaybackRate(2.5)
+        break
+      case 'playbackRateToggle3':
+        setPlaybackRate(3)
+        break
       case 'addRate':
         setPlaybackRate(rate.value + 0.1)
         break
@@ -263,7 +284,7 @@ onMounted(() => {
     }
   }
 
-  checkWatch()
+  checkWatch(true)
   window.addEventListener('click', checkA, true);
   window.addEventListener('visibilitychange', stop, true)
 })
@@ -304,10 +325,12 @@ onUnmounted(() => {
 .msg {
   position: fixed;
   z-index: 999;
-  font-size: 2.4rem;
+  font-size: 3rem;
   left: 0;
-  top: 50px;
-  color: white;
+  top: 0;
+  color: black;
+  background: white;
+  padding: 1rem 2rem;
 }
 </style>
 <style lang="less">
@@ -318,10 +341,6 @@ onUnmounted(() => {
     right: @w !important;
     top: 0 !important;
     //z-index: 999!important;
-  }
-
-  .sticky-player {
-    padding-top: 0 !important;
   }
 
   //左侧，主是要播放器下面的一坨
