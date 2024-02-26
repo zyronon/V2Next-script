@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Mobile Enhance 油管移动端增强
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      2.7.6
 // @author       zyronon
 // @description  针对油管移动端，点击视频新标签页打开，记忆播放速度，突破播放速度限制
 // @license      GPL License
@@ -18,7 +18,7 @@
 // @grant        unsafeWindow
 // ==/UserScript==
 
-(t=>{if(typeof GM_addStyle=="function"){GM_addStyle(t);return}const e=document.createElement("style");e.textContent=t,document.head.append(e)})(" .next{font-size:1.4rem;display:flex;gap:1rem}.next .btn{color:#f1f1f1;background-color:#ffffff1a;padding:0 16px;height:36px;font-size:14px;line-height:36px;border-radius:18px}.msg{position:fixed;z-index:999;font-size:3rem;left:0;top:0;color:#000;background:white;padding:1rem 2rem}@media (min-width: 1280px) and (orientation: landscape){.player-container,.player-container.sticky-player{right:400px!important;top:0!important}ytm-watch{margin-right:400px!important}ytm-engagement-panel{width:400px!important;top:0!important}.playlist-entrypoint-background-protection,.slide-in-animation-entry-point{width:400px!important}ytm-single-column-watch-next-results-renderer [section-identifier=related-items],ytm-single-column-watch-next-results-renderer>ytm-playlist{width:400px!important;padding:0 0 8px 8px}ytm-single-column-watch-next-results-renderer .playlist-content{width:400px!important}} ");
+(t=>{if(typeof GM_addStyle=="function"){GM_addStyle(t);return}const e=document.createElement("style");e.textContent=t,document.head.append(e)})(" .ytb-next{font-size:1.4rem;display:flex;gap:1rem;position:fixed;top:10px;right:0;z-index:99999;background:black}.ytb-next .btn{color:#f1f1f1;background-color:#ffffff1a;padding:0 16px;height:36px;font-size:14px;line-height:36px;border-radius:18px}.msg{position:fixed;z-index:999;font-size:3rem;left:0;top:0;color:#000;background:white;padding:1rem 2rem}@media (min-width: 1280px) and (orientation: landscape){.player-container,.player-container.sticky-player{right:400px!important;top:0!important}ytm-watch{margin-right:400px!important}ytm-engagement-panel{width:400px!important;top:0!important}.playlist-entrypoint-background-protection,.slide-in-animation-entry-point{width:400px!important}ytm-single-column-watch-next-results-renderer [section-identifier=related-items],ytm-single-column-watch-next-results-renderer>ytm-playlist{width:400px!important;padding:0 0 8px 8px}ytm-single-column-watch-next-results-renderer .playlist-content{width:400px!important}} ");
 
 (function (vue) {
   'use strict';
@@ -114,37 +114,18 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
           parentNode = parentNode.parentNode;
         }
         console.log(parentNode);
-        openNewTab(parentNode.href);
+        openNewTab(parentNode.href, true);
         return stop(e);
       }
       function checkPageType() {
-        let header = document.querySelector("#header-bar");
-        let stickyPlayer = document.querySelector("#app.sticky-player");
         if (location.pathname === "/watch") {
-          if (header)
-            header.style["display"] = "none";
-          if (stickyPlayer)
-            stickyPlayer.style["padding-top"] = "0";
-          return pageType.value = "watch";
-        } else {
-          if (stickyPlayer)
-            stickyPlayer.style["padding-top"] = "48px";
-          if (header)
-            header.style["display"] = "block";
+          pageType.value = "watch";
         }
         if (location.pathname === "/") {
-          if (stickyPlayer)
-            stickyPlayer.style["padding-top"] = "48px";
-          if (header)
-            header.style["display"] = "block";
-          return pageType.value = "home";
+          pageType.value = "home";
         }
         if (location.pathname.startsWith("/@")) {
-          if (stickyPlayer)
-            stickyPlayer.style["padding-top"] = "48px";
-          if (header)
-            header.style["display"] = "block";
-          return pageType.value = "user";
+          pageType.value = "user";
         }
       }
       function checkVideo() {
@@ -152,6 +133,8 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
         if (v) {
           v.playbackRate = rate.value;
           refVideo.value = v;
+          window.funs.checkWatchPageDiv();
+          return true;
         }
       }
       function playbackRateToggle() {
@@ -195,6 +178,22 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
           msg.show = false;
         }, 3e3);
       }
+      function checkOptionButtons() {
+        let dom = document.querySelector(".ytb-next");
+        if (dom)
+          return;
+        dom = document.createElement("div");
+        dom.classList.add("ytb-next");
+        dom.innerHTML = `
+    <div class="btn" onclick="window.cb('playbackRateToggle')">切换</div>
+    <div class="btn" onclick="window.cb('addRate')">&nbsp;+&nbsp;</div>
+    <div class="btn" onclick="window.cb('removeRate')">&nbsp;-&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle2')">&nbsp;2&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle25')">&nbsp;2.5&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle3')">&nbsp;3&nbsp;</div>
+        `;
+        document.body.append(dom);
+      }
       function checkWatch(init = false) {
         checkPageType();
         if (pageType.value === "watch") {
@@ -211,23 +210,7 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
             }
             if (!init)
               return;
-            setTimeout(() => {
-              let wrapper = document.querySelector(".slim-video-action-bar-actions");
-              if (!wrapper)
-                return;
-              let dom = document.createElement("div");
-              dom.classList.add("next");
-              dom.innerHTML = `
-         <div class="btn" onclick="window.cb('toggle')">视频</div>
-    <div class="btn" onclick="window.cb('playbackRateToggle')">切换</div>
-    <div class="btn" onclick="window.cb('addRate')">&nbsp;+&nbsp;</div>
-    <div class="btn" onclick="window.cb('removeRate')">&nbsp;-&nbsp;</div>
-    <div class="btn" onclick="window.cb('playbackRateToggle2')">&nbsp;2&nbsp;</div>
-    <div class="btn" onclick="window.cb('playbackRateToggle25')">&nbsp;2.5&nbsp;</div>
-    <div class="btn" onclick="window.cb('playbackRateToggle3')">&nbsp;3&nbsp;</div>
-        `;
-              wrapper.append(dom);
-            }, 1e3);
+            checkOptionButtons();
           }, 500);
           return true;
         }
@@ -262,6 +245,7 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
       }
       vue.watch(rate, (value) => {
         localStorage.setItem("youtube-rate", value);
+        window.rate = value;
       });
       vue.onMounted(() => {
         console.log("Youtube Next start");
@@ -270,7 +254,6 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
         let youtubeRate = localStorage.getItem("youtube-rate");
         if (youtubeRate) {
           rate.value = Number(youtubeRate);
-          console.log("r", rate.value);
         }
         _unsafeWindow.cb = (type) => {
           console.log("type", type);
@@ -314,15 +297,92 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
       };
     }
   });
-  let isMobile = !document.querySelector("#Rightbar");
-  isMobile = false;
+  window.videoEl = null;
+  window.rate = 1;
+  window.funs = {
+    checkWatchPageDiv() {
+      let header = document.querySelector("#header-bar");
+      let stickyPlayer = document.querySelector("#app.sticky-player");
+      if (header)
+        header.style["display"] = "none";
+      if (stickyPlayer)
+        stickyPlayer.style["padding-top"] = "0";
+    }
+  };
+  new MutationObserver(() => {
+    let v = document.querySelector("video");
+    if (v) {
+      if (!window.videoEl) {
+        console.log("init");
+        v.playbackRate = 2;
+        window.videoEl = v;
+      }
+    }
+  });
+  function proxyHTMLMediaElementEvent() {
+    if (HTMLMediaElement.prototype._rawAddEventListener_) {
+      return false;
+    }
+    HTMLMediaElement.prototype._rawAddEventListener_ = HTMLMediaElement.prototype.addEventListener;
+    HTMLMediaElement.prototype._rawRemoveEventListener_ = HTMLMediaElement.prototype.removeEventListener;
+    HTMLMediaElement.prototype.addEventListener = new Proxy(HTMLMediaElement.prototype.addEventListener, {
+      apply(target, ctx, args) {
+        const eventName = args[0];
+        const listener = args[1];
+        console.log("args", args);
+        if (listener instanceof Function && eventName === "ratechange") {
+          args[1] = new Proxy(listener, {
+            apply(target2, ctx2, args2) {
+              if (ctx2) {
+                if (ctx2.playbackRate && eventName === "ratechange") {
+                  if (ctx2._hasBlockRatechangeEvent_) {
+                    return true;
+                  }
+                  const oldRate = ctx2.playbackRate;
+                  const startTime = Date.now();
+                  const result = target2.apply(ctx2, args2);
+                  const blockRatechangeBehave1 = oldRate !== ctx2.playbackRate || Date.now() - startTime > 1e3;
+                  const blockRatechangeBehave2 = ctx2._setPlaybackRate_ && ctx2._setPlaybackRate_.value !== ctx2.playbackRate;
+                  if (blockRatechangeBehave1 || blockRatechangeBehave2) {
+                    debug.info(`[execVideoEvent][${eventName}]检测到可能存在阻止调速的行为，已禁止${eventName}事件的执行`, listener);
+                    ctx2._hasBlockRatechangeEvent_ = true;
+                    return true;
+                  } else {
+                    return result;
+                  }
+                }
+              }
+              try {
+                return target2.apply(ctx2, args2);
+              } catch (e) {
+                debug.error(`[proxyPlayerEvent][${eventName}]`, listener, e);
+              }
+            }
+          });
+        }
+        if (listener instanceof Function && eventName === "play") {
+          args[1] = new Proxy(listener, {
+            apply(target2, ctx2, args2) {
+              ctx2.playbackRate = window.rate;
+              window.funs.checkWatchPageDiv();
+              try {
+                return target2.apply(ctx2, args2);
+              } catch (e) {
+                debug.error(`[proxyPlayerEvent][${eventName}]`, listener, e);
+              }
+            }
+          });
+        }
+        return target.apply(ctx, args);
+      }
+    });
+  }
+  proxyHTMLMediaElementEvent();
   let $section = document.createElement("section");
   $section.id = "vue-app";
   document.body.append($section);
-  if (!isMobile) {
-    let vueApp = vue.createApp(_sfc_main);
-    vueApp.config.unwrapInjectedRef = true;
-    vueApp.mount($section);
-  }
+  let vueApp = vue.createApp(_sfc_main);
+  vueApp.config.unwrapInjectedRef = true;
+  vueApp.mount($section);
 
 })(Vue);

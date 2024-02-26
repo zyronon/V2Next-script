@@ -2,7 +2,7 @@
 import {onMounted, onUnmounted, reactive, ref, watch} from "vue";
 import {GM_openInTab, GM_registerMenuCommand, unsafeWindow} from "gmApi";
 
-let refVideo = ref(null)
+let refVideo = ref<HTMLVideoElement>(null)
 let rate = ref(1)
 let lastRate = ref(1)
 let pageType = ref<string>('')
@@ -13,6 +13,11 @@ let msg = reactive({
   timer: -1
 })
 
+async function sleep(val: number) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(true), val)
+  })
+}
 function stop(e) {
   e.preventDefault()
   e.stopPropagation()
@@ -95,30 +100,19 @@ function findA(target: HTMLDivElement, e: Event) {
     parentNode = parentNode.parentNode
   }
   console.log(parentNode)
-  openNewTab(parentNode.href)
+  openNewTab(parentNode.href, true)
   return stop(e)
 }
 
 function checkPageType() {
-  let header: any = document.querySelector('#header-bar')
-  let stickyPlayer: any = document.querySelector('#app.sticky-player')
   if (location.pathname === '/watch') {
-    if (header) header.style['display'] = 'none'
-    if (stickyPlayer) stickyPlayer.style['padding-top'] = '0'
-    return pageType.value = 'watch'
-  } else {
-    if (stickyPlayer) stickyPlayer.style['padding-top'] = '48px'
-    if (header) header.style['display'] = 'block'
+    pageType.value = 'watch'
   }
   if (location.pathname === '/') {
-    if (stickyPlayer) stickyPlayer.style['padding-top'] = '48px'
-    if (header) header.style['display'] = 'block'
-    return pageType.value = 'home'
+    pageType.value = 'home'
   }
   if (location.pathname.startsWith('/@')) {
-    if (stickyPlayer) stickyPlayer.style['padding-top'] = '48px'
-    if (header) header.style['display'] = 'block'
-    return pageType.value = 'user'
+    pageType.value = 'user'
   }
 }
 
@@ -127,6 +121,8 @@ function checkVideo() {
   if (v) {
     v.playbackRate = rate.value
     refVideo.value = v
+    window.funs.checkWatchPageDiv()
+    return true
   }
 }
 
@@ -175,6 +171,22 @@ function showMsg(text: string) {
   }, 3000)
 }
 
+function checkOptionButtons() {
+  let dom = document.querySelector('.ytb-next')
+  if (dom) return;
+  dom = document.createElement('div')
+  dom.classList.add('ytb-next')
+  dom.innerHTML = `
+    <div class="btn" onclick="window.cb('playbackRateToggle')">切换</div>
+    <div class="btn" onclick="window.cb('addRate')">&nbsp;+&nbsp;</div>
+    <div class="btn" onclick="window.cb('removeRate')">&nbsp;-&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle2')">&nbsp;2&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle25')">&nbsp;2.5&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle3')">&nbsp;3&nbsp;</div>
+        `
+  document.body.append(dom)
+}
+
 function checkWatch(init = false) {
   checkPageType()
   if (pageType.value === 'watch') {
@@ -190,23 +202,7 @@ function checkWatch(init = false) {
         showMsg('播放速度: ' + rate.value)
       }
       if (!init) return
-      setTimeout(() => {
-        let wrapper = document.querySelector('.slim-video-action-bar-actions')
-        // console.log('w', wrapper)
-        if (!wrapper) return
-        let dom = document.createElement('div')
-        dom.classList.add('next')
-        dom.innerHTML = `
-         <div class="btn" onclick="window.cb('toggle')">视频</div>
-    <div class="btn" onclick="window.cb('playbackRateToggle')">切换</div>
-    <div class="btn" onclick="window.cb('addRate')">&nbsp;+&nbsp;</div>
-    <div class="btn" onclick="window.cb('removeRate')">&nbsp;-&nbsp;</div>
-    <div class="btn" onclick="window.cb('playbackRateToggle2')">&nbsp;2&nbsp;</div>
-    <div class="btn" onclick="window.cb('playbackRateToggle25')">&nbsp;2.5&nbsp;</div>
-    <div class="btn" onclick="window.cb('playbackRateToggle3')">&nbsp;3&nbsp;</div>
-        `
-        wrapper.append(dom)
-      }, 1000)
+      checkOptionButtons()
     }, 500)
     return true
   }
@@ -243,6 +239,7 @@ function checkA(e: Event) {
 
 watch(rate, (value) => {
   localStorage.setItem('youtube-rate', value)
+  window.rate = value
 })
 
 
@@ -254,7 +251,7 @@ onMounted(() => {
   let youtubeRate = localStorage.getItem('youtube-rate')
   if (youtubeRate) {
     rate.value = Number(youtubeRate)
-    console.log('r', rate.value)
+    // console.log('r', rate.value)
   }
 
   unsafeWindow.cb = (type: string) => {
@@ -306,10 +303,15 @@ onUnmounted(() => {
 </template>
 
 <style lang="less">
-.next {
+.ytb-next {
   font-size: 1.4rem;
   display: flex;
   gap: 1rem;
+  position: fixed;
+  top: 10px;
+  right: 0;
+  z-index: 99999;
+  background: black;
 
   .btn {
     color: #f1f1f1;
