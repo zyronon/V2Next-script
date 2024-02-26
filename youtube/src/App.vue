@@ -18,6 +18,7 @@ async function sleep(val: number) {
     setTimeout(() => resolve(true), val)
   })
 }
+
 function stop(e) {
   e.preventDefault()
   e.stopPropagation()
@@ -187,35 +188,18 @@ function checkOptionButtons() {
   document.body.append(dom)
 }
 
-function checkWatch(init = false) {
+function checkIsWatchPage() {
   checkPageType()
-  if (pageType.value === 'watch') {
-    setTimeout(() => {
-      checkVideo()
-      if (refVideo.value) {
-        if (init) {
-          refVideo.value.muted = false
-        } else {
-          refVideo.value.play()
-        }
-        refVideo.value.playbackRate = rate.value
-        showMsg('播放速度: ' + rate.value)
-      }
-      if (!init) return
-      checkOptionButtons()
-    }, 500)
-    return true
-  }
+  return pageType.value === 'watch'
 }
-
 function checkA(e: Event) {
   let target: HTMLDivElement = <HTMLDivElement>e.target;
   let tagName = target.tagName;
   let classList = target.classList
-  console.log('e', e, target, tagName, classList)
+  // console.log('e', e, target, tagName, classList)
   if (tagName === 'IMG' && Array.from(classList).some(v => v.includes('yt-core-image'))) {
     console.log('封面',)
-    if (checkWatch()) return
+    if (checkIsWatchPage()) return
     return findA(target, e)
   }
   // if (tagName === 'DIV' && Array.from(classList).some(v => v.includes('collections-v2'))) {
@@ -223,16 +207,16 @@ function checkA(e: Event) {
   // }
   if (tagName === 'SPAN' && Array.from(classList).some(v => v.includes('yt-core-attributed-string'))) {
     console.log('标题',)
-    if (checkWatch()) return
+    if (checkIsWatchPage()) return
     return findA(target, e)
   }
   if (tagName === 'BUTTON' && Array.from(classList).some(v => v.includes('ytp-large-play-button'))) {
     console.log('播放按钮',)
-    if (checkWatch()) return
+    if (checkIsWatchPage()) return
   }
   if (tagName === 'DIV' && Array.from(classList).some(v => v.includes('ytp-cued-thumbnail-overlay-image'))) {
     console.log('播放按钮',)
-    if (checkWatch()) return
+    if (checkIsWatchPage()) return
   }
   // return stop(e)
 }
@@ -281,7 +265,18 @@ onMounted(() => {
     }
   }
 
-  checkWatch(true)
+
+  if (checkIsWatchPage()){
+    checkOptionButtons()
+    setTimeout(() => {
+      checkVideo()
+      if (refVideo.value) {
+        refVideo.value.muted = false
+        refVideo.value.playbackRate = rate.value
+        showMsg('播放速度: ' + rate.value)
+      }
+    }, 500)
+  }
   window.addEventListener('click', checkA, true);
   window.addEventListener('visibilitychange', stop, true)
 })

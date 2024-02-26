@@ -40,7 +40,7 @@ function proxyHTMLMediaElementEvent() {
         apply(target, ctx, args) {
             const eventName = args[0]
             const listener = args[1]
-            console.log('args', args)
+            // console.log('args', args)
             if (listener instanceof Function && eventName === 'ratechange') {
                 /* 对注册了ratechange事件进行检测，如果存在异常行为，则尝试挂起事件 */
                 args[1] = new Proxy(listener, {
@@ -86,7 +86,7 @@ function proxyHTMLMediaElementEvent() {
                 /* 对注册了ratechange事件进行检测，如果存在异常行为，则尝试挂起事件 */
                 args[1] = new Proxy(listener, {
                     apply(target, ctx, args) {
-                        // console.log('play')
+                        console.log('play', window.rate)
                         ctx.playbackRate = window.rate
                         window.funs.checkWatchPageDiv()
                         try {

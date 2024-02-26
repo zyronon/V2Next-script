@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Mobile Enhance 油管移动端增强
 // @namespace    http://tampermonkey.net/
-// @version      2.7.6
+// @version      2.8.1
 // @author       zyronon
 // @description  针对油管移动端，点击视频新标签页打开，记忆播放速度，突破播放速度限制
 // @license      GPL License
@@ -194,52 +194,34 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
         `;
         document.body.append(dom);
       }
-      function checkWatch(init = false) {
+      function checkIsWatchPage() {
         checkPageType();
-        if (pageType.value === "watch") {
-          setTimeout(() => {
-            checkVideo();
-            if (refVideo.value) {
-              if (init) {
-                refVideo.value.muted = false;
-              } else {
-                refVideo.value.play();
-              }
-              refVideo.value.playbackRate = rate.value;
-              showMsg("播放速度: " + rate.value);
-            }
-            if (!init)
-              return;
-            checkOptionButtons();
-          }, 500);
-          return true;
-        }
+        return pageType.value === "watch";
       }
       function checkA(e) {
         let target = e.target;
         let tagName = target.tagName;
         let classList = target.classList;
-        console.log("e", e, target, tagName, classList);
         if (tagName === "IMG" && Array.from(classList).some((v) => v.includes("yt-core-image"))) {
           console.log("封面");
-          if (checkWatch())
+          if (checkIsWatchPage())
             return;
           return findA(target, e);
         }
         if (tagName === "SPAN" && Array.from(classList).some((v) => v.includes("yt-core-attributed-string"))) {
           console.log("标题");
-          if (checkWatch())
+          if (checkIsWatchPage())
             return;
           return findA(target, e);
         }
         if (tagName === "BUTTON" && Array.from(classList).some((v) => v.includes("ytp-large-play-button"))) {
           console.log("播放按钮");
-          if (checkWatch())
+          if (checkIsWatchPage())
             return;
         }
         if (tagName === "DIV" && Array.from(classList).some((v) => v.includes("ytp-cued-thumbnail-overlay-image"))) {
           console.log("播放按钮");
-          if (checkWatch())
+          if (checkIsWatchPage())
             return;
         }
       }
@@ -281,7 +263,17 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
               break;
           }
         };
-        checkWatch(true);
+        if (checkIsWatchPage()) {
+          checkOptionButtons();
+          setTimeout(() => {
+            checkVideo();
+            if (refVideo.value) {
+              refVideo.value.muted = false;
+              refVideo.value.playbackRate = rate.value;
+              showMsg("播放速度: " + rate.value);
+            }
+          }, 500);
+        }
         window.addEventListener("click", checkA, true);
         window.addEventListener("visibilitychange", stop, true);
       });
@@ -329,7 +321,6 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
       apply(target, ctx, args) {
         const eventName = args[0];
         const listener = args[1];
-        console.log("args", args);
         if (listener instanceof Function && eventName === "ratechange") {
           args[1] = new Proxy(listener, {
             apply(target2, ctx2, args2) {
@@ -363,6 +354,7 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
         if (listener instanceof Function && eventName === "play") {
           args[1] = new Proxy(listener, {
             apply(target2, ctx2, args2) {
+              console.log("play", window.rate);
               ctx2.playbackRate = window.rate;
               window.funs.checkWatchPageDiv();
               try {
