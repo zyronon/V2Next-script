@@ -226,7 +226,6 @@ watch(rate, (value) => {
   window.rate = value
 })
 
-
 onMounted(() => {
   console.log('Youtube Next start')
   let browserType = getBrowserType()
@@ -264,7 +263,6 @@ onMounted(() => {
         break
     }
   }
-
 
   if (checkIsWatchPage()){
     checkOptionButtons()
