@@ -308,7 +308,9 @@ export default {
   },
   methods: {
     close() {
-      this.config.version = DefaultVal.currentVersion
+      if (this.config.version < DefaultVal.currentVersion) {
+        this.config.version = DefaultVal.currentVersion
+      }
       this.$emit('update:show', false)
     }
   }

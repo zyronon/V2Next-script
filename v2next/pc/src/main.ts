@@ -903,7 +903,7 @@ function run() {
   }
 
   function addSettingText() {
-    let setting = $(`<a href="/" class="top ${window.config.version < DefaultVal.currentVersion ? 'new' : ''}">脚本设置</a>`)
+    let setting = $(`<a href="/" class="top">脚本设置</a>`)
     setting.on('click', function (e) {
       e.stopPropagation()
       e.preventDefault()

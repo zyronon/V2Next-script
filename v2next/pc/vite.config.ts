@@ -17,7 +17,7 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '8.1.3',
+        version: '8.1.4',
         name: 'V2Next',
         icon: 'https://v2next.netlify.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
@@ -44,7 +44,10 @@ export default defineConfig({
         downloadURL: 'https://update.greasyfork.org/scripts/458024/V2Next.user.js',
         supportURL: 'https://update.greasyfork.org/scripts/458024/V2Next.user.js',
         homepageURL: 'https://github.com/zyronon/web-scripts',
-        homepage: 'https://github.com/zyronon/web-scripts'
+        homepage: 'https://github.com/zyronon/web-scripts',
+        require: [
+          'https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js',
+        ]
       },
       build: {
         externalGlobals: {
