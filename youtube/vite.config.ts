@@ -17,7 +17,7 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '2.8.1',
+        version: '2.8.3',
         name: 'Youtube Mobile Enhance 油管移动端增强',
         icon: 'https://v2next.netlify.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
@@ -27,9 +27,9 @@ export default defineConfig({
         description: '针对油管移动端，点击视频新标签页打开，记忆播放速度，突破播放速度限制',
         author: 'zyronon',
         license: 'GPL License',
-        updateURL: 'https://update.greasyfork.org/scripts/458024/V2Next.user.js',
-        downloadURL: 'https://update.greasyfork.org/scripts/458024/V2Next.user.js',
-        supportURL: 'https://update.greasyfork.org/scripts/458024/V2Next.user.js',
+        updateURL: 'https://update.greasyfork.org/scripts/487013/Youtube%20Mobile%20Enhance%20%E6%B2%B9%E7%AE%A1%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%A2%9E%E5%BC%BA.user.js',
+        downloadURL: 'https://update.greasyfork.org/scripts/487013/Youtube%20Mobile%20Enhance%20%E6%B2%B9%E7%AE%A1%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%A2%9E%E5%BC%BA.user.js',
+        supportURL: 'https://update.greasyfork.org/scripts/487013/Youtube%20Mobile%20Enhance%20%E6%B2%B9%E7%AE%A1%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%A2%9E%E5%BC%BA.user.js',
         homepageURL: 'https://github.com/zyronon/web-scripts',
         homepage: 'https://github.com/zyronon/web-scripts'
       },

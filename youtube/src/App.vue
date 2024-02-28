@@ -301,10 +301,9 @@ onUnmounted(() => {
   display: flex;
   gap: 1rem;
   position: fixed;
-  top: 10px;
-  right: 0;
+  top: 0;
+  right: 10px;
   z-index: 99999;
-  background: black;
 
   .btn {
     color: #f1f1f1;
