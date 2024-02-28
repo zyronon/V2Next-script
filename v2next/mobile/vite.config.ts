@@ -50,6 +50,7 @@ export default defineConfig({
         homepage: 'https://github.com/zyronon/web-scripts'
       },
       build: {
+        fileName:'V2Next-Mobile.user.js',
         externalGlobals: {
           vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js'),
         },

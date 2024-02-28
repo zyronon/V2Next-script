@@ -50,6 +50,7 @@ export default defineConfig({
         ]
       },
       build: {
+        fileName:'V2Next.user.js',
         externalGlobals: {
           vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js'),
         },

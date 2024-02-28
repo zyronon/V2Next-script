@@ -1,7 +1,7 @@
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import monkey, {cdn} from 'vite-plugin-monkey';
-import {resolve} from 'path'
+import monkey, { cdn } from 'vite-plugin-monkey';
+import { resolve } from 'path'
 import vueJsx from "@vitejs/plugin-vue-jsx";
 
 function pathResolve(dir) {
@@ -34,6 +34,7 @@ export default defineConfig({
         homepage: 'https://github.com/zyronon/web-scripts'
       },
       build: {
+        fileName: 'Youtube Mobile Enhance.user.js',
         externalGlobals: {
           vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js'),
         },
