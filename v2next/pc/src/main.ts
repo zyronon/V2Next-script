@@ -407,7 +407,9 @@ function run() {
         // console.log('g')
         localStorage.setItem('d', '1')
       } else {
-        localStorage.setItem('d', '')
+        let d = $('.light-toggle > img').length
+        window.stopMe = !d
+        localStorage.setItem('d', d ? '' : '1')
       }
 
       const setF = (res) => {
