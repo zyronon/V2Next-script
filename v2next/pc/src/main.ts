@@ -1,8 +1,8 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-import { GM_notification, GM_openInTab, GM_registerMenuCommand } from "gmApi"
+import { GM_notification, GM_registerMenuCommand } from "gmApi"
 import './global.d.ts'
-import { MAX_REPLY_LIMIT, PageType, Post, Reply } from "@v2next/core/types"
+import { PageType, Post, Reply } from "@v2next/core/types"
 import { DefaultConfig, DefaultPost, DefaultUser, DefaultVal, functions, getDefaultPost } from "@v2next/core/core";
 
 let isMobile = !document.querySelector('#Rightbar');
@@ -404,12 +404,13 @@ function run() {
       })
 
       if (window.stopMe) {
-        // console.log('g')
         localStorage.setItem('d', '1')
       } else {
-        let d = $('.light-toggle > img').length
-        window.stopMe = !d
-        localStorage.setItem('d', d ? '' : '1')
+        if (window.pageType === PageType.Home) {
+          let d = $('.light-toggle > img').length
+          window.stopMe = !d
+          localStorage.setItem('d', d ? '' : '1')
+        }
       }
 
       const setF = (res) => {
