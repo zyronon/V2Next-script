@@ -310,7 +310,7 @@ export const functions = {
   //检测页面类型
   checkPageType(a?: HTMLAnchorElement) {
     let l = a || window.location
-    let data = {pageType: null, pageData: {id: '', pageNo: null}}
+    let data = {pageType: null, pageData: {id: '', pageNo: null}, username: ''}
     if (l.pathname === '/') {
       data.pageType = PageType.Home
     } else if (l.pathname === '/changes') {
@@ -325,6 +325,7 @@ export const functions = {
       }
     } else if (l.href.match(/.com\/member/)) {
       data.pageType = PageType.Member
+      data.username = l.pathname.replace('/member/', '').replace('/replies', '')
     } else {
       let r = l.href.match(/.com\/t\/([\d]+)/)
       if (r && !l.pathname.includes('review') && !l.pathname.includes('info')) {
@@ -489,7 +490,7 @@ export const DefaultConfig: Config = {
   rememberLastReadFloor: false,
   autoSignin: true,
   customBgColor: '',
-  version:  DefaultVal.currentVersion,
+  version: DefaultVal.currentVersion,
   collectBrowserNotice: false,
   fontSizeType: 'normal'
 }

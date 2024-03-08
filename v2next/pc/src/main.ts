@@ -935,9 +935,10 @@ function run() {
       document.documentElement.classList.add('dark')
     }
 
-    let {pageData, pageType} = functions.checkPageType()
+    let {pageData, pageType, username} = functions.checkPageType()
     window.pageType = pageType
     window.pageData = pageData
+    window.targetUserName = username
     initMonkeyMenu()
 
     let top2 = document.querySelector('.tools .top:nth-child(2)')
@@ -1103,38 +1104,41 @@ function run() {
           break
         case PageType.Member:
           box = document.querySelectorAll('#Wrapper #Main .box')
-          window.targetUserName = box[0].querySelector('h1')!.textContent!
-          if (window.config.openTag) {
-            //移除box的bottom样式，让和vue的div融为一体
-            box[0].style.borderBottom = 'none'
-            box[0].style['border-bottom-left-radius'] = '0'
-            box[0].style['border-bottom-right-radius'] = '0'
+          if (location.pathname.includes('/replies')){
+            box[0].after($section)
+          }else {
+            if (window.config.openTag) {
+              //移除box的bottom样式，让和vue的div融为一体
+              box[0].style.borderBottom = 'none'
+              box[0].style['border-bottom-left-radius'] = '0'
+              box[0].style['border-bottom-right-radius'] = '0'
+            }
+
+            try {
+              //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+              headerWrap = $('<div class="post-item"></div>')
+              if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+              $(box[1]).prepend(headerWrap)
+              $(box[1]).children().slice(1, 2).each(function () {
+                if (!this.classList.contains('item')) {
+                  headerWrap.append(this)
+                }
+              })
+              last = $(box[1]).children().last()
+              last.addClass('cell post-item')
+              if (window.config.viewType === 'card') last[0].classList.add('preview')
+
+              box[1].style.boxShadow = 'unset'
+              box[1].style.background = 'unset'
+              box[1].style.overflow = 'hidden'
+            } catch (e) {
+              console.log('PageType-Member解析报错了', e)
+            }
+
+            list = box[1].querySelectorAll('.cell')
+            box[0].after($section)
+            window.parse.parsePagePostList(list, box[1])
           }
-
-          try {
-            //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
-            headerWrap = $('<div class="post-item"></div>')
-            if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
-            $(box[1]).prepend(headerWrap)
-            $(box[1]).children().slice(1, 2).each(function () {
-              if (!this.classList.contains('item')) {
-                headerWrap.append(this)
-              }
-            })
-            last = $(box[1]).children().last()
-            last.addClass('cell post-item')
-            if (window.config.viewType === 'card') last[0].classList.add('preview')
-
-            box[1].style.boxShadow = 'unset'
-            box[1].style.background = 'unset'
-            box[1].style.overflow = 'hidden'
-          } catch (e) {
-            console.log('PageType-Member解析报错了', e)
-          }
-
-          list = box[1].querySelectorAll('.cell')
-          box[0].after($section)
-          window.parse.parsePagePostList(list, box[1])
           break
         default:
           window.stopMe = true
