@@ -17,7 +17,7 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '2.8.3',
+        version: '2.8.4',
         name: 'Youtube Mobile Enhance 油管移动端增强',
         icon: 'https://v2next.netlify.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
@@ -31,7 +31,8 @@ export default defineConfig({
         downloadURL: 'https://update.greasyfork.org/scripts/487013/Youtube%20Mobile%20Enhance%20%E6%B2%B9%E7%AE%A1%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%A2%9E%E5%BC%BA.user.js',
         supportURL: 'https://update.greasyfork.org/scripts/487013/Youtube%20Mobile%20Enhance%20%E6%B2%B9%E7%AE%A1%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%A2%9E%E5%BC%BA.user.js',
         homepageURL: 'https://github.com/zyronon/web-scripts',
-        homepage: 'https://github.com/zyronon/web-scripts'
+        homepage: 'https://github.com/zyronon/web-scripts',
+        "run-at": 'document-start'
       },
       build: {
         fileName: 'Youtube Mobile Enhance.user.js',

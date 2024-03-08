@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, reactive, ref, watch} from "vue";
-import {GM_openInTab, GM_registerMenuCommand, unsafeWindow} from "gmApi";
+import { onMounted, onUnmounted, reactive, ref, watch } from "vue";
+import { GM_openInTab, GM_registerMenuCommand, unsafeWindow } from "gmApi";
 
 let refVideo = ref<HTMLVideoElement>(null)
 let rate = ref(1)
@@ -192,6 +192,7 @@ function checkIsWatchPage() {
   checkPageType()
   return pageType.value === 'watch'
 }
+
 function checkA(e: Event) {
   let target: HTMLDivElement = <HTMLDivElement>e.target;
   let tagName = target.tagName;
@@ -264,7 +265,7 @@ onMounted(() => {
     }
   }
 
-  if (checkIsWatchPage()){
+  if (checkIsWatchPage()) {
     checkOptionButtons()
     setTimeout(() => {
       checkVideo()
@@ -296,6 +297,10 @@ onUnmounted(() => {
 </template>
 
 <style lang="less">
+html {
+  font-size: 12px !important;
+}
+
 .ytb-next {
   font-size: 1.4rem;
   display: flex;
