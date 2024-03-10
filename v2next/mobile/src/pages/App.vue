@@ -293,7 +293,7 @@ export default {
             }
           }
 
-          // console.log('postItem', postItem)
+          // console.log('postItem', this.list, postItem)
           postItem.id = id
           postItem.href = href
           if (!postItem.headerTemplate) {
@@ -342,6 +342,9 @@ export default {
     },
     async winCb({type, value}) {
       console.log('回调的类型', type, value)
+      if (type === 'syncList') {
+        this.list = Object.assign(this.list, window.postList)
+      }
       if (type === 'syncData') {
         this.list = window.postList
         this.config = window.config
@@ -527,7 +530,7 @@ export default {
       eventBus.on(CMD.REFRESH_POST, () => this.getPostDetail(this.current))
     },
     async getPostDetail(post) {
-      // console.log('getPostDetail')
+      console.log('getPostDetail',this.clone(post))
       this.current = post
       this.current.read = this.readList[this.current.id] ?? {floor: 0, total: 0}
       this.show = true
