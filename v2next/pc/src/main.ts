@@ -1167,7 +1167,7 @@ function run() {
 }
 
 if (!isMobile) {
-  // console.log('V2EX PC端')
+  console.log('V2EX PC端')
   run()
   let vueApp = createApp(App)
   vueApp.config.unwrapInjectedRef = true
