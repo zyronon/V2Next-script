@@ -207,18 +207,18 @@ function run() {
         body.each(function () {
           if (this.id === wrapperClass) {
             boxs = this.querySelectorAll('.box')
-            box = boxs[2]
+            box = boxs[1]
           }
         })
       } else {
         boxs = body.find(`#${wrapperClass} .box`)
-        box = boxs[2]
+        box = boxs[1]
       }
 
-
       let cells: any = box.querySelectorAll('.cell')
+
       if (cells && cells.length) {
-        post.fr = boxs[1].querySelector('.inner')!.innerHTML
+        // post.fr = boxs[1].querySelector('.inner')!.innerHTML
 
         cells = Array.from(cells)
         //获取创建时间
@@ -487,6 +487,7 @@ function run() {
             a.parentNode?.append(showMore)
           }
         }
+        functions.cbChecker({type: 'syncList'})
       }
 
       if (window.config.viewType === 'card') {
@@ -522,6 +523,8 @@ function run() {
             }, fetchIndex < 4 ? 0 : (fetchIndex - 4) * 1000)
           }
         }
+      }else {
+        functions.cbChecker({type: 'syncData'})
       }
     },
     //创建记事本子条目
