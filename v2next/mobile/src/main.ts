@@ -1,9 +1,9 @@
-import { createApp } from 'vue';
+import {createApp} from 'vue';
 import App from './pages/App.vue';
-import { GM_notification } from "gmApi"
+import {GM_notification} from "gmApi"
 import './global.d.ts'
-import { PageType, Post, Reply } from "@v2next/core/types"
-import { DefaultConfig, DefaultPost, DefaultUser, functions } from "@v2next/core";
+import {PageType, Post, Reply} from "@v2next/core/types"
+import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core";
 
 let isMobile = !document.querySelector('#Rightbar');
 
@@ -213,6 +213,9 @@ function run() {
       } else {
         boxs = body.find(`#${wrapperClass} .box`)
         box = boxs[1]
+        if (box.querySelector('.fa-tags')) {
+          box = boxs[2]
+        }
       }
 
       let cells: any = box.querySelectorAll('.cell')
@@ -254,6 +257,7 @@ function run() {
             Promise.allSettled(promiseList).then(
               (results) => {
                 // @ts-ignore
+
                 results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
                 let replyList = functions.getAllReply(repliesMap)
                 post.replyList = replyList
@@ -279,7 +283,10 @@ function run() {
           let box: any
           $(s[0]).each(function () {
             if (this.id === wrapperClass) {
-              box = this.querySelectorAll('.box')[2]
+              box = this.querySelectorAll('.box')[1]
+              if (box.querySelector('.fa-tags')) {
+                box = this.querySelectorAll('.box')[2]
+              }
             }
           })
           let cells: any = box!.querySelectorAll('.cell')
@@ -523,7 +530,7 @@ function run() {
             }, fetchIndex < 4 ? 0 : (fetchIndex - 4) * 1000)
           }
         }
-      }else {
+      } else {
         functions.cbChecker({type: 'syncData'})
       }
     },
@@ -923,9 +930,9 @@ function run() {
             body,
             htmlText
           ).then(async (res: any) => {
-            // console.log('详情页-基本信息解析完成', Date.now())
+            // console.log('详情页-基本信息解析完成', Date.now(), res)
             await functions.cbChecker({type: 'postContent', value: res})
-            //引用修改
+            // 引用修改
             await window.parse.parseOp(res)
             // console.log('详情页-OP信息解析完成', Date.now())
           })
@@ -937,7 +944,7 @@ function run() {
             htmlText,
             window.pageData.pageNo
           ).then(async (res1: any) => {
-            // console.log('详情页-回复解析完成', Date.now())
+            // console.log('详情页-回复解析完成', Date.now(), res1)
             await functions.cbChecker({type: 'postReplies', value: res1})
           })
           break
