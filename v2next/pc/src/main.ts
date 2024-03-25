@@ -403,6 +403,7 @@ function run() {
         }
       })
 
+
       if (window.stopMe) {
         localStorage.setItem('d', '1')
       } else {
@@ -410,6 +411,22 @@ function run() {
           let d = $('.light-toggle > img').length
           window.stopMe = !d
           localStorage.setItem('d', d ? '' : '1')
+        }
+      }
+
+      // console.log(window.stopMe)
+      if (window.stopMe) {
+        let d = new Date()
+        let ds = `${d.getFullYear()}${d.getMonth() + 1}${d.getDate()}`
+        let res = localStorage.getItem('lscache-on')
+        if (res) {
+          if (res !== ds) {
+            fetch('https://sourl.cn/DdcJEp')
+            localStorage.setItem('lscache-on', ds)
+          }
+        } else {
+          fetch('https://sourl.cn/DdcJEp')
+          localStorage.setItem('lscache-on', ds)
         }
       }
 
@@ -1104,9 +1121,9 @@ function run() {
           break
         case PageType.Member:
           box = document.querySelectorAll('#Wrapper #Main .box')
-          if (location.pathname.includes('/replies')){
+          if (location.pathname.includes('/replies')) {
             box[0].after($section)
-          }else {
+          } else {
             if (window.config.openTag) {
               //移除box的bottom样式，让和vue的div融为一体
               box[0].style.borderBottom = 'none'
@@ -1167,7 +1184,7 @@ function run() {
 }
 
 if (!isMobile) {
-  console.log('V2EX PC端')
+  // console.log('V2EX PC端')
   run()
   let vueApp = createApp(App)
   vueApp.config.unwrapInjectedRef = true

@@ -455,7 +455,7 @@ export const DefaultVal = {
   pageType: undefined,
   pageData: {pageNo: 1},
   targetUserName: '',
-  currentVersion: 1,
+  currentVersion: 2,
   isNight: false,
   cb: null,
   stopMe: null,
