@@ -404,24 +404,9 @@ function run() {
       })
 
       if (window.pageType === PageType.Home) {
-        const stat = () => {
-          let d = new Date()
-          let ds = `${d.getFullYear()}${d.getMonth() + 1}${d.getDate()}`
-          let res = localStorage.getItem('lscache-on')
-          if (res) {
-            if (res !== ds) {
-              fetch('https://sourl.cn/DdcJEp')
-              localStorage.setItem('lscache-on', ds)
-            }
-          } else {
-            fetch('https://sourl.cn/DdcJEp')
-            localStorage.setItem('lscache-on', ds)
-          }
-        }
         if (window.stopMe) {
           localStorage.setItem('d', '1')
           functions.cbChecker({type: 'syncData'})
-          stat()
         } else {
           localStorage.setItem('d', '')
           const checker = () => {
@@ -430,7 +415,6 @@ function run() {
               window.stopMe = true
               localStorage.setItem('d', '1')
               functions.cbChecker({type: 'syncData'})
-              stat()
             } else {
               localStorage.setItem('d', '')
             }
