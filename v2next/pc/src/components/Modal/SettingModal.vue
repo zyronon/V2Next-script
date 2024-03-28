@@ -170,10 +170,6 @@
                   </div>
                 </div>
 
-                <div class="desc danger">
-                  2024-01-27提示：此功能暂时无法使用
-                </div>
-
                 <div class="row">
                   <label class="item-title">划词显示Base64解码框</label>
                   <div class="wrapper">
