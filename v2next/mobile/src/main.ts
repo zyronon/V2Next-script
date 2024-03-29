@@ -236,10 +236,11 @@ function run() {
           post.replyList = replyList
           post.replyCount = replyList.length
           post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
-          let nestedList = functions.createNestedList(replyList)
-          let nestedRedundantList = functions.createNestedRedundantList(replyList)
-          if (nestedList) post.nestedReplies = nestedList
-          if (nestedRedundantList) post.nestedRedundReplies = nestedRedundantList
+          post.nestedReplies = functions.createNestedList(replyList)
+          post.nestedRedundReplies = functions.createNestedRedundantList(replyList)
+          post.nestedReplies.map((v) => {
+            post.replyList[Number(v.floor) - 1].replyCount = v.replyCount
+          })
           return post
         } else {
           let promiseList: any = []
@@ -263,10 +264,11 @@ function run() {
                 post.replyList = replyList
                 post.replyCount = replyList.length
                 post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
-                let nestedList = functions.createNestedList(replyList)
-                let nestedRedundantList = functions.createNestedRedundantList(replyList)
-                if (nestedList) post.nestedReplies = nestedList
-                if (nestedRedundantList) post.nestedRedundReplies = nestedRedundantList
+                post.nestedReplies = functions.createNestedList(replyList)
+                post.nestedRedundReplies = functions.createNestedRedundantList(replyList)
+                post.nestedReplies.map((v) => {
+                  post.replyList[Number(v.floor) - 1].replyCount = v.replyCount
+                })
                 resolve(post)
               }
             )
@@ -307,6 +309,7 @@ function run() {
         let item: Reply = {
           level: 0,
           thankCount: 0,
+          replyCount: 0,
           isThanked: false,
           isOp: false,
           isDup: false,

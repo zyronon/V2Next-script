@@ -50,8 +50,8 @@ https://www.v2ex.com/poll_once 好像是换once的
 - 关闭时，去掉saveReadList
 - 测试直接打开帖子后面几页时，能否正常获取其他页
 - 连接下划线有问题,firefox上
-
- 
+- 无法点赞了
+- 刷新之后会生成html里面的会生成很多v-if的注释
 
 
 

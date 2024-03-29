@@ -1,9 +1,9 @@
-import { createApp } from 'vue';
+import {createApp} from 'vue';
 import App from './App.vue';
-import { GM_notification, GM_registerMenuCommand } from "gmApi"
+import {GM_notification, GM_registerMenuCommand} from "gmApi"
 import './global.d.ts'
-import { PageType, Post, Reply } from "@v2next/core/types"
-import { DefaultConfig, DefaultPost, DefaultUser, DefaultVal, functions, getDefaultPost } from "@v2next/core/core";
+import {PageType, Post, Reply} from "@v2next/core/types"
+import {DefaultConfig, DefaultPost, DefaultUser, DefaultVal, functions, getDefaultPost} from "@v2next/core/core";
 
 let isMobile = !document.querySelector('#Rightbar');
 
@@ -204,12 +204,17 @@ function run() {
           repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
           let replyList = functions.getAllReply(repliesMap)
           post.replyList = replyList
+          post.topReplyList = replyList
+            .filter(v => v.thankCount >= window.config.topReplyLoveMinCount)
+            .sort((a, b) => b.thankCount - a.thankCount)
+            .slice(0, window.config.topReplyCount)
+
           post.replyCount = replyList.length
           post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
-          let nestedList = functions.createNestedList(replyList)
-          let nestedRedundantList = functions.createNestedRedundantList(replyList)
-          if (nestedList) post.nestedReplies = nestedList
-          if (nestedRedundantList) post.nestedRedundReplies = nestedRedundantList
+          post.nestedReplies = functions.createNestedList(replyList, post.topReplyList)
+          // post.nestedRedundReplies = functions.createNestedRedundantList(replyList)
+          console.log('post', post)
+
           return post
         } else {
           let promiseList: any = []
@@ -230,12 +235,17 @@ function run() {
                 results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
                 let replyList = functions.getAllReply(repliesMap)
                 post.replyList = replyList
+                post.topReplyList = window.clone(replyList)
+                  .filter(v => v.thankCount >= window.config.topReplyLoveMinCount)
+                  .sort((a, b) => b.thankCount - a.thankCount)
+                  .slice(0, window.config.topReplyCount)
+
                 post.replyCount = replyList.length
                 post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
-                let nestedList = functions.createNestedList(replyList)
-                let nestedRedundantList = functions.createNestedRedundantList(replyList)
-                if (nestedList) post.nestedReplies = nestedList
-                if (nestedRedundantList) post.nestedRedundReplies = nestedRedundantList
+                post.nestedReplies = functions.createNestedList(window.clone(replyList), post.topReplyList)
+                // post.nestedRedundReplies = functions.createNestedRedundantList(replyList)
+
+                console.log('post1', post)
                 resolve(post)
               }
             )
@@ -267,6 +277,7 @@ function run() {
         let item: Reply = {
           level: 0,
           thankCount: 0,
+          replyCount: 0,
           isThanked: false,
           isOp: false,
           isDup: false,

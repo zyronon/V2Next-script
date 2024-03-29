@@ -1,5 +1,5 @@
-import { CommentDisplayType, Config, MAX_REPLY_LIMIT, PageType, Post, User } from "./types";
-import { GM_openInTab, GM_registerMenuCommand } from "gmApi";
+import {CommentDisplayType, Config, MAX_REPLY_LIMIT, PageType, Post, User} from "./types";
+import {GM_openInTab, GM_registerMenuCommand} from "gmApi";
 
 export const functions = {
   //获取所有回复
@@ -10,7 +10,7 @@ export const functions = {
     }, [])
   },
   //查找子回复
-  findChildren(item: any, endList: any[], all: any[]) {
+  findChildren(item: any, endList: any[], all: any[], topReplyList: any[]) {
     const fn = (child: any, endList2: any[], parent: any) => {
       child.level = parent.level + 1
       //用于标记为已使用，直接标记源数据靠谱点，标记child可能会有问题
@@ -18,7 +18,7 @@ export const functions = {
       if (rIndex > -1) {
         all[rIndex].isUse = true
       }
-      parent.children.push(this.findChildren(child, endList2, all,))
+      parent.children.push(this.findChildren(child, endList2, all, topReplyList))
     }
     // console.log('endList', endList)
     item.children = []
@@ -94,15 +94,23 @@ export const functions = {
 
     //排序，因为指定楼层时，是从后往前找的
     item.children = item.children.sort((a: any, b: any) => a.floor - b.floor)
+    item.replyCount = item.children.reduce((a, b) => {
+      return a + (b.children.length ? b.replyCount + 1 : 1)
+    }, 0)
+
+    let rIndex = topReplyList.findIndex(v => v.floor === item.floor)
+    if (rIndex > -1) {
+      topReplyList[rIndex].children = item.children
+      topReplyList[rIndex].replyCount = item.replyCount
+    }
     return item
   },
   //生成嵌套回复
-  createNestedList(allList = []) {
+  createNestedList(allList = [], topReplyList: any[]) {
     if (!allList.length) return []
 
     // console.log('cal-createNestedList', Date.now())
-
-    let list = window.clone(allList)
+    let list = allList
     let nestedList: any[] = []
     list.map((item: any, index: number) => {
       let startList = list.slice(0, index)
@@ -112,7 +120,7 @@ export const functions = {
       let endList = list.slice(index + 1)
 
       if (index === 0) {
-        nestedList.push(this.findChildren(item, endList, list))
+        nestedList.push(this.findChildren(item, endList, list, topReplyList))
       } else {
         if (!item.isUse) {
           //是否是一级回复
@@ -141,7 +149,7 @@ export const functions = {
           }
           if (isOneLevelReply) {
             item.level = 0
-            nestedList.push(this.findChildren(item, endList, list))
+            nestedList.push(this.findChildren(item, endList, list, topReplyList))
           }
         }
       }
@@ -152,12 +160,12 @@ export const functions = {
     return nestedList
   },
   //生成嵌套冗余回复
-  createNestedRedundantList(allList = []) {
+  createNestedRedundantList(allList = [], topReplyList: any[]) {
     if (!allList.length) return []
 
     // console.log('cal-createNestedList', Date.now())
 
-    let list = window.clone(allList)
+    let list = allList
     let nestedList: any[] = []
     list.map((item: any, index: number) => {
       let startList = list.slice(0, index)
@@ -167,7 +175,7 @@ export const functions = {
       let endList = list.slice(index + 1)
 
       if (index === 0) {
-        nestedList.push(this.findChildren(item, endList, list))
+        nestedList.push(this.findChildren(item, endList, list, topReplyList))
       } else {
         if (!item.isUse) {
           //是否是一级回复
@@ -183,7 +191,7 @@ export const functions = {
           }
           if (isOneLevelReply) {
             item.level = 0
-            nestedList.push(this.findChildren(item, endList, list))
+            nestedList.push(this.findChildren(item, endList, list, topReplyList))
           }
         } else {
           let newItem = window.clone(item)
@@ -405,6 +413,7 @@ export const DefaultPost: Post = {
   lastReplyDate: '',
   fr: "",
   replyList: [],
+  topReplyList: [],
   nestedReplies: [],
   nestedRedundReplies: [],
   username: '',

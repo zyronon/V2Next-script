@@ -42,7 +42,7 @@
               </div>
             </div>
             <BaseHtmlRender
-                v-if="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser && this.type !== 'top'"
+                v-if="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser && type !== 'top'"
                 class="reply_content" :html="modelValue.hideCallUserReplyContent"/>
             <BaseHtmlRender v-else class="reply_content" :html="modelValue.reply_content"/>
             <PostEditor v-if="edit"
@@ -50,11 +50,33 @@
                         :replyInfo="replyInfo"
                         :replyUser="modelValue.username"
                         :replyFloor="modelValue.floor"/>
+
+            <div class="reply-count"
+                 @click="expandTopReply = !expandTopReply"
+                 v-if="type === 'top' && modelValue.replyCount ">
+              <div class="gang"></div>
+              <span>
+              共有{{ modelValue.replyCount }} 条回复
+              </span>
+              <Icon icon="ep:arrow-down-bold"/>
+            </div>
           </div>
           <div class="simple-wrapper">
-            <Comment v-for="(item,index) in modelValue.children"
-                     v-model="modelValue.children[index]"
-                     :key="index"/>
+            <template v-if="type === 'top'">
+              <div class="top-reply-wrap" v-if="expandTopReply && modelValue.replyCount">
+                <TopSubComment
+                    v-for="(item,index) in modelValue.children"
+                    v-model="modelValue.children[index]"
+                    :key="index"/>
+              </div>
+            </template>
+            <template v-else>
+              <Comment
+                  v-for="(item,index) in modelValue.children"
+                  v-model="modelValue.children[index]"
+                  :key="index"/>
+            </template>
+
           </div>
         </div>
       </div>
@@ -72,10 +94,12 @@ import eventBus from "../utils/eventBus.js";
 import BaseHtmlRender from "./BaseHtmlRender.vue";
 import {CMD} from "../utils/type.js";
 import {CommentDisplayType} from "@v2next/core/types.ts";
+import {Icon} from "@iconify/vue";
+import TopSubComment from "@/components/TopSubComment.vue";
 
 export default {
   name: "Comment",
-  components: {BaseHtmlRender, Author, PostEditor, Point},
+  components: {BaseHtmlRender, Author, PostEditor, Point, Icon, TopSubComment},
   inject: ['post', 'postDetailWidth', 'show', 'isNight', 'config'],
   props: {
     modelValue: {
@@ -93,6 +117,7 @@ export default {
       edit: false,
       ding: false,
       expand: true,
+      expandTopReply: false,
       expandWrong: false,
       replyInfo: `@${this.modelValue.username} #${this.modelValue.floor} `,
       cssStyle: null,
@@ -119,7 +144,7 @@ export default {
         isSimple: this.config.viewType === 'simple',
         ding: this.ding,
         isLevelOne: this.modelValue.level === 0,
-        ['c_' + this.floor]: this.type !== 'top'
+        ['c_' + this.floor]: this.type !== 'top',
       }
     }
   },
@@ -166,6 +191,9 @@ export default {
     },
     toggle() {
       this.expand = !this.expand
+    },
+    jump() {
+      eventBus.emit(CMD.JUMP, this.modelValue.floor)
     },
   }
 }
@@ -286,5 +314,34 @@ export default {
   }
 }
 
+.reply-count {
+  padding: .4rem 0;
+  border-radius: .2rem;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  color: gray;
+  gap: 1rem;
+  cursor: pointer;
+
+  .gang {
+    width: 2rem;
+    height: 0;
+    border-bottom: 1px solid #d5d5d5;
+  }
+
+  svg {
+    font-size: 1rem;
+  }
+}
+
+.top-reply-wrap {
+  background: rgb(241, 245, 249);
+  background: rgb(226, 226, 226);
+  background: rgb(242, 243, 245);
+  border-radius: .8rem;
+  padding: .6rem;
+  padding-left: 0;
+}
 
 </style>

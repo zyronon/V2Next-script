@@ -80,7 +80,7 @@
           </Toolbar>
         </div>
 
-        <div class="my-box" v-if="topReply.length && config.showTopReply">
+        <div class="my-box" v-if="post.topReplyList.length && config.showTopReply">
           <div class="my-cell flex " @click="collapseTopReplyList">
             <span>高赞回复</span>
             <div class="top-reply">
@@ -92,10 +92,10 @@
             </div>
           </div>
           <div ref="topReply">
-            <Comment v-for="(item,index) in topReply"
+            <Comment v-for="(item,index) in post.topReplyList"
                      :key="item.floor"
                      type="top"
-                     v-model="topReply[index]"/>
+                     v-model="post.topReplyList[index]"/>
           </div>
         </div>
 
@@ -228,7 +228,7 @@ export default {
     BaseLoading,
     Icon
   },
-  inject: ['allReplyUsers', 'post',  'tags', 'isLogin', 'config', 'pageType', 'isNight'],
+  inject: ['allReplyUsers', 'post', 'tags', 'isLogin', 'config', 'pageType', 'isNight'],
   provide() {
     return {
       postDetailWidth: computed(() => this.postDetailWidth)
@@ -310,12 +310,6 @@ export default {
         return list
       }
       return []
-    },
-    topReply() {
-      return this.post.replyList
-          .filter(v => v.thankCount >= this.config.topReplyLoveMinCount)
-          .sort((a, b) => b.thankCount - a.thankCount)
-          .slice(0, this.config.topReplyCount)
     },
     replyList() {
       // console.log('this.post.nestedReplies', this.post.nestedReplies)
