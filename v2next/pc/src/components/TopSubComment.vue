@@ -1,6 +1,6 @@
 <template>
   <div class="comment" ref="comment" :data-floor="floor">
-    <div class="left expand-line"></div>
+    <div class="left expand-line" :class="level === 1 && 'no-line'"></div>
     <div class="right">
       <Author v-model="expand"
               :comment="modelValue"
@@ -39,6 +39,7 @@ export default {
     modelValue: {
       reply_content: ''
     },
+    level: -1
   },
   data() {
     return {
@@ -81,9 +82,26 @@ export default {
   @line-color: #ececec;
 
   .expand-line {
-    cursor: pointer;
-    @w: 1.2rem;
+    @w: 1.6rem;
     width: @w;
+    position: relative;
+
+    &:after {
+      position: absolute;
+      left: 50%;
+      top: 2%;
+      content: " ";
+      height: 98%;
+      width: 0;
+      border-right: 1px solid var(--color-line);
+    }
+  }
+
+  .no-line {
+    width: 1rem;
+    &:after {
+      display: none;
+    }
   }
 
   .right {
@@ -97,8 +115,8 @@ export default {
     }
   }
 
-  :deep(.avatar){
-    display: none!important;
+  :deep(.avatar) {
+    display: none !important;
   }
 
 }

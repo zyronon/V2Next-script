@@ -385,11 +385,15 @@ export default {
       // console.log('重新生成列表')
       if (this.current.replyList.length) {
         this.current.replyCount = this.current.replyList.length
-        let res = functions.createNestedList(this.current.replyList)
+        this.current.topReplyList = window.clone(this.current.replyList)
+            .filter(v => v.thankCount >= this.config.topReplyLoveMinCount)
+            .sort((a, b) => b.thankCount - a.thankCount)
+            .slice(0, this.config.topReplyCount)
+        let res = functions.createNestedList(window.clone(this.current.replyList), this.current.topReplyList)
         if (res) {
           this.current.nestedReplies = res
         }
-        let dup_res = functions.createNestedRedundantList(this.current.replyList)
+        let dup_res = functions.createNestedRedundantList(window.clone(this.current.replyList), this.current.topReplyList)
         if (dup_res) {
           this.current.nestedRedundReplies = dup_res
         }

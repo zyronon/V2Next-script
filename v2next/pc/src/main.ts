@@ -239,7 +239,6 @@ function run() {
                   .filter(v => v.thankCount >= window.config.topReplyLoveMinCount)
                   .sort((a, b) => b.thankCount - a.thankCount)
                   .slice(0, window.config.topReplyCount)
-
                 post.replyCount = replyList.length
                 post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
                 post.nestedReplies = functions.createNestedList(window.clone(replyList), post.topReplyList)

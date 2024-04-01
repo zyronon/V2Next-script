@@ -1,5 +1,5 @@
-import {CommentDisplayType, Config, MAX_REPLY_LIMIT, PageType, Post, User} from "./types";
-import {GM_openInTab, GM_registerMenuCommand} from "gmApi";
+import { CommentDisplayType, Config, MAX_REPLY_LIMIT, PageType, Post, User } from "./types";
+import { GM_openInTab, GM_registerMenuCommand } from "gmApi";
 
 export const functions = {
   //获取所有回复
@@ -205,6 +205,10 @@ export const functions = {
     // console.log('replies长度', allList)
     // console.log('nestedList长度', nestedList)
     return nestedList
+  },
+
+  createList() {
+
   },
   //解析A标签
   parseA(a: HTMLAnchorElement) {

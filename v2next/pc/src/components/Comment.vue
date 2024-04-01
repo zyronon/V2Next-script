@@ -65,6 +65,7 @@
             <template v-if="type === 'top'">
               <div class="top-reply-wrap" v-if="expandTopReply && modelValue.replyCount">
                 <TopSubComment
+                    :level="1"
                     v-for="(item,index) in modelValue.children"
                     v-model="modelValue.children[index]"
                     :key="index"/>
@@ -143,7 +144,7 @@ export default {
         isOp: this.modelValue.isOp,
         isSimple: this.config.viewType === 'simple',
         ding: this.ding,
-        isLevelOne: this.modelValue.level === 0,
+        isLevelOne: this.type === 'top' ? true : (this.modelValue.level === 0),
         ['c_' + this.floor]: this.type !== 'top',
       }
     }
@@ -315,7 +316,8 @@ export default {
 }
 
 .reply-count {
-  padding: .4rem 0;
+  padding: .8rem 0;
+  padding-bottom: .4rem;
   border-radius: .2rem;
   font-size: 1.3rem;
   display: flex;
@@ -336,12 +338,13 @@ export default {
 }
 
 .top-reply-wrap {
-  background: rgb(241, 245, 249);
-  background: rgb(226, 226, 226);
+  //background: rgb(241, 245, 249);
+  //background: rgb(226, 226, 226);
   background: rgb(242, 243, 245);
   border-radius: .8rem;
   padding: .6rem;
   padding-left: 0;
+  margin-left: 1rem;
 }
 
 </style>
