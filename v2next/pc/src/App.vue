@@ -16,6 +16,45 @@ import BaseLoading from "./components/BaseLoading.vue";
 import NotificationModal from "./components/Modal/NotificationModal.vue";
 import BaseButton from "./components/BaseButton.vue";
 import {DefaultPost, DefaultVal, functions, getDefaultPost} from "@v2next/core/core.ts";
+import {monkeyWindow, unsafeWindow} from "gmApi";
+
+let out = new Float32Array([
+  0, 0, 0, 0,
+  0, 0, 0, 0,
+  0, 0, 0, 0,
+  0, 0, 0, 0
+])
+let ov = new Float32Array([
+  1, 0, 0, 0,
+  0, 1, 0, 0,
+  0, 0, 1, 0,
+  0, 0, 0, 1,
+]);
+
+function getImgSize(naturalWidth, naturalHeight, maxWidth, maxHeight) {
+  const imgRatio = naturalWidth / naturalHeight;
+  const maxRatio = maxWidth / maxHeight;
+  let width, height;
+  // 如果图片实际宽高比例 >= 显示宽高比例
+  if (imgRatio >= maxRatio) {
+    if (naturalWidth > maxWidth) {
+      width = maxWidth;
+      height = maxWidth / naturalWidth * naturalHeight;
+    } else {
+      width = naturalWidth;
+      height = naturalHeight;
+    }
+  } else {
+    if (naturalHeight > maxHeight) {
+      width = maxHeight / naturalHeight * naturalWidth;
+      height = maxHeight;
+    } else {
+      width = naturalWidth;
+      height = naturalHeight;
+    }
+  }
+  return {width: width, height: height}
+}
 
 export default {
   components: {
@@ -62,6 +101,10 @@ export default {
         show: false,
         h: ''
       },
+      scale: 1,
+      x: 0,
+      y: 0,
+      rect: {}
     }
   },
   computed: {
@@ -116,6 +159,13 @@ export default {
 
     //A标签的
     $(document).on('click', 'a', this.clickA)
+
+    window.addEventListener('click', e => {
+      console.log('window.addEventListener', e.target, e.target.tagName)
+      if (e.target, e.target.tagName === 'IMG') {
+      }
+      that.stopEvent(e)
+    }, true)
     //主题的
     $(document).on('click', '.post-item', function (e) {
       // console.log('click-post-item')
@@ -217,6 +267,146 @@ export default {
       })
     }
   },
+  mounted() {
+    // this.rect = this.$refs.previewImg.getBoundingClientRect()
+
+    setTimeout(() => {
+
+      // 获取dom
+      const container = document.querySelector('.container');
+      const image = document.getElementById('image');
+      console.log('image', image)
+      const log = document.querySelector('.log');
+      // 全局变量
+      let result,
+          x,
+          y,
+          scale = 1,
+          minScale = 0.5,
+          maxScale = 4,
+          isPointerdown = false, // 按下标识
+          diff = {x: 0, y: 0}, // 相对于上一次pointermove移动差值
+          lastPointermove = {x: 0, y: 0}; // 用于计算diff
+
+      // 图片加载完成后再绑定事件
+      image.addEventListener('load', function () {
+        result = getImgSize(image.naturalWidth, image.naturalHeight, window.innerWidth, window.innerHeight);
+        image.style.width = result.width + 'px';
+        image.style.height = result.height + 'px';
+        x = (window.innerWidth - result.width) * 0.5;
+        y = (window.innerHeight - result.height) * 0.5;
+        image.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0) scale(1)';
+        // 拖拽查看
+        drag();
+        // 滚轮缩放
+        wheelZoom();
+      });
+      image.src = 'https://dy.ttentau.top//images/jwWCPZVTIA4IKM-8WipLF.png';
+
+      /**
+       * 获取图片缩放尺寸
+       * @param {number} naturalWidth
+       * @param {number} naturalHeight
+       * @param {number} maxWidth
+       * @param {number} maxHeight
+       * @returns
+       */
+      function getImgSize(naturalWidth, naturalHeight, maxWidth, maxHeight) {
+        const imgRatio = naturalWidth / naturalHeight;
+        const maxRatio = maxWidth / maxHeight;
+        let width, height;
+        // 如果图片实际宽高比例 >= 显示宽高比例
+        if (imgRatio >= maxRatio) {
+          if (naturalWidth > maxWidth) {
+            width = maxWidth;
+            height = maxWidth / naturalWidth * naturalHeight;
+          } else {
+            width = naturalWidth;
+            height = naturalHeight;
+          }
+        } else {
+          if (naturalHeight > maxHeight) {
+            width = maxHeight / naturalHeight * naturalWidth;
+            height = maxHeight;
+          } else {
+            width = naturalWidth;
+            height = naturalHeight;
+          }
+        }
+        return {width: width, height: height}
+      }
+
+      // 拖拽查看
+      function drag() {
+        // 绑定 pointerdown
+        image.addEventListener('pointerdown', function (e) {
+          isPointerdown = true;
+          image.setPointerCapture(e.pointerId);
+          lastPointermove = {x: e.clientX, y: e.clientY};
+        });
+        // 绑定 pointermove
+        image.addEventListener('pointermove', function (e) {
+          if (isPointerdown) {
+            const current = {x: e.clientX, y: e.clientY};
+            diff.x = current.x - lastPointermove.x;
+            diff.y = current.y - lastPointermove.y;
+            lastPointermove = {x: current.x, y: current.y};
+            x += diff.x;
+            y += diff.y;
+            image.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0) scale(' + scale + ')';
+            log.innerHTML = `x = ${x.toFixed(0)}<br>y = ${y.toFixed(0)}<br>scale = ${scale.toFixed(5)}`;
+          }
+          e.preventDefault();
+        });
+        // 绑定 pointerup
+        image.addEventListener('pointerup', function (e) {
+          if (isPointerdown) {
+            isPointerdown = false;
+          }
+        });
+        // 绑定 pointercancel
+        image.addEventListener('pointercancel', function (e) {
+          if (isPointerdown) {
+            isPointerdown = false;
+          }
+        });
+      }
+
+      // 滚轮缩放
+      function wheelZoom() {
+        container.addEventListener('wheel', function (e) {
+          let ratio = 1.1;
+          // 缩小
+          if (e.deltaY > 0) {
+            ratio = 1 / 1.1;
+          }
+          const _scale = scale * ratio;
+          if (_scale > maxScale) {
+            ratio = maxScale / scale;
+            scale = maxScale;
+          } else if (_scale < minScale) {
+            ratio = minScale / scale;
+            scale = minScale;
+          } else {
+            scale = _scale;
+          }
+          // 目标元素是img说明鼠标在img上，以鼠标位置为缩放中心，否则默认以图片中心点为缩放中心
+          if (e.target.tagName === 'IMG') {
+            const origin = {
+              x: (ratio - 1) * result.width * 0.5,
+              y: (ratio - 1) * result.height * 0.5
+            };
+            // 计算偏移量
+            x -= (ratio - 1) * (e.clientX - x) - origin.x;
+            y -= (ratio - 1) * (e.clientY - y) - origin.y;
+          }
+          image.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0) scale(' + scale + ')';
+          log.innerHTML = `x = ${x.toFixed(0)}<br>y = ${y.toFixed(0)}<br>scale = ${scale.toFixed(5)}`;
+          e.preventDefault();
+        });
+      }
+    }, 1000)
+  },
   beforeUnmount() {
     // console.log('unmounted')
     eventBus.clear()
@@ -292,9 +482,9 @@ export default {
             // that.stopEvent(e)
           }
 
-          that.stopEvent(e)
-          console.log('click-a', e.currentTarget.pathname,e.currentTarget)
-          return
+          // that.stopEvent(e)
+          // console.log('click-a', e.currentTarget.pathname, e.currentTarget)
+          // return
 
           if (that.config.newTabOpen) {
             that.stopEvent(e)
@@ -586,6 +776,58 @@ export default {
     removeTargetUserTag(tag) {
       eventBus.emit(CMD.REMOVE_TAG, {username: window.targetUserName, tag})
     },
+    wheel(e) {
+      let result = e.target.getBoundingClientRect()
+      console.log('e', result)
+      console.log('e', e.clientX)
+      console.log('e', e.clientY)
+
+      let ratio = 1.1;
+      // 缩小
+      if (e.deltaY > 0) {
+        ratio = 1 / 1.1;
+      }
+      const maxScale = 4
+      const minScale = 0.5
+      const _scale = this.scale * ratio;
+      if (_scale > maxScale) {
+        ratio = maxScale / this.scale;
+        this.scale = maxScale;
+      } else if (_scale < minScale) {
+        ratio = minScale / this.scale;
+        this.scale = minScale;
+      } else {
+        this.scale = _scale;
+      }
+      // 目标元素是img说明鼠标在img上，以鼠标位置为缩放中心，否则默认以图片中心点为缩放中心
+      if (e.target.tagName === 'IMG') {
+        const origin = {
+          x: (ratio - 1) * result.width * 0.5,
+          y: (ratio - 1) * result.height * 0.5
+        };
+        // 计算偏移量
+        this.x -= (ratio - 1) * (e.clientX - this.x) - origin.x;
+        this.y -= (ratio - 1) * (e.clientY - this.y) - origin.y;
+      }
+      // image.style.transform = 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0) scale(' + this.scale + ')';
+      let r = 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0) scale(' + this.scale + ')';
+      console.log('r', r)
+      e.target.style.transform = r
+      // log.innerHTML = `x = ${x.toFixed(0)}<br>y = ${y.toFixed(0)}<br>scale = ${scale.toFixed(5)}`;
+      e.preventDefault();
+    },
+    wheel2(e) {
+      console.log('glMatrix', monkeyWindow.glMatrix)
+      let {clientX, clientY, deltaY} = e;
+      clientX -= this.rect.x
+      clientY -= this.rect.y
+      const zoom = 1 + (deltaY < 0 ? 0.1 : -0.1);
+      const x = clientX * (1 - zoom);
+      const y = clientY * (1 - zoom);
+      const t = new Float32Array([zoom, 0, 0, 0, 0, zoom, 0, 0, 0, 0, 1, 0, x, y, 0, 1,]);
+      ov = monkeyWindow.glMatrix.mat4.multiply(out, t, ov);
+      this.$refs.previewImg.setAttribute("style", `transform:matrix3d(${ov.toString()});`);
+    }
   },
 }
 </script>
@@ -627,7 +869,21 @@ export default {
         <BaseButton size="small" @click="showPost">点击显示</BaseButton>
       </div>
     </div>
+
+    <!--    <div class="preview-modal"-->
+    <!--         @wheel="wheel"-->
+    <!--    >-->
+    <!--      <img-->
+    <!--          ref="previewImg"-->
+    <!--          src="https://dy.ttentau.top//images/jwWCPZVTIA4IKM-8WipLF.png" alt="">-->
+    <!--    </div>-->
+
   </template>
+  <div class="container">
+    <img id="image" alt="">
+  </div>
+  <div class="log"></div>
+
 </template>
 
 <style lang="less">
@@ -656,6 +912,48 @@ export default {
   align-items: center;
   gap: 1rem;
   color: var(--color-font-pure);
+}
+
+.preview-modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+
+  img {
+    height: 100%;
+  }
+}
+
+.container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+  background: #000;
+  overflow: hidden;
+}
+
+img {
+  touch-action: none;
+}
+
+.log {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  padding: 5px;
+  color: #FFF;
+  font-size: 12px;
+  line-height: 18px;
+  pointer-events: none;
 }
 </style>
 
