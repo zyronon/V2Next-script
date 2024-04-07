@@ -3,7 +3,7 @@
     <div class="Author-left">
       <Icon
           v-if="!modelValue"
-          @click="$emit('update:modelValue',true)"
+          @click.stop="$emit('update:modelValue',true)"
           color="#177EC9"
           class="expand-icon"
           icon="gravity-ui:chevrons-expand-up-right"/>
@@ -22,9 +22,9 @@
             <span class="my-tag" v-for="i in myTags">
               <i class="fa fa-tag"></i>
               <span>{{ i }}</span>
-              <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
+              <i class="fa fa-trash-o remove" @click.stop="removeTag(i)"></i>
             </span>
-             <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
+             <span class="add-tag ago" @click.stop="addTag" title="添加标签">+</span>
         </template>
       </span>
     </div>
@@ -36,15 +36,15 @@
             <span>隐藏</span>
           </div>
         </PopConfirm>
-        <div class="tool" v-if="context" @click="showRelationReply">
+        <div class="tool" v-if="context" @click.stop="showRelationReply">
           <Icon icon="iconoir:page-search"/>
           <span>上下文</span>
         </div>
-        <div class="tool" v-if="type === 'top'" @click="jump">
+        <div class="tool" v-if="type === 'top'" @click.stop="jump">
           <Icon icon="icon-park-outline:to-bottom"/>
           <span>跳转</span>
         </div>
-        <div class="tool" @click="checkIsLogin('reply')">
+        <div class="tool" @click.stop="checkIsLogin('reply')">
           <Icon icon="mynaui:message"/>
           <span>回复</span>
         </div>

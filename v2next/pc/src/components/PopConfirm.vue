@@ -7,13 +7,13 @@
             {{ title }}
           </div>
           <div class="options">
-            <BaseButton type="link" size="small" @click="cancel">取消</BaseButton>
-            <BaseButton size="small" @click="confirm">确认</BaseButton>
+            <BaseButton type="link" size="small" @click.stop="cancel">取消</BaseButton>
+            <BaseButton size="small" @click.stop="confirm">确认</BaseButton>
           </div>
         </div>
       </Transition>
     </Teleport>
-    <span @click="showPop">
+    <span @click.stop="showPop">
       <slot></slot>
     </span>
   </div>

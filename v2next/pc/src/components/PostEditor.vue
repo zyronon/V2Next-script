@@ -17,7 +17,7 @@
     </div>
     <div class="toolbar">
       <div class="left">
-        <Icon @click="showEmoticons" icon="streamline:smiley-happy"/>
+        <Icon @click.stop="showEmoticons" icon="streamline:smiley-happy"/>
 
         <div class="upload">
           <input type="file" accept="image/*" @change="e=>upload(e.currentTarget.files[0])">
@@ -30,29 +30,29 @@
             type="link"
             size="small"
             v-if="useType === 'reply-comment'" style="margin-right: 1rem;cursor: pointer;"
-            @click="emits('close')">
+            @click.stop="emits('close')">
           关闭
         </BaseButton>
         <BaseButton
             size="small"
             :disabled="disabled"
             :loading="loading"
-            @click="submit">回复
+            @click.stop="submit">回复
         </BaseButton>
       </div>
     </div>
 
     <div class="emoticon-pack" ref="emoticonsRef" v-show="isShowEmoticons">
-      <Icon icon="ic:round-close" @click="isShowEmoticons = false"/>
+      <Icon icon="ic:round-close" @click.stop="isShowEmoticons = false"/>
       <div class="title">经典表情</div>
       <div class="list">
-        <img v-for="item in classicsEmoticons" :src="item.high" @click="insert(item.name);isShowEmoticons = false">
+        <img v-for="item in classicsEmoticons" :src="item.high" @click.stop="insert(item.name);isShowEmoticons = false">
       </div>
       <div class="emoji">
         <template v-for="item in emojiEmoticons">
           <div class="title">{{ item.title }}</div>
           <div class="list">
-            <span v-for="emoji in item.list" @click="insert(emoji);isShowEmoticons = false">{{ emoji }}</span>
+            <span v-for="emoji in item.list" @click.stop="insert(emoji);isShowEmoticons = false">{{ emoji }}</span>
           </div>
         </template>
       </div>

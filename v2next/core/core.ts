@@ -1,7 +1,19 @@
-import { CommentDisplayType, Config, MAX_REPLY_LIMIT, PageType, Post, User } from "./types";
-import { GM_openInTab, GM_registerMenuCommand } from "gmApi";
+import {CommentDisplayType, Config, MAX_REPLY_LIMIT, PageType, Post, Reply, User} from "./types";
+import {GM_openInTab, GM_registerMenuCommand} from "gmApi";
 
 export const functions = {
+  createList(post: Post, replyList: Reply[]) {
+    post.replyList = replyList
+    post.topReplyList = window.clone(replyList)
+      .filter(v => v.thankCount >= window.config.topReplyLoveMinCount)
+      .sort((a, b) => b.thankCount - a.thankCount)
+      .slice(0, window.config.topReplyCount)
+    post.replyCount = replyList.length
+    post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
+    post.nestedReplies = functions.createNestedList(window.clone(replyList), post.topReplyList)
+    post.nestedRedundReplies = functions.createNestedRedundantList(window.clone(replyList), post.topReplyList)
+    return post
+  },
   //获取所有回复
   getAllReply(repliesMap = []) {
     return repliesMap.sort((a: any, b: any) => a.i - b.i).reduce((pre, i: any) => {
@@ -205,10 +217,6 @@ export const functions = {
     // console.log('replies长度', allList)
     // console.log('nestedList长度', nestedList)
     return nestedList
-  },
-
-  createList() {
-
   },
   //解析A标签
   parseA(a: HTMLAnchorElement) {

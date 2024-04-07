@@ -6,7 +6,7 @@
        :class="[isNight?'isNight':'',pageType]"
        @scroll="debounceScroll"
        @click="close('space')">
-    <div ref="main" class="main" tabindex="1" @click.stop="stop">
+    <div ref="main" class="main" tabindex="1"  >
       <div class="main-wrapper" ref="mainWrapper"
            :style="{width:config.postWidth}">
         <div class="my-box post-wrapper">
@@ -60,9 +60,9 @@
               <span class="my-tag" v-for="i in myTags">
                 <i class="fa fa-tag"></i>
                 <span>{{ i }}</span>
-                <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
+                <i class="fa fa-trash-o remove" @click.stop="removeTag(i)"></i>
               </span>
-              <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
+              <span class="add-tag ago" @click.stop="addTag" title="添加标签">+</span>
             </template>
           </div>
           <BaseHtmlRender v-if="post.headerTemplate" :html="post.headerTemplate "/>
@@ -81,7 +81,7 @@
         </div>
 
         <div class="my-box" v-if="post.topReplyList.length && config.showTopReply">
-          <div class="my-cell flex " @click="collapseTopReplyList">
+          <div class="my-cell flex " @click.stop="collapseTopReplyList">
             <span>高赞回复</span>
             <div class="top-reply">
               <Tooltip title="收起高赞回复">
@@ -136,8 +136,8 @@
           <div class="my-cell flex">
             <span>添加一条新回复</span>
             <div class="notice-right gray">
-              <a style="margin-right: 2rem;" v-if="isSticky" @click="isSticky = false">取消回复框停靠</a>
-              <a @click="scrollTop">回到顶部</a>
+              <a style="margin-right: 2rem;" v-if="isSticky" @click.stop="isSticky = false">取消回复框停靠</a>
+              <a @click.stop="scrollTop">回到顶部</a>
             </div>
           </div>
           <div class="p1">
@@ -145,16 +145,16 @@
                 @close="goBottom"
                 ref="post-editor"
                 useType="reply-post"
-                @click="isSticky = true"/>
+                @click.stop="isSticky = true"/>
           </div>
         </div>
       </div>
 
-      <div class="relationReply" v-if="showRelationReply" @click="close('space')">
+      <div class="relationReply" v-if="showRelationReply" @click.stop="close('space')">
         <div class="my-cell flex" @click.stop="stop">
           <span class="gray">上下文</span>
           <div class="top-reply">
-            <Icon icon="ic:round-close" @click="showRelationReply = false"/>
+            <Icon icon="ic:round-close" @click.stop="showRelationReply = false"/>
           </div>
         </div>
         <div class="comments" @click.stop="stop">
@@ -169,13 +169,13 @@
            :style="callStyle"
            v-if="showCallList && filterCallList.length">
         <div class="call-item"
-             @click="setCall(item)"
+             @click.stop="setCall(item)"
              :class="{select:index === selectCallIndex}"
              v-for="(item,index) in filterCallList">
           <a>{{ item }}</a>
         </div>
       </div>
-      <div class="close-btn" @click="close('btn')">
+      <div class="close-btn" @click.stop="close('btn')">
         <Icon icon="fontisto:close-a"/>
       </div>
       <div class="scroll-top gray" @click.stop="scrollTop">

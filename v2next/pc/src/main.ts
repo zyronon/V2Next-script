@@ -203,18 +203,7 @@ function run() {
         if (cells[1].id) {
           repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
           let replyList = functions.getAllReply(repliesMap)
-          post.replyList = replyList
-          post.topReplyList = replyList
-            .filter(v => v.thankCount >= window.config.topReplyLoveMinCount)
-            .sort((a, b) => b.thankCount - a.thankCount)
-            .slice(0, window.config.topReplyCount)
-
-          post.replyCount = replyList.length
-          post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
-          post.nestedReplies = functions.createNestedList(replyList, post.topReplyList)
-          // post.nestedRedundReplies = functions.createNestedRedundantList(replyList)
-          console.log('post', post)
-
+          functions.createList(post, replyList)
           return post
         } else {
           let promiseList: any = []
@@ -234,17 +223,7 @@ function run() {
                 // @ts-ignore
                 results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
                 let replyList = functions.getAllReply(repliesMap)
-                post.replyList = replyList
-                post.topReplyList = window.clone(replyList)
-                  .filter(v => v.thankCount >= window.config.topReplyLoveMinCount)
-                  .sort((a, b) => b.thankCount - a.thankCount)
-                  .slice(0, window.config.topReplyCount)
-                post.replyCount = replyList.length
-                post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
-                post.nestedReplies = functions.createNestedList(window.clone(replyList), post.topReplyList)
-                // post.nestedRedundReplies = functions.createNestedRedundantList(replyList)
-
-                console.log('post1', post)
+                functions.createList(post, replyList)
                 resolve(post)
               }
             )

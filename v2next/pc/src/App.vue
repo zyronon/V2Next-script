@@ -247,8 +247,8 @@ export default {
       if (that.stopMe) return true
 
       let {pageType} = functions.checkPageType(e.currentTarget)
-      // console.log('click-a', e.currentTarget.pathname)
-      // console.log('pageType', pageType)
+
+      console.log('pageType', pageType)
       switch (pageType) {
         case PageType.Post:
           let {href, id, title} = functions.parseA(e.currentTarget)
@@ -291,6 +291,10 @@ export default {
             // })
             // that.stopEvent(e)
           }
+
+          that.stopEvent(e)
+          console.log('click-a', e.currentTarget.pathname,e.currentTarget)
+          return
 
           if (that.config.newTabOpen) {
             that.stopEvent(e)
@@ -384,25 +388,12 @@ export default {
     regenerateReplyList() {
       // console.log('重新生成列表')
       if (this.current.replyList.length) {
-        this.current.replyCount = this.current.replyList.length
-        this.current.topReplyList = window.clone(this.current.replyList)
-            .filter(v => v.thankCount >= this.config.topReplyLoveMinCount)
-            .sort((a, b) => b.thankCount - a.thankCount)
-            .slice(0, this.config.topReplyCount)
-        let res = functions.createNestedList(window.clone(this.current.replyList), this.current.topReplyList)
-        if (res) {
-          this.current.nestedReplies = res
-        }
-        let dup_res = functions.createNestedRedundantList(window.clone(this.current.replyList), this.current.topReplyList)
-        if (dup_res) {
-          this.current.nestedRedundReplies = dup_res
-        }
+        functions.createList(this.current, this.current.replyList)
       } else {
         this.current.replyCount = 0
         this.current.nestedReplies = []
         this.current.nestedRedundReplies = []
       }
-
       if (this.list.length) {
         let rIndex = this.list.findIndex(i => i.id === this.current.id)
         if (rIndex > -1) {
@@ -412,7 +403,7 @@ export default {
     },
     initEvent() {
       eventBus.on(CMD.CHANGE_COMMENT_THANK, (val) => {
-        console.log('CHANGE_COMMENT_THANK', val)
+        // console.log('CHANGE_COMMENT_THANK', val)
         const {id, type} = val
         let currentI = this.current.replyList.findIndex(i => i.id === id)
         if (currentI > -1) {

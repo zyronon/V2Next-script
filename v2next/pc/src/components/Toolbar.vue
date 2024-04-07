@@ -1,11 +1,11 @@
 <template>
   <div class="toolbar">
     <slot></slot>
-    <div class="tool" @click="checkIsLogin('reply')">
+    <div class="tool" @click.stop="checkIsLogin('reply')">
       <Icon icon="mynaui:message"/>
       <span>回复</span>
     </div>
-    <div class="tool" :class="{disabled:loading}" @click="toggleFavorite">
+    <div class="tool" :class="{disabled:loading}" @click.stop="toggleFavorite">
       <BaseLoading v-if="loading" size="small"/>
       <template v-else>
         <Icon v-if="post.isFavorite" color="rgb(224,42,42)" icon="iconoir:star-solid"/>
@@ -17,16 +17,16 @@
       <span>{{ post.collectCount + '人收藏' }}</span>
     </div>
 
-    <div class="tool" @click="tweet">
+    <div class="tool" @click.stop="tweet">
       <Icon icon="uil:share"/>
       <span>Tweet</span>
     </div>
-    <div class="tool" :class="{'disabled':loading2}" @click="toggleIgnore">
+    <div class="tool" :class="{'disabled':loading2}" @click.stop="toggleIgnore">
       <BaseLoading v-if="loading2" size="small"/>
       <Icon v-else icon="fluent:eye-hide-24-regular"/>
       <span>{{ post.isIgnore ? '取消忽略' : '忽略' }}</span>
     </div>
-    <div class="tool" :class="{'disabled':loading3}" @click="report">
+    <div class="tool" :class="{'disabled':loading3}" @click.stop="report">
       <BaseLoading v-if="loading3" size="small"/>
       <template v-else>
         <Icon class="black" icon="solar:danger-triangle-outline"/>

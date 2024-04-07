@@ -42,7 +42,7 @@
     </a>
     <div class="Author-right">
       <div class="floor">{{ comment.floor }}</div>
-      <div class="tool jump" @click="jump">
+      <div class="tool jump" @click.stop="jump">
         <span>跳转</span>
       </div>
     </div>

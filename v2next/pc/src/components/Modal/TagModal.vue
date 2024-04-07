@@ -17,8 +17,8 @@
                style="width: 100%;"
                v-model="tagModal.tag" @keydown.enter="addTag">
         <div class="btns">
-          <BaseButton type="link" @click="tagModal.show = false;tagModal.tag=''">取消</BaseButton>
-          <BaseButton @click="addTag">确定</BaseButton>
+          <BaseButton type="link" @click.stop="tagModal.show = false;tagModal.tag=''">取消</BaseButton>
+          <BaseButton @click.stop="addTag">确定</BaseButton>
         </div>
       </div>
     </div>
