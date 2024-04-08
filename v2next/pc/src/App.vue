@@ -17,6 +17,7 @@ import NotificationModal from "./components/Modal/NotificationModal.vue";
 import BaseButton from "./components/BaseButton.vue";
 import {DefaultPost, DefaultVal, functions, getDefaultPost} from "@v2next/core/core.ts";
 import {monkeyWindow, unsafeWindow} from "gmApi";
+import {Icon} from "@iconify/vue";
 
 let out = new Float32Array([
   0, 0, 0, 0,
@@ -58,6 +59,7 @@ function getImgSize(naturalWidth, naturalHeight, maxWidth, maxHeight) {
 
 export default {
   components: {
+    Icon,
     BaseButton,
     NotificationModal,
     BaseLoading, BaseSwitch, MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg
@@ -100,6 +102,10 @@ export default {
       notificationModal: {
         show: false,
         h: ''
+      },
+      previewModal: {
+        show: false,
+        src: ''
       },
       scale: 1,
       x: 0,
@@ -162,8 +168,13 @@ export default {
 
     window.addEventListener('click', e => {
       console.log('window.addEventListener', e.target, e.target.tagName)
-      if (e.target, e.target.tagName === 'IMG') {
+      if (e.target.tagName === 'IMG') {
+
       }
+      this.previewModal.show = true
+      // this.previewModal.src = e.target.src
+      this.previewModal.src = 'https://dy.ttentau.top//images/jwWCPZVTIA4IKM-8WipLF.png';
+
       that.stopEvent(e)
     }, true)
     //主题的
@@ -269,9 +280,8 @@ export default {
   },
   mounted() {
     // this.rect = this.$refs.previewImg.getBoundingClientRect()
-
+    return
     setTimeout(() => {
-
       // 获取dom
       const container = document.querySelector('.container');
       const image = document.getElementById('image');
@@ -879,8 +889,15 @@ export default {
     <!--    </div>-->
 
   </template>
-  <div class="container">
-    <img id="image" alt="">
+  <div class="container"
+       @click="previewModal.show = false"
+       v-if="previewModal.show">
+    <img id="image" alt="" :src="previewModal.src">
+    <div class="toolbar">
+      <Icon icon="ep:remove"/>
+      <Icon icon="gala:add"/>
+      <Icon icon="carbon:close-outline"/>
+    </div>
   </div>
   <div class="log"></div>
 
@@ -936,6 +953,18 @@ export default {
   z-index: 999;
   background: #000;
   overflow: hidden;
+  text-align: left;
+
+  .toolbar {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    position: fixed;
+    color: white;
+    font-size: 3.4rem;
+    display: flex;
+    gap: 1rem;
+  }
 }
 
 img {
@@ -948,7 +977,7 @@ img {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 99;
+  z-index: 9999;
   padding: 5px;
   color: #FFF;
   font-size: 12px;
