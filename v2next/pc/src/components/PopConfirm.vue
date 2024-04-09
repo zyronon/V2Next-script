@@ -1,30 +1,14 @@
 <template>
-  <div class="pop-confirm">
-    <Teleport to="body">
-      <Transition>
-        <div ref="tip" class="pop-confirm-content" v-if="show">
-          <div class="text">
-            {{ title }}
-          </div>
-          <div class="options">
-            <BaseButton type="link" size="small" @click.stop="cancel">取消</BaseButton>
-            <BaseButton size="small" @click.stop="confirm">确认</BaseButton>
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
-    <span @click.stop="showPop">
+  <span @click.stop="showPop">
       <slot></slot>
-    </span>
-  </div>
+  </span>
 </template>
 <script>
-import {nextTick} from "vue";
-import BaseButton from "./BaseButton.vue";
+import eventBus from "@/utils/eventBus.js";
+import {CMD} from "@/utils/type.js";
 
 export default {
   name: "PopConfirm",
-  components: {BaseButton},
   props: {
     title: {
       type: String,
@@ -41,58 +25,31 @@ export default {
   },
   data() {
     return {
-      show: false
+      id: '',
     }
   },
+  created() {
+
+  },
   methods: {
+    cb(id) {
+      if (id === this.id) {
+        this.$emit('confirm')
+        this.id = ''
+      }
+    },
     showPop(e) {
       if (this.disabled) return
       let rect = e.target.getBoundingClientRect()
-      this.show = true
-      nextTick(() => {
-        this.$refs.tip.style.top = rect.top + 'px'
-        this.$refs.tip.style.left = rect.left + rect.width / 2 - 50 + 'px'
-      })
+      this.id = Date.now()
+      eventBus.emit(CMD.SHOW_CONFIRM_MODAL, {title: this.title, rect, id: this.id})
+      eventBus.offOne(CMD.SHOW_CONFIRM_MODAL_CONFIRM, this.cb)
+      eventBus.on(CMD.SHOW_CONFIRM_MODAL_CONFIRM, this.cb)
     },
-    confirm() {
-      this.show = false
-      this.$emit('confirm')
-    },
-    cancel() {
-      this.show = false
-      this.$emit('cancel')
-    }
+  },
+  unmounted() {
+    eventBus.offOne(CMD.SHOW_CONFIRM_MODAL_CONFIRM, this.cb)
   }
 }
 </script>
-<style lang="less" scoped>
-@import "src/assets/less/variable";
-
-.pop-confirm-content {
-  position: fixed;
-  background: var(--color-tooltip-bg);
-  box-shadow: 0 0 6px 1px var(--color-tooltip-shadow);
-  color: var(--color-font-8);
-  padding: 1.5rem;
-  border-radius: .8rem;
-  transform: translate(-50%, calc(-100% - 1rem));
-  z-index: 1001;
-
-  .text {
-    text-align: start;
-    font-size: 1.6rem;
-    width: 15rem;
-    min-width: 15rem;
-  }
-
-  .options {
-    margin-top: 1.5rem;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 1rem;
-  }
-}
-
-</style>
  

@@ -753,7 +753,7 @@ function run() {
     // let url = window.baseUrl + "/mission/daily"
     // @ts-ignore
     let url = (window.baseUrl + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector('div#Top .tools, #menu-body').innerHTML)[0]);
-    console.log('url', url)
+    // console.log('url', url)
     $.get(url).then(r => {
       let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let html = $(bodyText[0])
@@ -808,7 +808,7 @@ function run() {
           try {
             resolve(JSON.parse(tagJson))
           } catch (e) {
-            console.log('tage', tagJson)
+            // console.log('tage', tagJson)
             resolve({})
           }
         }
@@ -821,9 +821,9 @@ function run() {
       r.text().then(a => {
         let res = a.match(/\?once=([\d]+)/)
         if (res && res[1]) {
-          console.log('接口返回了once-str', Number(res[1]))
+          // console.log('接口返回了once-str', Number(res[1]))
           fetch(`/notes/delete/${tagsId}?once=${Number(res[1])}`).then(r => {
-            console.log('r', r, r.url === location.origin + '/')
+            // console.log('r', r, r.url === location.origin + '/')
             if (r.status === 200) {
               if (r.redirected && r.url === location.origin + '/') {
                 cb()

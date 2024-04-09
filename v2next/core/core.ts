@@ -506,7 +506,7 @@ export const DefaultConfig: Config = {
   postWidth: '',
   showTopReply: true,
   topReplyLoveMinCount: 3,
-  topReplyCount: 3,
+  topReplyCount: 5,
   autoJumpLastReadFloor: false,
   rememberLastReadFloor: false,
   autoSignin: true,

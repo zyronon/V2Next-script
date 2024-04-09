@@ -4,7 +4,6 @@
        @keydown.esc="close()"
        v-show="modelValue"
        :class="[isNight?'isNight':'',pageType]"
-       @scroll="debounceScroll"
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
       <div class="main-wrapper" ref="mainWrapper"
@@ -397,7 +396,6 @@ export default {
         }
       },
     },
-
   },
   mounted() {
     nextTick(() => {
@@ -440,9 +438,6 @@ export default {
       this.showRelationReply = true
     })
     eventBus.on(CMD.JUMP, this.jump)
-    if (this.isPost) {
-      window.addEventListener('scroll', this.debounceScroll)
-    }
   },
   beforeUnmount() {
     window.removeEventListener('keydown', this.onKeyDown)
@@ -456,7 +451,6 @@ export default {
       eventBus.emit(CMD.REMOVE_TAG, {username: this.post.member.username, tag})
     },
     stop(e) {
-      console.log('e', e)
     },
     jump(floor) {
       let lastItem = this.replyList[this.replyList.length - 1]
