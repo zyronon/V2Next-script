@@ -9,7 +9,7 @@
               @reply="edit = !edit"
               type="top"
       />
-      <BaseHtmlRender class="top-reply_content" :html="modelValue.hideCallUserReplyContent"/>
+      <BaseHtmlRender class="top-reply_content reply_content" :html="modelValue.hideCallUserReplyContent"/>
       <PostEditor v-if="edit"
                   @close="edit = false"
                   :replyInfo="replyInfo"
