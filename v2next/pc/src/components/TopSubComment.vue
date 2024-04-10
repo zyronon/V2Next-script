@@ -1,6 +1,8 @@
 <template>
-  <div class="comment" ref="comment" :data-floor="floor">
-    <div class="left expand-line" :class="level === 1 && 'no-line'"></div>
+  <div class="top-sub-comment" ref="comment"
+       :class="level === 1 && 'top-sub-reply'"
+       :data-floor="floor">
+    <div class="left expand-line"></div>
     <div class="right">
       <Author v-model="expand"
               :comment="modelValue"
@@ -73,7 +75,7 @@ export default {
 <style scoped lang="less">
 @import "../assets/less/variable";
 
-.comment {
+.top-sub-comment {
   width: 100%;
   box-sizing: border-box;
   margin-top: .8rem;
@@ -93,14 +95,7 @@ export default {
       content: " ";
       height: 98%;
       width: 0;
-      border-right: 1px solid var(--color-line);
-    }
-  }
-
-  .no-line {
-    width: 1rem;
-    &:after {
-      display: none;
+      border-right: 1px solid var(--color-top-reply-wrap-line);
     }
   }
 
@@ -119,5 +114,18 @@ export default {
     display: none !important;
   }
 
+  &.top-sub-reply {
+    &:first-child {
+      margin-top: 0;
+    }
+
+    & > .expand-line {
+      width: 1rem;
+
+      &:after {
+        display: none;
+      }
+    }
+  }
 }
 </style>

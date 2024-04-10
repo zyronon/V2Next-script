@@ -17,7 +17,7 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '9.8',
+        version: '10.1',
         name: 'V2Next',
         icon: 'https://v2next.netlify.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
@@ -55,7 +55,7 @@ export default defineConfig({
       build: {
         fileName: 'V2Next.user.js',
         externalGlobals: {
-          vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js'),
+          vue: cdn.baomitu('Vue', 'vue.runtime.global.prod.min.js'),
         },
       },
     }),

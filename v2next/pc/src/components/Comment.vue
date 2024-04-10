@@ -340,7 +340,7 @@ export default {
 .top-reply-wrap {
   //background: rgb(241, 245, 249);
   //background: rgb(226, 226, 226);
-  background: rgb(242, 243, 245);
+  background: var(--color-top-reply-wrap-bg);
   border-radius: .8rem;
   padding: .6rem;
   padding-left: 0;

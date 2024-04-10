@@ -191,10 +191,9 @@
                   </div>
                 </div>
                 <div class="desc">
-                  未设定此值时，则背景颜色默认为 #e2e2e2。接受一个合法的css color值：例如<a
+                  未设定此值时，则脚本就什么都不做，V站大部分页面背景颜色默认为 #e2e2e2，少部分页面有特定背景。接受一个合法的css color值：例如<a
                     href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value"
                     target="_blank">red、#ffffff、rgb(222,222,22)(点此查看)</a>等等。
-
                 </div>
                 <div class="desc danger">
                   提示：此项需要刷新页面才能生效
