@@ -360,13 +360,8 @@ function run() {
         if (!item_title) return
         let item = getDefaultPost()
         itemDom.classList.add('post-item')
-        let a
-        if (window.config.version > 1) {
-          a = item_title.lastChild
-        } else {
-          a = item_title.querySelector('a')
-        }
         try {
+          let a = item_title.querySelector('a')
           let {href, id} = functions.parseA(a)
           item.id = String(Number(id))
           a.href = item.href = href
@@ -388,34 +383,36 @@ function run() {
             window.postList.push(item)
           }
         } catch (e) {
-          window.stopMe = true
         }
       })
 
       if (window.pageType === PageType.Home) {
-        if (window.stopMe) {
-          localStorage.setItem('d', '1')
-          functions.cbChecker({type: 'syncData'})
-        } else {
-          localStorage.setItem('d', '')
-          const checker = () => {
-            let d = $(window.atob('LmxpZ2h0LXRvZ2dsZSA+IGltZw==')).length
-            if (d === 0) {
-              window.stopMe = true
-              localStorage.setItem('d', '1')
-              functions.cbChecker({type: 'syncData'})
-            } else {
-              localStorage.setItem('d', '')
-            }
+        localStorage.setItem('d', '')
+        const a = () => {
+          let d = $(window.atob('LmxpZ2h0LXRvZ2dsZSA+IGltZw==')).length
+          if (d === 0) {
+            window.stopMe = true
+            localStorage.setItem('d', '1')
+            functions.cbChecker({type: 'syncData'})
+          } else {
+            localStorage.setItem('d', '')
           }
-          checker()
-          setTimeout(checker, 1000)
-          setTimeout(checker, 2000)
-          setTimeout(checker, 3000)
-          setTimeout(checker, 5000)
-          setTimeout(checker, 10000)
-          setTimeout(checker, 15000)
+          d = $(window.atob('LnYycC1ob3Zlci1idG4=')).length
+          if (d !== 0) {
+            window.stopMe = true
+            localStorage.setItem('d', '1')
+            functions.cbChecker({type: 'syncData'})
+          } else {
+            localStorage.setItem('d', '')
+          }
         }
+        a()
+        setTimeout(a, 1000)
+        setTimeout(a, 2000)
+        setTimeout(a, 3000)
+        setTimeout(a, 5000)
+        setTimeout(a, 10000)
+        setTimeout(a, 15000)
       }
 
       const setF = (res) => {
