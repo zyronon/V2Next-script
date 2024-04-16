@@ -58,6 +58,7 @@ https://www.v2ex.com/poll_once 好像是换once的
 - 推荐新贴挂件
 - 评论框bug
 - hover头像展示信息
+- nsfw或18
 
 
 
