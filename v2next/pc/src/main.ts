@@ -360,34 +360,32 @@ function run() {
         if (!item_title) return
         let item = getDefaultPost()
         itemDom.classList.add('post-item')
-        try {
-          let a = item_title.querySelector('a')
-          let {href, id} = functions.parseA(a)
-          item.id = String(Number(id))
-          a.href = item.href = href
-          item.url = location.origin + '/api/topics/show.json?id=' + item.id
-          itemDom.classList.add(`id_${id}`)
-          itemDom.dataset['href'] = href
-          //添加切换按钮
-          let td = itemDom.querySelector('td:nth-child(4)')
-          if (!td) {
-            td = itemDom.querySelector('td:nth-child(2)')
-          }
-          td.style.position = 'relative'
-          let toggle = document.createElement('div')
-          toggle.dataset['id'] = item.id
-          toggle.classList.add('toggle')
-          toggle.innerText = '预览'
-          td.append(toggle)
-          if (window.config.viewType === 'card') {
-            window.postList.push(item)
-          }
-        } catch (e) {
+        let a = item_title.querySelector('a')
+        let {href, id} = functions.parseA(a)
+        item.id = String(Number(id))
+        a.href = item.href = href
+        item.url = location.origin + '/api/topics/show.json?id=' + item.id
+        itemDom.classList.add(`id_${id}`)
+        itemDom.dataset['href'] = href
+        //添加切换按钮
+        let td = itemDom.querySelector('td:nth-child(4)')
+        if (!td) {
+          td = itemDom.querySelector('td:nth-child(2)')
+        }
+        td.style.position = 'relative'
+        let toggle = document.createElement('div')
+        toggle.dataset['id'] = item.id
+        toggle.classList.add('toggle')
+        toggle.innerText = '预览'
+        td.append(toggle)
+        if (window.config.viewType === 'card') {
+          window.postList.push(item)
         }
       })
 
+      localStorage.setItem('d', '')
+
       if (window.pageType === PageType.Home) {
-        localStorage.setItem('d', '')
         const a = () => {
           let d = $(window.atob('LmxpZ2h0LXRvZ2dsZSA+IGltZw==')).length
           if (d === 0) {
@@ -932,6 +930,7 @@ function run() {
         dom.parentNode!.replaceChild(a, dom,)
       }
     }, true)
+
 
     if (window.isNight) {
       document.documentElement.classList.add('dark')

@@ -5,7 +5,7 @@
        v-show="modelValue"
        :class="[isNight?'isNight':'',pageType]"
        @click="close('space')">
-    <div ref="main" class="main" tabindex="1" @click.stop="stop">
+    <div ref="main" class="main" tabindex="1" @click="stop">
       <div class="main-wrapper" ref="mainWrapper"
            :style="{width:config.postWidth}">
         <div class="my-box post-wrapper">
@@ -191,6 +191,17 @@
                @keydown.enter="jump(currentFloor)">
       </div>
     </div>
+
+    <teleport to="body">
+      <div class="preview-modal"
+           @wheel="wheel"
+      >
+        <div class="mask"
+             @click="closePreviewModal"
+        ></div>
+        <Icon class="close" icon="fontisto:close-a" @click="closePreviewModal"/>
+      </div>
+    </teleport>
   </div>
 </template>
 <script>
@@ -210,6 +221,101 @@ import BaseLoading from "./BaseLoading.vue";
 import BaseButton from "./BaseButton.vue";
 import {Icon} from "@iconify/vue";
 import BaseSelect from "@/components/BaseSelect.vue";
+
+function _css(el, key, value) {
+  const reg = /^-?\d+.?\d*(px|pt|em|rem|vw|vh|%|rpx|ms)$/i
+  if (value === undefined) {
+    let val = null
+    if ('getComputedStyle' in window) {
+      val = window.getComputedStyle(el, null)[key]
+    } else {
+      val = el.currentStyle[key]
+    }
+    return reg.test(val) ? parseFloat(val) : val
+    // return parseFloat(val)
+  } else {
+    if (
+        [
+          'top',
+          'left',
+          'bottom',
+          'right',
+          'width',
+          'height',
+          'font-size',
+          'margin',
+          'padding'
+        ].includes(key)
+    ) {
+      if (!reg.test(value)) {
+        if (!String(value).includes('calc')) {
+          value += 'px'
+        }
+      }
+    }
+    if (key === 'transform') {
+      //直接设置不生效
+      el.style.webkitTransform =
+          el.style.MsTransform =
+              el.style.msTransform =
+                  el.style.MozTransform =
+                      el.style.OTransform =
+                          el.style.transform =
+                              value
+    } else {
+      el.style[key] = value
+    }
+  }
+}
+
+
+function getImgSize(naturalWidth, naturalHeight, maxWidth, maxHeight) {
+  const imgRatio = naturalWidth / naturalHeight;
+  const maxRatio = maxWidth / maxHeight;
+  let width, height;
+  // 如果图片实际宽高比例 >= 显示宽高比例
+  if (imgRatio >= maxRatio) {
+    if (naturalWidth > maxWidth) {
+      width = maxWidth;
+      height = (maxWidth / naturalWidth) * naturalHeight;
+    } else {
+      width = naturalWidth;
+      height = naturalHeight;
+    }
+  } else {
+    if (naturalHeight > maxHeight) {
+      width = (maxHeight / naturalHeight) * naturalWidth;
+      height = maxHeight;
+    } else {
+      width = naturalWidth;
+      height = naturalHeight;
+    }
+  }
+
+  if (height === 0) {
+    height = maxHeight
+    width = height * 1.3
+  } else {
+    if (height < 24) {
+      height = 50
+      width = height * imgRatio
+    } else if (height < 100) {
+      height = 300
+      width = height * imgRatio
+    } else {
+      height = maxHeight
+      width = height * imgRatio
+    }
+    if (width > maxWidth) {
+      width = maxWidth
+      height = width / imgRatio
+    }
+  }
+
+
+  console.log(width, height)
+  return {width: width, height: height};
+}
 
 export default {
   name: "detail",
@@ -272,7 +378,23 @@ export default {
         rightFloor: -1
       },
       currentFloor: '',
-      showOpTag: false
+      showOpTag: false,
+      rect: {},
+      result: {},
+      x: 0,
+      y: 0,
+      scale: 1,
+      minScale: 0.2,
+      maxScale: 16,
+      preview: {
+        rect: {},
+        result: {},
+        x: 0,
+        y: 0,
+        scale: 1,
+        minScale: 0.2,
+        maxScale: 16,
+      }
     }
   },
   computed: {
@@ -450,7 +572,158 @@ export default {
     removeTag(tag) {
       eventBus.emit(CMD.REMOVE_TAG, {username: this.post.member.username, tag})
     },
+    closePreviewModal() {
+      let previewModal = document.querySelector('.preview-modal')
+      let s = document.querySelector('.shadow')
+
+      let domRect = this.preview.rect
+      _css(s, 'transition', 'all 0.3s')
+      _css(s, 'width', domRect.width)
+      _css(s, 'height', domRect.height)
+      _css(s, 'transform', `translate3d(${domRect.x}px, ${domRect.y}px, 0) scale(1)`)
+
+      let mask = document.querySelector('.preview-modal .mask')
+      _css(mask, 'opacity', 0)
+      setTimeout(() => {
+        _css(s, 'transition', 'all 0s')
+        s.remove()
+        _css(previewModal, 'top', '-1000vh')
+        _css(document.body, 'overflow', 'auto')
+      }, 300)
+
+    },
     stop(e) {
+      e.stopPropagation()
+      e.stopImmediatePropagation()
+      if (e.target.tagName === 'IMG') {
+        this.preview = {
+          rect: {},
+          result: {},
+          x: 0,
+          y: 0,
+          scale: 1,
+          minScale: 0.2,
+          maxScale: 16,
+        }
+        e.preventDefault()
+        let domRect = e.target.getBoundingClientRect()
+        let previewModal = document.querySelector('.preview-modal')
+        _css(previewModal, 'top', '0')
+
+        let s = e.target.cloneNode()
+        s.classList.add('shadow')
+        previewModal.append(s)
+        _css(s, 'transition', 'all 0s')
+        _css(s, 'width', domRect.width)
+        _css(s, 'height', domRect.height)
+        _css(s, 'transform', `translate3d(${domRect.x}px, ${domRect.y}px, 0) scale(1)`)
+
+        let t = '.3'
+        let sw = domRect.width / window.innerWidth
+        let sh = domRect.height / window.innerHeight
+        domRect.sw = sw
+        domRect.sh = sh
+
+        this.preview.rect = domRect
+        this.preview.result = getImgSize(
+            s.naturalWidth,
+            s.naturalHeight,
+            window.innerWidth * 0.95,
+            window.innerHeight * .9
+        );
+
+        this.preview.x = (window.innerWidth - this.preview.result.width) * 0.5;
+        this.preview.y = (window.innerHeight - this.preview.result.height) * 0.5;
+
+        let isPointerdown = false
+        let isMove = false
+        let lastPointermove = {x: 0, y: 0}
+        let diff = {x: 0, y: 0}
+        // 绑定 pointerdown
+        s.addEventListener("pointerdown", function (e) {
+          isPointerdown = true;
+          isMove = false
+          s.setPointerCapture(e.pointerId);
+          lastPointermove = {x: e.clientX, y: e.clientY};
+        });
+        // 绑定 pointermove
+        s.addEventListener("pointermove", (e) => {
+          if (isPointerdown) {
+            isMove = true
+            const current = {x: e.clientX, y: e.clientY};
+            diff.x = current.x - lastPointermove.x;
+            diff.y = current.y - lastPointermove.y;
+            lastPointermove = {x: current.x, y: current.y};
+            this.preview.x += diff.x;
+            this.preview.y += diff.y;
+            _css(s, 'transition', 'all 0.1s')
+            _css(s, 'transform', `translate3d(${this.preview.x}px, ${this.preview.y}px, 0) scale(${this.preview.scale})`)
+          }
+          e.preventDefault();
+        });
+        // 绑定 pointerup
+        s.addEventListener("pointerup", () => {
+          if (isPointerdown) {
+            isPointerdown = false;
+            if (!isMove) {
+              this.closePreviewModal()
+            }
+          }
+        });
+        // 绑定 pointercancel
+        s.addEventListener("pointercancel", function (e) {
+          if (isPointerdown) {
+            isPointerdown = false;
+          }
+        });
+
+        let mask = document.querySelector('.preview-modal .mask')
+        _css(mask, 'transition', 'all 0s')
+        _css(mask, 'opacity', 0)
+
+        setTimeout(() => {
+          _css(s, 'transition', `all ${t}s`)
+          _css(mask, 'transition', `all ${t}s`)
+
+          _css(mask, 'opacity', 1)
+          _css(s, 'transform', `translate3d(${this.preview.x}px, ${this.preview.y}px, 0) scale(${this.preview.scale})`)
+          _css(s, 'width', this.preview.result.width)
+          _css(s, 'height', this.preview.result.height)
+        }, 0)
+        setTimeout(() => {
+          _css(document.body, 'overflow', 'hidden')
+        }, 300)
+        return false
+      }
+    },
+    wheel(e) {
+      // console.log('e', e)
+      let d = e.deltaY < 0 ? 0.1 : -0.1;
+      let ratio = 1 + d;
+      let _scale = this.preview.scale * ratio;
+      if (_scale > this.preview.maxScale) {
+        ratio = this.preview.maxScale / this.preview.scale;
+        this.preview.scale = this.preview.maxScale;
+      } else if (_scale < this.preview.minScale) {
+        ratio = this.preview.minScale / this.preview.scale;
+        this.preview.scale = this.preview.minScale;
+      } else {
+        this.preview.scale = _scale;
+      }
+      // console.log("r", ratio, "s", this.scale);
+      // 目标元素是img说明鼠标在img上，以鼠标位置为缩放中心，否则默认以图片中心点为缩放中心
+      if (e.target.tagName === "IMG") {
+        const origin = {
+          x: (d * this.preview.result.width) / 2,
+          y: (d * this.preview.result.height) / 2,
+        };
+        this.preview.x -= d * (e.clientX - this.preview.x) - origin.x;
+        this.preview.y -= d * (e.clientY - this.preview.y) - origin.y;
+      }
+      let s = document.querySelector('.shadow')
+      _css(s, 'transition', 'all 0.2s')
+      _css(s, 'transform', `translate3d(${this.preview.x}px, ${this.preview.y}px, 0) scale(${this.preview.scale})`)
+      e.preventDefault();
     },
     jump(floor) {
       let lastItem = this.replyList[this.replyList.length - 1]
@@ -564,7 +837,6 @@ export default {
 </script>
 
 <style lang="less">
-
 .sticky {
   position: sticky;
   bottom: -2px;
@@ -575,6 +847,35 @@ export default {
 .sticky[stuck] {
   box-shadow: 0 2px 20px rgb(0 0 0 / 35%) !important;
 }
+
+.preview-modal {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: -1000vh;
+  z-index: 9999;
+
+  .close {
+    font-size: 2rem;
+    color: white;
+    position: absolute;
+    right: 2rem;
+    top: 2rem;
+    cursor: pointer;
+  }
+
+  .mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(black, .7);
+    transition: all .3s;
+  }
+}
+
 </style>
 
 <style scoped lang="less">
@@ -596,7 +897,6 @@ export default {
     display: none;
   }
 }
-
 
 .post-detail {
   text-align: start;
@@ -821,4 +1121,5 @@ export default {
 
   }
 }
+
 </style>
