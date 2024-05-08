@@ -596,6 +596,10 @@ export default {
       e.stopPropagation()
       e.stopImmediatePropagation()
       if (e.target.tagName === 'IMG') {
+        console.log('e', e.target.src)
+        if (/cdn\.v2ex\.com.*avatar/i.test(e.target.src)) {
+          console.log('t')
+        }
         this.preview = {
           rect: {},
           result: {},
