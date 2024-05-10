@@ -229,8 +229,10 @@ watch(rate, (value) => {
 
 onMounted(() => {
   console.log('Youtube Next start')
-  let browserType = getBrowserType()
-  initStyle(browserType)
+  setTimeout(()=>{
+    let browserType = getBrowserType()
+    initStyle(browserType)
+  },500)
 
   let youtubeRate = localStorage.getItem('youtube-rate')
   if (youtubeRate) {
@@ -266,15 +268,15 @@ onMounted(() => {
   }
 
   if (checkIsWatchPage()) {
-    checkOptionButtons()
     setTimeout(() => {
+      checkOptionButtons()
       checkVideo()
       if (refVideo.value) {
         refVideo.value.muted = false
         refVideo.value.playbackRate = rate.value
         showMsg('播放速度: ' + rate.value)
       }
-    }, 500)
+    }, 1000)
   }
   window.addEventListener('click', checkA, true);
   window.addEventListener('visibilitychange', stop, true)

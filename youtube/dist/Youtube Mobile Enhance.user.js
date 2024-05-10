@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Mobile Enhance 油管移动端增强
 // @namespace    http://tampermonkey.net/
-// @version      2.8.4
+// @version      2.8.6
 // @author       zyronon
 // @description  针对油管移动端，点击视频新标签页打开，记忆播放速度，突破播放速度限制
 // @license      GPL License
@@ -232,8 +232,10 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
       });
       vue.onMounted(() => {
         console.log("Youtube Next start");
-        let browserType = getBrowserType();
-        initStyle(browserType);
+        setTimeout(() => {
+          let browserType = getBrowserType();
+          initStyle(browserType);
+        }, 500);
         let youtubeRate = localStorage.getItem("youtube-rate");
         if (youtubeRate) {
           rate.value = Number(youtubeRate);
@@ -265,15 +267,15 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
           }
         };
         if (checkIsWatchPage()) {
-          checkOptionButtons();
           setTimeout(() => {
+            checkOptionButtons();
             checkVideo();
             if (refVideo.value) {
               refVideo.value.muted = false;
               refVideo.value.playbackRate = rate.value;
               showMsg("播放速度: " + rate.value);
             }
-          }, 500);
+          }, 1e3);
         }
         window.addEventListener("click", checkA, true);
         window.addEventListener("visibilitychange", stop, true);
@@ -312,6 +314,11 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
       }
     }
   });
+  async function sleep(time) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, time);
+    });
+  }
   function proxyHTMLMediaElementEvent() {
     if (HTMLMediaElement.prototype._rawAddEventListener_) {
       return false;
@@ -371,11 +378,23 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
     });
   }
   proxyHTMLMediaElementEvent();
-  let $section = document.createElement("section");
-  $section.id = "vue-app";
-  document.body.append($section);
-  let vueApp = vue.createApp(_sfc_main);
-  vueApp.config.unwrapInjectedRef = true;
-  vueApp.mount($section);
+  async function init() {
+    let $section = document.createElement("section");
+    $section.id = "vue-app";
+    let count = 0;
+    if (document.body) {
+      document.body.append($section);
+    } else {
+      while (!document.body && count < 50) {
+        await sleep(100);
+        count++;
+      }
+      document.body.append($section);
+    }
+    let vueApp = vue.createApp(_sfc_main);
+    vueApp.config.unwrapInjectedRef = true;
+    vueApp.mount($section);
+  }
+  init();
 
 })(Vue);

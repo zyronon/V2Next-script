@@ -17,7 +17,7 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '2.8.4',
+        version: '2.8.6',
         name: 'Youtube Mobile Enhance 油管移动端增强',
         icon: 'https://v2next.netlify.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
