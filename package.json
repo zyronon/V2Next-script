@@ -20,6 +20,7 @@
     "typescript": "^5.0.4",
     "vite": "^4.3.5",
     "vite-plugin-monkey": "^3.2.0",
-    "vue-tsc": "^1.6.4"
+    "vue-tsc": "^1.6.4",
+    "vitepress": "1.0.0-rc.36"
   }
 }

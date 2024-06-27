@@ -14,6 +14,7 @@ importers:
       typescript: ^5.0.4
       vite: ^4.3.5
       vite-plugin-monkey: ^3.2.0
+      vitepress: 1.0.0-rc.36
       vue: ^3.4.14
       vue-tsc: ^1.6.4
     dependencies:
@@ -29,16 +30,14 @@ importers:
       typescript: 5.5.2
       vite: 4.5.3_less@4.1.1
       vite-plugin-monkey: 3.5.2_vite@4.5.3
+      vitepress: 1.0.0-rc.36_less@4.1.1+typescript@5.5.2
       vue-tsc: 1.8.27_typescript@5.5.2
 
   v2next/core:
     specifiers: {}
 
   v2next/docs:
-    specifiers:
-      vitepress: 1.0.0-rc.36
-    devDependencies:
-      vitepress: 1.0.0-rc.36_less@4.1.1+typescript@5.5.2
+    specifiers: {}
 
   v2next/mobile:
     specifiers: {}
