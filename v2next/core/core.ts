@@ -345,7 +345,7 @@ export const functions = {
       }
     } else if (l.href.match(/.com\/member/)) {
       data.pageType = PageType.Member
-      data.username = l.pathname.replace('/member/', '').replace('/replies', '')
+      data.username = l.pathname.replace('/member/', '').replace('/replies', '').replace('/topics', '')
     } else {
       let r = l.href.match(/.com\/t\/([\d]+)/)
       if (r && !l.pathname.includes('review') && !l.pathname.includes('info')) {

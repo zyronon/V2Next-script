@@ -1106,6 +1106,8 @@ function run() {
           box = document.querySelectorAll('#Wrapper #Main .box')
           if (location.pathname.includes('/replies')) {
             box[0].after($section)
+          }else if (location.pathname.includes('/topics')) {
+            box[0].after($section)
           } else {
             if (window.config.openTag) {
               //移除box的bottom样式，让和vue的div融为一体
