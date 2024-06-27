@@ -7,7 +7,7 @@
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click="stop">
       <div class="main-wrapper" ref="mainWrapper"
-           :style="{width:config.postWidth}">
+           :style="{width:config.postWidth+'!important'}">
         <div class="my-box post-wrapper">
           <div class="header">
             <div class="fr">
