@@ -720,6 +720,7 @@ function onInput(e) {
     }
     off()
   } else {
+    checkHeight()
     // console.log('当前光标位置', cursorPos)
     let judgeStr = content.value.slice(0, cursorPos)
     // console.log('判断的字符串', judgeStr)
