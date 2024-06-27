@@ -387,32 +387,18 @@ function run() {
 
       if (window.pageType === PageType.Home) {
         const a = () => {
+          let d
           if (window.user.username) {
-            let d = $(window.atob('LmxpZ2h0LXRvZ2dsZSA+IGltZw==')).length
-            if (d === 0) {
-              window.stopMe = true
-              localStorage.setItem('d', '1')
-              functions.cbChecker({type: 'syncData'})
-            } else {
-              localStorage.setItem('d', '')
-            }
             d = $(window.atob('LnYycC1ob3Zlci1idG4=')).length
-            if (d !== 0) {
-              window.stopMe = true
-              localStorage.setItem('d', '1')
-              functions.cbChecker({type: 'syncData'})
-            } else {
-              localStorage.setItem('d', '')
-            }
           } else {
-            let d = $(window.atob('LnYycC1mb290ZXI=')).length
-            if (d !== 0) {
-              window.stopMe = true
-              localStorage.setItem('d', '1')
-              functions.cbChecker({type: 'syncData'})
-            } else {
-              localStorage.setItem('d', '')
-            }
+            d = $(window.atob('LnYycC1mb290ZXI=')).length
+          }
+          if (d !== 0) {
+            window.stopMe = true
+            localStorage.setItem('d', '1')
+            functions.cbChecker({type: 'syncData'})
+          } else {
+            localStorage.setItem('d', '')
           }
         }
         a()
