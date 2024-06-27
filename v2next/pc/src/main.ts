@@ -166,7 +166,7 @@ function run() {
         now.setSeconds(0)
         now.setMilliseconds(0)
         let d = now.getTime() - date.getTime()
-        let isNew = d <= 1000 * 60 * 60 * 24 * 7
+        let isNew = d <= 1000 * 60 * 60 * 24 * 15
         // console.log('d', d, 'danger', danger, 'now.getTime()', now.getTime(), ' date.getTime() * 1000', date.getTime())
         post.member.createDate = createStr + ' 注册'
         post.member.isNew = isNew
