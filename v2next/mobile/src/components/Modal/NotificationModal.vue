@@ -38,7 +38,7 @@ function close() {
     z-index: 9;
     background: var(--color-second-bg);
     color: var(--color-font-8);
-    border-radius: 1.6rem;
+    border-radius: 1rem;
     font-size: 1.4rem;
     width: 50vw;
     height: 70vh;

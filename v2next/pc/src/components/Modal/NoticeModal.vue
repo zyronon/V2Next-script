@@ -85,7 +85,7 @@ export default {
   .modal-root {
     z-index: 9;
     background: var(--color-main-bg);
-    border-radius: 1.6rem;
+    border-radius: 1rem;
     font-size: 1.4rem;
     overflow: hidden;
     //box-shadow: 0 0 6px 4px gainsboro;

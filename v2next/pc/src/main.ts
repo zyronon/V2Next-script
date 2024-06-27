@@ -532,6 +532,10 @@ function run() {
           --box-border-radius:8px;
         }
         
+        .page_current, .page_normal {
+          --box-border-radius: 5px;
+          padding: .6rem 0.8rem!important;
+        }
         .box{
           box-shadow:rgba(0, 0, 0, 0.08) 0px 4px 12px;
         }

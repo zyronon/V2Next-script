@@ -1,6 +1,6 @@
 <template>
   <Transition>
-    <div class="tag-modal modal" v-if="modelValue">
+    <div class="NotificationModal modal" v-if="modelValue">
       <div class="mask" @click.stop="close"></div>
       <div class="modal-root">
         <div class="modal-header">
@@ -9,17 +9,31 @@
           </div>
           <i class="fa fa-times" @click="close"/>
         </div>
-        <div v-html="h" class="modal-body"></div>
+        <div class="modal-body">
+          <div class="filter">
+            <div :class="index==='all'&& 'active'" @click="index = 'all'">全部</div>
+            <div :class="index==='reply'&& 'active'" @click="index = 'reply'">回复</div>
+            <div :class="index==='star'&& 'active'" @click="index = 'star'">感谢</div>
+            <div :class="index==='collect'&& 'active'" @click="index = 'collect'">收藏</div>
+          </div>
+          <div id="notifications" :class="index" v-html="h"></div>
+          <div class="footer">
+            <div v-html="pages" class="pages"></div>
+            <div class="total"><span>总共收到提醒</span>{{ total }}</div>
+          </div>
+        </div>
       </div>
     </div>
   </Transition>
 </template>
 
 <script setup>
-import {onMounted} from "vue"
+import {onMounted, ref} from "vue"
 
-const props = defineProps(['modelValue', 'h'])
+const props = defineProps(['modelValue', 'h', 'total', 'pages'])
 const emit = defineEmits(['update:modelValue'])
+
+const index = ref('reply')
 
 onMounted(() => {
 })
@@ -33,20 +47,21 @@ function close() {
 <style scoped lang="less">
 @import "src/assets/less/variable";
 
-.tag-modal {
+.NotificationModal {
   .modal-root {
     z-index: 9;
     background: var(--color-second-bg);
     color: var(--color-font-8);
-    border-radius: 1.6rem;
+    border-radius: 1rem;
     font-size: 1.4rem;
     width: 50vw;
-    height: 70vh;
+    height: 75vh;
     display: flex;
     flex-direction: column;
+    padding: 1.4rem;
+    gap: 1rem;
 
     .modal-header {
-      padding: 2.4rem;
       display: flex;
       justify-content: space-between;
 
@@ -64,13 +79,85 @@ function close() {
     }
 
     .modal-body {
-      padding: 2rem;
       padding-top: 0;
       flex: 1;
-      overflow: auto;
+      gap: 1rem;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
 
-      :deep(.cell){
-        padding: 2rem;
+      .filter {
+        display: flex;
+        gap: 1rem;
+
+        div {
+          border-radius: .4rem;
+          padding: .4rem 1rem;
+          background: gainsboro;
+          cursor: pointer;
+
+          &.active {
+            background: #445;
+            color: white;
+          }
+        }
+      }
+
+      #notifications {
+        flex: 1;
+        overflow: auto;
+
+        :deep(.cell) {
+          display: none;
+
+          //padding: 1rem;
+          a.node {
+            padding: .6rem 1rem;
+            border-radius: .4rem;
+          }
+        }
+      }
+
+      #notifications.all {
+        :deep(.cell) {
+          display: block;
+        }
+      }
+      #notifications.reply {
+        :deep(.reply) {
+          display: block;
+        }
+      }
+      #notifications.star {
+        :deep(.star) {
+          display: block;
+        }
+      }
+      #notifications.collect {
+        :deep(.collect) {
+          display: block;
+        }
+      }
+
+      .footer {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+
+        .pages {
+          flex: 1;
+        }
+
+        .total {
+          font-weight: bold;
+
+          span {
+            color: lightgray;
+            font-weight: normal;
+            margin-right: .4rem;
+          }
+        }
       }
     }
   }

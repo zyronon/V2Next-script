@@ -58,7 +58,8 @@
               <span>
               共有{{ modelValue.replyCount }} 条回复
               </span>
-              <Icon icon="ep:arrow-down-bold"/>
+              <Icon icon="ep:arrow-up-bold" v-if="expandTopReply"/>
+              <Icon icon="ep:arrow-down-bold" v-else/>
             </div>
           </div>
           <div class="simple-wrapper">
@@ -118,7 +119,7 @@ export default {
       edit: false,
       ding: false,
       expand: true,
-      expandTopReply: false,
+      expandTopReply: true,
       expandWrong: false,
       replyInfo: `@${this.modelValue.username} #${this.modelValue.floor} `,
       cssStyle: null,

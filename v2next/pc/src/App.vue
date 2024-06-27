@@ -63,7 +63,8 @@ export default {
       },
       notificationModal: {
         show: false,
-        h: ''
+        h: '',
+        total: 0,
       },
       previewModal: {
         show: false,
@@ -214,7 +215,9 @@ export default {
             url: '/notifications/below/' + window.notificationBottom,
             success(data, status, request) {
               item.remove()
-              $('#notifications').append(data);
+
+
+              $('#notifications').append(that.checkReplyItemType(data));
               window.notificationBottom = request.getResponseHeader('X-V2EX-New-Notification-Bottom');
             },
             error() {
@@ -236,6 +239,19 @@ export default {
     $(document).off('click', 'a', this.clickA)
   },
   methods: {
+    checkReplyItemType(val) {
+      let str = $(val).html()
+      if (str.includes('提到了你') || str.includes('回复了你')) {
+        $(val).addClass('reply')
+      }
+      if (str.includes('感谢了你')) {
+        $(val).addClass('star')
+      }
+      if (str.includes('收藏了你')) {
+        $(val).addClass('collect')
+      }
+      return $(val)
+    },
     async getUnreadMessagesCount() {
       const res = await fetch(`${location.origin}/mission`)
       const htmlText = await res.text()
@@ -260,11 +276,11 @@ export default {
       if (that.stopMe) return true
 
       let {pageType} = functions.checkPageType(e.currentTarget)
+      let {href, id, title} = functions.parseA(e.currentTarget)
 
-      // console.log('pageType', pageType)
+      console.log('pageType', pageType, href)
       switch (pageType) {
         case PageType.Post:
-          let {href, id, title} = functions.parseA(e.currentTarget)
           if (id) {
             that.clickPost(e, id, href, title)
           }
@@ -280,29 +296,38 @@ export default {
           if (e.currentTarget.href === location.origin + '/#;') return
           //未读提醒
           if (e.currentTarget.href.includes('/notifications')) {
-            // this.notificationModal.show = true
-            //
-            // let clientWidth = window.document.body.clientWidth
-            // let windowWidth = 1200
-            // let left = clientWidth / 2 - windowWidth / 2
-            // // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
-            // // newWin.document.write('123');
-            //
-            // fetch(href).then(async r => {
-            //   let htmlText = await r.text()
-            //   let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-            //   let res = htmlText.match(/var notificationBottom = ([\d]+);/)
-            //   if (res && res[1]) {
-            //     window.notificationBottom = Number(res[1])
-            //     console.log(' window.notificationBottom', window.notificationBottom)
-            //   }
-            //
-            //   let body = $(bodyText[0])
-            //   let h = body.find('#notifications').parent().html()
-            //   this.notificationModal.h = h
-            //
-            // })
-            // that.stopEvent(e)
+            this.notificationModal.show = true
+
+            let clientWidth = window.document.body.clientWidth
+            let windowWidth = 1200
+            let left = clientWidth / 2 - windowWidth / 2
+            // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
+            // newWin.document.write('123');
+
+            fetch(href).then(async r => {
+              let htmlText = await r.text()
+              let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+              let res = htmlText.match(/var notificationBottom = ([\d]+);/)
+              if (res && res[1]) {
+                window.notificationBottom = Number(res[1])
+                console.log(' window.notificationBottom', window.notificationBottom)
+              }
+
+              let body = $(bodyText[0])
+              let list = body.find('#notifications')
+              list.children().each(function () {
+                that.checkReplyItemType(this)
+              })
+              let h = list.html()
+              let d = body.find('#Main > .box > .header .fr .gray')
+              if (d.length) {
+                this.notificationModal.total = d.text()
+              }
+              this.notificationModal.h = h
+              this.notificationModal.pages = list.next().html()
+            })
+            that.stopEvent(e)
+            return
           }
 
           // that.stopEvent(e)
@@ -634,6 +659,8 @@ export default {
   <NotificationModal
       v-model="notificationModal.show"
       :h="notificationModal.h"
+      :total="notificationModal.total"
+      :pages="notificationModal.pages"
   />
 
   <template v-if="!stopMe">

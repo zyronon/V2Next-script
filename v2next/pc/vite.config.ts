@@ -17,7 +17,7 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '10.2',
+        version: '10.3',
         name: 'V2Next',
         icon: 'https://v2ex-script.vercel.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
@@ -69,9 +69,9 @@ export default defineConfig({
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   },
-  // esbuild: {
-  //   drop: ['console', 'debugger']
-  // },
+  esbuild: {
+    drop: ['console', 'debugger']
+  },
   server: {
     host: '0.0.0.0',
     port: 5552
