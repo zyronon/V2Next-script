@@ -3,11 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {},
   "dependencies": {
     "@v2next/core": "workspace:^",
     "eruda": "^3.0.1",
     "vue": "^3.4.14"
+  },
+  "scripts": {
+    "docs:build": "npm --prefix ./v2next/docs run docs:build"
   },
   "devDependencies": {
     "@iconify/vue": "^4.1.1",
