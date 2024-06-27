@@ -69,9 +69,9 @@ export default defineConfig({
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   },
-  esbuild: {
-    drop: ['console', 'debugger']
-  },
+  // esbuild: {
+  //   drop: ['console', 'debugger']
+  // },
   server: {
     host: '0.0.0.0',
     port: 5552

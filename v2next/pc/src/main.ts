@@ -387,21 +387,32 @@ function run() {
 
       if (window.pageType === PageType.Home) {
         const a = () => {
-          let d = $(window.atob('LmxpZ2h0LXRvZ2dsZSA+IGltZw==')).length
-          if (d === 0) {
-            window.stopMe = true
-            localStorage.setItem('d', '1')
-            functions.cbChecker({type: 'syncData'})
+          if (window.user.username) {
+            let d = $(window.atob('LmxpZ2h0LXRvZ2dsZSA+IGltZw==')).length
+            if (d === 0) {
+              window.stopMe = true
+              localStorage.setItem('d', '1')
+              functions.cbChecker({type: 'syncData'})
+            } else {
+              localStorage.setItem('d', '')
+            }
+            d = $(window.atob('LnYycC1ob3Zlci1idG4=')).length
+            if (d !== 0) {
+              window.stopMe = true
+              localStorage.setItem('d', '1')
+              functions.cbChecker({type: 'syncData'})
+            } else {
+              localStorage.setItem('d', '')
+            }
           } else {
-            localStorage.setItem('d', '')
-          }
-          d = $(window.atob('LnYycC1ob3Zlci1idG4=')).length
-          if (d !== 0) {
-            window.stopMe = true
-            localStorage.setItem('d', '1')
-            functions.cbChecker({type: 'syncData'})
-          } else {
-            localStorage.setItem('d', '')
+            let d = $(window.atob('LnYycC1mb290ZXI=')).length
+            if (d !== 0) {
+              window.stopMe = true
+              localStorage.setItem('d', '1')
+              functions.cbChecker({type: 'syncData'})
+            } else {
+              localStorage.setItem('d', '')
+            }
           }
         }
         a()
@@ -917,6 +928,7 @@ function run() {
   }
 
   async function init() {
+
     //监听图片加载失败事件，有的imgur图片填的是分享地址，无法转换。
     //例如：https://imgur.com/a/Gl0ifQ7，这种加上.png也显示不出来，就需要显示原地址
     window.addEventListener('error', (e: Event) => {
@@ -947,6 +959,7 @@ function run() {
       window.user.username = top2.textContent
       window.user.avatar = $('#Rightbar .box .avatar').attr('src')
     }
+
 
     functions.initConfig().then(async r => {
       //这个要放后面，不然前面查找会出错
@@ -1168,7 +1181,7 @@ function run() {
 }
 
 if (!isMobile) {
-  // console.log('V2EX PC端')
+  console.log('V2EX PC端')
   run()
   let vueApp = createApp(App)
   vueApp.config.unwrapInjectedRef = true
