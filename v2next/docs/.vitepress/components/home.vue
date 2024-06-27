@@ -33,7 +33,7 @@ import SearchIcon from "./search-icon.vue";
           <strong>跨端通用</strong> ━ PC、手机均可使用
         </div>
         <div>
-          <strong>免费使用</strong> ━ 代码开源，所有功能均免费使用
+          <strong>免费使用</strong> ━ 所有功能均免费使用
         </div>
       </div>
 
