@@ -731,14 +731,14 @@ function run() {
         localStorage.setItem('menu_clockInTime', timeNow); //             写入签到时间以供后续比较
         // console.info('[V2EX - 超级增强] 自动签到完成！')
       } else { //                                                  都没有找到，说明已经签过到了
-        // console.info('[V2EX - 超级增强] 自动签到完成！')
+        // console.info('[V2Next] 自动签到完成！')
       }
     } else { //                                                      不在首页
       let timeOld = localStorage.getItem('menu_clockInTime')
       if (!timeOld || timeOld != timeNow) {
         qianDaoStatus_(timeNow) //                               后台获取签到状态（并判断是否需要签到）
       } else { //                                                新旧签到时间一致
-        // console.info('[V2EX - 超级增强] 自动签到完成！')
+        // console.info('[V2Next] 自动签到完成！')
       }
     }
   }
@@ -756,20 +756,20 @@ function run() {
         // @ts-ignore
         html = html.find('#Main').text().match(/已连续登录 (\d+?) 天/)[0];
         localStorage.setItem('menu_clockInTime', timeNow); // 写入签到时间以供后续比较
-        console.info('[V2EX - 超级增强] 自动签到完成！')
+        console.info('[V2Next] 自动签到完成！')
         if (qiandao) {
           qiandao.textContent = `自动签到完成！${html}`;
           qiandao.href = 'javascript:void(0);';
         }
       } else {
-        GM_notification({
-          text: '自动签到失败！请关闭其他插件或脚本。\n如果连续几天都签到失败，请联系作者解决！',
-          timeout: 4000,
-          onclick() {
-            functions.feedback()
-          }
-        });
-        console.warn('[V2EX 增强] 自动签到失败！请关闭其他插件或脚本。如果连续几天都签到失败，请联系作者解决！')
+        // GM_notification({
+        //   text: '自动签到失败！请关闭其他插件或脚本。\n如果连续几天都签到失败，请联系作者解决！',
+        //   timeout: 4000,
+        //   onclick() {
+        //     functions.feedback()
+        //   }
+        // });
+        console.warn('[V2Next] 自动签到失败！请关闭其他插件或脚本。如果连续几天都签到失败，请联系作者解决！')
         if (qiandao) qiandao.textContent = '自动签到失败！请尝试手动签到！';
       }
     })
@@ -783,7 +783,7 @@ function run() {
       if (html.find('input[value^="领取"]').length) { //     还没有签到...
         qianDao_(null, timeNow); //                          后台签到
       } else { //                                              已经签到了...
-        console.info('[V2EX 增强] 已经签过到了。')
+        console.info('[V2Next] 已经签过到了。')
         localStorage.setItem('menu_clockInTime', timeNow); //         写入签到时间以供后续比较
       }
     })

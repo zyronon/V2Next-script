@@ -19,7 +19,7 @@ export default defineConfig({
       userscript: {
         version: '10.2',
         name: 'V2Next',
-        icon: 'https://v2next.netlify.app/favicon.ico',
+        icon: 'https://v2ex-script.vercel.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
         match: [
           'https://v2ex.com/',

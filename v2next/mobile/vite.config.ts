@@ -19,7 +19,7 @@ export default defineConfig({
       userscript: {
         version: '8.4',
         name: 'V2Next-Mobile',
-        icon: 'https://v2next.netlify.app/favicon.ico',
+        icon: 'https://v2ex-script.vercel.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
         require: [
           'http://code.jquery.com/jquery-3.7.1.min.js'
