@@ -283,18 +283,22 @@ export const functions = {
   },
   //打开新标签页
   openNewTab(href: string, active = false) {
-    GM_openInTab(href, {active});
-    // let tempId = 'a_blank_' + Date.now()
-    // let a = document.createElement("a");
-    // a.setAttribute("href", href);
-    // a.setAttribute("target", "_blank");
-    // a.setAttribute("id", tempId);
-    // a.setAttribute("script", '1');
-    // // 防止反复添加
-    // if (!document.getElementById(tempId)) {
-    //   document.body.appendChild(a);
-    // }
-    // a.click();
+    let isSafariBrowser = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+    if (isSafariBrowser) {
+      let tempId = 'a_blank_' + Date.now()
+      let a = document.createElement("a");
+      a.setAttribute("href", href);
+      a.setAttribute("target", "_blank");
+      a.setAttribute("id", tempId);
+      a.setAttribute("script", '1');
+      // 防止反复添加
+      if (!document.getElementById(tempId)) {
+        document.body.appendChild(a);
+      }
+      a.click();
+    } else {
+      GM_openInTab(href, {active});
+    }
   },
   async cbChecker(val: any, count = 0) {
     if (window.cb) {
