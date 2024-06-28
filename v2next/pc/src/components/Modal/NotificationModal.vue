@@ -16,7 +16,14 @@
             <div :class="index==='star'&& 'active'" @click="index = 'star'">感谢</div>
             <div :class="index==='collect'&& 'active'" @click="index = 'collect'">收藏</div>
           </div>
-          <div id="notifications" :class="index" v-html="h"></div>
+          <div class="list-wrap">
+            <div class="notify-wrap">
+              <div id="notifications" :class="index" v-html="list"></div>
+            </div>
+            <div class="loading-wrap" v-if="loading">
+              <BaseLoading/>
+            </div>
+          </div>
           <div class="footer">
             <div v-html="pages" class="pages"></div>
             <div class="total"><span>总共收到提醒</span>{{ total }}</div>
@@ -28,14 +35,27 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue"
+import {onMounted, ref, watch} from "vue"
+import BaseLoading from '../BaseLoading.vue'
 
-const props = defineProps(['modelValue', 'h', 'total', 'pages'])
+const props = defineProps(['modelValue', 'list', 'total', 'pages', 'loading'])
 const emit = defineEmits(['update:modelValue'])
 
-const index = ref('reply')
+const index = ref('all')
 
 onMounted(() => {
+})
+
+watch([index, () => props.list], () => {
+  $('.notify-wrap').scrollTop(0)
+})
+watch(() => props.modelValue, (n) => {
+  if (n) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = 'unset'
+    $('.notify-wrap').scrollTop(0)
+  }
 })
 
 function close() {
@@ -55,7 +75,7 @@ function close() {
     border-radius: 1rem;
     font-size: 1.4rem;
     width: 50vw;
-    height: 75vh;
+    height: 80vh;
     display: flex;
     flex-direction: column;
     padding: 1.4rem;
@@ -103,17 +123,43 @@ function close() {
         }
       }
 
-      #notifications {
+      .list-wrap {
         flex: 1;
-        overflow: auto;
+        position: relative;
+        overflow: hidden;
 
-        :deep(.cell) {
-          display: none;
+        .loading-wrap {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: rgba(#ffffff, .7);
+        }
 
-          //padding: 1rem;
-          a.node {
-            padding: .6rem 1rem;
-            border-radius: .4rem;
+        .notify-wrap {
+          overflow: auto;
+          height: 100%;
+        }
+
+        #notifications {
+
+          :deep(.cell) {
+            display: none;
+            padding: 1.2rem 0;
+
+            a.node {
+              padding: .6rem 1rem;
+              border-radius: .4rem;
+            }
+
+            .payload {
+              margin-top: .4rem;
+              font-size: 1.7rem;
+            }
           }
         }
       }
@@ -123,16 +169,19 @@ function close() {
           display: block;
         }
       }
+
       #notifications.reply {
         :deep(.reply) {
           display: block;
         }
       }
+
       #notifications.star {
         :deep(.star) {
           display: block;
         }
       }
+
       #notifications.collect {
         :deep(.collect) {
           display: block;
@@ -156,6 +205,22 @@ function close() {
             color: lightgray;
             font-weight: normal;
             margin-right: .4rem;
+          }
+        }
+      }
+
+      :deep(.super.button) {
+        padding: 0;
+        background: unset;
+        height: 26px;
+        width: 37px;
+
+        a {
+          display: block;
+
+          &:hover {
+            text-decoration: none;
+
           }
         }
       }

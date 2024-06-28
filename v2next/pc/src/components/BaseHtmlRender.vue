@@ -46,6 +46,7 @@ watch([() => contentRef.value, () => props.html], () => {
 
 function checkContentHeight() {
   if (handOpen.value) return;
+  if (!contentRef.value) return;
   let rect = contentRef.value.getBoundingClientRect()
   // console.log('rect', rect.height)
   mask.value = rect.height >= checkHeight

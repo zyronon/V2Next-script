@@ -3,7 +3,15 @@ import App from './App.vue';
 import {GM_notification, GM_registerMenuCommand} from "gmApi"
 import './global.d.ts'
 import {PageType, Post, Reply} from "@v2next/core/types"
-import {DefaultConfig, DefaultPost, DefaultUser, DefaultVal, functions, getDefaultPost} from "@v2next/core/core";
+import {
+  DefaultConfig,
+  DefaultPost,
+  DefaultUser,
+  DefaultVal,
+  functions,
+  getDefaultConfig,
+  getDefaultPost
+} from "@v2next/core/core";
 
 let isMobile = !document.querySelector('#Rightbar');
 
@@ -27,10 +35,11 @@ function run() {
   window.targetUserName = ''
   window.pageType = undefined
   window.pageData = {pageNo: 1}
-  window.config = DefaultConfig
+  window.config = getDefaultConfig()
   window.isNight = $('.Night').length === 1
   window.cb = null
   window.stopMe = false
+  window.isLogin = false
   window.postList = []
   window.parse = {
     //解析主题内容
@@ -384,7 +393,7 @@ function run() {
       })
 
       localStorage.setItem('d', '')
-
+      //检测
       if (window.pageType === PageType.Home) {
         const a = () => {
           let d
@@ -411,10 +420,10 @@ function run() {
       }
 
       const setF = (res) => {
-        let rIndex = window.postList.findIndex(w => w.id === res.id)
+        let rIndex = window.postList.findIndex(w => w.id == res.id)
         if (rIndex > -1) {
           window.postList[rIndex] = Object.assign(window.postList[rIndex], res)
-          functions.cbChecker({type: 'syncData'})
+          functions.cbChecker({type: 'syncList'})
         }
         let itemDom = box.querySelector(`.id_${res.id}`)
         itemDom.classList.add('preview')
@@ -438,7 +447,7 @@ function run() {
         let fetchIndex = 0
         for (let i = 0; i < window.postList.length; i++) {
           let item = window.postList[i]
-          let rItem = cacheData.find(w => w.id === item.id)
+          let rItem = cacheData.find(w => w.id == item.id)
           if (rItem) {
             rItem.href = item.href
             setF(rItem)
@@ -462,6 +471,7 @@ function run() {
     //创建记事本子条目
     async createNoteItem(itemName: string) {
       return new Promise(async resolve => {
+        if (!window.isLogin) return resolve(null)
         let data: any = new FormData()
         data.append('content', itemName)
         data.append('parent_id', 0)
@@ -476,6 +486,7 @@ function run() {
     },
     //编辑记事本子条目
     async editNoteItem(val: string, id: string) {
+      if (!window.isLogin) return
       if (!id) return
       let data: any = new FormData()
       data.append('content', val)
@@ -487,6 +498,7 @@ function run() {
     },
     //标签操作
     async saveTags(val: any) {
+      if (!window.isLogin) return
       for (const [key, value] of Object.entries(val)) {
         if (!(value as any[]).length) delete val[key]
       }
@@ -494,11 +506,13 @@ function run() {
     },
     //已读楼层操作
     async saveReadList(val: any) {
+      if (!window.isLogin) return
       return
       return await this.editNoteItem(window.user.readPrefix + JSON.stringify(val), window.user.readNoteItemId)
     },
     //imgur图片删除hash操作
     async saveImgurList(val: any) {
+      if (!window.isLogin) return
       return
       return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
     },
@@ -886,9 +900,6 @@ function run() {
       if (window.config.version < DefaultVal.currentVersion) {
         window.config.version = DefaultVal.currentVersion
       }
-      localStorage.setItem('v2ex-config', JSON.stringify(window.config))
-      window.parse.editNoteItem(window.user.configPrefix + JSON.stringify(window.config), window.user.configNoteId)
-
       if (false) {
         let imgurItem = Array.from(items).find(v => v.innerText.includes(window.user.imgurPrefix))
         if (imgurItem) {
@@ -899,10 +910,8 @@ function run() {
           r && (window.user.imgurNoteId = r);
         }
       }
-      await functions.cbChecker({type: 'syncData'})
-      setTimeout(() => [
-        window.initConfig = true
-      ])
+      functions.cbChecker({type: 'syncData'})
+      functions.cbChecker({type: 'getConfigSuccess'})
     })
   }
 
@@ -911,13 +920,226 @@ function run() {
     setting.on('click', function (e) {
       e.stopPropagation()
       e.preventDefault()
-      this.classList.remove('new')
       functions.cbChecker({type: 'openSetting'})
     })
     $('.tools').prepend(setting)
   }
 
   async function init() {
+    let top2 = document.querySelector('.tools .top:nth-child(2)')
+    if (top2 && top2.textContent !== '注册') {
+      window.isLogin = true
+      window.user.username = top2.textContent
+      window.user.avatar = $('#Rightbar .box .avatar').attr('src')
+    }
+
+    functions.initConfig()
+    initStyle()
+
+    if (window.isLogin) {
+      initNoteData()
+      try {
+        if (window.config.autoSignin) qianDao()
+      } catch (e) {
+        console.log('签到失败')
+      }
+    }
+
+    let box: any
+    let list
+    let last
+    let headerWrap
+    // window.pageType = PageType.Post
+    // window.pageData.id = 1007682
+
+    let {pageData, pageType, username} = functions.checkPageType()
+    window.pageType = pageType
+    window.pageData = pageData
+    window.targetUserName = username
+    // console.log(window.pageType)
+
+    switch (window.pageType!) {
+      case  PageType.Node:
+        box = document.querySelectorAll('#Wrapper #Main .box')
+
+        try {
+          //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+          headerWrap = $('<div class="post-item"></div>')
+          if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+          $(box[1]).prepend(headerWrap)
+          $(box[1]).children().slice(1, 3).each(function () {
+            if (this.classList.contains('cell')) {
+              headerWrap.append(this)
+            }
+          })
+          //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+          headerWrap = $('<div class="post-item"></div>')
+          if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+          $(box[1]).append(headerWrap)
+          $(box[1]).children().slice(2).each(function () {
+            if (this.classList.contains('cell')) {
+              headerWrap.append(this)
+            }
+          })
+          box[1].style.boxShadow = 'unset'
+          box[1].style.background = 'unset'
+          box[1].style.overflow = 'hidden'
+        } catch (e) {
+          console.log('PageType-Node解析报错了', e)
+        }
+
+        let topics = box[1].querySelector('#TopicsNode')
+
+        list = topics.querySelectorAll('.cell')
+        list[0].before($section)
+        window.parse.parsePagePostList(list, box[1])
+        break
+      case  PageType.Changes:
+      case  PageType.Home:
+        box = document.querySelector('#Wrapper #Main .box')
+
+        try {
+          //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+          headerWrap = $('<div class="post-item"></div>')
+          if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+          $(box).prepend(headerWrap)
+          $(box).children().slice(1, 3).each(function () {
+            if (!this.classList.contains('item')) {
+              headerWrap.append(this)
+            }
+          })
+          last = $(box).children().last()
+          last.addClass('cell post-item')
+          if (window.config.viewType === 'card') last[0].classList.add('preview')
+
+          box.style.boxShadow = 'unset'
+          box.style.background = 'unset'
+          box.style.overflow = 'hidden'
+        } catch (e) {
+          console.log('PageType-Home解析报错了', e)
+        }
+
+        list = box!.querySelectorAll('.item')
+        list[0].before($section)
+        window.parse.parsePagePostList(list, box)
+        break
+      case  PageType.Post:
+        let d: string = localStorage.getItem('d')
+        if (d) {
+          window.stopMe = true
+          functions.cbChecker({type: 'syncData'})
+          return
+        }
+        box = document.querySelector('#Wrapper #Main .box')
+        // @ts-ignore
+        box.after($section)
+
+        let r = await functions.checkPostReplies(window.pageData.id, false)
+        if (r) {
+          window.stopMe = true
+          functions.cbChecker({type: 'syncData'})
+          functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
+          return
+        }
+
+        //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面突然变宽或变窄
+        if (window.config.postWidth) {
+          //Rightbar的css样式是float，因为自定义主题宽度的话需要把content改为flex。
+          //Rightbar的float就失效了，所以把他移动右边
+          let Main = $('#Main')
+          Main.css({
+            'width': window.config.postWidth,
+            margin: 'unset',
+          })
+          $('#Wrapper > .content').css({
+            'max-width': 'unset',
+            display: 'flex',
+            'justify-content': 'center',
+            gap: '20px'
+          })
+          Main.after($('#Rightbar'))
+        }
+
+        let post = getDefaultPost({id: window.pageData.id})
+        let body = $(document.body)
+        let htmlText = document.documentElement.outerHTML
+
+        window.parse.parsePostContent(
+          post,
+          body,
+          htmlText
+        ).then(async (res: any) => {
+          // console.log('详情页-基本信息解析完成', Date.now())
+          await functions.cbChecker({type: 'postContent', value: res})
+          //引用修改
+          await window.parse.parseOp(res)
+          // console.log('详情页-OP信息解析完成', Date.now())
+        })
+
+        //引用修改
+        window.parse.getPostAllReplies(
+          post,
+          body,
+          htmlText,
+          window.pageData.pageNo
+        ).then(async (res1: any) => {
+          // console.log('详情页-回复解析完成', Date.now())
+          await functions.cbChecker({type: 'postReplies', value: res1})
+        })
+        break
+      case PageType.Member:
+        box = document.querySelectorAll('#Wrapper #Main .box')
+        if (location.pathname.includes('/replies')) {
+          box[0].after($section)
+        } else if (location.pathname.includes('/topics')) {
+          box[0].after($section)
+        } else {
+          if (window.config.openTag) {
+            //移除box的bottom样式，让和vue的div融为一体
+            box[0].style.borderBottom = 'none'
+            box[0].style['border-bottom-left-radius'] = '0'
+            box[0].style['border-bottom-right-radius'] = '0'
+          }
+
+          try {
+            //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
+            headerWrap = $('<div class="post-item"></div>')
+            if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
+            $(box[1]).prepend(headerWrap)
+            $(box[1]).children().slice(1, 2).each(function () {
+              if (!this.classList.contains('item')) {
+                headerWrap.append(this)
+              }
+            })
+            last = $(box[1]).children().last()
+            last.addClass('cell post-item')
+            if (window.config.viewType === 'card') last[0].classList.add('preview')
+
+            box[1].style.boxShadow = 'unset'
+            box[1].style.background = 'unset'
+            box[1].style.overflow = 'hidden'
+          } catch (e) {
+            console.log('PageType-Member解析报错了', e)
+          }
+
+          list = box[1].querySelectorAll('.cell')
+          box[0].after($section)
+          window.parse.parsePagePostList(list, box[1])
+        }
+        break
+      default:
+        window.stopMe = true
+        functions.cbChecker({type: 'syncData'})
+        console.error('未知页面')
+        break
+    }
+
+    addSettingText()
+    initMonkeyMenu()
+
+    if (window.isNight) {
+      document.documentElement.classList.add('dark')
+    }
 
     //监听图片加载失败事件，有的imgur图片填的是分享地址，无法转换。
     //例如：https://imgur.com/a/Gl0ifQ7，这种加上.png也显示不出来，就需要显示原地址
@@ -932,227 +1154,6 @@ function run() {
         dom.parentNode!.replaceChild(a, dom,)
       }
     }, true)
-
-
-    if (window.isNight) {
-      document.documentElement.classList.add('dark')
-    }
-
-    let {pageData, pageType, username} = functions.checkPageType()
-    window.pageType = pageType
-    window.pageData = pageData
-    window.targetUserName = username
-    initMonkeyMenu()
-
-    let top2 = document.querySelector('.tools .top:nth-child(2)')
-    if (top2 && top2.textContent !== '注册') {
-      window.user.username = top2.textContent
-      window.user.avatar = $('#Rightbar .box .avatar').attr('src')
-    }
-
-
-    functions.initConfig().then(async r => {
-      //这个要放后面，不然前面查找会出错
-      addSettingText()
-
-      initStyle()
-
-      try {
-        if (window.config.autoSignin && window.user.username) {
-          qianDao()
-        }
-      } catch (e) {
-        console.log('签到失败')
-      }
-
-      if (window.user.username) {
-        initNoteData()
-      }
-
-      let box: any
-      let list
-      let last
-      let headerWrap
-      // console.log(window.pageType)
-      // window.pageType = PageType.Post
-      // window.pageData.id = 1007682
-
-      switch (window.pageType!) {
-        case  PageType.Node:
-          box = document.querySelectorAll('#Wrapper #Main .box')
-
-          try {
-            //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
-            headerWrap = $('<div class="post-item"></div>')
-            if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
-            $(box[1]).prepend(headerWrap)
-            $(box[1]).children().slice(1, 3).each(function () {
-              if (this.classList.contains('cell')) {
-                headerWrap.append(this)
-              }
-            })
-            //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
-            headerWrap = $('<div class="post-item"></div>')
-            if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
-            $(box[1]).append(headerWrap)
-            $(box[1]).children().slice(2).each(function () {
-              if (this.classList.contains('cell')) {
-                headerWrap.append(this)
-              }
-            })
-            box[1].style.boxShadow = 'unset'
-            box[1].style.background = 'unset'
-            box[1].style.overflow = 'hidden'
-          } catch (e) {
-            console.log('PageType-Node解析报错了', e)
-          }
-
-          let topics = box[1].querySelector('#TopicsNode')
-
-          list = topics.querySelectorAll('.cell')
-          list[0].before($section)
-          window.parse.parsePagePostList(list, box[1])
-          break
-        case  PageType.Changes:
-        case  PageType.Home:
-          box = document.querySelector('#Wrapper #Main .box')
-
-          try {
-            //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
-            headerWrap = $('<div class="post-item"></div>')
-            if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
-            $(box).prepend(headerWrap)
-            $(box).children().slice(1, 3).each(function () {
-              if (!this.classList.contains('item')) {
-                headerWrap.append(this)
-              }
-            })
-            last = $(box).children().last()
-            last.addClass('cell post-item')
-            if (window.config.viewType === 'card') last[0].classList.add('preview')
-
-            box.style.boxShadow = 'unset'
-            box.style.background = 'unset'
-            box.style.overflow = 'hidden'
-          } catch (e) {
-            console.log('PageType-Home解析报错了', e)
-          }
-
-          list = box!.querySelectorAll('.item')
-          list[0].before($section)
-          window.parse.parsePagePostList(list, box)
-          break
-        case  PageType.Post:
-          let d: string = localStorage.getItem('d')
-          if (d) {
-            window.stopMe = true
-            functions.cbChecker({type: 'syncData'})
-            return
-          }
-          box = document.querySelector('#Wrapper #Main .box')
-          // @ts-ignore
-          box.after($section)
-
-          let r = await functions.checkPostReplies(window.pageData.id, false)
-          if (r) {
-            window.stopMe = true
-            functions.cbChecker({type: 'syncData'})
-            functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
-            return
-          }
-
-          //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面突然变宽或变窄
-          if (window.config.postWidth) {
-            //Rightbar的css样式是float，因为自定义主题宽度的话需要把content改为flex。
-            //Rightbar的float就失效了，所以把他移动右边
-            let Main = $('#Main')
-            Main.css({
-              'width': window.config.postWidth,
-              margin: 'unset',
-            })
-            $('#Wrapper > .content').css({
-              'max-width': 'unset',
-              display: 'flex',
-              'justify-content': 'center',
-              gap: '20px'
-            })
-            Main.after($('#Rightbar'))
-          }
-
-          let post = getDefaultPost({id: window.pageData.id})
-          let body = $(document.body)
-          let htmlText = document.documentElement.outerHTML
-
-          window.parse.parsePostContent(
-            post,
-            body,
-            htmlText
-          ).then(async (res: any) => {
-            // console.log('详情页-基本信息解析完成', Date.now())
-            await functions.cbChecker({type: 'postContent', value: res})
-            //引用修改
-            await window.parse.parseOp(res)
-            // console.log('详情页-OP信息解析完成', Date.now())
-          })
-
-          //引用修改
-          window.parse.getPostAllReplies(
-            post,
-            body,
-            htmlText,
-            window.pageData.pageNo
-          ).then(async (res1: any) => {
-            // console.log('详情页-回复解析完成', Date.now())
-            await functions.cbChecker({type: 'postReplies', value: res1})
-          })
-          break
-        case PageType.Member:
-          box = document.querySelectorAll('#Wrapper #Main .box')
-          if (location.pathname.includes('/replies')) {
-            box[0].after($section)
-          }else if (location.pathname.includes('/topics')) {
-            box[0].after($section)
-          } else {
-            if (window.config.openTag) {
-              //移除box的bottom样式，让和vue的div融为一体
-              box[0].style.borderBottom = 'none'
-              box[0].style['border-bottom-left-radius'] = '0'
-              box[0].style['border-bottom-right-radius'] = '0'
-            }
-
-            try {
-              //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
-              headerWrap = $('<div class="post-item"></div>')
-              if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
-              $(box[1]).prepend(headerWrap)
-              $(box[1]).children().slice(1, 2).each(function () {
-                if (!this.classList.contains('item')) {
-                  headerWrap.append(this)
-                }
-              })
-              last = $(box[1]).children().last()
-              last.addClass('cell post-item')
-              if (window.config.viewType === 'card') last[0].classList.add('preview')
-
-              box[1].style.boxShadow = 'unset'
-              box[1].style.background = 'unset'
-              box[1].style.overflow = 'hidden'
-            } catch (e) {
-              console.log('PageType-Member解析报错了', e)
-            }
-
-            list = box[1].querySelectorAll('.cell')
-            box[0].after($section)
-            window.parse.parsePagePostList(list, box[1])
-          }
-          break
-        default:
-          window.stopMe = true
-          functions.cbChecker({type: 'syncData'})
-          console.error('未知页面')
-          break
-      }
-    })
   }
 
   window.canParseV2exPage = !window.location.search.includes('script')

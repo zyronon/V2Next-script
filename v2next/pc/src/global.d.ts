@@ -15,7 +15,7 @@ declare global {
     config: Config,
     currentVersion: number,
     isNight: boolean,
-    initConfig: boolean,
+    isLogin: boolean,
     canParseV2exPage: boolean,
     pageType?: PageType,
     clone: (val: any) => any

@@ -905,7 +905,7 @@ export default {
 .post-detail {
   text-align: start;
   position: fixed;
-  z-index: 1000;
+  z-index: 1002;
   left: 0;
   right: 0;
   bottom: 0;

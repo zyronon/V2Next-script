@@ -63,7 +63,8 @@ export default {
       },
       notificationModal: {
         show: false,
-        h: '',
+        loading: false,
+        list: '',
         total: 0,
       },
       previewModal: {
@@ -75,6 +76,7 @@ export default {
         title: '',
         id: ''
       },
+      timer: -1
     }
   },
   computed: {
@@ -93,13 +95,16 @@ export default {
   },
   watch: {
     config: {
-      handler(newVal) {
-        let config = {[window.user.username ?? 'default']: newVal}
-        localStorage.setItem('v2ex-config', JSON.stringify(config))
-        window.config = newVal
-        if (window.initConfig) {
-          window.parse.editNoteItem(window.user.configPrefix + JSON.stringify(window.config), window.user.configNoteId)
+      handler(newVal, oldVal) {
+        console.log('config', this.clone(newVal).notice, this.clone(oldVal).notice)
+        let configStr = localStorage.getItem('v2ex-config')
+        if (configStr) {
+          let configObj = JSON.parse(configStr)
+          configObj[window.user.username || 'default'] = newVal
+          localStorage.setItem('v2ex-config', JSON.stringify(configObj))
         }
+        window.config = newVal
+        window.parse.editNoteItem(window.user.configPrefix + JSON.stringify(window.config), window.user.configNoteId)
       },
       deep: true
     },
@@ -127,7 +132,6 @@ export default {
 
     //A标签的
     $(document).on('click', 'a', this.clickA)
-
     //主题的
     $(document).on('click', '.post-item', function (e) {
       // console.log('click-post-item')
@@ -206,17 +210,10 @@ export default {
       $.post({
         url: '/delete/notification/' + nId + '?once=' + token,
         success() {
-          // $.get('/notifications/below/' + window.notificationBottom || nId, (data, status, request) => {
-          //   $('#notifications').append(data);
-          //   window.notificationBottom = request.getResponseHeader('X-V2EX-New-Notification-Bottom');
-          // })
-          // if (!window.notificationBottom) window.notificationBottom = nId
           $.get({
             url: '/notifications/below/' + window.notificationBottom,
             success(data, status, request) {
               item.remove()
-
-
               $('#notifications').append(that.checkReplyItemType(data));
               window.notificationBottom = request.getResponseHeader('X-V2EX-New-Notification-Bottom');
             },
@@ -230,27 +227,30 @@ export default {
         }
       })
     }
+
   },
   mounted() {
   },
   beforeUnmount() {
     // console.log('unmounted')
+    clearInterval(this.timer)
     eventBus.clear()
     $(document).off('click', 'a', this.clickA)
   },
   methods: {
     checkReplyItemType(val) {
-      let str = $(val).html()
+      let d = $(val)
+      let str = d.html()
       if (str.includes('提到了你') || str.includes('回复了你')) {
-        $(val).addClass('reply')
+        d.addClass('reply')
       }
       if (str.includes('感谢了你')) {
-        $(val).addClass('star')
+        d.addClass('star')
       }
       if (str.includes('收藏了你')) {
-        $(val).addClass('collect')
+        d.addClass('collect')
       }
-      return $(val)
+      return d
     },
     async getUnreadMessagesCount() {
       const res = await fetch(`${location.origin}/mission`)
@@ -278,7 +278,7 @@ export default {
       let {pageType} = functions.checkPageType(e.currentTarget)
       let {href, id, title} = functions.parseA(e.currentTarget)
 
-      console.log('pageType', pageType, href)
+      // console.log('pageType', pageType, href)
       switch (pageType) {
         case PageType.Post:
           if (id) {
@@ -294,16 +294,11 @@ export default {
           if (e.currentTarget.href.includes('/settings/night/toggle')) return
           //清除最近记录
           if (e.currentTarget.href === location.origin + '/#;') return
+
           //未读提醒
           if (e.currentTarget.href.includes('/notifications')) {
+            this.notificationModal.loading = true
             this.notificationModal.show = true
-
-            let clientWidth = window.document.body.clientWidth
-            let windowWidth = 1200
-            let left = clientWidth / 2 - windowWidth / 2
-            // let newWin = window.open("https://v2ex.com/notifications", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
-            // newWin.document.write('123');
-
             fetch(href).then(async r => {
               let htmlText = await r.text()
               let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
@@ -315,16 +310,32 @@ export default {
 
               let body = $(bodyText[0])
               let list = body.find('#notifications')
+              //给每条通知分类
               list.children().each(function () {
                 that.checkReplyItemType(this)
               })
               let h = list.html()
+              //获取总提醒数量
               let d = body.find('#Main > .box > .header .fr .gray')
               if (d.length) {
                 this.notificationModal.total = d.text()
               }
-              this.notificationModal.h = h
-              this.notificationModal.pages = list.next().html()
+              this.notificationModal.list = h
+              let p = list.next()
+              //给翻页按钮加上A标签，原生的是onclick事件，我拦截不到
+              let tds = p.find('.button')
+              // console.log('td', tds)
+              tds.each(function () {
+                let href = this.getAttribute('onclick')
+                if (href) {
+                  this.innerHTML = `<a href=${href.replace('location.href=', '')}>${this.innerHTML}</a>`
+                  this.setAttribute('onclick', '')
+                }
+              })
+              this.notificationModal.pages = p.html()
+              this.notificationModal.loading = false
+            }).catch(e => {
+              this.notificationModal.loading = false
             })
             that.stopEvent(e)
             return
@@ -378,15 +389,55 @@ export default {
       this.configModal.show = true
     },
     async winCb({type, value}) {
-      // console.log('回调的类型', type, value)
+      console.log('回调的类型', type, value)
       if (type === 'openSetting') {
         this.showConfig()
       }
       if (type === 'syncData') {
-        this.list = Object.assign(this.list, window.postList)
-        this.config = window.config
         this.stopMe = window.stopMe
+      }
+      if (type === 'getConfigSuccess') {
+        this.config = window.config
         this.tags = window.user.tags
+        const getNotice = () => {
+          fetch('/t').then(async res => {
+            if (res.status === 200) {
+              let htmlText = await res.text()
+              let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+              let body = $(bodyText[0])
+              let notify = body.find('a[href="/notifications"]')
+              if (notify.length) {
+                let title = document.title
+                let r = title.match(/\s\(\d+\)/)
+                if (r && r.length) {
+                  document.title = document.title.replace(r[0], '')
+                }
+                let text = notify.text();
+                if (text !== '0 未读提醒') {
+                  document.title = document.title + ` (${text.replace(' 未读提醒', '')})`
+                  if (this.config.notice.text !== text) {
+                    console.log('有新消息', text, this.config.notice.text)
+                    $('#money').parent().prev().replaceWith(`<div><div class="orange-dot"></div><strong><a href="/notifications">${text}</a></strong></div>`)
+                    this.config.notice.text = text
+                    fetch('http://localhost/index.php/v1/support/test?d=' + notify.text())
+                  }
+                } else {
+                  $('#money').parent().prev().replaceWith(`<a href="/notifications">${text}</a>`)
+                  console.log('消息清空', r)
+                  this.config.notice.text = ''
+                }
+              }
+            }
+          })
+        }
+        if (window.isLogin) {
+          getNotice()
+          this.timer = setInterval(getNotice, 10000)
+        }
+      }
+
+      if (type === 'syncList') {
+        this.list = Object.assign(this.list, window.postList)
       }
 
       if (type === 'warningNotice') {
@@ -658,7 +709,8 @@ export default {
 
   <NotificationModal
       v-model="notificationModal.show"
-      :h="notificationModal.h"
+      :list="notificationModal.list"
+      :loading="notificationModal.loading"
       :total="notificationModal.total"
       :pages="notificationModal.pages"
   />

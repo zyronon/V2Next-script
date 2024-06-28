@@ -406,18 +406,19 @@ export const functions = {
   },
   //从本地读取配置
   initConfig() {
-    return new Promise(resolve => {
-      //获取默认配置
-      let configStr = localStorage.getItem('v2ex-config')
-      if (configStr) {
-        let configObj = JSON.parse(configStr)
-        configObj = configObj[window.user.username ?? 'default']
-        if (configObj) {
-          window.config = Object.assign(window.config, configObj)
-        }
+    let configStr = localStorage.getItem('v2ex-config')
+    let configMap = {}
+    let configObj = {}
+    let userName = window.user.username || 'default';
+    if (configStr) {
+      configMap = JSON.parse(configStr)
+      configObj = configMap[userName]
+      if (configObj) {
+        window.config = Object.assign(window.config, configObj)
       }
-      resolve(window.config)
-    })
+    }
+    configMap[userName] = window.config
+    localStorage.setItem('v2ex-config', JSON.stringify(configMap))
   }
 }
 
@@ -517,7 +518,15 @@ export const DefaultConfig: Config = {
   customBgColor: '',
   version: DefaultVal.currentVersion,
   collectBrowserNotice: false,
-  fontSizeType: 'normal'
+  fontSizeType: 'normal',
+  notice: {
+    uid: '',
+    text: ''
+  }
+}
+
+export function getDefaultConfig(): Config {
+  return {...DefaultConfig}
 }
 
 

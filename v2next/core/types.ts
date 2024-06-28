@@ -74,6 +74,10 @@ export interface Config {
   version: number
   collectBrowserNotice: boolean// 收藏时，浏览器提醒
   fontSizeType: 'normal' | 'small' | 'large' | 'big-large'//字体大小
+  notice: {
+    uid: string,
+    text: string
+  }
 }
 
 export enum PageType {
