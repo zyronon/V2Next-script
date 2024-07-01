@@ -555,7 +555,7 @@ async function submit() {
   // emits('close')
   // return console.log('item', item)
 
-  let url = `${window.baseUrl}/t/${post.value.id}`
+  let url = `${location.origin}/t/${post.value.id}`
   $.post(url, {content: submit_content, once: post.value.once}).then(
       // $.post(url, {content: submit_content, once: 123}).then(
       res => {

@@ -605,7 +605,7 @@ export default {
       // console.log('getPostDetail')
       this.current = post
       this.show = true
-      let url = window.baseUrl + '/t/' + this.current.id
+      let url = location.origin + '/t/' + this.current.id
       this.current.url = url
 
       let alreadyHasReply = this.current.replyList.length

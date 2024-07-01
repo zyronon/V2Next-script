@@ -15,7 +15,7 @@ $(window.win().doc).on('click', 'a', async (e) => {
     e.preventDefault();
     Channel.postMessage(id);
     Channel.postMessage('开始请求');
-    let url = window.baseUrl + '/t/' + id;
+    let url = location.origin + '/t/' + id;
     let apiRes = await window.fetch(url + '?p=1');
     let htmlText = await apiRes.text();
     let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)

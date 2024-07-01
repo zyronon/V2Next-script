@@ -11,7 +11,7 @@ let $section = document.createElement('section')
 $section.id = 'app'
 
 function run() {
-  window.baseUrl = location.origin
+  location.origin = location.origin
   window.initPost = DefaultPost
   //历史遗留属性
   window.win = function () {
@@ -164,7 +164,7 @@ function run() {
     async parseOp(post: Post) {
       // id=669181
       if (!post.member.id) {
-        let userRes = await fetch(window.baseUrl + '/api/members/show.json?username=' + post.member.username)
+        let userRes = await fetch(location.origin + '/api/members/show.json?username=' + post.member.username)
         if (userRes.status === 200) {
           post.member = await userRes.json()
         }
@@ -250,7 +250,7 @@ function run() {
 
             let pages = cells[1].querySelectorAll('a.page_normal')
             pages = Array.from(pages)
-            let url = window.baseUrl + '/t/' + post.id
+            let url = location.origin + '/t/' + post.id
             for (let i = 0; i < pages.length; i++) {
               let currentPageNo = Number(pages[i].innerText)
               promiseList.push(this.fetchPostOtherPageReplies(url + '?p=' + currentPageNo, currentPageNo))
@@ -545,7 +545,7 @@ function run() {
         data.append('content', itemName)
         data.append('parent_id', 0)
         data.append('syntax', 0)
-        let apiRes = await window.win().fetch(`${window.baseUrl}/notes/new`, {method: 'post', body: data})
+        let apiRes = await window.win().fetch(`${location.origin}/notes/new`, {method: 'post', body: data})
         // console.log(apiRes)
         if (apiRes.redirected && apiRes.status === 200) {
           resolve(apiRes.url.substr(-5))
@@ -560,7 +560,7 @@ function run() {
       let data: any = new FormData()
       data.append('content', val)
       data.append('syntax', 0)
-      let apiRes = await window.fetch(`${window.baseUrl}/notes/edit/${id}`, {
+      let apiRes = await window.fetch(`${location.origin}/notes/edit/${id}`, {
         method: 'post', body: data
       })
       return apiRes.redirected && apiRes.status === 200;
@@ -638,9 +638,9 @@ function run() {
 
   // 后台签到
   function qianDao_(qiandao: any, timeNow: any) {
-    // let url = window.baseUrl + "/mission/daily"
+    // let url = location.origin + "/mission/daily"
     // @ts-ignore
-    let url = (window.baseUrl + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector('div#Top .tools, #menu-body').innerHTML)[0]);
+    let url = (location.origin + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector('div#Top .tools, #menu-body').innerHTML)[0]);
     console.log('url', url)
     $.get(url).then(r => {
       let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
@@ -670,7 +670,7 @@ function run() {
 
   // 后台获取签到状态（并判断是否需要签到）
   function qianDaoStatus_(timeNow: any) {
-    $.get(window.baseUrl + '/mission/daily').then(r => {
+    $.get(location.origin + '/mission/daily').then(r => {
       let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let html = $(bodyText[0])
       if (html.find('input[value^="领取"]').length) { //     还没有签到...
@@ -685,7 +685,7 @@ function run() {
   //获取记事本条目内容
   function getNoteItemContent(id: string, prefix: string) {
     return new Promise((resolve, reject) => {
-      $.get(window.baseUrl + '/notes/edit/' + id).then(r2 => {
+      $.get(location.origin + '/notes/edit/' + id).then(r2 => {
         let bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
         let body = $(bodyText[0])
         let text = body.find('.note_editor').text()
@@ -708,7 +708,7 @@ function run() {
   async function initNoteData() {
     return
     //获取或创建记事本的标签
-    $.get(window.baseUrl + '/notes').then(async r => {
+    $.get(location.origin + '/notes').then(async r => {
       let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let body = $(bodyText[0])
       let items: HTMLAnchorElement[] = body.find('#Main .box .note_item_title a') as any

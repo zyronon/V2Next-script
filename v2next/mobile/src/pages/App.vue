@@ -530,7 +530,7 @@ export default {
       eventBus.on(CMD.REFRESH_POST, () => this.getPostDetail(this.current))
     },
     async getPostDetail(post) {
-      console.log('getPostDetail',this.clone(post))
+      console.log('getPostDetail', this.clone(post))
       this.current = post
       this.current.read = this.readList[this.current.id] ?? {floor: 0, total: 0}
       this.show = true
@@ -546,7 +546,7 @@ export default {
         }
       }
 
-      let url = window.baseUrl + '/t/' + post.id
+      let url = location.origin + '/t/' + post.id
       this.current.url = url
 
       let alreadyHasReply = this.current.replyList.length

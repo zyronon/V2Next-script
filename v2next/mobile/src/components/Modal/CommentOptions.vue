@@ -48,7 +48,7 @@ async function handleCopy() {
 
 async function hide() {
   if (!checkIsLogin()) return
-  let url = `${window.baseUrl}/ignore/reply/${props.comment.id}?once=${props.post.once}`
+  let url = `${location.origin}/ignore/reply/${props.comment.id}?once=${props.post.once}`
   eventBus.emit(CMD.REMOVE, props.comment.floor)
   close()
   $.post(url).then(res => {
@@ -92,7 +92,7 @@ function thank() {
   }
   eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: props.comment.id, type: 'add'})
   //https://www.v2ex.com/thank/topic/886147?once=38719
-  let url = `${window.baseUrl}/thank/reply/${props.comment.id}?once=${props.post.once}`
+  let url = `${location.origin}/thank/reply/${props.comment.id}?once=${props.post.once}`
   $.post(url).then(res => {
     if (!res.success) {
       recallThank()

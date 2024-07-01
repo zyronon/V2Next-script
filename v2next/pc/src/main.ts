@@ -19,7 +19,6 @@ let $section = document.createElement('section')
 $section.id = 'app'
 
 function run() {
-  window.baseUrl = location.origin
   window.initPost = DefaultPost
   //历史遗留属性
   window.win = function () {
@@ -155,7 +154,7 @@ function run() {
     async parseOp(post: Post) {
       // id=669181
       if (!post.member.id) {
-        let userRes = await fetch(window.baseUrl + '/api/members/show.json?username=' + post.member.username)
+        let userRes = await fetch(location.origin + '/api/members/show.json?username=' + post.member.username)
         if (userRes.status === 200) {
           post.member = await userRes.json()
         }
@@ -222,7 +221,7 @@ function run() {
 
             let pages = cells[1].querySelectorAll('a.page_normal')
             pages = Array.from(pages)
-            let url = window.baseUrl + '/t/' + post.id
+            let url = location.origin + '/t/' + post.id
             for (let i = 0; i < pages.length; i++) {
               let currentPageNo = Number(pages[i].innerText)
               promiseList.push(this.fetchPostOtherPageReplies(url + '?p=' + currentPageNo, currentPageNo))
@@ -760,9 +759,9 @@ function run() {
 
   // 后台签到
   function qianDao_(qiandao: any, timeNow: any) {
-    // let url = window.baseUrl + "/mission/daily"
+    // let url = location.origin + "/mission/daily"
     // @ts-ignore
-    let url = (window.baseUrl + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector('div#Top .tools, #menu-body').innerHTML)[0]);
+    let url = (location.origin + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector('div#Top .tools, #menu-body').innerHTML)[0]);
     // console.log('url', url)
     $.get(url).then(r => {
       let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
@@ -792,7 +791,7 @@ function run() {
 
   // 后台获取签到状态（并判断是否需要签到）
   function qianDaoStatus_(timeNow: any) {
-    $.get(window.baseUrl + '/mission/daily').then(r => {
+    $.get( location.origin + '/mission/daily').then(r => {
       let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let html = $(bodyText[0])
       if (html.find('input[value^="领取"]').length) { //     还没有签到...

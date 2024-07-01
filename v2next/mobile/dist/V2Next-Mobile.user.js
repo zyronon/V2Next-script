@@ -2916,7 +2916,7 @@
       },
       async thank() {
         this.$emit("addThank");
-        let url = `${window.baseUrl}/thank/${this.apiUrl}?once=${this.post.once}`;
+        let url = `${location.origin}/thank/${this.apiUrl}?once=${this.post.once}`;
         $.post(url).then((res) => {
           if (!res.success) {
             this.$emit("recallThank");
@@ -3646,7 +3646,7 @@
           item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => "");
         }
         console.log("回复", item);
-        let url = `${window.baseUrl}/t/${post.value.id}`;
+        let url = `${location.origin}/t/${post.value.id}`;
         $.post(url, { content: submit_content, once: post.value.once }).then(
           // $.post(url, {content: submit_content, once: 123}).then(
           (res) => {
@@ -4273,7 +4273,7 @@
         if (!this.checkIsLogin())
           return;
         let isFavorite = this.post.isFavorite;
-        let url = `${window.baseUrl}/${isFavorite ? "unfavorite" : "favorite"}/topic/${this.post.id}?once=${this.post.once}`;
+        let url = `${location.origin}/${isFavorite ? "unfavorite" : "favorite"}/topic/${this.post.id}?once=${this.post.once}`;
         this.loading = true;
         let apiRes = await fetch(url);
         this.loading = false;
@@ -5102,7 +5102,7 @@
       async function hide() {
         if (!checkIsLogin())
           return;
-        let url = `${window.baseUrl}/ignore/reply/${props.comment.id}?once=${props.post.once}`;
+        let url = `${location.origin}/ignore/reply/${props.comment.id}?once=${props.post.once}`;
         eventBus.emit(CMD.REMOVE, props.comment.floor);
         close();
         $.post(url).then((res) => {
@@ -5141,7 +5141,7 @@
           return eventBus.emit(CMD.SHOW_MSG, { type: "warning", text: "已经感谢过了" });
         }
         eventBus.emit(CMD.CHANGE_COMMENT_THANK, { id: props.comment.id, type: "add" });
-        let url = `${window.baseUrl}/thank/reply/${props.comment.id}?once=${props.post.once}`;
+        let url = `${location.origin}/thank/reply/${props.comment.id}?once=${props.post.once}`;
         $.post(url).then((res) => {
           if (!res.success) {
             recallThank();
@@ -6845,7 +6845,7 @@
             return;
           }
         }
-        let url = window.baseUrl + "/t/" + post.id;
+        let url = location.origin + "/t/" + post.id;
         this.current.url = url;
         let alreadyHasReply = this.current.replyList.length;
         if (alreadyHasReply) {
@@ -7007,7 +7007,7 @@
   let $section = document.createElement("section");
   $section.id = "app";
   function run() {
-    window.baseUrl = location.origin;
+    location.origin = location.origin;
     window.initPost = DefaultPost;
     window.win = function() {
       return window;
@@ -7135,7 +7135,7 @@
       //解析OP信息
       async parseOp(post) {
         if (!post.member.id) {
-          let userRes = await fetch(window.baseUrl + "/api/members/show.json?username=" + post.member.username);
+          let userRes = await fetch(location.origin + "/api/members/show.json?username=" + post.member.username);
           if (userRes.status === 200) {
             post.member = await userRes.json();
           }
@@ -7210,7 +7210,7 @@
               repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) });
               let pages = cells[1].querySelectorAll("a.page_normal");
               pages = Array.from(pages);
-              let url = window.baseUrl + "/t/" + post.id;
+              let url = location.origin + "/t/" + post.id;
               for (let i = 0; i < pages.length; i++) {
                 let currentPageNo = Number(pages[i].innerText);
                 promiseList.push(this.fetchPostOtherPageReplies(url + "?p=" + currentPageNo, currentPageNo));
@@ -7535,7 +7535,7 @@
       }
     }
     function qianDao_(qiandao, timeNow) {
-      let url = window.baseUrl + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector("div#Top .tools, #menu-body").innerHTML)[0];
+      let url = location.origin + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector("div#Top .tools, #menu-body").innerHTML)[0];
       console.log("url", url);
       $.get(url).then((r2) => {
         let bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g);
@@ -7563,7 +7563,7 @@
       });
     }
     function qianDaoStatus_(timeNow) {
-      $.get(window.baseUrl + "/mission/daily").then((r2) => {
+      $.get(location.origin + "/mission/daily").then((r2) => {
         let bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g);
         let html = $(bodyText[0]);
         if (html.find('input[value^="领取"]').length) {

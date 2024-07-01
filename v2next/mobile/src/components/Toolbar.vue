@@ -58,7 +58,7 @@ export default {
       if (!this.checkIsLogin()) return
       // return eventBus.emit('merge', 'isFavorite')
       let isFavorite = this.post.isFavorite
-      let url = `${window.baseUrl}/${isFavorite ? 'unfavorite' : 'favorite'}/topic/${this.post.id}?once=${this.post.once}`
+      let url = `${location.origin}/${isFavorite ? 'unfavorite' : 'favorite'}/topic/${this.post.id}?once=${this.post.once}`
       this.loading = true
       let apiRes = await fetch(url)
       this.loading = false
