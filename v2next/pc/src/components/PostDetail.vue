@@ -177,9 +177,6 @@
       <div class="close-btn" @click.stop="close('btn')">
         <Icon icon="fontisto:close-a"/>
       </div>
-      <div class="scroll-top gray" @click.stop="scrollTop">
-        <Icon icon="lucide:move-up"/>
-      </div>
       <div class="refresh gray" @click.stop="$emit('refresh')">
         <BaseLoading v-if="refreshLoading"/>
         <Icon v-else icon="material-symbols:refresh"/>
@@ -189,6 +186,12 @@
         <input type="text" v-model="currentFloor"
                @click.stop="stop"
                @keydown.enter="jump(currentFloor)">
+      </div>
+      <div class="scroll-top gray" @click.stop="scrollTop">
+        <Icon icon="lucide:move-up"/>
+      </div>
+      <div class="msg gray">
+        <Icon icon="uiw:bell" />
       </div>
     </div>
 
@@ -491,30 +494,15 @@ export default {
     modelValue: {
       handler(newVal) {
         // console.log('modelValue', newVal, window.history.state)
-        if (this.isPost) {
-          return
-        }
+        if (this.isPost) return
         if (newVal) {
-          document.body.style.overflow = 'hidden'
-          if (!window.history.state) {
-            // console.log('执行了pushState', this.post.href)
-            window.history.pushState({}, 0, this.post.href);
-          }
-
           this.currentFloor = ''
           nextTick(() => {
-            window.document.title = this.post.title ?? 'V2EX'
             this.$refs?.main?.focus()
           })
         } else {
-          document.body.style.overflow = 'unset'
-          window.document.title = 'V2EX'
           this.isSticky = false
           this.showRelationReply = false
-          if (window.history.state) {
-            // console.log('执行了back')
-            window.history.back();
-          }
         }
       },
     },
@@ -1106,6 +1094,11 @@ export default {
       text-align: center;
       color: gray;
     }
+  }
+
+  .msg{
+    .scroll-top;
+    bottom: 5rem;
   }
 
   .close-btn {

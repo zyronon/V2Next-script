@@ -76,7 +76,12 @@ export default {
         title: '',
         id: ''
       },
-      timer: -1
+      timer: -1,
+      timer2: -1,
+      pageInfo: {
+        title: '',
+        number: 0
+      }
     }
   },
   computed: {
@@ -123,6 +128,43 @@ export default {
         })
       }
     },
+    'pageInfo.number'(newVal) {
+      clearInterval(this.timer2)
+      if (newVal) {
+        let c = 0
+        document.title = `(${this.pageInfo.number}) ` + this.pageInfo.title
+        this.timer2 = setInterval(() => {
+          c++
+          document.title = this.pageInfo.title
+          if (c % 2 === 0) {
+            document.title = `(${this.pageInfo.number}) ` + this.pageInfo.title
+          }
+        }, 1000)
+      } else {
+        document.title = this.pageInfo.title
+      }
+    },
+    show(newVal) {
+      // console.log('modelValue', newVal, window.history.state)
+      if (this.pageType === PageType.Post) return
+      if (newVal) {
+        document.body.style.overflow = 'hidden'
+        if (!window.history.state) {
+          // console.log('执行了pushState', this.post.href)
+          window.history.pushState({}, 0, this.current.href);
+        }
+        nextTick(() => {
+          this.pageInfo.title = document.title = this.current.title ?? 'V2EX'
+        })
+      } else {
+        document.body.style.overflow = 'unset'
+        this.pageInfo.title = document.title = 'V2EX'
+        if (window.history.state) {
+          // console.log('执行了back')
+          window.history.back();
+        }
+      }
+    }
   },
   created() {
     let that = this
@@ -227,7 +269,6 @@ export default {
         }
       })
     }
-
   },
   mounted() {
   },
@@ -294,7 +335,6 @@ export default {
           if (e.currentTarget.href.includes('/settings/night/toggle')) return
           //清除最近记录
           if (e.currentTarget.href === location.origin + '/#;') return
-
           //未读提醒
           if (e.currentTarget.href.includes('/notifications')) {
             this.notificationModal.loading = true
@@ -334,6 +374,7 @@ export default {
               })
               this.notificationModal.pages = p.html()
               this.notificationModal.loading = false
+              this.pageInfo.number = 0
             }).catch(e => {
               this.notificationModal.loading = false
             })
@@ -388,6 +429,43 @@ export default {
     showConfig() {
       this.configModal.show = true
     },
+    resetTitle() {
+      let r = document.title.match(/\s?\(\d+\)\s?/)
+      if (r && r.length) {
+        this.pageInfo.title = document.title.replace(r[0], '')
+      } else {
+        this.pageInfo.title = document.title
+      }
+    },
+    async getNotice(body) {
+      if (!body) {
+        let res = await fetch('/t')
+        if (res.status === 200) {
+          let htmlText = await res.text()
+          let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+          body = $(bodyText[0])
+        }
+      }
+      let notify = body.find('a[href="/notifications"]')
+      if (notify.length) {
+        this.resetTitle()
+        let text = notify.text();
+        if (text !== '0 未读提醒') {
+          this.pageInfo.number = text.replace(' 未读提醒', '')
+          console.log('text', text)
+          if (this.config.notice.text !== text) {
+            console.log('有新消息', text, this.config.notice.text)
+            $('#money').parent().prev().replaceWith(`<div><div class="orange-dot"></div><strong><a href="/notifications">${text}</a></strong></div>`)
+            this.config.notice.text = text
+            fetch('http://localhost/index.php/v1/support/test?d=' + notify.text())
+          }
+        } else {
+          $('#money').parent().prev().replaceWith(`<a href="/notifications">${text}</a>`)
+          console.log('消息清空',)
+          this.config.notice.text = ''
+        }
+      }
+    },
     async winCb({type, value}) {
       console.log('回调的类型', type, value)
       if (type === 'openSetting') {
@@ -399,40 +477,10 @@ export default {
       if (type === 'getConfigSuccess') {
         this.config = window.config
         this.tags = window.user.tags
-        const getNotice = () => {
-          fetch('/t').then(async res => {
-            if (res.status === 200) {
-              let htmlText = await res.text()
-              let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-              let body = $(bodyText[0])
-              let notify = body.find('a[href="/notifications"]')
-              if (notify.length) {
-                let title = document.title
-                let r = title.match(/\s\(\d+\)/)
-                if (r && r.length) {
-                  document.title = document.title.replace(r[0], '')
-                }
-                let text = notify.text();
-                if (text !== '0 未读提醒') {
-                  document.title = document.title + ` (${text.replace(' 未读提醒', '')})`
-                  if (this.config.notice.text !== text) {
-                    console.log('有新消息', text, this.config.notice.text)
-                    $('#money').parent().prev().replaceWith(`<div><div class="orange-dot"></div><strong><a href="/notifications">${text}</a></strong></div>`)
-                    this.config.notice.text = text
-                    fetch('http://localhost/index.php/v1/support/test?d=' + notify.text())
-                  }
-                } else {
-                  $('#money').parent().prev().replaceWith(`<a href="/notifications">${text}</a>`)
-                  console.log('消息清空', r)
-                  this.config.notice.text = ''
-                }
-              }
-            }
-          })
-        }
+
         if (window.isLogin) {
-          getNotice()
-          this.timer = setInterval(getNotice, 10000)
+          this.getNotice($(document.body))
+          this.timer = setInterval(this.getNotice, 10000)
         }
       }
 
