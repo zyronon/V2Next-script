@@ -77,6 +77,11 @@ export interface Config {
   notice: {
     uid: string,
     text: string
+    ddWebhook: string
+    takeOverNoticePage: boolean
+    whenNewNoticeGlimmer: boolean
+    loopCheckNotice: boolean
+    loopCheckNoticeInterval: number
   }
 }
 

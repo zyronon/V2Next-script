@@ -131,15 +131,17 @@ export default {
     'pageInfo.number'(newVal) {
       clearInterval(this.timer2)
       if (newVal) {
-        let c = 0
         document.title = `(${this.pageInfo.number}) ` + this.pageInfo.title
-        this.timer2 = setInterval(() => {
-          c++
-          document.title = this.pageInfo.title
-          if (c % 2 === 0) {
-            document.title = `(${this.pageInfo.number}) ` + this.pageInfo.title
-          }
-        }, 1000)
+        if (this.config.whenNewNoticeGlimmer) {
+          let c = 0
+          this.timer2 = setInterval(() => {
+            c++
+            document.title = this.pageInfo.title
+            if (c % 2 === 0) {
+              document.title = `(${this.pageInfo.number}) ` + this.pageInfo.title
+            }
+          }, 1000)
+        }
       } else {
         document.title = this.pageInfo.title
       }
@@ -245,29 +247,31 @@ export default {
       }
     };
 
-    window.deleteNotification = (nId, token) => {
-      // console.log('deleteNotification', nId, token)
-      let item = $("#n_" + nId)
-      item.slideUp('fast');
-      $.post({
-        url: '/delete/notification/' + nId + '?once=' + token,
-        success() {
-          $.get({
-            url: '/notifications/below/' + window.notificationBottom,
-            success(data, status, request) {
-              item.remove()
-              $('#notifications').append(that.checkReplyItemType(data));
-              window.notificationBottom = request.getResponseHeader('X-V2EX-New-Notification-Bottom');
-            },
-            error() {
-              item.slideDown('fast');
-            }
-          })
-        },
-        error() {
-          item.slideDown('fast');
-        }
-      })
+    if (this.config.takeOverNoticePage) {
+      window.deleteNotification = (nId, token) => {
+        // console.log('deleteNotification', nId, token)
+        let item = $("#n_" + nId)
+        item.slideUp('fast');
+        $.post({
+          url: '/delete/notification/' + nId + '?once=' + token,
+          success() {
+            $.get({
+              url: '/notifications/below/' + window.notificationBottom,
+              success(data, status, request) {
+                item.remove()
+                $('#notifications').append(that.checkReplyItemType(data));
+                window.notificationBottom = request.getResponseHeader('X-V2EX-New-Notification-Bottom');
+              },
+              error() {
+                item.slideDown('fast');
+              }
+            })
+          },
+          error() {
+            item.slideDown('fast');
+          }
+        })
+      }
     }
   },
   mounted() {
@@ -337,49 +341,51 @@ export default {
           if (e.currentTarget.href === location.origin + '/#;') return
           //未读提醒
           if (e.currentTarget.href.includes('/notifications')) {
-            this.notificationModal.loading = true
-            this.notificationModal.show = true
-            fetch(href).then(async r => {
-              let htmlText = await r.text()
-              let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-              let res = htmlText.match(/var notificationBottom = ([\d]+);/)
-              if (res && res[1]) {
-                window.notificationBottom = Number(res[1])
-                console.log(' window.notificationBottom', window.notificationBottom)
-              }
-
-              let body = $(bodyText[0])
-              let list = body.find('#notifications')
-              //给每条通知分类
-              list.children().each(function () {
-                that.checkReplyItemType(this)
-              })
-              let h = list.html()
-              //获取总提醒数量
-              let d = body.find('#Main > .box > .header .fr .gray')
-              if (d.length) {
-                this.notificationModal.total = d.text()
-              }
-              this.notificationModal.list = h
-              let p = list.next()
-              //给翻页按钮加上A标签，原生的是onclick事件，我拦截不到
-              let tds = p.find('.button')
-              // console.log('td', tds)
-              tds.each(function () {
-                let href = this.getAttribute('onclick')
-                if (href) {
-                  this.innerHTML = `<a href=${href.replace('location.href=', '')}>${this.innerHTML}</a>`
-                  this.setAttribute('onclick', '')
+            if (this.config.takeOverNoticePage) {
+              this.notificationModal.loading = true
+              this.notificationModal.show = true
+              fetch(href).then(async r => {
+                let htmlText = await r.text()
+                let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+                let res = htmlText.match(/var notificationBottom = ([\d]+);/)
+                if (res && res[1]) {
+                  window.notificationBottom = Number(res[1])
+                  console.log(' window.notificationBottom', window.notificationBottom)
                 }
+
+                let body = $(bodyText[0])
+                let list = body.find('#notifications')
+                //给每条通知分类
+                list.children().each(function () {
+                  that.checkReplyItemType(this)
+                })
+                let h = list.html()
+                //获取总提醒数量
+                let d = body.find('#Main > .box > .header .fr .gray')
+                if (d.length) {
+                  this.notificationModal.total = d.text()
+                }
+                this.notificationModal.list = h
+                let p = list.next()
+                //给翻页按钮加上A标签，原生的是onclick事件，我拦截不到
+                let tds = p.find('.button')
+                // console.log('td', tds)
+                tds.each(function () {
+                  let href = this.getAttribute('onclick')
+                  if (href) {
+                    this.innerHTML = `<a href=${href.replace('location.href=', '')}>${this.innerHTML}</a>`
+                    this.setAttribute('onclick', '')
+                  }
+                })
+                this.notificationModal.pages = p.html()
+                this.notificationModal.loading = false
+                this.pageInfo.number = 0
+              }).catch(e => {
+                this.notificationModal.loading = false
               })
-              this.notificationModal.pages = p.html()
-              this.notificationModal.loading = false
-              this.pageInfo.number = 0
-            }).catch(e => {
-              this.notificationModal.loading = false
-            })
-            that.stopEvent(e)
-            return
+              that.stopEvent(e)
+              return
+            }
           }
 
           // that.stopEvent(e)

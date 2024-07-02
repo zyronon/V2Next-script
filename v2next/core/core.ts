@@ -492,7 +492,7 @@ export const DefaultVal = {
   pcLog: 'https://greasyfork.org/zh-CN/scripts/458024/versions',
   pcScript: 'https://greasyfork.org/zh-CN/scripts/458024',
   mobileScript: 'https://greasyfork.org/zh-CN/scripts/485356',
-  homeUrl: 'https://v2next.netlify.app/',
+  homeUrl: 'https://v2ex-script.vercel.app/',
 }
 
 export const DefaultConfig: Config = {
@@ -521,7 +521,10 @@ export const DefaultConfig: Config = {
   fontSizeType: 'normal',
   notice: {
     uid: '',
-    text: ''
+    text: '',
+    ddWebhook: '',
+    takeOverNoticePage:true,
+    whenNewNoticeGlimmer:true,
   }
 }
 

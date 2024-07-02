@@ -191,7 +191,8 @@
                   </div>
                 </div>
                 <div class="desc">
-                  未设定此值时，则脚本就什么都不做，V站大部分页面背景颜色默认为 #e2e2e2，少部分页面有特定背景。接受一个合法的css color值：例如<a
+                  未设定此值时，则脚本就什么都不做，V站大部分页面背景颜色默认为 #e2e2e2，少部分页面有特定背景。接受一个合法的css
+                  color值：例如<a
                     href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value"
                     target="_blank">red、#ffffff、rgb(222,222,22)(点此查看)</a>等等。
                 </div>
@@ -207,14 +208,52 @@
                 <div class="desc">
                   V站帐号一旦被封禁，则无法登录，无法查看账号收藏了
                 </div>
+                <div class="row">
+                  <label class="main-title">消息通知</label>
+                </div>
+                <div class="row">
+                  <label class="item-title">接管 “未读提醒” 页面</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.takeOverNoticePage"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="item-title">定时查询未读提醒</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.whenNewNoticeGlimmer"/>
+                  </div>
+                </div>
+                <div class="desc">
+                  开启此功能会带来以下影响：
+                  1、你的IP可能会被封禁
+                  2、消耗更多流量，给服务器带来更大的负担
+                  3、你的V站浏览进度条会变快
+                </div>
+                <div class="row">
+                  <label class="item-title">查询间隔</label>
+                  <div class="wrapper">
+                    <input type="text" v-model="config.ddWebhook" style="margin-right: 1rem">分钟
+                  </div>
+                </div>
+                <div class="desc">
+                  设置值太小，会导致频繁请求，你的IP可能会被封禁，建议设置为5，即每次5分钟查询一次
+                </div>
+                <div class="row">
+                  <label class="item-title">当有新消息时，网页标题闪烁</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.whenNewNoticeGlimmer"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="item-title">钉钉Webhook地址</label>
+                </div>
+                <div class="desc">
+                  <input type="text" v-model="config.ddWebhook" style="width: 100%;">
+                </div>
               </div>
               <div v-if="tabIndex === 3">
                 <h1>V2EX Next</h1>
                 <div class="project-desc">
-                  <div>
-                    本项目完全开源，已支持移动端！<b>好用请大家多多点Star！</b>
-                  </div>
-                  <br>
                   <div style="line-height: 2;">
                     <div>官网：<a :href="DefaultVal.homeUrl" target="_blank">{{ DefaultVal.homeUrl }}</a></div>
                     <div>GitHub地址：<a :href="DefaultVal.git" target="_blank">{{ DefaultVal.git }}</a></div>
@@ -299,7 +338,14 @@ export default {
         this.$emit('update:modelValue', n)
       },
       deep: true
-    }
+    },
+    // modelValue(n){
+    //   if (n) {
+    //     document.body.style.overflow = 'hidden'
+    //   } else {
+    //     document.body.style.overflow = 'unset'
+    //   }
+    // }
   },
   methods: {
     close() {
