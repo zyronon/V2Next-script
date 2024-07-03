@@ -220,7 +220,7 @@
                 <div class="row">
                   <label class="item-title">定时查询未读提醒</label>
                   <div class="wrapper">
-                    <BaseSwitch v-model="config.whenNewNoticeGlimmer"/>
+                    <BaseSwitch v-model="config.loopCheckNotice"/>
                   </div>
                 </div>
                 <div class="desc">
@@ -229,26 +229,28 @@
                   2、消耗更多流量，给服务器带来更大的负担
                   3、你的V站浏览进度条会变快
                 </div>
-                <div class="row">
-                  <label class="item-title">查询间隔</label>
-                  <div class="wrapper">
-                    <input type="text" v-model="config.ddWebhook" style="margin-right: 1rem">分钟
+                <div v-if="config.loopCheckNotice">
+                  <div class="row">
+                    <label class="item-title">查询间隔</label>
+                    <div class="wrapper">
+                      <input type="text" v-model="config.ddWebhook" style="margin-right: 1rem">分钟
+                    </div>
                   </div>
-                </div>
-                <div class="desc">
-                  设置值太小，会导致频繁请求，你的IP可能会被封禁，建议设置为5，即每次5分钟查询一次
-                </div>
-                <div class="row">
-                  <label class="item-title">当有新消息时，网页标题闪烁</label>
-                  <div class="wrapper">
-                    <BaseSwitch v-model="config.whenNewNoticeGlimmer"/>
+                  <div class="desc">
+                    设置值太小，会导致频繁请求，你的IP可能会被封禁，建议设置为5，即每次5分钟查询一次
                   </div>
-                </div>
-                <div class="row">
-                  <label class="item-title">钉钉Webhook地址</label>
-                </div>
-                <div class="desc">
-                  <input type="text" v-model="config.ddWebhook" style="width: 100%;">
+                  <div class="row">
+                    <label class="item-title">当有新消息时，网页标题闪烁</label>
+                    <div class="wrapper">
+                      <BaseSwitch v-model="config.whenNewNoticeGlimmer"/>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <label class="item-title">钉钉Webhook地址</label>
+                  </div>
+                  <div class="desc">
+                    <input type="text" v-model="config.ddWebhook" style="width: 100%;">
+                  </div>
                 </div>
               </div>
               <div v-if="tabIndex === 3">
@@ -339,13 +341,13 @@ export default {
       },
       deep: true
     },
-    // modelValue(n){
-    //   if (n) {
-    //     document.body.style.overflow = 'hidden'
-    //   } else {
-    //     document.body.style.overflow = 'unset'
-    //   }
-    // }
+    show(n) {
+      if (n) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = 'unset'
+      }
+    }
   },
   methods: {
     close() {
