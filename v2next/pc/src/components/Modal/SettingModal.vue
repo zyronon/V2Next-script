@@ -341,6 +341,16 @@ export default {
       },
       deep: true
     },
+    'config.loopCheckNotice'(n){
+      if (n) {
+        this.config.loopCheckNoticeInterval = 5
+        this.config.whenNewNoticeGlimmer = true
+      } else {
+        this.config.loopCheckNoticeInterval = 0
+        this.config.whenNewNoticeGlimmer = false
+        this.config.ddWebhook = ''
+      }
+    },
     show(n) {
       if (n) {
         document.body.style.overflow = 'hidden'
