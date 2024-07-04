@@ -891,7 +891,8 @@ function run() {
         }
         window.user.configNoteId = tagItems[0].href.substr(-5)
         let config: any = await getNoteItemContent(window.user.configNoteId, window.user.configPrefix)
-        window.config = Object.assign(window.config, config)
+        // ts-ignore
+        window.config = functions.deepAssign(window.config, config)
       } else {
         let r = await window.parse.createNoteItem(window.user.configPrefix)
         r && (window.user.configNoteId = r);

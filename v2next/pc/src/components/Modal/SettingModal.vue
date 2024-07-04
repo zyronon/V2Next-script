@@ -212,7 +212,7 @@
                   <label class="main-title">消息通知</label>
                 </div>
                 <div class="row">
-                  <label class="item-title">接管 “未读提醒” 页面</label>
+                  <label class="item-title">接管未读提醒页面</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.takeOverNoticePage"/>
                   </div>
@@ -229,18 +229,18 @@
                   2、消耗更多流量，给服务器带来更大的负担
                   3、你的V站浏览进度条会变快
                 </div>
-                <div v-if="config.loopCheckNotice">
+                <div v-if="config.loopCheckNotice" class="sub-content">
                   <div class="row">
                     <label class="item-title">查询间隔</label>
                     <div class="wrapper">
-                      <input type="text" v-model="config.ddWebhook" style="margin-right: 1rem">分钟
+                      <input type="text" v-model="config.loopCheckNoticeInterval" style="margin-right: 1rem">分钟
                     </div>
                   </div>
                   <div class="desc">
                     设置值太小，会导致频繁请求，你的IP可能会被封禁，建议设置为5，即每次5分钟查询一次
                   </div>
                   <div class="row">
-                    <label class="item-title">当有新消息时，网页标题闪烁</label>
+                    <label class="item-title">当有新未读提醒时，网页标题闪烁</label>
                     <div class="wrapper">
                       <BaseSwitch v-model="config.whenNewNoticeGlimmer"/>
                     </div>
@@ -341,7 +341,7 @@ export default {
       },
       deep: true
     },
-    'config.loopCheckNotice'(n){
+    'config.loopCheckNotice'(n) {
       if (n) {
         this.config.loopCheckNoticeInterval = 5
         this.config.whenNewNoticeGlimmer = true
@@ -526,6 +526,13 @@ export default {
       }
     }
   }
+}
+
+.sub-content {
+  padding: 0 2rem;
+  padding-bottom: 1rem;
+  border-radius: 1rem;
+  background: #f3f3f3;
 }
 
 </style>

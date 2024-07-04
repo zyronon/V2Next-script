@@ -419,6 +419,40 @@ export const functions = {
     }
     configMap[userName] = window.config
     localStorage.setItem('v2ex-config', JSON.stringify(configMap))
+  },
+  deepAssign() {
+    let name, options, src, copy
+    let length = arguments.length
+    // 记录要复制的对象的下标
+    let i = 1
+    // target默认是第一个参数
+    let target = arguments[0] || {}
+    // 如果target不是对象，我们是无法进行复制的，所以设为{}
+    if (typeof target !== 'object') {
+      target = {}
+    }
+    // 循环遍历要复制的对象
+    for (; i < length; i++) {
+      // 获取当前对象
+      options = arguments[i]
+      // 要求不能为空 避免extend(a,,b)这种情况
+      if (options != null) {
+        for (name in options) {
+          // 目标属性值
+          src = target[name]
+          // 要复制的对象的属性值
+          copy = options[name]
+
+          if (copy && typeof copy == 'object') {
+            // 递归调用
+            target[name] = this.deepAssign(src, copy)
+          } else if (copy !== undefined) {
+            target[name] = copy
+          }
+        }
+      }
+    }
+    return target
   }
 }
 
@@ -523,9 +557,9 @@ export const DefaultConfig: Config = {
     uid: '',
     text: '',
     ddWebhook: '',
-    takeOverNoticePage:true,
-    whenNewNoticeGlimmer:true,
-    loopCheckNotice:true,
+    takeOverNoticePage: true,
+    whenNewNoticeGlimmer: true,
+    loopCheckNotice: true,
     loopCheckNoticeInterval: 5,
   }
 }
@@ -533,5 +567,7 @@ export const DefaultConfig: Config = {
 export function getDefaultConfig(): Config {
   return {...DefaultConfig}
 }
+
+1
 
 
