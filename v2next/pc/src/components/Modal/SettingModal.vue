@@ -214,13 +214,13 @@
                 <div class="row">
                   <label class="item-title">接管未读提醒页面</label>
                   <div class="wrapper">
-                    <BaseSwitch v-model="config.takeOverNoticePage"/>
+                    <BaseSwitch v-model="config.notice.takeOverNoticePage"/>
                   </div>
                 </div>
                 <div class="row">
                   <label class="item-title">定时查询未读提醒</label>
                   <div class="wrapper">
-                    <BaseSwitch v-model="config.loopCheckNotice"/>
+                    <BaseSwitch v-model="config.notice.loopCheckNotice"/>
                   </div>
                 </div>
                 <div class="desc">
@@ -229,11 +229,11 @@
                   2、消耗更多流量，给服务器带来更大的负担
                   3、你的V站浏览进度条会变快
                 </div>
-                <div v-if="config.loopCheckNotice" class="sub-content">
+                <div v-if="config.notice.loopCheckNotice" class="sub-content">
                   <div class="row">
                     <label class="item-title">查询间隔</label>
                     <div class="wrapper">
-                      <input type="text" v-model="config.loopCheckNoticeInterval" style="margin-right: 1rem">分钟
+                      <input type="number"  v-model="config.notice.loopCheckNoticeInterval" style="margin-right: 1rem">分钟
                     </div>
                   </div>
                   <div class="desc">
@@ -242,15 +242,20 @@
                   <div class="row">
                     <label class="item-title">当有新未读提醒时，网页标题闪烁</label>
                     <div class="wrapper">
-                      <BaseSwitch v-model="config.whenNewNoticeGlimmer"/>
+                      <BaseSwitch v-model="config.notice.whenNewNoticeGlimmer"/>
                     </div>
                   </div>
                   <div class="row">
                     <label class="item-title">钉钉Webhook地址</label>
                   </div>
                   <div class="desc">
-                    <input type="text" v-model="config.ddWebhook" style="width: 100%;">
+                    <input type="text" :value="config.notice.ddWebhook"
+                           @blur="e=>config.notice.ddWebhook = e.target.value"
+                           style="width: 100%;">
                   </div>
+                </div>
+                <div class="desc danger">
+                  提示：此项需要刷新页面才能生效
                 </div>
               </div>
               <div v-if="tabIndex === 3">
@@ -344,7 +349,7 @@ export default {
     'config.loopCheckNotice'(n) {
       if (n) {
         this.config.loopCheckNoticeInterval = 5
-        this.config.whenNewNoticeGlimmer = true
+        this.config.whenNewNoticeGlimmer = false
       } else {
         this.config.loopCheckNoticeInterval = 0
         this.config.whenNewNoticeGlimmer = false
@@ -533,6 +538,7 @@ export default {
   padding-bottom: 1rem;
   border-radius: 1rem;
   background: #f3f3f3;
+  margin-bottom: 1rem;
 }
 
 </style>

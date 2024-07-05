@@ -132,7 +132,7 @@ export default {
       clearInterval(this.timer2)
       if (newVal) {
         document.title = `(${this.pageInfo.number}) ` + this.pageInfo.title
-        if (this.config.whenNewNoticeGlimmer) {
+        if (this.config.notice.whenNewNoticeGlimmer) {
           let c = 0
           this.timer2 = setInterval(() => {
             c++
@@ -173,6 +173,20 @@ export default {
     this.initEvent()
     window.cb = this.winCb
     if (!window.canParseV2exPage) return
+
+    window.test = ()=>{
+      let n = new Date()
+      $.ajax(this.config.notice.ddWebhook, {
+        mode:'no-cors',
+        method: 'POST',
+        body: JSON.stringify({
+          "msgtype": "text",
+          "text": {
+            "content": '未读提醒' + `时间：${n.getFullYear()}/${n.getMonth() + 1}/${n.getDate()} ${n.getHours()}:${n.getMinutes()}`
+          }
+        })
+      })
+    }
 
     //A标签的
     $(document).on('click', 'a', this.clickA)
@@ -247,7 +261,7 @@ export default {
       }
     };
 
-    if (this.config.takeOverNoticePage) {
+    if (this.config.notice.takeOverNoticePage) {
       window.deleteNotification = (nId, token) => {
         // console.log('deleteNotification', nId, token)
         let item = $("#n_" + nId)
@@ -341,7 +355,7 @@ export default {
           if (e.currentTarget.href === location.origin + '/#;') return
           //未读提醒
           if (e.currentTarget.href.includes('/notifications')) {
-            if (this.config.takeOverNoticePage) {
+            if (this.config.notice.takeOverNoticePage) {
               this.notificationModal.loading = true
               this.notificationModal.show = true
               fetch(href).then(async r => {
@@ -458,12 +472,24 @@ export default {
         let text = notify.text();
         if (text !== '0 未读提醒') {
           this.pageInfo.number = text.replace(' 未读提醒', '')
-          console.log('text', text)
+          console.log('text', text, this.config.notice.ddWebhook)
           if (this.config.notice.text !== text) {
-            console.log('有新消息', text, this.config.notice.text)
+            console.log('有新消息', text, this.config.notice.text,)
             $('#money').parent().prev().replaceWith(`<div><div class="orange-dot"></div><strong><a href="/notifications">${text}</a></strong></div>`)
             this.config.notice.text = text
-            fetch('http://localhost/index.php/v1/support/test?d=' + notify.text())
+            if (this.config.notice.ddWebhook) {
+              let n = new Date()
+              fetch(this.config.notice.ddWebhook, {
+                mode:'no-cors',
+                method: 'POST',
+                body: JSON.stringify({
+                  "msgtype": "text",
+                  "text": {
+                    "content": notify.text() + `时间：${n.getFullYear()}/${n.getMonth() + 1}/${n.getDate()} ${n.getHours()}:${n.getMinutes()}`
+                  }
+                })
+              })
+            }
           }
         } else {
           $('#money').parent().prev().replaceWith(`<a href="/notifications">${text}</a>`)
@@ -484,9 +510,9 @@ export default {
         this.config = window.config
         this.tags = window.user.tags
 
-        if (window.isLogin) {
+        if (window.isLogin && this.config.notice.loopCheckNotice) {
           this.getNotice($(document.body))
-          this.timer = setInterval(this.getNotice, 10000)
+          this.timer = setInterval(this.getNotice, 1000 * 60 * Number(this.config.notice.loopCheckNoticeInterval))
         }
       }
 

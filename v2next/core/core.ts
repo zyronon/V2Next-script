@@ -558,7 +558,7 @@ export const DefaultConfig: Config = {
     text: '',
     ddWebhook: '',
     takeOverNoticePage: true,
-    whenNewNoticeGlimmer: true,
+    whenNewNoticeGlimmer: false,
     loopCheckNotice: true,
     loopCheckNoticeInterval: 5,
   }
@@ -568,6 +568,5 @@ export function getDefaultConfig(): Config {
   return {...DefaultConfig}
 }
 
-1
 
 
