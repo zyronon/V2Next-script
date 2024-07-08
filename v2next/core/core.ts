@@ -559,7 +559,7 @@ export const DefaultConfig: Config = {
     ddWebhook: '',
     takeOverNoticePage: true,
     whenNewNoticeGlimmer: false,
-    loopCheckNotice: true,
+    loopCheckNotice: false,
     loopCheckNoticeInterval: 5,
   }
 }

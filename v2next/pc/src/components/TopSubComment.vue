@@ -9,7 +9,7 @@
               @reply="edit = !edit"
               type="top"
       />
-      <BaseHtmlRender class="reply_content" :html="modelValue.hideCallUserReplyContent"/>
+      <BaseHtmlRender class="top-reply_content reply_content" :html="modelValue.hideCallUserReplyContent"/>
       <PostEditor v-if="edit"
                   @close="edit = false"
                   :replyInfo="replyInfo"
@@ -46,7 +46,6 @@ export default {
   data() {
     return {
       expand: true,
-
       edit: false,
       replyInfo: `@${this.modelValue.username} #${this.modelValue.floor} `,
       floor: this.modelValue.floor

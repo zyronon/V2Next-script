@@ -44,7 +44,7 @@
 
     <div class="emoticon-pack" ref="emoticonsRef" v-show="isShowEmoticons">
       <Icon icon="ic:round-close" @click.stop="isShowEmoticons = false"/>
-      <div class="title">经典表情</div>
+      <div class="title">经典</div>
       <div class="list">
         <img v-for="item in classicsEmoticons" :src="item.high" @click.stop="insert(item.name);isShowEmoticons = false">
       </div>
@@ -99,6 +99,14 @@ const none = ref('<span style="white-space:pre-wrap;"> </span>')
 /** emoji表情数据 */
 const emojiEmoticons = [
   {
+    title: '常用',
+    list: [
+      '😅', '😭', '😂', '🥰', '😰', '🤡', '👀',
+      '🐴', '🐶', '❓', '❤️', '💔', '⭐', '🔥',
+      '💩', '🔞', '⚠️', '🎁', '🎉',
+    ]
+  },
+  {
     title: '小黄脸',
     list: [
       '😀',
@@ -143,135 +151,22 @@ const emojiEmoticons = [
   {
     title: '手势',
     list: [
-      '🙋',
-      '🙎',
-      '🙅',
-      '🙇',
-      '🤷',
       '🤏',
       '👉',
       '✌️',
-      '🤘',
-      '🤙',
       '👌',
-      '🤌',
       '👍',
       '👎',
-      '👋',
       '🤝',
       '🙏',
       '👏',
     ],
   },
   {
-    title: '庆祝',
-    list: ['✨', '🎉', '🎊'],
-  },
-  {
     title: '其他',
-    list: ['👻', '🤡', '🐔', '👀', '💩', '🐴', '🦄', '🐧', '🐶', '🐒', '🙈', '🙉', '🙊', '🐵'],
+    list: ['🔞', '👻', '🤡', '🐔', '👀', '💩', '🐴', '🦄', '🐧', '🐶',],
   },
 ]
-/** 新版贴吧表情数据 */
-const newClassicsEmoticons = [
-  {
-    name: '[狗头]',
-    low: 'https://i.imgur.com/nQIIqnv.png',
-    high: 'https://i.imgur.com/0icl60r.png'
-  },
-  {
-    name: '[马]',
-    low: 'https://i.imgur.com/5FyD9Un.png',
-    high: 'https://i.imgur.com/ANFUX52.png'
-  },
-  {
-    name: '[不高兴]',
-    low: 'https://i.imgur.com/cbIUvcG.png',
-    high: 'https://i.imgur.com/i7O4v0O.png'
-  },
-  {
-    name: '[真棒]',
-    low: 'https://i.imgur.com/IPG5yJO.png',
-    high: 'https://i.imgur.com/mzefu0w.png'
-  },
-  {
-    name: '[疑问]',
-    low: 'https://i.imgur.com/IqpiI7h.png',
-    high: 'https://i.imgur.com/ygs7SFM.png'
-  },
-  {
-    name: '[笑眼]',
-    low: 'https://i.imgur.com/PlO4jbB.png',
-    high: 'https://i.imgur.com/zpGsuyY.png'
-  },
-  {
-    name: '[喷]',
-    low: 'https://i.imgur.com/iN8x1Sm.png',
-    high: 'https://i.imgur.com/d4g2dbf.png'
-  },
-  {
-    name: '[苦笑]',
-    low: 'https://i.imgur.com/6gZe7Jg.png',
-    high: 'https://i.imgur.com/NAfspZ1.png'
-  },
-  {
-    name: '[喝酒]',
-    low: 'https://i.imgur.com/v7BAkoy.png',
-    high: 'https://i.imgur.com/rVbSVak.png'
-  },
-  {
-    name: '[吃瓜]',
-    low: 'https://i.imgur.com/SnluqXL.png',
-    high: 'https://i.imgur.com/0L26og9.png'
-  },
-  {
-    name: '[捂脸]',
-    low: 'https://i.imgur.com/Q3bcJJ9.png',
-    high: 'https://i.imgur.com/qqBqgVm.png'
-  },
-  {
-    name: '[呕吐]',
-    low: 'https://i.imgur.com/096Nc7O.png',
-    high: 'https://i.imgur.com/AVFtmIl.png'
-  },
-  {
-    name: '[怒]',
-    low: 'https://i.imgur.com/uGk6mIa.png',
-    high: 'https://i.imgur.com/3YUDhdh.png'
-  },
-  {
-    name: '[衰]',
-    low: 'https://i.imgur.com/WJXUrLF.png',
-    high: 'https://i.imgur.com/XffE6gu.png'
-  },
-  {
-    name: '[合十]',
-    low: 'https://i.imgur.com/dibCTJG.png',
-    high: 'https://i.imgur.com/T4rJVee.png'
-  },
-  {
-    name: '[赞]',
-    low: 'https://i.imgur.com/yVg4qEx.png',
-    high: 'https://i.imgur.com/AoF5PLp.png'
-  },
-  {
-    name: '[踩]',
-    low: 'https://i.imgur.com/mWjzsH1.png',
-    high: 'https://i.imgur.com/1XYGfXj.png'
-  },
-  {
-    name: '[爱心]',
-    low: 'https://i.imgur.com/edXjhvU.png',
-    high: 'https://i.imgur.com/dND56oX.png'
-  },
-
-  {
-    name: '[心碎]',
-    low: 'https://i.imgur.com/1krm1wx.png',
-    high: 'https://i.imgur.com/RiUsPci.png'
-  },
-]
-
 /** 老版贴吧表情数据 */
 const classicsEmoticons = [
   {
@@ -280,20 +175,45 @@ const classicsEmoticons = [
     high: 'https://i.imgur.com/0icl60r.png'
   },
   {
+    name: '[doge]',
+    low: 'https://i.imgur.com/duWRpIu.png',
+    high: 'https://i.imgur.com/HyphI6d.png'
+  },
+  {
     name: '[马]',
     low: 'https://i.imgur.com/8EKZv7I.png',
     high: 'https://i.imgur.com/ANFUX52.png'
+  },
+  {
+    name: '[二哈]',
+    low: 'https://i.imgur.com/XKj1Tkx.png',
+    high: 'https://i.imgur.com/dOeP4XD.png'
+  },
+  {
+    name: '[舔屏]',
+    low: 'https://i.imgur.com/Cvl7dyN.png',
+    high: 'https://i.imgur.com/LmETy9N.png'
+  },
+  {
+    name: '[辣眼睛]',
+    low: 'https://i.imgur.com/cPNPYD5.png',
+    high: 'https://i.imgur.com/3fSUmi8.png'
+  },
+  {
+    name: '[吃瓜]',
+    low: 'https://i.imgur.com/ee8Lq7H.png',
+    high: 'https://i.imgur.com/0L26og9.png'
   },
   {
     name: '[不高兴]',
     low: 'https://i.imgur.com/huX6coX.png',
     high: 'https://i.imgur.com/N7JEuvc.png'
   },
-  {
-    name: '[呵呵]',
-    low: 'https://i.imgur.com/RvoLAbX.png',
-    high: 'https://i.imgur.com/xSzIqrK.png'
-  },
+  // {
+  //   name: '[呵呵]',
+  //   low: 'https://i.imgur.com/RvoLAbX.png',
+  //   high: 'https://i.imgur.com/xSzIqrK.png'
+  // },
   {
     name: '[真棒]',
     low: 'https://i.imgur.com/xr1UOz1.png',
@@ -329,11 +249,11 @@ const classicsEmoticons = [
     low: 'https://i.imgur.com/ZveiiGy.png',
     high: 'https://i.imgur.com/PI1CfEr.png'
   },
-  {
-    name: '[狂汗]',
-    low: 'https://i.imgur.com/veWihk6.png',
-    high: 'https://i.imgur.com/3LtHdQv.png'
-  },
+  // {
+  //   name: '[狂汗]',
+  //   low: 'https://i.imgur.com/veWihk6.png',
+  //   high: 'https://i.imgur.com/3LtHdQv.png'
+  // },
   {
     name: '[大哭]',
     low: 'https://i.imgur.com/hu4oR6C.png',
@@ -354,21 +274,17 @@ const classicsEmoticons = [
     low: 'https://i.imgur.com/2ZZSapE.png',
     high: 'https://i.imgur.com/rVbSVak.png'
   },
-  {
-    name: '[吃瓜]',
-    low: 'https://i.imgur.com/ee8Lq7H.png',
-    high: 'https://i.imgur.com/0L26og9.png'
-  },
+
   {
     name: '[捂脸]',
     low: 'https://i.imgur.com/krir4IG.png',
     high: 'https://i.imgur.com/qqBqgVm.png'
   },
-  {
-    name: '[呕]',
-    low: 'https://i.imgur.com/6CUiUxv.png',
-    high: 'https://i.imgur.com/kgdxRsG.png'
-  },
+  // {
+  //   name: '[呕]',
+  //   low: 'https://i.imgur.com/6CUiUxv.png',
+  //   high: 'https://i.imgur.com/kgdxRsG.png'
+  // },
   {
     name: '[阴险]',
     low: 'https://i.imgur.com/MA8YqTP.png',
@@ -379,39 +295,39 @@ const classicsEmoticons = [
     low: 'https://i.imgur.com/n4kWfGB.png',
     high: 'https://i.imgur.com/iMXxNxh.png'
   },
-
   {
     name: '[衰]',
     low: 'https://i.imgur.com/voHFDyQ.png',
     high: 'https://i.imgur.com/XffE6gu.png'
   },
-  {
-    name: '[合十]',
-    low: 'https://i.imgur.com/I8x3ang.png',
-    high: 'https://i.imgur.com/T4rJVee.png'
-  },
-  {
-    name: '[赞]',
-    low: 'https://i.imgur.com/lG44yUl.png',
-    high: 'https://i.imgur.com/AoF5PLp.png'
-  },
-  {
-    name: '[踩]',
-    low: 'https://i.imgur.com/cJp0uKZ.png',
-    high: 'https://i.imgur.com/1XYGfXj.png'
-  },
-  {
-    name: '[爱心]',
-    low: 'https://i.imgur.com/sLENaF5.png',
-    high: 'https://i.imgur.com/dND56oX.png'
-  },
-
-  {
-    name: '[心碎]',
-    low: 'https://i.imgur.com/AZxJzve.png',
-    high: 'https://i.imgur.com/RiUsPci.png'
-  },
+  // {
+  //   name: '[合十]',
+  //   low: 'https://i.imgur.com/I8x3ang.png',
+  //   high: 'https://i.imgur.com/T4rJVee.png'
+  // },
+  // {
+  //   name: '[赞]',
+  //   low: 'https://i.imgur.com/lG44yUl.png',
+  //   high: 'https://i.imgur.com/AoF5PLp.png'
+  // },
+  // {
+  //   name: '[踩]',
+  //   low: 'https://i.imgur.com/cJp0uKZ.png',
+  //   high: 'https://i.imgur.com/1XYGfXj.png'
+  // },
+  // {
+  //   name: '[爱心]',
+  //   low: 'https://i.imgur.com/sLENaF5.png',
+  //   high: 'https://i.imgur.com/dND56oX.png'
+  // },
+  //
+  // {
+  //   name: '[心碎]',
+  //   low: 'https://i.imgur.com/AZxJzve.png',
+  //   high: 'https://i.imgur.com/RiUsPci.png'
+  // },
 ]
+
 
 /** 以下 Client ID 来自「V2EX_Polish」*/
 const imgurClientIdPool = [
@@ -652,7 +568,7 @@ function showCallPopover(text) {
     // console.log('e', e)
     start = content.value.slice(0, lastCallPos + 1)
     if (e === '管理员') {
-      e = 'Livid @Kai @Olivia @GordianZ @sparanoid'
+      e = 'Livid @Kai @Olivia @GordianZ @sparanoid @drymonfidelia'
     }
     if (e === '所有人') {
       e = allReplyUsers.value.map((v, i) => {
@@ -932,27 +848,25 @@ onBeforeUnmount(() => {
       font-size: 2.4rem;
     }
 
-    .title {
-
-    }
-
     .list {
       margin: 1rem 0;
+      display: flex;
+      flex-wrap: wrap;
     }
 
     img {
       cursor: pointer;
-      @w: 3rem;
-      width: @w;
-      height: @w;
+      width: calc(100% / 7);
       padding: .5rem;
+      box-sizing: border-box;
     }
 
     span {
+      width: calc(100% / 7);
       display: inline-block;
       cursor: pointer;
       font-size: 2.3rem;
-      padding: .5rem;
+      text-align: center;
     }
   }
 }

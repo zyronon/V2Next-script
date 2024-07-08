@@ -233,7 +233,10 @@
                   <div class="row">
                     <label class="item-title">查询间隔</label>
                     <div class="wrapper">
-                      <input type="number"  v-model="config.notice.loopCheckNoticeInterval" style="margin-right: 1rem">分钟
+                      <input type="number"
+                             :value="config.notice.loopCheckNoticeInterval"
+                             @blur="e=>config.notice.loopCheckNoticeInterval = e.target.value"
+                             style="margin-right: 1rem">分钟
                     </div>
                   </div>
                   <div class="desc">
