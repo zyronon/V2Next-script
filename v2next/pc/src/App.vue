@@ -174,20 +174,6 @@ export default {
     window.cb = this.winCb
     if (!window.canParseV2exPage) return
 
-    window.test = ()=>{
-      let n = new Date()
-      $.ajax(this.config.notice.ddWebhook, {
-        mode:'no-cors',
-        method: 'POST',
-        body: JSON.stringify({
-          "msgtype": "text",
-          "text": {
-            "content": '未读提醒' + `时间：${n.getFullYear()}/${n.getMonth() + 1}/${n.getDate()} ${n.getHours()}:${n.getMinutes()}`
-          }
-        })
-      })
-    }
-
     //A标签的
     $(document).on('click', 'a', this.clickA)
     //主题的
@@ -355,6 +341,8 @@ export default {
           if (e.currentTarget.href === location.origin + '/#;') return
           //未读提醒
           if (e.currentTarget.href.includes('/notifications')) {
+            this.pageInfo.number = 0
+
             if (this.config.notice.takeOverNoticePage) {
               this.notificationModal.loading = true
               this.notificationModal.show = true
@@ -393,7 +381,6 @@ export default {
                 })
                 this.notificationModal.pages = p.html()
                 this.notificationModal.loading = false
-                this.pageInfo.number = 0
               }).catch(e => {
                 this.notificationModal.loading = false
               })
@@ -479,14 +466,18 @@ export default {
             this.config.notice.text = text
             if (this.config.notice.ddWebhook) {
               let n = new Date()
-              fetch(this.config.notice.ddWebhook, {
-                mode:'no-cors',
+              let s = n.getSeconds();
+              s = (s < 10 ? "0" + s : s)
+              let m = n.getMinutes()
+              m = (m < 10 ? "0" + m : m)
+              let h = n.getHours()
+              h = (h < 10 ? "0" + h : h)
+              $.ajax('https://car-back.ttentau.top/index.php/v1/config/forward', {
                 method: 'POST',
-                body: JSON.stringify({
-                  "msgtype": "text",
-                  "text": {
-                    "content": notify.text() + `时间：${n.getFullYear()}/${n.getMonth() + 1}/${n.getDate()} ${n.getHours()}:${n.getMinutes()}`
-                  }
+                contentType: "application/json",
+                data: JSON.stringify({
+                  url: this.config.notice.ddWebhook,
+                  "text": notify.text() + `，时间：${n.getFullYear()}/${n.getMonth() + 1}/${n.getDate()} ${h}:${m}:${s}`
                 })
               })
             }

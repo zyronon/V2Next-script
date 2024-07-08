@@ -414,13 +414,13 @@ export const functions = {
       configMap = JSON.parse(configStr)
       configObj = configMap[userName]
       if (configObj) {
-        window.config = Object.assign(window.config, configObj)
+        window.config = functions.deepAssign(window.config, configObj)
       }
     }
     configMap[userName] = window.config
     localStorage.setItem('v2ex-config', JSON.stringify(configMap))
   },
-  deepAssign() {
+  deepAssign(...arg:any) {
     let name, options, src, copy
     let length = arguments.length
     // 记录要复制的对象的下标
