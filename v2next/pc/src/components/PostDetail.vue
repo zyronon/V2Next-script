@@ -190,9 +190,9 @@
       <div class="scroll-top gray" @click.stop="scrollTop">
         <Icon icon="lucide:move-up"/>
       </div>
-      <div class="msg gray">
-        <Icon icon="uiw:bell" />
-      </div>
+<!--      <div class="msg gray">-->
+<!--        <Icon icon="uiw:bell" />-->
+<!--      </div>-->
     </div>
 
     <teleport to="body">

@@ -167,7 +167,7 @@ const emojiEmoticons = [
     list: ['🔞', '👻', '🤡', '🐔', '👀', '💩', '🐴', '🦄', '🐧', '🐶',],
   },
 ]
-/** 老版贴吧表情数据 */
+/** 表情数据 */
 const classicsEmoticons = [
   {
     name: '[狗头]',
@@ -178,6 +178,11 @@ const classicsEmoticons = [
     name: '[doge]',
     low: 'https://i.imgur.com/duWRpIu.png',
     high: 'https://i.imgur.com/HyphI6d.png'
+  },
+  {
+    name: '[受虐滑稽]',
+    low: 'https://i.imgur.com/Iy0taMy.png',
+    high: 'https://i.imgur.com/PS1pxd9.png'
   },
   {
     name: '[马]',
@@ -295,11 +300,11 @@ const classicsEmoticons = [
     low: 'https://i.imgur.com/n4kWfGB.png',
     high: 'https://i.imgur.com/iMXxNxh.png'
   },
-  {
-    name: '[衰]',
-    low: 'https://i.imgur.com/voHFDyQ.png',
-    high: 'https://i.imgur.com/XffE6gu.png'
-  },
+  // {
+  //   name: '[衰]',
+  //   low: 'https://i.imgur.com/voHFDyQ.png',
+  //   high: 'https://i.imgur.com/XffE6gu.png'
+  // },
   // {
   //   name: '[合十]',
   //   low: 'https://i.imgur.com/I8x3ang.png',
