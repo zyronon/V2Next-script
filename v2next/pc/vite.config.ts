@@ -46,7 +46,7 @@ export default defineConfig({
         homepageURL: 'https://github.com/zyronon/web-scripts',
         homepage: 'https://github.com/zyronon/web-scripts',
         require: [
-          'https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js',
+          'https://lib.baomitu.com/jquery/latest/jquery.min.js',
           // 'https://cdn.bootcdn.net/ajax/libs /gl-matrix/3.4.2/gl-matrix.min.js'
           // 'https://lib.baomitu.com/jquery/3.7.1/jquery.min.js',
           // "https://lib.baomitu.com/gl-matrix/3.4.2/gl-matrix.min.js",
@@ -69,9 +69,9 @@ export default defineConfig({
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   },
-  // esbuild: {
-  //   drop: ['console', 'debugger']
-  // },
+  esbuild: {
+    drop: ['console', 'debugger']
+  },
   server: {
     host: '0.0.0.0',
     port: 5552

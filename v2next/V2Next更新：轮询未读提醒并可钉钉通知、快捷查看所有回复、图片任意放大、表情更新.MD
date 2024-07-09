@@ -46,4 +46,4 @@ V2Next 是增强 V 站使用体验的油猴脚本，有UI 美化、楼中楼、�
 
 # 结束
 
-谢谢大家支持！![huaji](https://i.imgur.com/Iy0taMy.png)![huaji](https://i.imgur.com/Iy0taMy.png)![huaji](https://i.imgur.com/Iy0taMy.png)
+谢谢大家支持！![huaji](https://i.imgur.com/Iy0taMy.png)![huaji](https://i.imgur.com/Iy0taMy.png)![huaji](https://i.imgur.com/Iy0taMy.png)，同时推荐一个好用的脚本[v2新帖挂件](https://greasyfork.org/zh-CN/scripts/448472)，v2右侧挂件，展示最近发表的帖子，蛮好用的，我用了快一年了
