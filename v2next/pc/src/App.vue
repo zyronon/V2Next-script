@@ -342,6 +342,7 @@ export default {
           //未读提醒
           if (e.currentTarget.href.includes('/notifications')) {
             this.pageInfo.number = 0
+            $('#money').parent().prev().replaceWith(`<a href="/notifications">0 未读提醒</a>`)
 
             if (this.config.notice.takeOverNoticePage) {
               this.notificationModal.loading = true
