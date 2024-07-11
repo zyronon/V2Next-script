@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         V2Next
 // @namespace    http://tampermonkey.net/
-// @version      10.5
+// @version      10.6
 // @author       zyronon
 // @description  V2Next - 一个好用的V2EX脚本！ 已适配移动端
 // @license      GPL License
@@ -212,7 +212,7 @@
       `:""}
 
       ${window.config.customBgColor?`#Wrapper {
-          background-color: ${window.config.customBgColor} !important;
+          background: ${window.config.customBgColor} !important;
           background-image: unset !important;
         }`:""}
         

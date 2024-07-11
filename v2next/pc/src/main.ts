@@ -702,7 +702,7 @@ function run() {
       ` : ''}
 
       ${window.config.customBgColor ? `#Wrapper {
-          background-color: ${window.config.customBgColor} !important;
+          background: ${window.config.customBgColor} !important;
           background-image: unset !important;
         }` : ''}
         
