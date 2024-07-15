@@ -17,7 +17,7 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '10.6',
+        version: '10.7',
         name: 'V2Next',
         icon: 'https://v2ex-script.vercel.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',

@@ -81,6 +81,7 @@ async function addTag() {
 @import "src/assets/less/variable";
 
 .tag-modal {
+  z-index: 1003;
   .wrapper {
     z-index: 9;
     background: var(--color-main-bg);
