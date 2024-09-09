@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Mobile Enhance 油管移动端增强
 // @namespace    http://tampermonkey.net/
-// @version      2.8.6
+// @version      2.9.0
 // @author       zyronon
 // @description  针对油管移动端，点击视频新标签页打开，记忆播放速度，突破播放速度限制
 // @license      GPL License
@@ -12,14 +12,14 @@
 // @downloadURL  https://update.greasyfork.org/scripts/487013/Youtube%20Mobile%20Enhance%20%E6%B2%B9%E7%AE%A1%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%A2%9E%E5%BC%BA.user.js
 // @updateURL    https://update.greasyfork.org/scripts/487013/Youtube%20Mobile%20Enhance%20%E6%B2%B9%E7%AE%A1%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%A2%9E%E5%BC%BA.user.js
 // @match        https://m.youtube.com/*
-// @require      https://cdn.jsdelivr.net/npm/vue@3.4.14/dist/vue.global.prod.js
+// @require      https://cdn.jsdelivr.net/npm/vue@3.4.38/dist/vue.global.prod.js
 // @grant        GM_addStyle
 // @grant        GM_openInTab
 // @grant        unsafeWindow
 // @run-at       document-start
 // ==/UserScript==
 
-(t=>{if(typeof GM_addStyle=="function"){GM_addStyle(t);return}const e=document.createElement("style");e.textContent=t,document.head.append(e)})(" html{font-size:12px!important}.ytb-next{font-size:1.4rem;display:flex;gap:1rem;position:fixed;top:0;right:10px;z-index:99999}.ytb-next .btn{color:#f1f1f1;background-color:#ffffff1a;padding:0 16px;height:36px;font-size:14px;line-height:36px;border-radius:18px}.msg{position:fixed;z-index:999;font-size:3rem;left:0;top:0;color:#000;background:white;padding:1rem 2rem}@media (min-width: 1280px) and (orientation: landscape){.player-container,.player-container.sticky-player{right:400px!important;top:0!important}ytm-watch{margin-right:400px!important}ytm-engagement-panel{width:400px!important;top:0!important}.playlist-entrypoint-background-protection,.slide-in-animation-entry-point{width:400px!important}ytm-single-column-watch-next-results-renderer [section-identifier=related-items],ytm-single-column-watch-next-results-renderer>ytm-playlist{width:400px!important;padding:0 0 8px 8px}ytm-single-column-watch-next-results-renderer .playlist-content{width:400px!important}} ");
+(t=>{if(typeof GM_addStyle=="function"){GM_addStyle(t);return}const e=document.createElement("style");e.textContent=t,document.head.append(e)})(" html{font-size:12px!important}.ytb-next{font-size:1.4rem;display:flex;position:fixed;top:0;right:10px;width:calc(22vw - 10px);z-index:99999}.ytb-next .btn{flex:1;color:#f1f1f1;background-color:#ffffff1a;padding:5px 0;height:36px;font-size:14px;line-height:36px;text-align:center;border:1px solid rgba(0,0,0,.8)}.msg{position:fixed;z-index:999;font-size:3rem;left:0;top:0;color:#000;background:white;padding:1rem 2rem}@media (min-width: 1280px) and (orientation: landscape){.player-container,.player-container.sticky-player{right:22vw!important;top:0!important}ytm-watch{margin-right:22vw!important}ytm-engagement-panel,.related-items-container{width:22vw!important}lazy-list .feed-item{width:100%!important}lazy-list .feed-item ytm-media-item{width:100%!important}.playlist-entrypoint-background-protection,.slide-in-animation-entry-point{width:22vw!important}ytm-single-column-watch-next-results-renderer [section-identifier=related-items],ytm-single-column-watch-next-results-renderer>ytm-playlist{width:22vw!important;padding:0 0 8px 8px;box-sizing:border-box}ytm-single-column-watch-next-results-renderer .playlist-content{width:22vw!important}} ");
 
 (function (vue) {
   'use strict';
@@ -186,9 +186,10 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
         dom = document.createElement("div");
         dom.classList.add("ytb-next");
         dom.innerHTML = `
-    <div class="btn" onclick="window.cb('playbackRateToggle')">切换</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle')">切</div>
     <div class="btn" onclick="window.cb('addRate')">&nbsp;+&nbsp;</div>
     <div class="btn" onclick="window.cb('removeRate')">&nbsp;-&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle1')">&nbsp;1&nbsp;</div>
     <div class="btn" onclick="window.cb('playbackRateToggle2')">&nbsp;2&nbsp;</div>
     <div class="btn" onclick="window.cb('playbackRateToggle25')">&nbsp;2.5&nbsp;</div>
     <div class="btn" onclick="window.cb('playbackRateToggle3')">&nbsp;3&nbsp;</div>
@@ -249,6 +250,9 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
             case "playbackRateToggle":
               playbackRateToggle();
               break;
+            case "playbackRateToggle1":
+              setPlaybackRate(1);
+              break;
             case "playbackRateToggle2":
               setPlaybackRate(2);
               break;
@@ -292,6 +296,13 @@ ${type === "FF" ? `/* 火狐美化滚动条 */
       };
     }
   });
+  if (window.trustedTypes && window.trustedTypes.createPolicy) {
+    window.trustedTypes.createPolicy("default", {
+      createHTML: (string) => string,
+      createScriptURL: (string) => string,
+      createScript: (string) => string
+    });
+  }
   window.videoEl = null;
   window.rate = 1;
   window.funs = {
