@@ -317,6 +317,7 @@ html {
   right: 10px;
   width: calc(@w - 10px);
   z-index: 99999;
+  background: black;
 
   .btn {
     flex: 1;
@@ -347,7 +348,7 @@ html {
   .player-container, .player-container.sticky-player {
     right: @w !important;
     top: 0 !important;
-    //z-index: 999!important;
+    z-index: 999!important;
   }
 
   //左侧，主是要播放器下面的一坨
