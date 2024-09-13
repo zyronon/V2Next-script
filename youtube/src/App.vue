@@ -28,7 +28,7 @@ function stop(e) {
 
 //打开新标签页
 function openNewTab(href: string, active = false) {
-  GM_openInTab(href, {active});
+  GM_openInTab(href, { active });
 }
 
 function getBrowserType() {
@@ -178,9 +178,10 @@ function checkOptionButtons() {
   dom = document.createElement('div')
   dom.classList.add('ytb-next')
   dom.innerHTML = `
-    <div class="btn" onclick="window.cb('playbackRateToggle')">切换</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle')">切</div>
     <div class="btn" onclick="window.cb('addRate')">&nbsp;+&nbsp;</div>
     <div class="btn" onclick="window.cb('removeRate')">&nbsp;-&nbsp;</div>
+    <div class="btn" onclick="window.cb('playbackRateToggle1')">&nbsp;1&nbsp;</div>
     <div class="btn" onclick="window.cb('playbackRateToggle2')">&nbsp;2&nbsp;</div>
     <div class="btn" onclick="window.cb('playbackRateToggle25')">&nbsp;2.5&nbsp;</div>
     <div class="btn" onclick="window.cb('playbackRateToggle3')">&nbsp;3&nbsp;</div>
@@ -229,10 +230,10 @@ watch(rate, (value) => {
 
 onMounted(() => {
   console.log('Youtube Next start')
-  setTimeout(()=>{
+  setTimeout(() => {
     let browserType = getBrowserType()
     initStyle(browserType)
-  },500)
+  }, 500)
 
   let youtubeRate = localStorage.getItem('youtube-rate')
   if (youtubeRate) {
@@ -248,6 +249,9 @@ onMounted(() => {
         break
       case 'playbackRateToggle':
         playbackRateToggle()
+        break
+      case 'playbackRateToggle1':
+        setPlaybackRate(1)
         break
       case 'playbackRateToggle2':
         setPlaybackRate(2)
@@ -299,6 +303,8 @@ onUnmounted(() => {
 </template>
 
 <style lang="less">
+@w: 22vw;
+
 html {
   font-size: 12px !important;
 }
@@ -306,20 +312,23 @@ html {
 .ytb-next {
   font-size: 1.4rem;
   display: flex;
-  gap: 1rem;
   position: fixed;
   top: 0;
   right: 10px;
+  width: calc(@w - 10px);
   z-index: 99999;
+  background: black;
 
   .btn {
+    flex: 1;
     color: #f1f1f1;
     background-color: rgba(255, 255, 255, 0.1);
-    padding: 0 16px;
+    padding: 5px 0px;
     height: 36px;
     font-size: 14px;
     line-height: 36px;
-    border-radius: 18px;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.8);
   }
 }
 
@@ -333,15 +342,13 @@ html {
   background: white;
   padding: 1rem 2rem;
 }
-</style>
-<style lang="less">
-@w: 400px;
+
 @media (min-width: 1280px) and (orientation: landscape) {
   //播放器
   .player-container, .player-container.sticky-player {
     right: @w !important;
     top: 0 !important;
-    //z-index: 999!important;
+    z-index: 999!important;
   }
 
   //左侧，主是要播放器下面的一坨
@@ -350,9 +357,18 @@ html {
   }
 
   //右侧推荐
-  ytm-engagement-panel {
+  ytm-engagement-panel, .related-items-container {
     width: @w !important;
-    top: 0 !important;
+    //top: 0 !important;
+  }
+
+  lazy-list {
+    .feed-item {
+      width: 100%!important;
+      ytm-media-item{
+        width: 100%!important;
+      }
+    }
   }
 
   //右下部的一个黑色区域，不知道干啥的
@@ -368,7 +384,8 @@ html {
   //右侧历史推荐
   ytm-single-column-watch-next-results-renderer [section-identifier=related-items], ytm-single-column-watch-next-results-renderer > ytm-playlist {
     width: @w !important;
-    padding: 0 0 8px 8px
+    padding: 0 0 8px 8px;
+    box-sizing: border-box;
   }
 
   //右侧历史推荐

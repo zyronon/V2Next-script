@@ -2,6 +2,13 @@ import {createApp} from 'vue';
 import App from './App.vue';
 import './global.d.ts'
 
+if (window.trustedTypes && window.trustedTypes.createPolicy) {
+  window.trustedTypes.createPolicy('default', {
+    createHTML: string => string,
+    createScriptURL: string => string,
+    createScript: string => string,
+  });
+}
 window.videoEl = null
 window.rate = 1
 window.funs = {
