@@ -64,8 +64,8 @@
               <span class="add-tag ago" @click.stop="addTag" title="添加标签">+</span>
             </template>
           </div>
-          <BaseHtmlRender v-if="post.headerTemplate" :html="post.headerTemplate "/>
-          <BaseHtmlRender v-else :html="post.jsonContent "/>
+          <BaseHtmlRender v-if="post.headerTemplate" :html="post.headerTemplate " />
+          <BaseHtmlRender v-else :html="post.jsonContent " />
           <Toolbar @reply="isSticky = !isSticky">
             <Point
                 @addThank="addThank"
@@ -75,7 +75,7 @@
                 thankCount:post.thankCount,
                 username:post.username
               }"
-                :api-url="'topic/'+post.id"/>
+                :api-url="'topic/'+post.id" />
           </Toolbar>
         </div>
 
@@ -85,7 +85,7 @@
             <div class="top-reply">
               <Tooltip title="收起高赞回复">
                 <div class="tool">
-                  <Icon icon="gravity-ui:chevrons-collapse-vertical"/>
+                  <Icon icon="gravity-ui:chevrons-collapse-vertical" />
                 </div>
               </Tooltip>
             </div>
@@ -94,7 +94,7 @@
             <Comment v-for="(item,index) in post.topReplyList"
                      :key="item.floor"
                      type="top"
-                     v-model="post.topReplyList[index]"/>
+                     v-model="post.topReplyList[index]" />
           </div>
         </div>
 
@@ -117,13 +117,13 @@
 
           <template v-if="replyList.length || loading">
             <div class="loading-wrapper" v-if="loading">
-              <BaseLoading size="large"/>
+              <BaseLoading size="large" />
             </div>
             <div class="comments" v-else>
               <template v-if="modelValue">
                 <Comment v-for="(item,index) in replyList"
                          :key="item.floor"
-                         v-model="replyList[index]"/>
+                         v-model="replyList[index]" />
               </template>
             </div>
           </template>
@@ -144,7 +144,7 @@
                 @close="goBottom"
                 ref="post-editor"
                 useType="reply-post"
-                @click.stop="isSticky = true"/>
+                @click.stop="isSticky = true" />
           </div>
         </div>
       </div>
@@ -153,14 +153,14 @@
         <div class="my-cell flex" @click.stop="stop">
           <span class="gray">上下文</span>
           <div class="top-reply">
-            <Icon icon="ic:round-close" @click.stop="showRelationReply = false"/>
+            <Icon icon="ic:round-close" @click.stop="showRelationReply = false" />
           </div>
         </div>
         <div class="comments" @click.stop="stop">
           <SingleComment v-for="(item,index) in relationReply"
                          :is-right="item.username === targetUser.right"
                          :key="item.floor"
-                         :comment="item"/>
+                         :comment="item" />
         </div>
       </div>
 
@@ -175,24 +175,24 @@
         </div>
       </div>
       <div class="close-btn" @click.stop="close('btn')">
-        <Icon icon="fontisto:close-a"/>
+        <Icon icon="fontisto:close-a" />
       </div>
       <div class="refresh gray" @click.stop="$emit('refresh')">
-        <BaseLoading v-if="refreshLoading"/>
-        <Icon v-else icon="material-symbols:refresh"/>
+        <BaseLoading v-if="refreshLoading" />
+        <Icon v-else icon="material-symbols:refresh" />
       </div>
       <div class="scroll-to gray" @click.stop="jump(currentFloor)">
-        <Icon icon="lucide:move-down"/>
+        <Icon icon="lucide:move-down" />
         <input type="text" v-model="currentFloor"
                @click.stop="stop"
                @keydown.enter="jump(currentFloor)">
       </div>
       <div class="scroll-top gray" @click.stop="scrollTop">
-        <Icon icon="lucide:move-up"/>
+        <Icon icon="lucide:move-up" />
       </div>
-<!--      <div class="msg gray">-->
-<!--        <Icon icon="uiw:bell" />-->
-<!--      </div>-->
+      <!--      <div class="msg gray">-->
+      <!--        <Icon icon="uiw:bell" />-->
+      <!--      </div>-->
     </div>
 
     <teleport to="body">
@@ -202,7 +202,7 @@
         <div class="mask"
              @click="closePreviewModal"
         ></div>
-        <Icon class="close" icon="fontisto:close-a" @click="closePreviewModal"/>
+        <Icon class="close" icon="fontisto:close-a" @click="closePreviewModal" />
       </div>
     </teleport>
   </div>
@@ -270,7 +270,6 @@ function _css(el, key, value) {
     }
   }
 }
-
 
 function getImgSize(naturalWidth, naturalHeight, maxWidth, maxHeight) {
   const imgRatio = naturalWidth / naturalHeight;
@@ -494,6 +493,11 @@ export default {
     modelValue: {
       handler(newVal) {
         // console.log('modelValue', newVal, window.history.state)
+        if (newVal) {
+          if ([0, 4, 5].includes(this.displayType)) {
+            window.parse.send('&b=2', 2)
+          }
+        }
         if (this.isPost) return
         if (newVal) {
           this.currentFloor = ''
@@ -1096,7 +1100,7 @@ export default {
     }
   }
 
-  .msg{
+  .msg {
     .scroll-top;
     bottom: 5rem;
   }

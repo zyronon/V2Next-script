@@ -747,7 +747,8 @@ export default {
       this.refreshLoading = this.loading = false
 
       await window.parse.parseOp(this.current)
-      // console.log('当前主题', this.current)
+
+      console.log('当前主题', this.current)
     },
     addTargetUserTag() {
       eventBus.emit(CMD.ADD_TAG, window.targetUserName)
@@ -767,8 +768,8 @@ export default {
 </script>
 
 <template>
-  <Setting v-model="config" v-model:show="configModal.show"/>
-  <TagModal v-model:tags="tags"/>
+  <Setting v-model="config" v-model:show="configModal.show" />
+  <TagModal v-model:tags="tags" />
   <PostDetail v-model="show"
               ref="postDetail"
               v-model:displayType="config.commentDisplayType"
@@ -776,8 +777,8 @@ export default {
               :loading="loading"
               :refreshLoading="refreshLoading"
   />
-  <Base64Tooltip/>
-  <MsgModal/>
+  <Base64Tooltip />
+  <MsgModal />
 
   <NotificationModal
       v-model="notificationModal.show"
@@ -799,7 +800,7 @@ export default {
     </div>
     <div v-if="isPost && !show " class="my-box p2" style="margin-top: 2rem;margin-bottom: 0;">
       <div class="flex flex-center" v-if="loading">
-        <BaseLoading/>
+        <BaseLoading />
       </div>
       <div v-else class="loaded">
         <span>楼中楼解析完成</span>

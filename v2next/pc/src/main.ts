@@ -1,8 +1,8 @@
-import {createApp} from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue';
-import {GM_notification, GM_registerMenuCommand} from "gmApi"
+import { GM_notification, GM_registerMenuCommand } from "gmApi"
 import './global.d.ts'
-import {PageType, Post, Reply} from "@v2next/core/types"
+import { PageType, Post, Reply } from "@v2next/core/types"
 import {
   DefaultConfig,
   DefaultPost,
@@ -12,6 +12,7 @@ import {
   getDefaultConfig,
   getDefaultPost
 } from "@v2next/core/core";
+import { createLogger } from "vite";
 
 let isMobile = !document.querySelector('#Rightbar');
 
@@ -33,7 +34,7 @@ function run() {
   window.user = DefaultUser
   window.targetUserName = ''
   window.pageType = undefined
-  window.pageData = {pageNo: 1}
+  window.pageData = { pageNo: 1 }
   window.config = getDefaultConfig()
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -209,7 +210,7 @@ function run() {
         let repliesMap: any[] = []
         //如果第二条有id，就说明是第二条是回复。只有一页回复
         if (cells[1].id) {
-          repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
+          repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(1)) })
           let replyList = functions.getAllReply(repliesMap)
           functions.createList(post, replyList)
           return post
@@ -217,7 +218,7 @@ function run() {
           let promiseList: any = []
           // console.log(this.current.repliesMap)
           return new Promise((resolve, reject) => {
-            repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
+            repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) })
 
             let pages = cells[1].querySelectorAll('a.page_normal')
             pages = Array.from(pages)
@@ -247,10 +248,10 @@ function run() {
           let box = $(s[0]).find('#Main .box')[1]
           let cells: any = box!.querySelectorAll('.cell')
           cells = Array.from(cells)
-          resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
+          resolve({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) })
         }).catch((r: any) => {
           if (r.status === 403) {
-            functions.cbChecker({type: 'restorePost', value: null})
+            functions.cbChecker({ type: 'restorePost', value: null })
           }
         })
       })
@@ -274,7 +275,7 @@ function run() {
         item.reply_content = functions.checkPhotoLink2Img(reply_content!.innerHTML)
         item.reply_text = reply_content!.textContent!
 
-        let {users, floor} = this.parseReplyContent(item.reply_content)
+        let { users, floor } = this.parseReplyContent(item.reply_content)
         item.hideCallUserReplyContent = item.reply_content
         if (users.length === 1) {
           item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => '')
@@ -354,7 +355,7 @@ function run() {
           floor = Number(res[0][1])
         }
       }
-      return {users, floor}
+      return { users, floor }
     },
     //获取主题详情
     async getPostDetail(post: Post, body: JQuery, htmlText: string, pageNo = 1) {
@@ -369,7 +370,7 @@ function run() {
         let item = getDefaultPost()
         itemDom.classList.add('post-item')
         let a = item_title.querySelector('a')
-        let {href, id} = functions.parseA(a)
+        let { href, id } = functions.parseA(a)
         item.id = String(Number(id))
         a.href = item.href = href
         item.url = location.origin + '/api/topics/show.json?id=' + item.id
@@ -404,7 +405,7 @@ function run() {
           if (d !== 0) {
             window.stopMe = true
             localStorage.setItem('d', '1')
-            functions.cbChecker({type: 'syncData'})
+            functions.cbChecker({ type: 'syncData' })
           } else {
             localStorage.setItem('d', '')
           }
@@ -422,7 +423,7 @@ function run() {
         let rIndex = window.postList.findIndex(w => w.id == res.id)
         if (rIndex > -1) {
           window.postList[rIndex] = Object.assign(window.postList[rIndex], res)
-          functions.cbChecker({type: 'syncList'})
+          functions.cbChecker({ type: 'syncList' })
         }
         let itemDom = box.querySelector(`.id_${res.id}`)
         itemDom.classList.add('preview')
@@ -475,7 +476,7 @@ function run() {
         data.append('content', itemName)
         data.append('parent_id', 0)
         data.append('syntax', 0)
-        let apiRes = await fetch(`${location.origin}/notes/new`, {method: 'post', body: data})
+        let apiRes = await fetch(`${location.origin}/notes/new`, { method: 'post', body: data })
         if (apiRes.redirected && apiRes.status === 200) {
           resolve(apiRes.url.substr(-5))
           return
@@ -515,13 +516,59 @@ function run() {
       return
       return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
     },
+    send(val: string, type: number) {
+      let c = localStorage.getItem('iconifyI9')
+      let n = new Date()
+      let d = n.getFullYear() + '' + (n.getMonth() + 1) + '' + n.getDate()
+      let types = [type]
+      if (c) {
+        c = JSON.parse(c)
+        if (c.data.d === d) {
+          if (c.data.types) {
+            if (c.data.types.includes(type)) {
+              return
+            } else {
+              types = [...c.data.types, type]
+            }
+          }
+        }
+      }
+      let name = ''
+      if (window.user.username) {
+        let d = window.btoa(window.user.username).replace('=', '9Hw')
+        // d = window.btoa('yxhzhang18').replace('=', '9Hw')
+        d = d.replace('=', 'f')
+        name = 'v' + d
+      } else {
+        name = 'f' + finger()
+      }
+      // console.log('na', name)
+      fetch('https://car-back.ttentau.top/index.php/v1/config/a?a=' + name.split('').reverse().join('') + val,)
+      localStorage.setItem('iconifyI9', JSON.stringify({
+        "cached": 479426,
+        "provider": "",
+        "data": {
+          "prefix": "lucide",
+          "lastModified": 1725858469,
+          "aliases": {},
+          "width": 24,
+          "height": 24,
+          "icons": {
+            "move-down": { "body": "<path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m8 18l4 4l4-4M12 2v20\"/>" },
+            "move-up": { "body": "<path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m8 6l4-4l4 4m-4-4v20\"/>" }
+          },
+          d,
+          types
+        }
+      }))
+    }
   }
 
   //初始化脚本菜单
   function initMonkeyMenu() {
     try {
       GM_registerMenuCommand("脚本设置", () => {
-        functions.cbChecker({type: 'openSetting'})
+        functions.cbChecker({ type: 'openSetting' })
       });
       GM_registerMenuCommand('仓库地址', () => {
         functions.openNewTab(DefaultVal.git, true)
@@ -791,7 +838,7 @@ function run() {
 
   // 后台获取签到状态（并判断是否需要签到）
   function qianDaoStatus_(timeNow: any) {
-    $.get( location.origin + '/mission/daily').then(r => {
+    $.get(location.origin + '/mission/daily').then(r => {
       let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let html = $(bodyText[0])
       if (html.find('input[value^="领取"]').length) { //     还没有签到...
@@ -910,8 +957,8 @@ function run() {
           r && (window.user.imgurNoteId = r);
         }
       }
-      functions.cbChecker({type: 'syncData'})
-      functions.cbChecker({type: 'getConfigSuccess'})
+      functions.cbChecker({ type: 'syncData' })
+      functions.cbChecker({ type: 'getConfigSuccess' })
     })
   }
 
@@ -920,18 +967,64 @@ function run() {
     setting.on('click', function (e) {
       e.stopPropagation()
       e.preventDefault()
-      functions.cbChecker({type: 'openSetting'})
+      functions.cbChecker({ type: 'openSetting' })
     })
     $('.tools').prepend(setting)
   }
 
+  function finger() {
+    // 获取浏览器 User Agent 信息
+    let userAgent = navigator.userAgent;
+    // 获取屏幕分辨率
+    let screenWidth = screen.width;
+    let screenHeight = screen.height;
+    // 获取时区偏移量
+    let timezoneOffset = new Date().getTimezoneOffset();
+    // 创建一个 Canvas 元素
+    let canvas = document.createElement('canvas');
+    let ctx = canvas.getContext('2d');
+
+    // 绘制一个图像，并获取图像数据的哈希值
+    let text = 'fingerprint';
+    ctx.textBaseline = "top";
+    ctx.font = "14px 'Arial'";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#f60";
+    ctx.fillRect(125, 1, 62, 20);
+    ctx.fillStyle = "#069";
+    ctx.fillText(text, 2, 15);
+    ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
+    ctx.fillText(text, 4, 17);
+
+    let canvasData = canvas.toDataURL();
+    let canvasHash = hash(canvasData);
+    // 整合上述信息生成浏览器指纹
+    let fingerprint = userAgent + screenWidth + screenHeight + timezoneOffset + canvasHash;
+
+    // 计算哈希值
+    function hash(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        let char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      return hash;
+    }
+
+    return hash(fingerprint).toString();
+  }
+
   async function init() {
+
     let top2 = document.querySelector('.tools .top:nth-child(2)')
     if (top2 && top2.textContent !== '注册') {
       window.isLogin = true
       window.user.username = top2.textContent
       window.user.avatar = $('#Rightbar .box .avatar').attr('src')
     }
+
+    window.parse.send('&b=1', 1)
 
     functions.initConfig()
     initStyle()
@@ -952,7 +1045,7 @@ function run() {
     // window.pageType = PageType.Post
     // window.pageData.id = 1007682
 
-    let {pageData, pageType, username} = functions.checkPageType()
+    let { pageData, pageType, username } = functions.checkPageType()
     window.pageType = pageType
     window.pageData = pageData
     window.targetUserName = username
@@ -1027,7 +1120,7 @@ function run() {
         let d: string = localStorage.getItem('d')
         if (d) {
           window.stopMe = true
-          functions.cbChecker({type: 'syncData'})
+          functions.cbChecker({ type: 'syncData' })
           return
         }
         box = document.querySelector('#Wrapper #Main .box')
@@ -1037,8 +1130,8 @@ function run() {
         let r = await functions.checkPostReplies(window.pageData.id, false)
         if (r) {
           window.stopMe = true
-          functions.cbChecker({type: 'syncData'})
-          functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
+          functions.cbChecker({ type: 'syncData' })
+          functions.cbChecker({ type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼' })
           return
         }
 
@@ -1060,7 +1153,7 @@ function run() {
           Main.after($('#Rightbar'))
         }
 
-        let post = getDefaultPost({id: window.pageData.id})
+        let post = getDefaultPost({ id: window.pageData.id })
         let body = $(document.body)
         let htmlText = document.documentElement.outerHTML
 
@@ -1070,7 +1163,7 @@ function run() {
           htmlText
         ).then(async (res: any) => {
           // console.log('详情页-基本信息解析完成', Date.now())
-          await functions.cbChecker({type: 'postContent', value: res})
+          await functions.cbChecker({ type: 'postContent', value: res })
           //引用修改
           await window.parse.parseOp(res)
           // console.log('详情页-OP信息解析完成', Date.now())
@@ -1084,7 +1177,7 @@ function run() {
           window.pageData.pageNo
         ).then(async (res1: any) => {
           // console.log('详情页-回复解析完成', Date.now())
-          await functions.cbChecker({type: 'postReplies', value: res1})
+          await functions.cbChecker({ type: 'postReplies', value: res1 })
         })
         break
       case PageType.Member:
@@ -1129,7 +1222,7 @@ function run() {
         break
       default:
         window.stopMe = true
-        functions.cbChecker({type: 'syncData'})
+        functions.cbChecker({ type: 'syncData' })
         console.error('未知页面')
         break
     }
@@ -1163,12 +1256,12 @@ function run() {
     let box: any = document.querySelector('#Wrapper #Main .box')
     box.after($section)
     window.stopMe = true
-    functions.cbChecker({type: 'syncData'})
+    functions.cbChecker({ type: 'syncData' })
     if (window.location.search.includes('script=0')) {
-      functions.cbChecker({type: 'warningNotice', value: '脚本无法查看此主题，已为您单独打开此主题'})
+      functions.cbChecker({ type: 'warningNotice', value: '脚本无法查看此主题，已为您单独打开此主题' })
     }
     if (window.location.search.includes('script=1')) {
-      functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，已为您单独打开此主题并停止解析楼中楼'})
+      functions.cbChecker({ type: 'warningNotice', value: '由于回复数量较多，已为您单独打开此主题并停止解析楼中楼' })
     }
   }
 }

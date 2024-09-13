@@ -17,8 +17,8 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '10.7',
-        name: 'V2Next',
+        version: '10.13',
+        name: 'V2EX Next V2Next',
         icon: 'https://v2ex-script.vercel.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
         match: [
@@ -46,7 +46,7 @@ export default defineConfig({
         homepageURL: 'https://github.com/zyronon/web-scripts',
         homepage: 'https://github.com/zyronon/web-scripts',
         require: [
-          'https://lib.baomitu.com/jquery/latest/jquery.min.js',
+          'https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js',
           // 'https://cdn.bootcdn.net/ajax/libs /gl-matrix/3.4.2/gl-matrix.min.js'
           // 'https://lib.baomitu.com/jquery/3.7.1/jquery.min.js',
           // "https://lib.baomitu.com/gl-matrix/3.4.2/gl-matrix.min.js",
@@ -55,7 +55,7 @@ export default defineConfig({
       build: {
         fileName: 'V2Next.user.js',
         externalGlobals: {
-          vue: cdn.baomitu('Vue', 'vue.runtime.global.prod.min.js'),
+          vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.min.js'),
         },
       },
     }),
