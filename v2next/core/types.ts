@@ -20,6 +20,7 @@ export interface Post {
   createDate: string,
   createDateAgo: string,
   lastReplyDate: string,
+  lastReplyUsername: string,
   type: string,
   once: string,
   replyCount: number,

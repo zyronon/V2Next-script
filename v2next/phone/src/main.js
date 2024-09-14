@@ -1,6 +1,5 @@
-import core from "../../core/core.ts";
+import {functions} from "../../core/core.ts";
 
-core()
 let Channel = {
   postMessage: (val) => {
     if (typeof val === "object") {

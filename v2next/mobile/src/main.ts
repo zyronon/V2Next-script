@@ -11,7 +11,6 @@ let $section = document.createElement('section')
 $section.id = 'app'
 
 function run() {
-  location.origin = location.origin
   window.initPost = DefaultPost
   //历史遗留属性
   window.win = function () {
