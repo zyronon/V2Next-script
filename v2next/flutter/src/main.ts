@@ -18,6 +18,7 @@ function sendFlutter(val) {
     Channel.postMessage(val)
   } else {
     console.log(val)
+    console.log(val.replaceAll('\"','\\"'))
   }
 }
 

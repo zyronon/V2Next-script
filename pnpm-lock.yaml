@@ -54,6 +54,18 @@ importers:
         specifier: 1.0.0-rc.36
         version: 1.0.0-rc.36(@algolia/client-search@5.0.2)(less@4.1.1)(search-insights@2.16.3)(typescript@5.0.4)
 
+  v2next/flutter:
+    devDependencies:
+      typescript:
+        specifier: ^5.4.5
+        version: 5.5.4
+      vite:
+        specifier: ^5.2.12
+        version: 5.4.1(less@4.1.1)
+      vite-plugin-monkey:
+        specifier: ^4.0.0
+        version: 4.0.6(vite@5.4.1)
+
   v2next/mobile: {}
 
   v2next/pc: {}
@@ -2412,6 +2424,26 @@ packages:
       picocolors: 1.0.1
       systemjs: 6.15.1
       vite: 4.5.3(less@4.1.1)
+    dev: true
+
+  /vite-plugin-monkey@4.0.6(vite@5.4.1):
+    resolution: {integrity: sha512-JiJqlDhU/4xkAMDuJV/iR2QQXqQG+YGmSNubJTumcNQr4T+DQlQ7+VP6zbdAGDO/vVfSReDn+Ztr5bcFu0GIww==}
+    peerDependencies:
+      vite: ^5.0.0
+    peerDependenciesMeta:
+      vite:
+        optional: true
+    dependencies:
+      acorn-walk: 8.3.3
+      cross-spawn: r2.cnpmjs.org/cross-spawn@7.0.3
+      htmlparser2: 9.1.0
+      import-meta-resolve: 4.1.0
+      magic-string: 0.30.11
+      mrmime: 1.0.1
+      open: 9.1.0
+      picocolors: 1.0.1
+      systemjs: 6.15.1
+      vite: 5.4.1(less@4.1.1)
     dev: true
 
   /vite@4.3.5(less@4.1.1):
