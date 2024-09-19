@@ -279,7 +279,7 @@ window.parse = {
       if (cells[1].id) {
         repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(1)) })
         let replyList = functions.getAllReply(repliesMap)
-        post.nestedReplies = functions.createNestedList(replyList)
+        functions.createList(post, replyList)
         return post
       } else {
         let promiseList: any = []
