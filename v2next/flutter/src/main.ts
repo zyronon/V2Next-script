@@ -7,7 +7,7 @@ import {
   getDefaultConfig,
   getDefaultPost
 } from "@v2next/core";
-import { PageType, Post, Reply } from "@v2next/core/types"
+import {PageType, Post, Reply} from "@v2next/core/types"
 
 
 function sendFlutter(val) {
@@ -17,6 +17,7 @@ function sendFlutter(val) {
   if (import.meta.env.PROD) {
     Channel.postMessage(val)
   } else {
+    console.log(val)
     val = val.replaceAll(/\\n|\\r|\\t/g, '')
     val = val.replaceAll('\"', '\\"')
     val = val.replaceAll('\'', '\\\'')
@@ -24,9 +25,19 @@ function sendFlutter(val) {
   }
 }
 
+async function getHtml(url) {
+  url = location.origin + url;
+  let apiRes = await window.fetch(url);
+  let htmlText = await apiRes.text();
+  let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+  let body = document.createElement('html')
+  body.innerHTML = bodyText[0]
+  return body
+}
+
 async function bridge_getPost(id) {
   console.log('getPost', id)
-  sendFlutter({ type: '开始请求' + id });
+  sendFlutter({type: '开始请求' + id});
   let url = location.origin + '/t/' + id;
   let apiRes = await window.fetch(url + '?p=1');
   let htmlText = await apiRes.text();
@@ -37,20 +48,34 @@ async function bridge_getPost(id) {
   await window.parse.getPostDetail(post, body, htmlText)
 
   // sendFlutter('页面内容' + htmlText);
-  sendFlutter({ type: '帖子内容' });
-  sendFlutter({ type: 'post', data: post });
+  sendFlutter({type: '帖子内容'});
+  sendFlutter({type: 'post', data: post});
 }
 
-window.jsBridge = (type, args) => {
+async function bridge_getNodePostList(node, el) {
+  console.log('bridge_getNodePostList', node)
+  if (!el) el = await getHtml('/?tab=' + node)
+  let box = el.querySelector('#Wrapper .box')
+  let list = box!.querySelectorAll('.item')
+  window.parse.parsePagePostList(list, box)
+  sendFlutter({type: '发送主页列表'});
+  // sendFlutter(window.postList);
+  sendFlutter({type: "list", node, data: window.postList});
+}
+
+window.jsBridge = (type, ...args) => {
   switch (type) {
     case 'getPost':
-      bridge_getPost(args)
+      bridge_getPost(...args)
+      break
+    case 'getNodePostList':
+      bridge_getNodePostList(...args)
       break
   }
 }
 
 $(document).on('click', 'a', async (e) => {
-  let { href, id, title } = functions.parseA(e.currentTarget);
+  let {href, id, title} = functions.parseA(e.currentTarget);
   if (id) {
     e.preventDefault();
     bridge_getPost(id)
@@ -72,8 +97,8 @@ window.clone = (val: any) => JSON.parse(JSON.stringify(val))
 window.user = DefaultUser
 window.targetUserName = ''
 window.pageType = undefined
-window.pageData = { pageNo: 1 }
-window.config = { ...DefaultConfig, ...{ viewType: 'card' } }
+window.pageData = {pageNo: 1}
+window.config = {...DefaultConfig, ...{viewType: 'card'}}
 window.const = {
   git: 'https://github.com/zyronon/v2ex-script',
   issue: 'https://github.com/zyronon/v2ex-script/issues'
@@ -277,7 +302,7 @@ window.parse = {
       let repliesMap: any[] = []
       //如果第二条有id，就说明是第二条是回复。只有一页回复
       if (cells[1].id) {
-        repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(1)) })
+        repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
         let replyList = functions.getAllReply(repliesMap)
         functions.createList(post, replyList)
         return post
@@ -285,7 +310,7 @@ window.parse = {
         let promiseList: any = []
         // console.log(this.current.repliesMap)
         return new Promise((resolve, reject) => {
-          repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) })
+          repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
 
           let pages = cells[1].querySelectorAll('a.page_normal')
           pages = Array.from(pages)
@@ -324,10 +349,10 @@ window.parse = {
         })
         let cells: any = box!.querySelectorAll('.cell')
         cells = Array.from(cells)
-        resolve({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) })
+        resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
       }).catch((r: any) => {
         if (r.status === 403) {
-          functions.cbChecker({ type: 'restorePost', value: null })
+          functions.cbChecker({type: 'restorePost', value: null})
         }
       })
     })
@@ -351,7 +376,7 @@ window.parse = {
       item.reply_content = functions.checkPhotoLink2Img(reply_content!.innerHTML)
       item.reply_text = reply_content!.textContent!
 
-      let { users, floor } = this.parseReplyContent(item.reply_content)
+      let {users, floor} = this.parseReplyContent(item.reply_content)
       item.hideCallUserReplyContent = item.reply_content
       if (users.length === 1) {
         item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => '')
@@ -432,7 +457,7 @@ window.parse = {
         floor = Number(res[0][1])
       }
     }
-    return { users, floor }
+    return {users, floor}
   },
   //获取帖子详情
   async getPostDetail(post: Post, body: JQuery, htmlText: string, pageNo = 1) {
@@ -447,7 +472,7 @@ window.parse = {
       if (!item_title) return
       itemDom.classList.add('post-item')
       let a = item_title.querySelector('a')
-      let { href, id, title } = functions.parseA(a)
+      let {href, id, title} = functions.parseA(a)
       item.id = String(id)
       a.href = item.href = href
       item.url = location.origin + '/api/topics/show.json?id=' + item.id
@@ -525,7 +550,7 @@ window.parse = {
           a.parentNode?.append(showMore)
         }
       }
-      functions.cbChecker({ type: 'syncList' })
+      functions.cbChecker({type: 'syncList'})
     }
 
     if (window.config.viewType === 'card' && false) {
@@ -562,7 +587,7 @@ window.parse = {
         }
       }
     } else {
-      functions.cbChecker({ type: 'syncData' })
+      functions.cbChecker({type: 'syncData'})
     }
   },
   //创建记事本子条目
@@ -573,7 +598,7 @@ window.parse = {
       data.append('content', itemName)
       data.append('parent_id', 0)
       data.append('syntax', 0)
-      let apiRes = await window.win().fetch(`${location.origin}/notes/new`, { method: 'post', body: data })
+      let apiRes = await window.win().fetch(`${location.origin}/notes/new`, {method: 'post', body: data})
       // console.log(apiRes)
       if (apiRes.redirected && apiRes.status === 200) {
         resolve(apiRes.url.substr(-5))
@@ -773,7 +798,7 @@ async function initNoteData() {
         r && (window.user.imgurNoteId = r);
       }
     }
-    functions.cbChecker({ type: 'syncData' })
+    functions.cbChecker({type: 'syncData'})
   })
 }
 
@@ -819,7 +844,7 @@ async function init() {
   if (window.isNight) {
     document.documentElement.classList.add('dark')
   }
-  let { pageData, pageType } = functions.checkPageType()
+  let {pageData, pageType} = functions.checkPageType()
   window.pageType = pageType
   window.pageData = pageData
   addSettingText()
@@ -877,24 +902,13 @@ async function init() {
         window.parse.parsePagePostList(list, box[1])
         break
       case PageType.Home:
-        box = document.querySelector('#Wrapper .box')
-
-        //将header两个div移动到一个专门的div里面，因为要把box的背景去除，去除了之后header没背景了
-        let headerWrap = $('<div class="cell post-item"></div>')
-        if (window.config.viewType === 'card') headerWrap[0].classList.add('preview')
-        $(box).prepend(headerWrap)
-        $(box).children().slice(1, 3).each(function () {
-          headerWrap.append(this)
-        })
-        last = $(box).children().last()
-        last.addClass('cell post-item')
-        if (window.config.viewType === 'card') last[0].classList.add('preview')
-
-        list = box!.querySelectorAll('.item')
-        window.parse.parsePagePostList(list, box)
-        sendFlutter({ type: '发送主页列表' });
-        // sendFlutter(window.postList);
-        sendFlutter({ type: "list", data: window.postList });
+        // box = document.querySelector('#Wrapper .box')
+        // list = box!.querySelectorAll('.item')
+        // window.parse.parsePagePostList(list, box)
+        // sendFlutter({type: '发送主页列表'});
+        // // sendFlutter(window.postList);
+        // sendFlutter({type: "list", data: window.postList});
+        bridge_getNodePostList(`hot`, document)
         break
       case PageType.Changes:
         box = document.querySelector('#Wrapper .box')
@@ -923,8 +937,8 @@ async function init() {
         let r = await functions.checkPostReplies(window.pageData.id, false)
         if (r) {
           window.stopMe = true
-          functions.cbChecker({ type: 'syncData' })
-          functions.cbChecker({ type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼' })
+          functions.cbChecker({type: 'syncData'})
+          functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
           return
         }
 
@@ -939,7 +953,7 @@ async function init() {
           htmlText
         ).then(async (res: any) => {
           // console.log('详情页-基本信息解析完成', Date.now(), res)
-          await functions.cbChecker({ type: 'postContent', value: res })
+          await functions.cbChecker({type: 'postContent', value: res})
           // 引用修改
           await window.parse.parseOp(res)
           // console.log('详情页-OP信息解析完成', Date.now())
@@ -953,7 +967,7 @@ async function init() {
           window.pageData.pageNo
         ).then(async (res1: any) => {
           // console.log('详情页-回复解析完成', Date.now(), res1)
-          await functions.cbChecker({ type: 'postReplies', value: res1 })
+          await functions.cbChecker({type: 'postReplies', value: res1})
         })
         break
       case PageType.Member:
@@ -973,7 +987,7 @@ async function init() {
         break
       default:
         window.stopMe = true
-        functions.cbChecker({ type: 'syncData' })
+        functions.cbChecker({type: 'syncData'})
         console.error('未知页面')
         break
     }
