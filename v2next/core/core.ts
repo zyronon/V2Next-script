@@ -4,6 +4,7 @@ import { GM_openInTab, GM_registerMenuCommand } from 'vite-plugin-monkey/dist/cl
 
 export const functions = {
   createList(post: Post, replyList: Reply[]) {
+    replyList = replyList.slice(0,10)
     post.replyList = replyList
     post.topReplyList = window.clone(replyList)
       .filter(v => v.thankCount >= window.config.topReplyLoveMinCount)
