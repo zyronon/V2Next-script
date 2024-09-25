@@ -11,6 +11,7 @@ import { PageType, Post, Reply } from "@v2next/core/types"
 
 
 function sendFlutter(val) {
+  return
   if (typeof val === 'object') {
     val = JSON.stringify(val)
   }
@@ -44,13 +45,13 @@ async function bridge_getPost(id) {
   let htmlText = await apiRes.text();
   let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
   let body = $(bodyText[0])
-  let post = window.clone(window.initPost)
+  let post = getDefaultPost()
   post.id = String(id)
   await window.parse.getPostDetail(post, body, htmlText)
 
-  // sendFlutter('页面内容' + htmlText);
-  sendFlutter({ type: '帖子内容' });
+  // sendFlutter({ type: '帖子内容' });
   sendFlutter({ type: 'post', data: post });
+  return post
 }
 
 async function bridge_getNodePostList(node, el?) {
@@ -63,17 +64,16 @@ async function bridge_getNodePostList(node, el?) {
   // sendFlutter({ type: '发送主页列表' });
   // sendFlutter(window.postList);
   sendFlutter({ type: "list", node, data: window.postList });
+  return window.postList
 }
 
-window.jsBridge = (type, ...args) => {
+window.jsBridge = async (type, ...args) => {
   console.log('js-调用jsBridge:', type, ':', ...args)
   switch (type) {
     case 'getPost':
-      bridge_getPost(...args)
-      break
+      return await bridge_getPost(...args)
     case 'getNodePostList':
-      bridge_getNodePostList(...args)
-      break
+      return await bridge_getNodePostList(...args)
   }
 }
 
