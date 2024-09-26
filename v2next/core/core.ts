@@ -455,6 +455,13 @@ export const functions = {
       }
     }
     return target
+  },
+  //生成dom，从html字符串
+  genDomFromHtmlString(htmlText){
+    let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+    let body = document.createElement('html')
+    body.innerHTML = bodyText[0]
+    return body
   }
 }
 

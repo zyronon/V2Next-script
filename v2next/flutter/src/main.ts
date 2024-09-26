@@ -31,10 +31,7 @@ async function getHtml(url) {
   console.log('js-请求的url' + url)
   let apiRes = await window.fetch(url);
   let htmlText = await apiRes.text();
-  let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-  let body = document.createElement('html')
-  body.innerHTML = bodyText[0]
-  return body
+  return functions.genDomFromHtmlString(htmlText)
 }
 
 async function bridge_getPost(id) {
@@ -67,6 +64,58 @@ async function bridge_getNodePostList(node, el?) {
   return window.postList
 }
 
+async function login() {
+  let pwdEl = $('input[type="password"]')
+  let inputs = $('input[type="text"].sl')
+  let acc = $(inputs[0])
+  let code = $(inputs[1])
+
+  let data = new FormData()
+  data.append('next', '/')
+  data.append(acc.attr('name'), acc.val())
+  data.append('once', $('input[name="once"]').val())
+  data.append(pwdEl.attr('name'), pwdEl.val())
+  data.append(code.attr('name'), code.val())
+  let r = await fetch('https://www.v2ex.com/signin', {
+    method: 'POST',
+    body: data
+  })
+  console.log('r', r,)
+
+  if (r.redirected) {
+
+  }
+  //如果重定义的url是和next的一致，就说明登录成功
+  if (r.url === location.origin + '/') {
+
+  } else {
+    let htmlText = await r.text()
+    let dom = functions.genDomFromHtmlString(htmlText)
+
+    console.log('htmlText', htmlText)
+    console.log('dd', dom)
+    //登录次数过多
+    if (r.url.includes('cooldown')) {
+      // let desc = $(dom).$('#Wrapper .box').text()
+    }
+    //登录失败
+    if (r.url === location.origin + '/signin') {
+      let messageEl = dom.querySelector('.message')
+      let problemEl = dom.querySelector('.problem')
+      // let desc = $(dom).$('.problem').html()
+      if (messageEl) {
+        console.log(messageEl.textContent)
+      }
+      if (problemEl) {
+        console.log(problemEl.innerHTML)
+      }
+    }
+  }
+
+  //https://www.v2ex.com/signin/cooldown #Wrapper .box
+}
+
+window.login = login
 window.jsBridge = async (type, ...args) => {
   console.log('js-调用jsBridge:', type, ':', ...args)
   switch (type) {
@@ -74,6 +123,79 @@ window.jsBridge = async (type, ...args) => {
       return await bridge_getPost(...args)
     case 'getNodePostList':
       return await bridge_getNodePostList(...args)
+  }
+}
+
+window.jsFunc = {
+  async getLoginPageInfo() {
+    let r = await fetch('https://www.v2ex.com/signin')
+    let htmlText = await r.text()
+    let dom = $(functions.genDomFromHtmlString(htmlText))
+    if (r.redirected) {
+      let desc = dom.find('#Wrapper .box').html()
+      console.log('cooldown', desc)
+      return { error: true, msg: desc }
+    } else {
+      let pwdEl = dom.find('input[type="password"]')
+      let inputs = dom.find('input[type="text"].sl')
+      let acc = dom.find(inputs[0])
+      let code = dom.find(inputs[1])
+      console.log('htmlText', htmlText)
+      console.log('dd', dom)
+      let data = {
+        once: dom.find('input[name="once"]').val(),
+        accKey: acc.attr('name'),
+        pwdKey: pwdEl.attr('name'),
+        codeKey: code.attr('name'),
+      }
+      console.log('data', JSON.stringify(data))
+      return { error: false, data }
+    }
+  },
+  async login(form) {
+    form.acc = 'ttentau1'
+    form.pwd = 'o8949488816'
+    let data = new FormData()
+    data.append('next', '/')
+    data.append(form.accKey, form.acc)
+    data.append('once', form.once)
+    data.append(form.pwdKey, form.pwd)
+    data.append(form.codeKey, form.code)
+    let r = await fetch('https://www.v2ex.com/signin', {
+      method: 'POST',
+      body: data
+    })
+    console.log('r', r,)
+
+    //如果重定义的url是和next的一致，就说明登录成功
+    if (r.url === location.origin + '/') {
+      console.log('登录成功')
+      return { error: false }
+    } else {
+      let htmlText = await r.text()
+      let dom = $(functions.genDomFromHtmlString(htmlText))
+
+      console.log('htmlText', htmlText)
+      console.log('dd', dom)
+      //登录次数过多
+      if (r.url.includes('cooldown')) {
+        let desc = dom.find('#Wrapper .box').text()
+        console.log('cooldown', desc)
+      }
+      //登录失败
+      if (r.url === location.origin + '/signin') {
+        let messageEl = dom.find('.message')
+        let problemEl = dom.find('.problem')
+        // let desc = $(dom).$('.problem').html()
+        if (messageEl) {
+          console.log('msg', messageEl.text())
+        }
+        if (problemEl) {
+          console.log('problem', problemEl.html())
+        }
+      }
+      return false
+    }
   }
 }
 
@@ -652,20 +774,6 @@ window.functions = {
   }
 }
 
-//初始化样式表
-function initStyle() {
-  //给Wrapper和content取消宽高，是因为好像是v2的屏蔽机制，时不时会v2会修改这两个div的宽高，让网页变形
-  let style2 = `
-      
-    }
-    `
-  let addStyle2: HTMLStyleElement = document.createElement("style");
-  // @ts-ignore
-  addStyle2.rel = "stylesheet";
-  addStyle2.type = "text/css";
-  addStyle2.innerHTML = style2
-  window.document.head.append(addStyle2)
-}
 
 // 自动签到（后台）
 function qianDao() {
@@ -821,15 +929,12 @@ function initConfig() {
   })
 }
 
-function addSettingText() {
-  let setting = $(`<a href="/script-setting" class="top">脚本管理</a>`)
-  $('#menu-body .cell:first').append(setting)
-}
 
 let $section = document.createElement('section')
 $section.id = 'app'
 
 async function init() {
+  return
   //监听图片加载失败事件，有的imgur图片填的是分享地址，无法转换。
   //例如：https://imgur.com/a/Gl0ifQ7，这种加上.png也显示不出来，就需要显示原地址
   window.addEventListener('error', (e: Event) => {
@@ -844,14 +949,10 @@ async function init() {
     }
   }, true)
 
-  if (window.isNight) {
-    document.documentElement.classList.add('dark')
-  }
+
   let { pageData, pageType } = functions.checkPageType()
   window.pageType = pageType
   window.pageData = pageData
-  addSettingText()
-  functions.initMonkeyMenu()
 
   let top2 = $('#menu-body .cell:first .top:first')
   if (top2.length && ['个人主页', 'Profile'].includes(top2.text())) {
@@ -860,8 +961,6 @@ async function init() {
   }
 
   initConfig().then(async r => {
-
-    initStyle()
 
     try {
       if (window.config.autoSignin && window.user.username) {
