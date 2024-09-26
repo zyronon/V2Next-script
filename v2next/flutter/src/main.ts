@@ -7,7 +7,7 @@ import {
   getDefaultConfig,
   getDefaultPost
 } from "@v2next/core";
-import { PageType, Post, Reply } from "@v2next/core/types"
+import {PageType, Post, Reply} from "@v2next/core/types"
 
 
 function sendFlutter(val) {
@@ -36,7 +36,7 @@ async function getHtml(url) {
 
 async function bridge_getPost(id) {
   console.log('getPost', id)
-  sendFlutter({ type: '开始请求' + id });
+  sendFlutter({type: '开始请求' + id});
   let url = location.origin + '/t/' + id;
   let apiRes = await window.fetch(url + '?p=1');
   let htmlText = await apiRes.text();
@@ -47,7 +47,7 @@ async function bridge_getPost(id) {
   await window.parse.getPostDetail(post, body, htmlText)
 
   // sendFlutter({ type: '帖子内容' });
-  sendFlutter({ type: 'post', data: post });
+  sendFlutter({type: 'post', data: post});
   return post
 }
 
@@ -60,8 +60,9 @@ async function bridge_getNodePostList(node, el?) {
   window.parse.parsePagePostList(list, box)
   // sendFlutter({ type: '发送主页列表' });
   // sendFlutter(window.postList);
-  sendFlutter({ type: "list", node, data: window.postList });
-  return window.postList
+  sendFlutter({type: "list", node, data: window.postList});
+  console.log('window.postList', window.postList.length)
+  return JSON.stringify(window.postList)
 }
 
 async function login() {
@@ -128,33 +129,43 @@ window.jsBridge = async (type, ...args) => {
 
 window.jsFunc = {
   async getLoginPageInfo() {
-    let r = await fetch('https://www.v2ex.com/signin')
+    let r = await fetch('https://www.v2ex.com/signin', {
+      headers: {
+        'user-agent':
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1'
+      }
+    })
     let htmlText = await r.text()
     let dom = $(functions.genDomFromHtmlString(htmlText))
     if (r.redirected) {
       let desc = dom.find('#Wrapper .box').html()
       console.log('cooldown', desc)
-      return { error: true, msg: desc }
+      return {error: true, msg: desc}
     } else {
       let pwdEl = dom.find('input[type="password"]')
       let inputs = dom.find('input[type="text"].sl')
       let acc = dom.find(inputs[0])
       let code = dom.find(inputs[1])
-      console.log('htmlText', htmlText)
-      console.log('dd', dom)
+      // console.log('htmlText', htmlText)
+      // console.log('dd', dom)
       let data = {
         once: dom.find('input[name="once"]').val(),
         accKey: acc.attr('name'),
         pwdKey: pwdEl.attr('name'),
         codeKey: code.attr('name'),
+        img: '_captcha'
       }
       console.log('data', JSON.stringify(data))
-      return { error: false, data }
+      // return JSON.stringify({error: false, data})
+      await fetch('https://www.v2ex.com/_captcha')
+      return {error: false, data}
     }
   },
   async login(form) {
+    console.log('login', form);
     form.acc = 'ttentau1'
     form.pwd = 'o8949488816'
+    form.code = ''
     let data = new FormData()
     data.append('next', '/')
     data.append(form.accKey, form.acc)
@@ -163,20 +174,38 @@ window.jsFunc = {
     data.append(form.codeKey, form.code)
     let r = await fetch('https://www.v2ex.com/signin', {
       method: 'POST',
-      body: data
+      body: data,
+      headers: {
+        'user-agent':
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1'
+      }
     })
     console.log('r', r,)
+    console.log('r.url', r.url, location.origin, r.redirected)
+
+    let htmlText = await r.text()
+    let dom = $(functions.genDomFromHtmlString(htmlText))
 
     //如果重定义的url是和next的一致，就说明登录成功
     if (r.url === location.origin + '/') {
-      console.log('登录成功')
-      return { error: false }
+      let top2 = dom.find('#menu-body .cell:first .top:first')
+      if (top2.length && ['个人主页', 'Profile'].includes(top2.text())) {
+        let username = top2.attr('href').replace('/member/', '')
+        let avatar = dom.find('#menu-entry .avatar').attr('src')
+        console.log('登录成功')
+        return {
+          error: false, data: {
+            username,
+            avatar
+          }
+        }
+      } else {
+        console.log('登录失败')
+        return {error: true}
+      }
     } else {
-      let htmlText = await r.text()
-      let dom = $(functions.genDomFromHtmlString(htmlText))
-
-      console.log('htmlText', htmlText)
-      console.log('dd', dom)
+      // console.log('htmlText', htmlText)
+      // console.log('dd', dom)
       //登录次数过多
       if (r.url.includes('cooldown')) {
         let desc = dom.find('#Wrapper .box').text()
@@ -194,13 +223,13 @@ window.jsFunc = {
           console.log('problem', problemEl.html())
         }
       }
-      return false
+      return {error: true}
     }
   }
 }
 
 $(document).on('click', 'a', async (e) => {
-  let { href, id, title } = functions.parseA(e.currentTarget);
+  let {href, id, title} = functions.parseA(e.currentTarget);
   if (id) {
     e.preventDefault();
     bridge_getPost(id)
@@ -222,8 +251,8 @@ window.clone = (val: any) => JSON.parse(JSON.stringify(val))
 window.user = DefaultUser
 window.targetUserName = ''
 window.pageType = undefined
-window.pageData = { pageNo: 1 }
-window.config = { ...DefaultConfig, ...{ viewType: 'card' } }
+window.pageData = {pageNo: 1}
+window.config = {...DefaultConfig, ...{viewType: 'card'}}
 window.const = {
   git: 'https://github.com/zyronon/v2ex-script',
   issue: 'https://github.com/zyronon/v2ex-script/issues'
@@ -427,7 +456,7 @@ window.parse = {
       let repliesMap: any[] = []
       //如果第二条有id，就说明是第二条是回复。只有一页回复
       if (cells[1].id) {
-        repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(1)) })
+        repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
         let replyList = functions.getAllReply(repliesMap)
         functions.createList(post, replyList)
         return post
@@ -435,7 +464,7 @@ window.parse = {
         let promiseList: any = []
         // console.log(this.current.repliesMap)
         return new Promise((resolve, reject) => {
-          repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) })
+          repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
 
           let pages = cells[1].querySelectorAll('a.page_normal')
           pages = Array.from(pages)
@@ -474,10 +503,10 @@ window.parse = {
         })
         let cells: any = box!.querySelectorAll('.cell')
         cells = Array.from(cells)
-        resolve({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) })
+        resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
       }).catch((r: any) => {
         if (r.status === 403) {
-          functions.cbChecker({ type: 'restorePost', value: null })
+          functions.cbChecker({type: 'restorePost', value: null})
         }
       })
     })
@@ -501,7 +530,7 @@ window.parse = {
       item.reply_content = functions.checkPhotoLink2Img(reply_content!.innerHTML)
       item.reply_text = reply_content!.textContent!
 
-      let { users, floor } = this.parseReplyContent(item.reply_content)
+      let {users, floor} = this.parseReplyContent(item.reply_content)
       item.hideCallUserReplyContent = item.reply_content
       if (users.length === 1) {
         item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => '')
@@ -582,7 +611,7 @@ window.parse = {
         floor = Number(res[0][1])
       }
     }
-    return { users, floor }
+    return {users, floor}
   },
   //获取帖子详情
   async getPostDetail(post: Post, body: JQuery, htmlText: string, pageNo = 1) {
@@ -597,7 +626,7 @@ window.parse = {
       if (!item_title) return
       itemDom.classList.add('post-item')
       let a = item_title.querySelector('a')
-      let { href, id, title } = functions.parseA(a)
+      let {href, id, title} = functions.parseA(a)
       item.id = String(id)
       a.href = item.href = href
       item.url = location.origin + '/api/topics/show.json?id=' + item.id
@@ -675,7 +704,7 @@ window.parse = {
           a.parentNode?.append(showMore)
         }
       }
-      functions.cbChecker({ type: 'syncList' })
+      functions.cbChecker({type: 'syncList'})
     }
 
     if (window.config.viewType === 'card' && false) {
@@ -712,7 +741,7 @@ window.parse = {
         }
       }
     } else {
-      functions.cbChecker({ type: 'syncData' })
+      functions.cbChecker({type: 'syncData'})
     }
   },
   //创建记事本子条目
@@ -723,7 +752,7 @@ window.parse = {
       data.append('content', itemName)
       data.append('parent_id', 0)
       data.append('syntax', 0)
-      let apiRes = await window.win().fetch(`${location.origin}/notes/new`, { method: 'post', body: data })
+      let apiRes = await window.win().fetch(`${location.origin}/notes/new`, {method: 'post', body: data})
       // console.log(apiRes)
       if (apiRes.redirected && apiRes.status === 200) {
         resolve(apiRes.url.substr(-5))
@@ -909,7 +938,7 @@ async function initNoteData() {
         r && (window.user.imgurNoteId = r);
       }
     }
-    functions.cbChecker({ type: 'syncData' })
+    functions.cbChecker({type: 'syncData'})
   })
 }
 
@@ -934,6 +963,7 @@ let $section = document.createElement('section')
 $section.id = 'app'
 
 async function init() {
+  console.log('js 加载成功')
   return
   //监听图片加载失败事件，有的imgur图片填的是分享地址，无法转换。
   //例如：https://imgur.com/a/Gl0ifQ7，这种加上.png也显示不出来，就需要显示原地址
@@ -950,7 +980,7 @@ async function init() {
   }, true)
 
 
-  let { pageData, pageType } = functions.checkPageType()
+  let {pageData, pageType} = functions.checkPageType()
   window.pageType = pageType
   window.pageData = pageData
 
@@ -1039,8 +1069,8 @@ async function init() {
         let r = await functions.checkPostReplies(window.pageData.id, false)
         if (r) {
           window.stopMe = true
-          functions.cbChecker({ type: 'syncData' })
-          functions.cbChecker({ type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼' })
+          functions.cbChecker({type: 'syncData'})
+          functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
           return
         }
 
@@ -1055,7 +1085,7 @@ async function init() {
           htmlText
         ).then(async (res: any) => {
           // console.log('详情页-基本信息解析完成', Date.now(), res)
-          await functions.cbChecker({ type: 'postContent', value: res })
+          await functions.cbChecker({type: 'postContent', value: res})
           // 引用修改
           await window.parse.parseOp(res)
           // console.log('详情页-OP信息解析完成', Date.now())
@@ -1069,7 +1099,7 @@ async function init() {
           window.pageData.pageNo
         ).then(async (res1: any) => {
           // console.log('详情页-回复解析完成', Date.now(), res1)
-          await functions.cbChecker({ type: 'postReplies', value: res1 })
+          await functions.cbChecker({type: 'postReplies', value: res1})
         })
         break
       case PageType.Member:
@@ -1089,7 +1119,7 @@ async function init() {
         break
       default:
         window.stopMe = true
-        functions.cbChecker({ type: 'syncData' })
+        functions.cbChecker({type: 'syncData'})
         console.error('未知页面')
         break
     }
