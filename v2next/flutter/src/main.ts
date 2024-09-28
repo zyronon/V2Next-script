@@ -1,4 +1,5 @@
 import {
+  classicsEmoticons,
   DefaultConfig,
   DefaultPost,
   DefaultUser,
@@ -289,6 +290,141 @@ window.jsFunc = {
       error: false,
       data: window.postList
     }
+  },
+  async getPost(id) {
+    console.log('getPost', id)
+    sendFlutter({ type: '开始请求' + id });
+    let url = location.origin + '/t/' + id;
+    let apiRes = await window.fetch(url + '?p=1');
+    let htmlText = await apiRes.text();
+    let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+    let body = $(bodyText[0])
+    let post = getDefaultPost()
+    post.id = String(id)
+    await window.parse.getPostDetail(post, body, htmlText)
+    console.log('getPost', post)
+    window.post = post
+    return post
+  },
+  async reply(data: { content: string, post: Post }) {
+    const { content, post } = data
+    let submit_content = content.replace(/\[((?!\[).)+\]/g, function (match) {
+      let item = classicsEmoticons.find(v => v.name === match)
+      if (item) {
+        return item.low + ' '
+      }
+      return match
+    })
+
+    //转换上传的图片
+    let show_content = content.replace(/https?:\/\/(i\.)?imgur\.com\/((?!http).)+\.(gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG)/g, function (match) {
+      return `<img src="${match}" data-originUrl="${match}" data-notice="这个img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`
+    })
+
+    //转换表情
+    show_content = show_content.replace(/\[((?!\[).)+\]/g, function (match) {
+      let item = classicsEmoticons.find(v => v.name === match)
+      if (item) {
+        return `<a target="_blank" href="${item.low}" rel="nofollow noopener"><img src="${item.low}" class="embedded_image" rel="noreferrer"></a> `
+      }
+      return match
+    })
+
+    let matchUsers = show_content.match(/@([\w]+?[\s])/g)
+    if (matchUsers) {
+      matchUsers.map(i => {
+        let username = i.replace('@', '').replace(' ', '')
+        show_content = show_content.replace(username, `<a href="/member/${username}">${username}</a>`)
+      })
+    }
+
+    show_content = show_content.replaceAll('\n', '<br/>')
+
+    // loading.value = false
+    // console.log('show_content', show_content)
+
+    let item = {
+      thankCount: 0,
+      isThanked: false,
+      isOp: post.username === window.user.username,
+      isDup: false,
+      id: Date.now(),
+      username: window.user.username,
+      avatar: window.user.avatar,
+      date: '几秒前',
+      floor: post.replyCount + 1,
+      reply_content: show_content ?? '',
+      children: [],
+      // replyUsers: replyUser ? [replyUser] : [],
+      // replyFloor: replyFloor || -1,
+      // level: useType === 'reply-comment' ? 1 : 0
+    }
+
+    item.hideCallUserReplyContent = item.reply_content
+    if (item.replyUsers.length === 1) {
+      item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => '')
+    }
+    // console.log('回复', item)
+    // loading.value = false
+    // return
+
+    // loading.value = false
+    // content.value = replyInfo
+    // eventBus.emit(CMD.REFRESH_ONCE,)
+    // eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
+    // eventBus.emit(CMD.ADD_REPLY, item)
+    // emits('close')
+    // return console.log('item', item)
+
+    post.replyList.push(item)
+    return post
+    // let url = `${location.origin}/t/${post.id}`
+    // $.post(url, { content: submit_content, once: post.once }).then(
+    //   // $.post(url, {content: submit_content, once: 123}).then(
+    //   res => {
+    //     // console.log('回复', res)
+    //     loading.value = false
+    //     let r = res.search('你上一条回复的内容和这条相同')
+    //     if (r > -1) return eventBus.emit(CMD.SHOW_MSG, { type: 'error', text: '你上一条回复的内容和这条相同' })
+    //
+    //     r = res.search('请不要在每一个回复中都包括外链，这看起来像是在 spamming')
+    //     if (r > -1) return eventBus.emit(CMD.SHOW_MSG, {
+    //       type: 'error',
+    //       text: '请不要在每一个回复中都包括外链，这看起来像是在 spamming'
+    //     })
+    //
+    //     let r2 = res.search('创建新回复')
+    //     if (r2 > -1) {
+    //       eventBus.emit(CMD.REFRESH_ONCE, res)
+    //       eventBus.emit(CMD.SHOW_MSG, { type: 'error', text: '回复出现了问题，请使用原版进行回复' })
+    //       let clientWidth = window.document.body.clientWidth
+    //       let windowWidth = 1200
+    //       let left = clientWidth / 2 - windowWidth / 2
+    //       let newWin = window.open("创建新回复", "", `width=${windowWidth},height=600,left=${left},top=100`);
+    //       newWin.document.write(res);
+    //
+    //       let loop = setInterval(function () {//监听子页面关闭事件,轮询时间1000毫秒
+    //         if (newWin.closed) {
+    //           clearInterval(loop);
+    //           eventBus.emit(CMD.REFRESH_POST)
+    //         }
+    //       }, 1000);
+    //       return
+    //     }
+    //     // content.value = replyInfo
+    //     emits('close')
+    //     eventBus.emit(CMD.REFRESH_ONCE, res)
+    //     eventBus.emit(CMD.SHOW_MSG, { type: 'success', text: '回复成功' })
+    //     eventBus.emit(CMD.ADD_REPLY, item)
+    //   },
+    //   err => {
+    //     console.log('err', err)
+    //     loading.value = false
+    //     eventBus.emit(CMD.SHOW_MSG, { type: 'error', text: '回复失败' })
+    //   }
+    // ).catch(r => {
+    //   console.log('catch', r)
+    // })
   }
 }
 
@@ -1187,7 +1323,7 @@ if (isMobile) {
     let { href, id, title } = functions.parseA(e.currentTarget);
     if (id) {
       e.preventDefault();
-      bridge_getPost(id)
+      await window.jsFunc.getPost(id)
       return false;
     }
   });
