@@ -1,19 +1,38 @@
-import { CommentDisplayType, Config, MAX_REPLY_LIMIT, PageType, Post, Reply, User } from "./types";
-import { GM_openInTab, GM_registerMenuCommand } from 'vite-plugin-monkey/dist/client';
+import {CommentDisplayType, Config, MAX_REPLY_LIMIT, PageType, Post, Reply, User} from "./types";
+import {GM_openInTab, GM_registerMenuCommand} from 'vite-plugin-monkey/dist/client';
 // import {GM_openInTab, GM_registerMenuCommand}  from 'gmApi';
 
 export const functions = {
-  createList(post: Post, replyList: Reply[]) {
-    replyList = replyList.slice(0,10)
+  async refreshOnce(once: any) {
+    return new Promise(resolve => {
+      if (once) {
+        if (typeof once === 'string') {
+          let res = once.match(/var once = "([\d]+)";/)
+          if (res && res[1]) resolve(Number(res[1]))
+        }
+        if (typeof once === 'number') resolve(once)
+      }
+      window.fetchOnce().then(r => {
+        // console.log('通过fetchOnce接口拿once', r)
+        resolve(r)
+      })
+    })
+  },
+  clone: (val: any) => JSON.parse(JSON.stringify(val)),
+  createList(post: Post, replyList: Reply[], withRedundList = true) {
+    replyList = replyList.slice(0, 1)
     post.replyList = replyList
-    post.topReplyList = window.clone(replyList)
+    return post
+    post.topReplyList = this.clone(replyList)
       .filter(v => v.thankCount >= window.config.topReplyLoveMinCount)
       .sort((a, b) => b.thankCount - a.thankCount)
       .slice(0, window.config.topReplyCount)
     post.replyCount = replyList.length
     post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
-    post.nestedReplies = functions.createNestedList(window.clone(replyList), post.topReplyList)
-    post.nestedRedundReplies = functions.createNestedRedundantList(window.clone(replyList), post.topReplyList)
+    post.nestedReplies = functions.createNestedList(this.clone(replyList), post.topReplyList)
+    if (withRedundList) {
+      post.nestedRedundReplies = functions.createNestedRedundantList(this.clone(replyList), post.topReplyList)
+    }
     return post
   },
   //获取所有回复
@@ -50,7 +69,7 @@ export const functions = {
         if (currentItem.replyUsers.length === 1 && currentItem.replyUsers[0] === item.username) {
           //先标记为使用，不然遇到“问题930155”，会出现重复回复
           currentItem.isUse = true
-          floorReplyList.push({ endList: endList.slice(i + 1), currentItem })
+          floorReplyList.push({endList: endList.slice(i + 1), currentItem})
           //问题930155：这里不能直接找子级，如果item为A，currentItem为B，但随后A又回复了B，然后C回复A。这样直接找子级就会把C归类到B的子回复，而不是直接A的子回复
           //截图：930155.png
           // fn(currentItem, endList.slice(i + 1), item)
@@ -62,7 +81,7 @@ export const functions = {
 
     //从后往前找
     //原因：问题933080，有图
-    floorReplyList.reverse().map(({ currentItem, endList }) => {
+    floorReplyList.reverse().map(({currentItem, endList}) => {
       fn(currentItem, endList, item)
     })
 
@@ -208,7 +227,7 @@ export const functions = {
             nestedList.push(this.findChildren(item, endList, list, topReplyList))
           }
         } else {
-          let newItem = window.clone(item)
+          let newItem = this.clone(item)
           newItem.children = []
           newItem.level = 0
           newItem.isDup = true
@@ -227,7 +246,7 @@ export const functions = {
     if (href.includes('/t/')) {
       id = a.pathname.substring('/t/'.length);
     }
-    return { href, id, title: a.innerText }
+    return {href, id, title: a.innerText}
   },
   //图片链接转Img标签
   checkPhotoLink2Img(str: string) {
@@ -299,7 +318,7 @@ export const functions = {
       }
       a.click();
     } else {
-      GM_openInTab(href, { active });
+      GM_openInTab(href, {active});
     }
   },
   async cbChecker(val: any, count = 0) {
@@ -317,7 +336,7 @@ export const functions = {
   initMonkeyMenu() {
     try {
       GM_registerMenuCommand("脚本设置", () => {
-        functions.cbChecker({ type: 'openSetting' })
+        functions.cbChecker({type: 'openSetting'})
       });
       GM_registerMenuCommand('仓库地址', () => {
         functions.openNewTab(window.const.git)
@@ -336,7 +355,7 @@ export const functions = {
   //检测页面类型
   checkPageType(a?: HTMLAnchorElement) {
     let l = a || window.location
-    let data = { pageType: null, pageData: { id: '', pageNo: null }, username: '' }
+    let data = {pageType: null, pageData: {id: '', pageNo: null}, username: ''}
     if (l.pathname === '/') {
       data.pageType = PageType.Home
     } else if (l.pathname === '/changes') {
@@ -457,7 +476,7 @@ export const functions = {
     return target
   },
   //生成dom，从html字符串
-  genDomFromHtmlString(htmlText){
+  genDomFromHtmlString(htmlText) {
     let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
     let body = document.createElement('html')
     body.innerHTML = bodyText[0]
@@ -526,7 +545,7 @@ export const DefaultUser: User = {
 
 export const DefaultVal = {
   pageType: undefined,
-  pageData: { pageNo: 1 },
+  pageData: {pageNo: 1},
   targetUserName: '',
   currentVersion: 2,
   isNight: false,
@@ -578,7 +597,7 @@ export const DefaultConfig: Config = {
 }
 
 export function getDefaultConfig(): Config {
-  return { ...DefaultConfig }
+  return {...DefaultConfig}
 }
 
 /** emoji表情数据 */

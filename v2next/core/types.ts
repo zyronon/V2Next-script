@@ -1,5 +1,5 @@
 export interface Post {
-  replyList: any[],
+  replyList: Reply[],
   topReplyList: any[],
   nestedReplies: any[],
   nestedRedundReplies: any[],
@@ -111,16 +111,17 @@ export interface Reply {
   isOp: boolean,
   isMod: boolean,
   isDup: boolean,
-  id: string,
+  id: any,
   reply_content: string,
   hideCallUserReplyContent: string,
   reply_text: string,
   replyUsers: any
-  replyFloor: undefined
+  replyFloor: number
   date: string
   username: string
   avatar: string
   floor: number
+  children: Reply[]
 }
 
 //最大回复限制，超出脚本停止运行

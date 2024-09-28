@@ -8,124 +8,46 @@ import {
   getDefaultConfig,
   getDefaultPost
 } from "@v2next/core";
-import { PageType, Post, Reply } from "@v2next/core/types"
+import {PageType, Post, Reply} from "@v2next/core/types"
 
+function html_encode(str:string) {
+  var s = "";
+  if (str.length == 0) return "";
+  s = str.replace(/&/g, "&amp;");
+  s = s.replace(/</g, "&lt;");
+  s = s.replace(/>/g, "&gt;");
+  s = s.replace(/ /g, "&nbsp;");
+  // s = s.replace(/\'/g, "&#39;");
+  // s = s.replace(/\"/g, "&quot;");
+  s = s.replace(/\n/g, "<br/>");
+  return s;
+}
 
-function sendFlutter(val) {
-  return
+function sendFlutter(val:any) {
   if (typeof val === 'object') {
     val = JSON.stringify(val)
   }
   if (import.meta.env.PROD) {
     Channel.postMessage(val)
   } else {
+    navigator.clipboard.writeText(val);
     console.log(val)
-    val = val.replaceAll(/\\n|\\r|\\t/g, '')
-    val = val.replaceAll('\"', '\\"')
-    val = val.replaceAll('\'', '\\\'')
-    console.log(val)
+    // // val = html_encode(val)
+    // val = val.replaceAll(/\\n|\\r|\\t/g, '')
+    // val = val.replaceAll('\"', '\\"')
+    // val = val.replaceAll('\'', '\\\'')
+    // // val = val.replaceAll('\\', '\/\/');
+    // console.log(val)
+    JSON.parse(val)
   }
 }
 
-async function getHtml(url) {
+async function getHtml(url: string) {
   url = location.origin + url;
   console.log('js-请求的url' + url)
   let apiRes = await window.fetch(url);
   let htmlText = await apiRes.text();
-  return functions.genDomFromHtmlString(htmlText)
-}
-
-async function bridge_getPost(id) {
-  console.log('getPost', id)
-  sendFlutter({ type: '开始请求' + id });
-  let url = location.origin + '/t/' + id;
-  let apiRes = await window.fetch(url + '?p=1');
-  let htmlText = await apiRes.text();
-  let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-  let body = $(bodyText[0])
-  let post = getDefaultPost()
-  post.id = String(id)
-  await window.parse.getPostDetail(post, body, htmlText)
-
-  // sendFlutter({ type: '帖子内容' });
-  sendFlutter({ type: 'post', data: post });
-  return post
-}
-
-async function bridge_getNodePostList(node, el?) {
-  window.postList = []
-  console.log('js-bridge_getNodePostList', node)
-  if (!el) el = await getHtml('/?tab=' + node)
-  let box = el.querySelector('#Wrapper .box')
-  let list = box!.querySelectorAll('.item')
-  window.parse.parsePagePostList(list, box)
-  // sendFlutter({ type: '发送主页列表' });
-  // sendFlutter(window.postList);
-  sendFlutter({ type: "list", node, data: window.postList });
-  console.log('window.postList', window.postList.length)
-  return JSON.stringify(window.postList)
-}
-
-async function login() {
-  let pwdEl = $('input[type="password"]')
-  let inputs = $('input[type="text"].sl')
-  let acc = $(inputs[0])
-  let code = $(inputs[1])
-
-  let data = new FormData()
-  data.append('next', '/')
-  data.append(acc.attr('name'), acc.val())
-  data.append('once', $('input[name="once"]').val())
-  data.append(pwdEl.attr('name'), pwdEl.val())
-  data.append(code.attr('name'), code.val())
-  let r = await fetch('https://www.v2ex.com/signin', {
-    method: 'POST',
-    body: data
-  })
-  console.log('r', r,)
-
-  if (r.redirected) {
-
-  }
-  //如果重定义的url是和next的一致，就说明登录成功
-  if (r.url === location.origin + '/') {
-
-  } else {
-    let htmlText = await r.text()
-    let dom = functions.genDomFromHtmlString(htmlText)
-
-    console.log('htmlText', htmlText)
-    console.log('dd', dom)
-    //登录次数过多
-    if (r.url.includes('cooldown')) {
-      // let desc = $(dom).$('#Wrapper .box').text()
-    }
-    //登录失败
-    if (r.url === location.origin + '/signin') {
-      let messageEl = dom.querySelector('.message')
-      let problemEl = dom.querySelector('.problem')
-      // let desc = $(dom).$('.problem').html()
-      if (messageEl) {
-        console.log(messageEl.textContent)
-      }
-      if (problemEl) {
-        console.log(problemEl.innerHTML)
-      }
-    }
-  }
-
-  //https://www.v2ex.com/signin/cooldown #Wrapper .box
-}
-
-window.login = login
-window.jsBridge = async (type, ...args) => {
-  console.log('js-调用jsBridge:', type, ':', ...args)
-  switch (type) {
-    case 'getPost':
-      return await bridge_getPost(...args)
-    case 'getNodePostList':
-      return await bridge_getNodePostList(...args)
-  }
+  return {el: functions.genDomFromHtmlString(htmlText), str: htmlText}
 }
 
 window.jsFunc = {
@@ -142,7 +64,7 @@ window.jsFunc = {
     if (r.redirected) {
       let desc = dom.find('#Wrapper .box').html()
       console.log('cooldown', desc)
-      return { error: true, msg: desc }
+      return {error: true, msg: desc}
     } else {
       let pwdEl = dom.find('input[type="password"]')
       let inputs = dom.find('input[type="text"].sl')
@@ -165,7 +87,7 @@ window.jsFunc = {
 
       console.log('data', JSON.stringify(data))
 
-      return { error: false, data }
+      return {error: false, data}
     }
   },
   async login(form) {
@@ -209,7 +131,7 @@ window.jsFunc = {
         }
       } else {
         console.log('登录失败')
-        return { error: true }
+        return {error: true}
       }
     } else {
       // console.log('htmlText', htmlText)
@@ -231,7 +153,7 @@ window.jsFunc = {
           console.log('problem', problemEl.html())
         }
       }
-      return { error: true }
+      return {error: true}
     }
   },
   async getImg(once) {
@@ -278,43 +200,35 @@ window.jsFunc = {
   async getNodePostList(node, el?) {
     window.postList = []
     console.log('js-bridge_getNodePostList', node)
-    if (!el) el = await getHtml('/?tab=' + node)
+    if (!el) {
+      let tmp = await getHtml('/?tab=' + node)
+      el = tmp.el
+    }
     let box = el.querySelector('#Wrapper .box')
     let list = box!.querySelectorAll('.item')
     window.parse.parsePagePostList(list, box)
     // sendFlutter({ type: '发送主页列表' });
     // sendFlutter(window.postList);
-    sendFlutter({ type: "list", node, data: window.postList });
+    sendFlutter({type: "list", node, data: window.postList});
     console.log('window.postList', window.postList.length)
     return {
       error: false,
       data: window.postList
     }
   },
-  async getPost(id) {
+  async getPost(id: string) {
     console.log('getPost', id)
-    sendFlutter({ type: '开始请求' + id });
-    let url = location.origin + '/t/' + id;
-    let apiRes = await window.fetch(url + '?p=1');
-    let htmlText = await apiRes.text();
-    let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-    let body = $(bodyText[0])
+    let {el: body, str: htmlText} = await getHtml('/t/' + id + '?p=1')
     let post = getDefaultPost()
     post.id = String(id)
     await window.parse.getPostDetail(post, body, htmlText)
     console.log('getPost', post)
     window.post = post
+    sendFlutter(post);
     return post
   },
-  async reply(data: { content: string, post: Post }) {
-    const { content, post } = data
-    let submit_content = content.replace(/\[((?!\[).)+\]/g, function (match) {
-      let item = classicsEmoticons.find(v => v.name === match)
-      if (item) {
-        return item.low + ' '
-      }
-      return match
-    })
+  async addReplyItem(data: { content: string, post: Post, replyUser: string, replyFloor: number }) {
+    const {content, post, replyUser = [], replyFloor = -1} = data
 
     //转换上传的图片
     let show_content = content.replace(/https?:\/\/(i\.)?imgur\.com\/((?!http).)+\.(gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG)/g, function (match) {
@@ -343,20 +257,24 @@ window.jsFunc = {
     // loading.value = false
     // console.log('show_content', show_content)
 
-    let item = {
+    let item: Reply = {
       thankCount: 0,
       isThanked: false,
       isOp: post.username === window.user.username,
       isDup: false,
-      id: Date.now(),
+      id: Date.now() + '',
       username: window.user.username,
       avatar: window.user.avatar,
       date: '几秒前',
       floor: post.replyCount + 1,
       reply_content: show_content ?? '',
       children: [],
-      // replyUsers: replyUser ? [replyUser] : [],
-      // replyFloor: replyFloor || -1,
+      replyUsers: replyUser,
+      replyFloor: replyFloor,
+      level: 0,
+      isMod: false,
+      hideCallUserReplyContent: '',
+      reply_text: ''
       // level: useType === 'reply-comment' ? 1 : 0
     }
 
@@ -377,109 +295,110 @@ window.jsFunc = {
     // return console.log('item', item)
 
     post.replyList.push(item)
-    return post
-    // let url = `${location.origin}/t/${post.id}`
-    // $.post(url, { content: submit_content, once: post.once }).then(
-    //   // $.post(url, {content: submit_content, once: 123}).then(
-    //   res => {
-    //     // console.log('回复', res)
-    //     loading.value = false
-    //     let r = res.search('你上一条回复的内容和这条相同')
-    //     if (r > -1) return eventBus.emit(CMD.SHOW_MSG, { type: 'error', text: '你上一条回复的内容和这条相同' })
-    //
-    //     r = res.search('请不要在每一个回复中都包括外链，这看起来像是在 spamming')
-    //     if (r > -1) return eventBus.emit(CMD.SHOW_MSG, {
-    //       type: 'error',
-    //       text: '请不要在每一个回复中都包括外链，这看起来像是在 spamming'
-    //     })
-    //
-    //     let r2 = res.search('创建新回复')
-    //     if (r2 > -1) {
-    //       eventBus.emit(CMD.REFRESH_ONCE, res)
-    //       eventBus.emit(CMD.SHOW_MSG, { type: 'error', text: '回复出现了问题，请使用原版进行回复' })
-    //       let clientWidth = window.document.body.clientWidth
-    //       let windowWidth = 1200
-    //       let left = clientWidth / 2 - windowWidth / 2
-    //       let newWin = window.open("创建新回复", "", `width=${windowWidth},height=600,left=${left},top=100`);
-    //       newWin.document.write(res);
-    //
-    //       let loop = setInterval(function () {//监听子页面关闭事件,轮询时间1000毫秒
-    //         if (newWin.closed) {
-    //           clearInterval(loop);
-    //           eventBus.emit(CMD.REFRESH_POST)
-    //         }
-    //       }, 1000);
-    //       return
-    //     }
-    //     // content.value = replyInfo
-    //     emits('close')
-    //     eventBus.emit(CMD.REFRESH_ONCE, res)
-    //     eventBus.emit(CMD.SHOW_MSG, { type: 'success', text: '回复成功' })
-    //     eventBus.emit(CMD.ADD_REPLY, item)
-    //   },
-    //   err => {
-    //     console.log('err', err)
-    //     loading.value = false
-    //     eventBus.emit(CMD.SHOW_MSG, { type: 'error', text: '回复失败' })
-    //   }
-    // ).catch(r => {
-    //   console.log('catch', r)
-    // })
+    functions.createList(post, post.replyList, false)
+    return {item, post}
+  },
+  async networkReply(data: { content: string, post: Post, id: string }) {
+    const {content, post, id} = data
+    let submit_content = content.replace(/\[((?!\[).)+\]/g, function (match) {
+      let item = classicsEmoticons.find(v => v.name === match)
+      if (item) {
+        return item.low + ' '
+      }
+      return match
+    })
+
+    let url = `${location.origin}/t/${post.id}`
+
+    return $.post(url, {content: submit_content, once: post.once}).then(
+      // $.post(url, {content: submit_content, once: 123}).then(
+      res => {
+        // console.log('回复', res)
+        let r = res.search('你上一条回复的内容和这条相同')
+        if (r > -1) return {error: true, msg: '你上一条回复的内容和这条相同'}
+
+        r = res.search('请不要在每一个回复中都包括外链，这看起来像是在 spamming')
+        if (r > -1) return {error: true, msg: '请不要在每一个回复中都包括外链，这看起来像是在 spamming'}
+
+        let r2 = res.search('创建新回复')
+        if (r2 > -1) {
+          return {error: true, msg: '回复出现了问题，请使用原版进行回复'}
+          // eventBus.emit(CMD.REFRESH_ONCE, res)
+          // eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复出现了问题，请使用原版进行回复'})
+          // let clientWidth = window.document.body.clientWidth
+          // let windowWidth = 1200
+          // let left = clientWidth / 2 - windowWidth / 2
+          // let newWin = window.open("创建新回复", "", `width=${windowWidth},height=600,left=${left},top=100`);
+          // newWin.document.write(res);
+          //
+          // let loop = setInterval(function () {//监听子页面关闭事件,轮询时间1000毫秒
+          //   if (newWin.closed) {
+          //     clearInterval(loop);
+          //     eventBus.emit(CMD.REFRESH_POST)
+          //   }
+          // }, 1000);
+          // return
+        }
+        // content.value = replyInfo
+        return {error: false}
+      },
+      err => {
+        let rIndex = post.replyList.findIndex(v => v.id == id)
+        if (rIndex > -1) {
+          post.replyList.splice(rIndex, 1)
+          functions.createList(post, post.replyList, false)
+        }
+        return {error: true, msg: '回复失败' + err, data: post}
+      }
+    ).catch(r => {
+      console.log('catch', r)
+      let rIndex = post.replyList.findIndex(v => v.id == id)
+      if (rIndex > -1) {
+        post.replyList.splice(rIndex, 1)
+        functions.createList(post, post.replyList, false)
+      }
+      return {error: true, msg: '回复失败' + r}
+    })
+  },
+  async rebuildList() {
+
   }
 }
 
+window.t = {
+  addReplyItem() {
+    return window.jsFunc.addReplyItem({post: window.post, content: 'test', replyFloor: 10, replyUser: 'testuser'})
+  },
+  networkReply() {
+    return window.jsFunc.networkReply({post: window.post, content: 'test', replyFloor: 10, replyUser: 'testuser'})
+  }
+}
 
 window.initPost = getDefaultPost()
-//历史遗留属性
-window.win = function () {
-  return window
-}
-window.win().doc = window.win().document
-window.win().query = (v: any) => window.win().document.querySelector(v)
-window.query = (v: any) => window.win().document.querySelector(v)
-//历史遗留属性
-
 window.clone = (val: any) => JSON.parse(JSON.stringify(val))
 window.user = DefaultUser
 window.targetUserName = ''
 window.pageType = undefined
-window.pageData = { pageNo: 1 }
-window.config = { ...DefaultConfig, ...{ viewType: 'card' } }
+window.pageData = {pageNo: 1}
+window.config = {...DefaultConfig, ...{viewType: 'card'}}
 window.const = {
   git: 'https://github.com/zyronon/v2ex-script',
   issue: 'https://github.com/zyronon/v2ex-script/issues'
 }
-window.currentVersion = 1
 window.isNight = $('.Night').length === 1
-window.cb = null
-window.stopMe = false
 window.postList = []
 window.parse = {
   //解析帖子内容
-  async parsePostContent(post: Post, body: JQuery, htmlText: string) {
+  async parsePostContent(post: Post, body: Element, htmlText: string) {
     let once = htmlText.match(/var once = "([\d]+)";/)
     // console.log(once)
-    if (once && once[1]) {
-      post.once = once[1]
-    }
+    if (once && once[1]) post.once = once[1]
 
     post.isReport = htmlText.includes('你已对本主题进行了报告')
 
     let wrapperClass = 'Wrapper'
-    let wrapper
-    let boxs
-
-    if (body.length > 1) {
-      body.each(function () {
-        if (this.id === wrapperClass) {
-          wrapper = $(this)
-          boxs = this.querySelectorAll('.box')
-        }
-      })
-    } else {
-      wrapper = body
-      boxs = body.find(`#${wrapperClass} .box`)
-    }
+    let wrapper = $(body)
+    let boxs = body.querySelector(`#${wrapperClass} .box`)
 
     let box1 = $(boxs[0])
     let header1 = wrapper.find('.header')
@@ -612,27 +531,15 @@ window.parse = {
     return post
   },
   //获取帖子所有回复
-  async getPostAllReplies(post: Post, body: JQuery, htmlText: string, pageNo = 1) {
-    if (body.find('#no-comments-yet').length) {
+  async getPostAllReplies(post: Post, body: Element, pageNo = 1) {
+    if (body.querySelector('#no-comments-yet')) {
       return post
     }
 
-    let wrapperClass = 'Wrapper'
-    let boxs
-    let box: any
-    if (body.length > 1) {
-      body.each(function () {
-        if (this.id === wrapperClass) {
-          boxs = this.querySelectorAll('.box')
-          box = boxs[1]
-        }
-      })
-    } else {
-      boxs = body.find(`#${wrapperClass} .box`)
-      box = boxs[1]
-      if (box.querySelector('.fa-tags')) {
-        box = boxs[2]
-      }
+    let boxs = $(body).find(`#Wrapper .box`)
+    let box = boxs[1]
+    if (box.querySelector('.fa-tags')) {
+      box = boxs[2]
     }
 
     let cells: any = box.querySelectorAll('.cell')
@@ -644,19 +551,18 @@ window.parse = {
       //获取创建时间
       let snow = cells[0].querySelector('.snow')
       post.createDate = snow?.nextSibling?.nodeValue?.trim() || ''
-
       let repliesMap: any[] = []
       //如果第二条有id，就说明是第二条是回复。只有一页回复
       if (cells[1].id) {
-        repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(1)) })
-        let replyList = functions.getAllReply(repliesMap)
-        functions.createList(post, replyList)
+        repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
+        let replyList = functions.getAllReply(repliesMap as any)
+        functions.createList(post, replyList, false)
         return post
       } else {
         let promiseList: any = []
         // console.log(this.current.repliesMap)
-        return new Promise((resolve, reject) => {
-          repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) })
+        return new Promise((resolve,) => {
+          repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
 
           let pages = cells[1].querySelectorAll('a.page_normal')
           pages = Array.from(pages)
@@ -669,14 +575,15 @@ window.parse = {
             (results) => {
               // @ts-ignore
               results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-              let replyList = functions.getAllReply(repliesMap)
-              functions.createList(post, replyList)
+              let replyList = functions.getAllReply(repliesMap as any)
+              functions.createList(post, replyList, false)
               resolve(post)
             }
           )
         })
       }
     }
+    return post
   },
   //请求帖子其他页的回复
   fetchPostOtherPageReplies(href: string, pageNo: number) {
@@ -695,10 +602,10 @@ window.parse = {
         })
         let cells: any = box!.querySelectorAll('.cell')
         cells = Array.from(cells)
-        resolve({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) })
+        resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
       }).catch((r: any) => {
         if (r.status === 403) {
-          functions.cbChecker({ type: 'restorePost', value: null })
+          functions.cbChecker({type: 'restorePost', value: null})
         }
       })
     })
@@ -722,7 +629,7 @@ window.parse = {
       item.reply_content = functions.checkPhotoLink2Img(reply_content!.innerHTML)
       item.reply_text = reply_content!.textContent!
 
-      let { users, floor } = this.parseReplyContent(item.reply_content)
+      let {users, floor} = this.parseReplyContent(item.reply_content)
       item.hideCallUserReplyContent = item.reply_content
       if (users.length === 1) {
         item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => '')
@@ -803,12 +710,12 @@ window.parse = {
         floor = Number(res[0][1])
       }
     }
-    return { users, floor }
+    return {users, floor}
   },
   //获取帖子详情
-  async getPostDetail(post: Post, body: JQuery, htmlText: string, pageNo = 1) {
+  async getPostDetail(post: Post, body: Element, htmlText: string, pageNo = 1) {
     post = await this.parsePostContent(post, body, htmlText)
-    return await this.getPostAllReplies(post, body, htmlText, pageNo)
+    return await this.getPostAllReplies(post, body, pageNo)
   },
   //解析页面帖子列表
   parsePagePostList(list: any[], box: any) {
@@ -818,7 +725,7 @@ window.parse = {
       if (!item_title) return
       itemDom.classList.add('post-item')
       let a = item_title.querySelector('a')
-      let { href, id, title } = functions.parseA(a)
+      let {href, id, title} = functions.parseA(a)
       item.id = String(id)
       a.href = item.href = href
       item.url = location.origin + '/api/topics/show.json?id=' + item.id
@@ -896,7 +803,7 @@ window.parse = {
           a.parentNode?.append(showMore)
         }
       }
-      functions.cbChecker({ type: 'syncList' })
+      functions.cbChecker({type: 'syncList'})
     }
 
     if (window.config.viewType === 'card' && false) {
@@ -933,7 +840,7 @@ window.parse = {
         }
       }
     } else {
-      functions.cbChecker({ type: 'syncData' })
+      functions.cbChecker({type: 'syncData'})
     }
   },
   //创建记事本子条目
@@ -944,7 +851,7 @@ window.parse = {
       data.append('content', itemName)
       data.append('parent_id', 0)
       data.append('syntax', 0)
-      let apiRes = await window.win().fetch(`${location.origin}/notes/new`, { method: 'post', body: data })
+      let apiRes = await fetch(`${location.origin}/notes/new`, {method: 'post', body: data})
       // console.log(apiRes)
       if (apiRes.redirected && apiRes.status === 200) {
         resolve(apiRes.url.substr(-5))
@@ -983,18 +890,6 @@ window.parse = {
     return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
   },
 }
-window.vals = {}
-window.functions = {
-  clickAvatar(prex: string) {
-    let menu = $(`${prex}#menu-body`)
-    if (menu.css('--show-dropdown') === 'block') {
-      menu.css('--show-dropdown', 'none')
-    } else {
-      menu.css('--show-dropdown', 'block')
-    }
-  }
-}
-
 
 // 自动签到（后台）
 function qianDao() {
@@ -1004,8 +899,8 @@ function qianDao() {
     let qiandao = window.query('.box .inner a[href="/mission/daily"]');
     if (qiandao) { //                                            如果找到了签到提示
       qianDao_(qiandao, timeNow); //                           后台签到
-    } else if (window.win().doc.getElementById('gift_v2excellent')) { // 兼容 [V2ex Plus] 扩展
-      window.win().doc.getElementById('gift_v2excellent').click();
+    } else if (document.getElementById('gift_v2excellent')) { // 兼容 [V2ex Plus] 扩展
+      document.getElementById('gift_v2excellent').click();
       localStorage.setItem('menu_clockInTime', timeNow); //             写入签到时间以供后续比较
       console.info('[V2EX - 超级增强] 自动签到完成！')
     } else { //                                                  都没有找到，说明已经签过到了
@@ -1130,7 +1025,7 @@ async function initNoteData() {
         r && (window.user.imgurNoteId = r);
       }
     }
-    functions.cbChecker({ type: 'syncData' })
+    functions.cbChecker({type: 'syncData'})
   })
 }
 
@@ -1155,23 +1050,7 @@ $section.id = 'app'
 
 async function init() {
   console.log('js 加载成功')
-  return
-  //监听图片加载失败事件，有的imgur图片填的是分享地址，无法转换。
-  //例如：https://imgur.com/a/Gl0ifQ7，这种加上.png也显示不出来，就需要显示原地址
-  window.addEventListener('error', (e: Event) => {
-    let dom: HTMLImageElement = e.target as any
-    let originImgUrl = dom.getAttribute('data-originurl')
-    if (originImgUrl) {
-      let a = document.createElement('a')
-      a.href = originImgUrl
-      a.setAttribute('notice', '此标签由v2ex超级增强脚本转换图片失败后恢复')
-      a.innerText = originImgUrl
-      dom.parentNode!.replaceChild(a, dom,)
-    }
-  }, true)
-
-
-  let { pageData, pageType } = functions.checkPageType()
+  let {pageData, pageType} = functions.checkPageType()
   window.pageType = pageType
   window.pageData = pageData
 
@@ -1180,6 +1059,7 @@ async function init() {
     window.user.username = top2.attr('href').replace('/member/', '')
     window.user.avatar = $('#menu-entry .avatar').attr('src')
   }
+  return
 
   initConfig().then(async r => {
 
@@ -1260,8 +1140,8 @@ async function init() {
         let r = await functions.checkPostReplies(window.pageData.id, false)
         if (r) {
           window.stopMe = true
-          functions.cbChecker({ type: 'syncData' })
-          functions.cbChecker({ type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼' })
+          functions.cbChecker({type: 'syncData'})
+          functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
           return
         }
 
@@ -1276,7 +1156,7 @@ async function init() {
           htmlText
         ).then(async (res: any) => {
           // console.log('详情页-基本信息解析完成', Date.now(), res)
-          await functions.cbChecker({ type: 'postContent', value: res })
+          await functions.cbChecker({type: 'postContent', value: res})
           // 引用修改
           await window.parse.parseOp(res)
           // console.log('详情页-OP信息解析完成', Date.now())
@@ -1290,7 +1170,7 @@ async function init() {
           window.pageData.pageNo
         ).then(async (res1: any) => {
           // console.log('详情页-回复解析完成', Date.now(), res1)
-          await functions.cbChecker({ type: 'postReplies', value: res1 })
+          await functions.cbChecker({type: 'postReplies', value: res1})
         })
         break
       case PageType.Member:
@@ -1310,7 +1190,7 @@ async function init() {
         break
       default:
         window.stopMe = true
-        functions.cbChecker({ type: 'syncData' })
+        functions.cbChecker({type: 'syncData'})
         console.error('未知页面')
         break
     }
@@ -1319,13 +1199,14 @@ async function init() {
 
 let isMobile = !document.querySelector('#Rightbar');
 if (isMobile) {
-  $(document).on('click', 'a', async (e) => {
-    let { href, id, title } = functions.parseA(e.currentTarget);
+  $(document).on('click', 'a', (e) => {
+    let {href, id, title} = functions.parseA(e.currentTarget);
     if (id) {
       e.preventDefault();
-      await window.jsFunc.getPost(id)
+      window.jsFunc.getPost(id)
       return false;
     }
+    return
   });
   init()
 
