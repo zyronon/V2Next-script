@@ -20,9 +20,9 @@ export const functions = {
   },
   clone: (val: any) => JSON.parse(JSON.stringify(val)),
   createList(post: Post, replyList: Reply[], withRedundList = true) {
-    replyList = replyList.slice(0, 1)
+    // replyList = replyList.slice(0, 1)
     post.replyList = replyList
-    return post
+    // return post
     post.topReplyList = this.clone(replyList)
       .filter(v => v.thankCount >= window.config.topReplyLoveMinCount)
       .sort((a, b) => b.thankCount - a.thankCount)

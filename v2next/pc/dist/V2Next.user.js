@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         V2EX Next V2Next
 // @namespace    http://tampermonkey.net/
-// @version      10.14
+// @version      10.15
 // @author       zyronon
 // @description  V2Next - 一个好用的V2EX脚本！ 已适配移动端
 // @license      GPL License
@@ -167,8 +167,14 @@
     },
     clone: (val) => JSON.parse(JSON.stringify(val)),
     createList(post, replyList, withRedundList = true) {
-      replyList = replyList.slice(0, 1);
       post.replyList = replyList;
+      post.topReplyList = this.clone(replyList).filter((v) => v.thankCount >= window.config.topReplyLoveMinCount).sort((a, b) => b.thankCount - a.thankCount).slice(0, window.config.topReplyCount);
+      post.replyCount = replyList.length;
+      post.allReplyUsers = Array.from(new Set(replyList.map((v) => v.username)));
+      post.nestedReplies = functions.createNestedList(this.clone(replyList), post.topReplyList);
+      if (withRedundList) {
+        post.nestedRedundReplies = functions.createNestedRedundantList(this.clone(replyList), post.topReplyList);
+      }
       return post;
     },
     //获取所有回复
