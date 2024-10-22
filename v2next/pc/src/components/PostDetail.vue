@@ -453,16 +453,25 @@ export default {
       if (this.targetUser.left.length && this.targetUser.right) {
         return this.post.replyList
             .filter(v => {
-              if (this.targetUser.left.includes(v.username)) {
+              if (this.targetUser.left.concat(this.targetUser.right).includes(v.username)) {
                 //如果超过目标楼层，只找回复目标的
                 if (v.floor > this.targetUser.rightFloor) {
                   if (v.replyUsers.includes(this.targetUser.right)) {
                     return true
                   }
                 } else {
+                  // if (v.username === this.targetUser.right) return true
+                  // if (v.replyUsers.length) {
+                  //   if (v.replyUsers.includes(this.targetUser.right)) {
+                  //     return true
+                  //   }
+                  // } else {
+                  //   return true
+                  // }
                   return true
                 }
               }
+              // return false
               if (v.username === this.targetUser.right) {
                 for (let i = 0; i < this.targetUser.left.length; i++) {
                   if (v.replyUsers.includes(this.targetUser.left[i])) {
