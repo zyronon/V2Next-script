@@ -19,7 +19,7 @@
                      style="width: 73px;height: 73px;"
                      border="0" align="default" :alt="post.member.username"></a>
             </div>
-            <a href="/pc/public">V2EX</a>
+            <a href="/packages/pcckages/pc/public">V2EX</a>
             <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
             <a :href="post.node.url">{{ post.node.title }}</a>
             <div class="sep10"></div>

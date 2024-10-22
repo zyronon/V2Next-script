@@ -3,7 +3,7 @@ import App from './pages/App.vue';
 import {GM_notification} from "gmApi"
 import './global.d.ts'
 import {PageType, Post, Reply} from "@v2next/core/types"
-import {DefaultConfig, DefaultPost, DefaultUser, functions} from "@v2next/core";
+import {DefaultConfig, DefaultPost, DefaultUser, functions} from "../../core/core";
 
 let isMobile = !document.querySelector('#Rightbar');
 

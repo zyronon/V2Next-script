@@ -15,8 +15,7 @@ import BaseSwitch from "./components/BaseSwitch.vue";
 import BaseLoading from "./components/BaseLoading.vue";
 import NotificationModal from "./components/Modal/NotificationModal.vue";
 import BaseButton from "./components/BaseButton.vue";
-import {DefaultPost, DefaultVal, functions, getDefaultPost} from "@v2next/core/core.ts";
-import {monkeyWindow, unsafeWindow} from "gmApi";
+import {functions, getDefaultPost} from "@v2next/core/core.ts";
 import {Icon} from "@iconify/vue";
 
 export default {

@@ -1,18 +1,9 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-import { GM_notification, GM_registerMenuCommand } from "gmApi"
+import { GM_registerMenuCommand } from "gmApi"
 import './global.d.ts'
 import { PageType, Post, Reply } from "@v2next/core/types"
-import {
-  DefaultConfig,
-  DefaultPost,
-  DefaultUser,
-  DefaultVal,
-  functions,
-  getDefaultConfig,
-  getDefaultPost
-} from "@v2next/core/core";
-import { createLogger } from "vite";
+import { DefaultPost, DefaultUser, DefaultVal, functions, getDefaultConfig, getDefaultPost } from "@v2next/core";
 
 let isMobile = !document.querySelector('#Rightbar');
 

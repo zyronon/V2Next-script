@@ -66,7 +66,7 @@ import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import BaseButton from "./BaseButton.vue";
 import {Icon} from '@iconify/vue'
-import {classicsEmoticons, emojiEmoticons} from '@v2next/core'
+import {classicsEmoticons, emojiEmoticons} from '@v2next/core/core.ts'
 
 const props = defineProps({
   replyUser: null,

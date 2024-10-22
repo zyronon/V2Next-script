@@ -70,7 +70,7 @@ export default defineConfig({
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   },
   esbuild: {
-    drop: ['console', 'debugger']
+    // drop: ['console', 'debugger']
   },
   server: {
     host: '0.0.0.0',
