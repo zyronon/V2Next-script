@@ -9,7 +9,7 @@
     "vue": "^3.4.14"
   },
   "scripts": {
-    "docs:build": "npm --prefix ./v2next/docs run docs:build"
+    "docs:build": "npm --prefix docs run docs:build"
   },
   "devDependencies": {
     "@iconify/vue": "^4.1.1",

@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "docs:dev": "vitepress dev",
-    "docs:build": "vitepress build",
-    "docs:preview": "vitepress preview"
+    "docs:dev": "node_modules/.bin/vitepress dev",
+    "docs:build": "node_modules/.bin/vitepress build",
+    "docs:preview": "node_modules/.bin/vitepress preview"
   },
   "author": "",
   "license": "ISC",
