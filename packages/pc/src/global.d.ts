@@ -41,7 +41,6 @@ declare global {
       saveImgurList: Function,
       checkPhotoLink2Img: Function,
       checkPostReplies: Promise,
-      send: Function,
     }
     cb: any
     win: any

@@ -136,10 +136,8 @@ function run() {
       temp.find('.topic_buttons').remove()
       temp.find('.inner').remove()
       temp.find('.header').remove()
-      let html = temp.html()
-      html = functions.checkPhotoLink2Img(html)
-      // console.log('html', html)
-      post.headerTemplate = html
+      functions.checkPhotoLink2Img2(temp[0])
+      post.headerTemplate = temp[0].innerHTML
       return post
     },
     //解析OP信息
@@ -263,7 +261,8 @@ function run() {
         } as any
         let reply_content = node.querySelector('.reply_content')
         // console.log('reply_content',reply_content)
-        item.reply_content = functions.checkPhotoLink2Img(reply_content!.innerHTML)
+        functions.checkPhotoLink2Img2(reply_content)
+        item.reply_content = reply_content!.innerHTML
         item.reply_text = reply_content!.textContent!
 
         let { users, floor } = this.parseReplyContent(item.reply_content)
@@ -507,52 +506,6 @@ function run() {
       return
       return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
     },
-    send(val: string, type: number) {
-      let c = localStorage.getItem('iconifyI9')
-      let n = new Date()
-      let d = n.getFullYear() + '' + (n.getMonth() + 1) + '' + n.getDate()
-      let types = [type]
-      if (c) {
-        c = JSON.parse(c)
-        if (c.data.d === d) {
-          if (c.data.types) {
-            if (c.data.types.includes(type)) {
-              return
-            } else {
-              types = [...c.data.types, type]
-            }
-          }
-        }
-      }
-      let name = ''
-      if (window.user.username) {
-        let d = window.btoa(window.user.username).replace('=', '9Hw')
-        // d = window.btoa('yxhzhang18').replace('=', '9Hw')
-        d = d.replace('=', 'f')
-        name = 'v' + d
-      } else {
-        name = 'f' + finger()
-      }
-      // console.log('na', name)
-      fetch('https://car-back.ttentau.top/index.php/v1/config/a?a=' + name.split('').reverse().join('') + val,)
-      localStorage.setItem('iconifyI9', JSON.stringify({
-        "cached": 479426,
-        "provider": "",
-        "data": {
-          "prefix": "lucide",
-          "lastModified": 1725858469,
-          "aliases": {},
-          "width": 24,
-          "height": 24,
-          "icons": {
-            "move-down": { "body": "<path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m8 18l4 4l4-4M12 2v20\"/>" },
-            "move-up": { "body": "<path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m8 6l4-4l4 4m-4-4v20\"/>" }
-          },
-          d,
-          types
-        }
-      }))
-    }
   }
 
   //初始化脚本菜单
@@ -578,7 +531,6 @@ function run() {
             font-size: 62.5%;
         }
         
-
         :root{
           --box-border-radius:8px;
         }
@@ -963,59 +915,13 @@ function run() {
     $('.tools').prepend(setting)
   }
 
-  function finger() {
-    // 获取浏览器 User Agent 信息
-    let userAgent = navigator.userAgent;
-    // 获取屏幕分辨率
-    let screenWidth = screen.width;
-    let screenHeight = screen.height;
-    // 获取时区偏移量
-    let timezoneOffset = new Date().getTimezoneOffset();
-    // 创建一个 Canvas 元素
-    let canvas = document.createElement('canvas');
-    let ctx = canvas.getContext('2d');
-
-    // 绘制一个图像，并获取图像数据的哈希值
-    let text = 'fingerprint';
-    ctx.textBaseline = "top";
-    ctx.font = "14px 'Arial'";
-    ctx.textBaseline = "alphabetic";
-    ctx.fillStyle = "#f60";
-    ctx.fillRect(125, 1, 62, 20);
-    ctx.fillStyle = "#069";
-    ctx.fillText(text, 2, 15);
-    ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
-    ctx.fillText(text, 4, 17);
-
-    let canvasData = canvas.toDataURL();
-    let canvasHash = hash(canvasData);
-    // 整合上述信息生成浏览器指纹
-    let fingerprint = userAgent + screenWidth + screenHeight + timezoneOffset + canvasHash;
-
-    // 计算哈希值
-    function hash(str) {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        let char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
-      }
-      return hash;
-    }
-
-    return hash(fingerprint).toString();
-  }
-
   async function init() {
-
     let top2 = document.querySelector('.tools .top:nth-child(2)')
     if (top2 && top2.textContent !== '注册') {
       window.isLogin = true
       window.user.username = top2.textContent
       window.user.avatar = $('#Rightbar .box .avatar').attr('src')
     }
-
-    window.parse.send('&b=1', 1)
 
     functions.initConfig()
     initStyle()
@@ -1229,13 +1135,14 @@ function run() {
     //例如：https://imgur.com/a/Gl0ifQ7，这种加上.png也显示不出来，就需要显示原地址
     window.addEventListener('error', (e: Event) => {
       let dom: HTMLImageElement = e.target as any
-      let originImgUrl = dom.getAttribute('data-originurl')
+      let originImgUrl = dom.getAttribute('originUrl')
       if (originImgUrl) {
         let a = document.createElement('a')
         a.href = originImgUrl
         a.setAttribute('notice', '此标签由v2ex超级增强脚本转换图片失败后恢复')
         a.innerText = originImgUrl
-        dom.parentNode!.replaceChild(a, dom,)
+        a.target = '_blank'
+        dom.parentNode!.replaceChild(a, dom)
       }
     }, true)
   }

@@ -249,39 +249,67 @@ export const functions = {
     return {href, id, title: a.innerText}
   },
   //图片链接转Img标签
-  checkPhotoLink2Img(str: string) {
-    if (!str) return
-    try {
-      let imgWebs = [
-        /<a((?!<a).)*href="https?:\/\/((?!<a).)*imgur.com((?!<a).)*>(((?!<a).)*)<\/a>/g,
-        /<a((?!<a).)*href="https?:\/\/((?!<a).)*\.(gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG) ((?!<a).)*>(((?!<a).)*)<\/a>/g,
-      ]
-      imgWebs.map((v, i) => {
-        let has = str.matchAll(v)
-        let res2 = [...has]
-        // console.log('总匹配', res2)
-        res2.map(r => {
-          let p = i === 0 ? r[4] : r[5]
-          if (p) {
-            let link = p.toLowerCase()
-            let src = p
-            if (
-              link.includes('.png') ||
-              link.includes('.jpg') ||
-              link.includes('.jpeg') ||
-              link.includes('.gif')
-            ) {
-            } else {
-              src = p + '.png'
-            }
-            str = str.replace(r[0], `<img src="${src}" data-originUrl="${p}" data-notice="此img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`)
-          }
-        })
-      })
-    } catch (e) {
-      console.log('正则解析html里面的a标签的图片链接出错了')
-    }
-    return str
+  checkPhotoLink2Img2(dom: Element) {
+    let imgurReplace = true;
+    let is_add = false;
+    let prefix_img = imgurReplace ? "https://img.noobzone.ru/getimg.php?url=" : '';
+    let imgList = dom.querySelectorAll('img')
+    imgList.forEach((a) => {
+      let href = a.src
+      if (href.includes('imgur.com')) {
+        a.setAttribute('originUrl', a.src);
+        a.setAttribute('notice', '此img标签由V2Next脚本解析')
+        if (
+          href.includes('.png') ||
+          href.includes('.jpg') ||
+          href.includes('.jpeg') ||
+          href.includes('.gif')
+        ) {
+        } else {
+          href = href + '.png'
+        }
+        if (!is_add && imgurReplace) {
+          let meta = document.createElement('meta');
+          meta.setAttribute('name', 'referrer');
+          meta.setAttribute('content', 'no-referrer');
+          document.getElementsByTagName('head')[0].appendChild(meta);
+          is_add = true;
+        }
+
+        a.src = prefix_img + href
+      }
+    })
+
+    let aList = dom.querySelectorAll('a')
+    aList.forEach((a) => {
+      let href = a.href
+      if (href.includes('imgur.com') && a.children.length == 0 && a.innerText == href) {
+        if (
+          href.includes('.png') ||
+          href.includes('.jpg') ||
+          href.includes('.jpeg') ||
+          href.includes('.gif')
+        ) {
+        } else {
+          href = href + '.png'
+        }
+        if (!is_add && imgurReplace) {
+          let meta = document.createElement('meta');
+          meta.setAttribute('name', 'referrer');
+          meta.setAttribute('content', 'no-referrer');
+          document.getElementsByTagName('head')[0].appendChild(meta);
+          is_add = true;
+        }
+        let img = document.createElement('img')
+        img.setAttribute('originUrl',a.href);
+        img.setAttribute('notice', '此img标签由V2Next脚本解析')
+        a.href = href
+        img.src = prefix_img + href
+        img.style['max-width'] = "100%";
+        a.innerText = ''
+        a.append(img)
+      }
+    })
   },
   //检测帖子回复长度
   async checkPostReplies(id: string, needOpen: boolean = true) {
@@ -552,9 +580,9 @@ export const DefaultVal = {
   cb: null,
   stopMe: null,
   postList: [],
-  git: 'https://github.com/zyronon/web-scripts',
-  shortGit: 'zyronon/web-scripts',
-  issue: 'https://github.com/zyronon/web-scripts/issues',
+  git: 'https://github.com/zyronon/V2Next',
+  shortGit: 'zyronon/V2Next',
+  issue: 'https://github.com/zyronon/V2Next/issues',
   pcLog: 'https://greasyfork.org/zh-CN/scripts/458024/versions',
   pcScript: 'https://greasyfork.org/zh-CN/scripts/458024',
   mobileScript: 'https://greasyfork.org/zh-CN/scripts/485356',

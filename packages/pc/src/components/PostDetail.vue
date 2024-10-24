@@ -502,11 +502,6 @@ export default {
     modelValue: {
       handler(newVal) {
         // console.log('modelValue', newVal, window.history.state)
-        if (newVal) {
-          if ([0, 4, 5].includes(this.displayType)) {
-            window.parse.send('&b=2', 2)
-          }
-        }
         if (this.isPost) return
         if (newVal) {
           this.currentFloor = ''
