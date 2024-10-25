@@ -7,5 +7,8 @@
     "dev-pc": "vite",
     "build-pc": "vue-tsc --noEmit && vite build",
     "preview-pc": "vite preview"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.13"
   }
 }

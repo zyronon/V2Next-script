@@ -5,7 +5,6 @@
   "type": "module",
   "dependencies": {
     "@v2next/core": "workspace:^",
-    "eruda": "^3.0.1",
     "vue": "^3.4.14"
   },
   "scripts": {
