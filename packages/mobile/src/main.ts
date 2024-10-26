@@ -149,10 +149,8 @@ function run() {
       temp.find('.topic_buttons').remove()
       temp.find('.inner').remove()
       temp.find('.header').remove()
-      let html = temp.html()
-      html = functions.checkPhotoLink2Img(html)
-      // console.log('html', html)
-      post.headerTemplate = html
+      functions.checkPhotoLink2Img2(temp[0])
+      post.headerTemplate = temp[0].innerHTML
       return post
     },
     //解析OP信息
@@ -312,7 +310,8 @@ function run() {
         } as any
         let reply_content = node.querySelector('.reply_content')
         // console.log('reply_content',reply_content)
-        item.reply_content = functions.checkPhotoLink2Img(reply_content!.innerHTML)
+        functions.checkPhotoLink2Img2(reply_content)
+        item.reply_content = reply_content!.innerHTML
         item.reply_text = reply_content!.textContent!
 
         let {users, floor} = this.parseReplyContent(item.reply_content)

@@ -126,10 +126,8 @@ function run() {
       temp.find('.topic_buttons').remove()
       temp.find('.inner').remove()
       temp.find('.header').remove()
-      let html = temp.html()
-      html = functions.checkPhotoLink2Img(html)
-      // console.log('html', html)
-      post.headerTemplate = html
+      functions.checkPhotoLink2Img2(temp[0])
+      post.headerTemplate = temp[0].innerHTML
       return post
     },
     //解析OP信息
@@ -253,7 +251,8 @@ function run() {
         } as any
         let reply_content = node.querySelector('.reply_content')
         // console.log('reply_content',reply_content)
-        item.reply_content = functions.checkPhotoLink2Img(reply_content!.innerHTML)
+        functions.checkPhotoLink2Img2(reply_content)
+        item.reply_content = reply_content!.innerHTML
         item.reply_text = reply_content!.textContent!
 
         let {users, floor} = this.parseReplyContent(item.reply_content)
@@ -1074,13 +1073,14 @@ function run() {
     //例如：https://imgur.com/a/Gl0ifQ7，这种加上.png也显示不出来，就需要显示原地址
     window.addEventListener('error', (e: Event) => {
       let dom: HTMLImageElement = e.target as any
-      let originImgUrl = dom.getAttribute('data-originurl')
+      let originImgUrl = dom.getAttribute('originUrl')
       if (originImgUrl) {
         let a = document.createElement('a')
         a.href = originImgUrl
         a.setAttribute('notice', '此标签由v2ex超级增强脚本转换图片失败后恢复')
         a.innerText = originImgUrl
-        dom.parentNode!.replaceChild(a, dom,)
+        a.target = '_blank'
+        dom.parentNode!.replaceChild(a, dom)
       }
     }, true)
   }

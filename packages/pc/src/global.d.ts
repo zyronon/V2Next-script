@@ -1,4 +1,4 @@
-import {Config, PageType} from "@v2next/core/types"
+import { Config, PageType, Post } from "@v2next/core/types"
 
 declare global {
   interface Window {
@@ -27,6 +27,8 @@ declare global {
       editNoteItem: Function,
       saveTags: Function,
       saveImgurList: Function,
+      checkPhotoLink2Img: Function,
+      checkPostReplies: Promise,
     }
     cb: any
     stopMe: boolean
