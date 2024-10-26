@@ -749,11 +749,14 @@ function run() {
         position:relative;
       }
         
-      .new:before{
-        content:'new';
+        .top{
+         position:relative;
+        }
+      .new{
         position: absolute;
         background: red;
         font-size: 10px;
+        
         border-radius: 4px;
         padding: 0px 2px;
         color: white;
@@ -863,27 +866,6 @@ function run() {
     })
   }
 
-  function deleteNote(tagsId: string, cb: Function) {
-    fetch(`/notes/${tagsId}`).then(r => {
-      r.text().then(a => {
-        let res = a.match(/\?once=([\d]+)/)
-        if (res && res[1]) {
-          // console.log('接口返回了once-str', Number(res[1]))
-          fetch(`/notes/delete/${tagsId}?once=${Number(res[1])}`).then(r => {
-            // console.log('r', r, r.url === location.origin + '/')
-            if (r.status === 200) {
-              if (r.redirected && r.url === location.origin + '/') {
-                cb()
-              }
-            } else {
-              cb()
-            }
-          })
-        }
-      })
-    })
-  }
-
   //初始化记事本数据
   async function initNoteData() {
     //获取或创建记事本的标签
@@ -895,17 +877,6 @@ function run() {
       if (window.config.openTag) {
         let tagItems = Array.from(items).filter(v => v.innerText.includes(window.user.tagPrefix))
         if (tagItems.length) {
-          if (tagItems.length > 1) {
-            let next = true
-            for (let i = 1; i < tagItems.length - 1; i++) {
-              // for (let i = 0; i < 1; i++) {
-              setTimeout(() => {
-                if (!next) return
-                let tagsId = tagItems[i].href.substr(-5)
-                deleteNote(tagsId, () => next = false)
-              }, 60 * 1000 * i)
-            }
-          }
           window.user.tagsId = tagItems[0].href.substr(-5)
           window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix)
         } else {
@@ -916,17 +887,6 @@ function run() {
 
       let tagItems = Array.from(items).filter(v => v.innerText.includes(window.user.configPrefix))
       if (tagItems.length) {
-        if (tagItems.length > 1) {
-          let next = true
-          for (let i = 1; i < tagItems.length - 1; i++) {
-            // for (let i = 0; i < 1; i++) {
-            setTimeout(() => {
-              if (!next) return
-              let tagsId = tagItems[i].href.substr(-5)
-              deleteNote(tagsId, () => next = false)
-            }, 60 * 1000 * i)
-          }
-        }
         window.user.configNoteId = tagItems[0].href.substr(-5)
         let config: any = await getNoteItemContent(window.user.configNoteId, window.user.configPrefix)
         // ts-ignore
@@ -954,7 +914,10 @@ function run() {
   }
 
   function addSettingText() {
-    let setting = $(`<a href="/" class="top">脚本设置</a>`)
+    let setting = $(`<a href="/" class="top v2next-setting">
+    <div class="new">new</div>
+    <span>脚本设置</span>
+    </a>`)
     setting.on('click', function (e) {
       e.stopPropagation()
       e.preventDefault()
