@@ -554,9 +554,12 @@ function run() {
           max-width:1100px !important;
       }
 
-      .post-item {
+      ${location.href.includes('wow')?'':`
+       .post-item {
           background: white;
       } 
+      `}
+     
 
       .post-item > .post-content {
           height: 0;
@@ -640,10 +643,13 @@ function run() {
       .post-content:link {
           color: #494949;
       }
-
-      .Night .post-item {
+      
+      ${location.href.includes('wow')?'':`
+        .Night .post-item {
           background: #18222d !important;
-      }
+        }
+      `}
+    
 
       .Night .preview {
           border: 1px solid #3b536e;
@@ -661,8 +667,7 @@ function run() {
           color: #c0dbff !important;
       }
       
-      ${
-      window.config.viewType === 'simple' ? `
+      ${window.config.viewType === 'simple' ? `
       ${window.pageType !== PageType.Member ? `
       .item table tr td:first-child{display:none;}
       #Rightbar .cell table:first-child tr td:first-child{display:none;}
@@ -862,7 +867,6 @@ function run() {
     }
 
     functions.initConfig()
-    initStyle()
 
     let box: any
     let list
@@ -875,6 +879,9 @@ function run() {
     window.pageType = pageType
     window.pageData = pageData
     window.targetUserName = username
+    //需要window.pageType
+    initStyle()
+
     // console.log(window.pageType)
 
     switch (window.pageType!) {

@@ -1044,24 +1044,13 @@ export default {
     }
   }
 
-  @media screen and (max-width: 1500px) {
-    @width: 65vw;
-    .main-wrapper {
-      width: @width !important;
-    }
-  }
   @media screen and (max-width: 1280px) {
-    @width: 75vw;
+    @width: 60vw;
     .main-wrapper {
       width: @width !important;
     }
   }
-  @media screen and (max-width: 960px) {
-    @width: 100vw;
-    .main-wrapper {
-      width: @width !important;
-    }
-  }
+
 
   .scroll-top {
     cursor: pointer;
