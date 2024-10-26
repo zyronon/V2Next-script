@@ -4,7 +4,6 @@ import './global.d.ts'
 import {GM_registerMenuCommand} from "gmApi"
 import {PageType, Post, Reply} from "@v2next/core/types"
 import {DefaultUser, DefaultVal, functions, getDefaultConfig, getDefaultPost} from "@v2next/core";
-import {Constant} from "@v2next/core/constant";
 import dayjs from "dayjs";
 
 let isMobile = !document.querySelector('#Rightbar');
@@ -22,6 +21,8 @@ function run() {
   window.stopMe = false
   window.isLogin = false
   window.postList = []
+  window.isDeadline = dayjs().isAfter(dayjs('2024-10-28'))
+  // window.isDeadline = true
   window.parse = {
     //解析主题内容
     async parsePostContent(post: Post, body: JQuery, htmlText: string) {
@@ -126,7 +127,7 @@ function run() {
       temp.find('.topic_buttons').remove()
       temp.find('.inner').remove()
       temp.find('.header').remove()
-      functions.checkPhotoLink2Img2(temp[0])
+      functions.checkPhotoLink2Img(temp[0])
       post.headerTemplate = temp[0].innerHTML
       return post
     },
@@ -251,7 +252,7 @@ function run() {
         } as any
         let reply_content = node.querySelector('.reply_content')
         // console.log('reply_content',reply_content)
-        functions.checkPhotoLink2Img2(reply_content)
+        functions.checkPhotoLink2Img(reply_content)
         item.reply_content = reply_content!.innerHTML
         item.reply_text = reply_content!.textContent!
 
@@ -491,8 +492,6 @@ function run() {
       return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
     },
   }
-  window.isDeadline = dayjs().isAfter(dayjs('2024-10-27'))
-  // window.isDeadline = true
 
   //初始化脚本菜单
   function initMonkeyMenu() {
@@ -501,7 +500,7 @@ function run() {
         functions.cbChecker({type: 'openSetting'})
       });
       GM_registerMenuCommand('仓库地址', () => {
-        functions.openNewTab(Constant.git, true)
+        functions.openNewTab(DefaultVal.git, true)
       });
       GM_registerMenuCommand('反馈 & 建议', functions.feedback);
     } catch (e) {

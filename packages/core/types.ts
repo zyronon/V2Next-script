@@ -86,6 +86,8 @@ export interface Config {
   },
   //替换imgur源
   replaceImgur:boolean
+  //最大回复限制，超出脚本停止运行
+  maxReplyCountLimit:number
 }
 
 export enum PageType {
@@ -126,6 +128,3 @@ export interface Reply {
   floor: number
   children: Reply[]
 }
-
-//最大回复限制，超出脚本停止运行
-export const MAX_REPLY_LIMIT = 400

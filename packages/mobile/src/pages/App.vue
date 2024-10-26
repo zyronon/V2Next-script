@@ -1,5 +1,5 @@
 <script>
-import {MAX_REPLY_LIMIT, PageType} from "@v2next/core/types.ts"
+import {PageType} from "@v2next/core/types.ts"
 import {computed, nextTick} from "vue";
 import Setting from "./Setting.vue";
 import eventBus from "../utils/eventBus.js";
@@ -279,7 +279,7 @@ export default {
 
           //如果在列表里面，直接判断大小即可
           if (postItem.inList) {
-            if (postItem.replyCount > MAX_REPLY_LIMIT) {
+            if (postItem.replyCount > window.config.maxReplyCountLimit) {
               return functions.openNewTab(`${location.origin}/t/${id}?p=1&script=1`)
             }
           }

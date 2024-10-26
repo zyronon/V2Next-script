@@ -1,6 +1,5 @@
 <script>
-import {MAX_REPLY_LIMIT, PageType} from "@v2next/core/types.ts"
-import {Constant} from "@v2next/core/constant.ts"
+import {PageType} from "@v2next/core/types.ts"
 import {computed, nextTick} from "vue";
 import Setting from "./components/Modal/SettingModal.vue";
 import eventBus from "./utils/eventBus.js";
@@ -399,7 +398,7 @@ export default {
               }
           }
           if (day) {
-            fetch(Constant.hotUrl + day + '.json').then(async r => {
+            fetch(DefaultVal.hotUrl + day + '.json').then(async r => {
               let r1 = await r.json()
               $('.cell.item.post-item').remove()
               r1.reverse().map(v => {
@@ -800,7 +799,7 @@ export default {
         functions.getPostDetailByApi(this.current.id).then(d => {
           d.replyCount = d.replies
           this.current = Object.assign(this.current, d)
-          if (this.current.replyCount > MAX_REPLY_LIMIT) {
+          if (this.current.replyCount > window.config.maxReplyCountLimit) {
             functions.openNewTab(`${location.origin}/t/${this.current.id}?p=1&script=1`, true)
             eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '由于回复数量较多，已为您单独打开此主题'})
             this.loading = this.show = false

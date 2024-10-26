@@ -766,4 +766,5 @@ export default {
     margin-right: 1rem;
   }
 }
+
 </style>

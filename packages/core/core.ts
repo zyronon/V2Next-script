@@ -1,6 +1,5 @@
-import {CommentDisplayType, Config, MAX_REPLY_LIMIT, PageType, Post, Reply, User} from "./types";
+import {CommentDisplayType, Config, PageType, Post, Reply, User} from "./types";
 import {GM_openInTab, GM_registerMenuCommand} from 'vite-plugin-monkey/dist/client';
-import {Constant} from "./constant";
 // import {GM_openInTab, GM_registerMenuCommand}  from 'gmApi';
 
 export const functions = {
@@ -250,10 +249,10 @@ export const functions = {
     return {href, id, title: a.innerText}
   },
   //图片链接转Img标签
-  checkPhotoLink2Img2(dom: Element) {
-    let imgurReplace = true;
+  checkPhotoLink2Img(dom: Element) {
+    let replaceImgur = window.config.replaceImgur;
     let is_add = false;
-    let prefix_img = imgurReplace ? "https://img.noobzone.ru/getimg.php?url=" : '';
+    let prefix_img = replaceImgur ? "https://img.noobzone.ru/getimg.php?url=" : '';
     let imgList = dom.querySelectorAll('img')
     imgList.forEach((a) => {
       let href = a.src
@@ -264,12 +263,16 @@ export const functions = {
           href.includes('.png') ||
           href.includes('.jpg') ||
           href.includes('.jpeg') ||
-          href.includes('.gif')
+          href.includes('.gif') ||
+          href.includes('.PNG') ||
+          href.includes('.JPG') ||
+          href.includes('.JPEG') ||
+          href.includes('.GIF')
         ) {
         } else {
           href = href + '.png'
         }
-        if (!is_add && imgurReplace) {
+        if (!is_add && replaceImgur) {
           let meta = document.createElement('meta');
           meta.setAttribute('name', 'referrer');
           meta.setAttribute('content', 'no-referrer');
@@ -284,29 +287,37 @@ export const functions = {
     let aList = dom.querySelectorAll('a')
     aList.forEach((a) => {
       let href = a.href
-      if (href.includes('imgur.com') && a.children.length == 0 && a.innerText == href) {
+      if (a.children.length == 0 && a.innerText == href) {
         if (
           href.includes('.png') ||
           href.includes('.jpg') ||
           href.includes('.jpeg') ||
-          href.includes('.gif')
+          href.includes('.gif') ||
+          href.includes('.PNG') ||
+          href.includes('.JPG') ||
+          href.includes('.JPEG') ||
+          href.includes('.GIF')
         ) {
         } else {
           href = href + '.png'
         }
-        if (!is_add && imgurReplace) {
-          let meta = document.createElement('meta');
-          meta.setAttribute('name', 'referrer');
-          meta.setAttribute('content', 'no-referrer');
-          document.getElementsByTagName('head')[0].appendChild(meta);
-          is_add = true;
-        }
         let img = document.createElement('img')
-        img.setAttribute('originUrl',a.href);
+        img.setAttribute('originUrl', a.href);
         img.setAttribute('notice', '此img标签由V2Next脚本解析')
         a.href = href
-        img.src = prefix_img + href
-        img.style['max-width'] = "100%";
+
+        if (href.includes('imgur.com')) {
+          if (!is_add && replaceImgur) {
+            let meta = document.createElement('meta');
+            meta.setAttribute('name', 'referrer');
+            meta.setAttribute('content', 'no-referrer');
+            document.getElementsByTagName('head')[0].appendChild(meta);
+            is_add = true;
+          }
+          img.src = prefix_img + href
+        } else {
+          img.src = href
+        }
         a.innerText = ''
         a.append(img)
       }
@@ -316,7 +327,7 @@ export const functions = {
   async checkPostReplies(id: string, needOpen: boolean = true) {
     return new Promise(async resolve => {
       let res: any = await functions.getPostDetailByApi(id)
-      if (res?.replies > MAX_REPLY_LIMIT) {
+      if (res?.replies > window.config.maxReplyCountLimit) {
         if (needOpen) {
           functions.openNewTab(`https://${location.origin}/t/${id}?p=1&script=1`)
         }
@@ -376,7 +387,7 @@ export const functions = {
     }
   },
   feedback() {
-    functions.openNewTab(Constant.issue)
+    functions.openNewTab(DefaultVal.issue)
   },
   //检测页面类型
   checkPageType(a?: HTMLAnchorElement) {
@@ -579,7 +590,7 @@ export const DefaultVal = {
   pageType: undefined,
   pageData: {pageNo: 1},
   targetUserName: '',
-  currentVersion: 2,
+  currentVersion: 3,
   cb: null,
   git: 'https://github.com/zyronon/V2Next',
   shortGit: 'zyronon/V2Next',
@@ -588,6 +599,7 @@ export const DefaultVal = {
   pcScript: 'https://greasyfork.org/zh-CN/scripts/458024',
   mobileScript: 'https://greasyfork.org/zh-CN/scripts/485356',
   homeUrl: 'https://v2ex-script.vercel.app/',
+  hotUrl: 'https://v2hotlist.vercel.app/hot/',
 }
 
 export function getDefaultConfig(val: any = {}): Config {
@@ -625,6 +637,7 @@ export function getDefaultConfig(val: any = {}): Config {
       loopCheckNoticeInterval: 5,
     },
     replaceImgur: false,
+    maxReplyCountLimit: 400,
   }, val)
 }
 

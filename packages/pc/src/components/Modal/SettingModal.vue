@@ -299,7 +299,6 @@ import Tooltip from "../Tooltip.vue";
 import {CommentDisplayType} from "@v2next/core/types.ts";
 import BaseSwitch from "../BaseSwitch.vue";
 import {DefaultVal, functions} from "@v2next/core/core.ts";
-import {Constant} from "@v2next/core/constant.ts";
 import BaseSelect from "@/components/BaseSelect.vue";
 import {Icon} from "@iconify/vue";
 import PopConfirm from "@/components/PopConfirm.vue";
@@ -382,14 +381,14 @@ export default {
   },
   methods: {
     goPost() {
-      fetch(Constant.hotUrl + 'new.txt').then(async r => {
+      fetch(DefaultVal.hotUrl + 'new.txt').then(async r => {
         let r2 = await r.text()
         if (r2) {
           window.open(r2)
         }else{
-          window.open(Constant.git)
+          window.open(DefaultVal.git)
         }
-      }).catch(()=>window.open(Constant.git))
+      }).catch(()=>window.open(DefaultVal.git))
     },
     close() {
       if (window.isDeadline) {

@@ -149,7 +149,7 @@ function run() {
       temp.find('.topic_buttons').remove()
       temp.find('.inner').remove()
       temp.find('.header').remove()
-      functions.checkPhotoLink2Img2(temp[0])
+      functions.checkPhotoLink2Img(temp[0])
       post.headerTemplate = temp[0].innerHTML
       return post
     },
@@ -310,7 +310,7 @@ function run() {
         } as any
         let reply_content = node.querySelector('.reply_content')
         // console.log('reply_content',reply_content)
-        functions.checkPhotoLink2Img2(reply_content)
+        functions.checkPhotoLink2Img(reply_content)
         item.reply_content = reply_content!.innerHTML
         item.reply_text = reply_content!.textContent!
 
