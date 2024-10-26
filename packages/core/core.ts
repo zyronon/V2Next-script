@@ -382,12 +382,14 @@ export const functions = {
   },
   //检测页面类型
   checkPageType(a?: HTMLAnchorElement) {
-    let l = a || window.location
+      let l = a || window.location
     let data = {pageType: null, pageData: {id: '', pageNo: null}, username: ''}
     if (l.pathname === '/') {
       data.pageType = PageType.Home
     } else if (l.pathname === '/changes') {
       data.pageType = PageType.Changes
+    }else if (l.pathname === '/v2hot') {
+      data.pageType = PageType.Hot
     } else if (l.pathname === '/recent') {
       data.pageType = PageType.Changes
     } else if (l.href.match(/.com\/?tab=/)) {

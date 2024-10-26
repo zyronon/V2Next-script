@@ -92,6 +92,7 @@ export enum PageType {
   Post = "Post",
   Member = "Member",
   Changes = "Changes",
+  Hot = "Hot",
 }
 
 export enum CommentDisplayType {

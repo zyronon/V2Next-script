@@ -1,5 +1,6 @@
 <script>
 import {MAX_REPLY_LIMIT, PageType} from "@v2next/core/types.ts"
+import {Constant} from "@v2next/core/constant.ts"
 import {computed, nextTick} from "vue";
 import Setting from "./components/Modal/SettingModal.vue";
 import eventBus from "./utils/eventBus.js";
@@ -17,6 +18,7 @@ import NotificationModal from "./components/Modal/NotificationModal.vue";
 import BaseButton from "./components/BaseButton.vue";
 import {functions, getDefaultPost} from "@v2next/core/core.ts";
 import {Icon} from "@iconify/vue";
+import dayjs from "dayjs";
 
 export default {
   components: {
@@ -80,6 +82,13 @@ export default {
       pageInfo: {
         title: '',
         number: 0
+      },
+      calendar: {
+        year: '',
+        month: '',
+        dayCount: 0,
+        firstDayWeek: 0,
+        select: '',
       }
     }
   },
@@ -173,6 +182,15 @@ export default {
     window.cb = this.winCb
     if (!window.canParseV2exPage) return
 
+    let now = dayjs()
+    this.calendar.year = now.year()
+    this.calendar.month = now.month()
+    this.calendar.dayCount = now.daysInMonth();
+    this.calendar.firstDayWeek = now.startOf('month').day()
+    this.calendar.select = `${this.calendar.year}-${this.calendar.month + 1}-${now.date()}`
+    $('#Rightbar > .sep').css('height', 'unset')
+    // this.getMonthDayInfo()
+
     //A标签的
     $(document).on('click', 'a', this.clickA)
     //主题的
@@ -186,10 +204,10 @@ export default {
         //IMG是头像
         //toggle是切换按钮
         if (e.target.tagName !== 'A'
-            &&
-            e.target.tagName !== 'IMG'
-            &&
-            !e.target.classList.contains('toggle')
+          &&
+          e.target.tagName !== 'IMG'
+          &&
+          !e.target.classList.contains('toggle')
         ) {
           // console.log('点空白处', this)
           let id = this.dataset['id']
@@ -273,8 +291,6 @@ export default {
       }
     }
   },
-  mounted() {
-  },
   beforeUnmount() {
     // console.log('unmounted')
     clearInterval(this.timer)
@@ -282,6 +298,20 @@ export default {
     $(document).off('click', 'a', this.clickA)
   },
   methods: {
+    getMonthDayInfo(num) {
+      let now = dayjs()
+      now = now.year(this.calendar.year)
+      now = now.month(this.calendar.month)
+      if (num > 0) {
+        now = now.add(1, 'month')
+      } else {
+        now = now.subtract(1, 'month')
+      }
+      this.calendar.year = now.year()
+      this.calendar.month = now.month()
+      this.calendar.dayCount = now.daysInMonth();
+      this.calendar.firstDayWeek = now.startOf('month').day()
+    },
     checkReplyItemType(val) {
       let d = $(val)
       let str = d.html()
@@ -332,6 +362,83 @@ export default {
         case PageType.Node:
         case PageType.Home:
         case PageType.Changes:
+          return
+        case PageType.Hot:
+          let date = e.currentTarget.search.replace("?", "")
+          let now = dayjs()
+          let day = ''
+          switch (Number(date)) {
+            case -1:
+              day = now.subtract(1, 'day').format('YYYY-MM-DD')
+              break
+            case -2:
+              day = now.subtract(2, 'day').format('YYYY-MM-DD')
+              break
+            case 3:
+              day = '3d'
+              break
+            case 7:
+              day = '7d'
+              break
+            case 30:
+              day = '30d'
+              break
+            default:
+              day = date
+              if (dayjs(day).isSame(now, 'day')) {
+                that.stopEvent(e)
+                return location.reload()
+              }
+          }
+          if (day) {
+            fetch(Constant.hotUrl + day + '.json').then(async r => {
+              let r1 = await r.json()
+              $('.cell.item.post-item').remove()
+              r1.reverse().map(v => {
+                let s = `
+<div class="cell item post-item id_${v.id}" style="" data-href="https://www.v2ex.com/t/${v.id}#reply${v.replyCount}">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+      <tbody>
+      <tr>
+        <td width="48" valign="top" align="center">
+          <a href="/member/${v.username}">
+            <img src="${v.avatar}" class="avatar"
+                 border="0" align="default"
+                 width="48"
+                 style="width: 48px; max-height: 48px;"
+                 alt="ice9191">
+          </a>
+        </td>
+        <td width="10"></td>
+        <td width="auto" valign="middle">
+          <span class="item_title">
+            <a href="https://www.v2ex.com/t/${v.id}#reply${v.replyCount}" class="topic-link" id="topic-link-${v.id}">${v.title}</a>
+          </span>
+          <div class="sep5"></div>
+          <span class="topic_info">
+            <div class="votes"></div>
+            <a class="node" href="/go/${v.nodeUrl}">${v.nodeTitle}</a> &nbsp;•&nbsp;
+            <strong><a href="/member/${v.username}">${v.username}</a></strong> &nbsp;•&nbsp;
+            <span title="${v.lastReplyDate}">${v.lastReplyDateAgo}</span> &nbsp;•&nbsp; 最后回复来自
+            <strong><a href="/member/${v.lastReplyUsername}">${v.lastReplyUsername}</a></strong>
+          </span>
+        </td>
+        <td width="70" align="right" valign="middle" style="position: relative;">
+          <a href="/t/${v.id}#reply${v.replyCount}" class="count_livid">${v.replyCount}</a>
+          <div data-id="${v.id}" class="toggle">预览</div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+                `
+                $('#app').after($(s))
+              })
+            }).catch(e => {
+              eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '暂无点击日期的最热数据！'})
+            })
+          }
+          that.stopEvent(e)
           return
         default:
           //夜间模式切换
@@ -767,8 +874,8 @@ export default {
 </script>
 
 <template>
-  <Setting v-model="config" v-model:show="configModal.show" />
-  <TagModal v-model:tags="tags" />
+  <Setting v-model="config" v-model:show="configModal.show"/>
+  <TagModal v-model:tags="tags"/>
   <PostDetail v-model="show"
               ref="postDetail"
               v-model:displayType="config.commentDisplayType"
@@ -776,15 +883,56 @@ export default {
               :loading="loading"
               :refreshLoading="refreshLoading"
   />
-  <Base64Tooltip />
-  <MsgModal />
+  <Base64Tooltip/>
+  <MsgModal/>
+  <teleport to="#Rightbar > .sep">
+    <div class="">
+      <div class="sep"></div>
+      <div class="box calender">
+        <div class="month">
+          <div class="fade">历史最热</div>
+          <div class="ca-title">
+            <i class="fa fa-arrow-left"
+               @click="getMonthDayInfo(-1)"
+               aria-hidden="true"></i>
+            <span>{{ calendar.year }}年{{ calendar.month + 1 }}月</span>
+            <i class="fa fa-arrow-right"
+               @click="getMonthDayInfo(1)"
+               aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="calender-header">
+          <div>日</div>
+          <div>一</div>
+          <div>二</div>
+          <div>三</div>
+          <div>四</div>
+          <div>五</div>
+          <div>六</div>
+        </div>
+        <div class="days">
+          <div :class="[
+            'day',
+            calendar.select === `${calendar.year}-${calendar.month+1}-${i - calendar.firstDayWeek}`?'active':''
+          ]"
+               @click="calendar.select = `${calendar.year}-${calendar.month+1}-${i - calendar.firstDayWeek}`"
+               v-for="i in calendar.dayCount+calendar.firstDayWeek">
+            <a v-if="i - calendar.firstDayWeek > 0"
+               :href="`/v2hot?${calendar.year}-${calendar.month+1}-${i - calendar.firstDayWeek}`">
+              {{ i - calendar.firstDayWeek > 0 ? i - calendar.firstDayWeek : '' }}</a>
+          </div>
+        </div>
+      </div>
+      <div class="sep"></div>
+    </div>
+  </teleport>
 
   <NotificationModal
-      v-model="notificationModal.show"
-      :list="notificationModal.list"
-      :loading="notificationModal.loading"
-      :total="notificationModal.total"
-      :pages="notificationModal.pages"
+    v-model="notificationModal.show"
+    :list="notificationModal.list"
+    :loading="notificationModal.loading"
+    :total="notificationModal.total"
+    :pages="notificationModal.pages"
   />
 
   <template v-if="!stopMe">
@@ -799,7 +947,7 @@ export default {
     </div>
     <div v-if="isPost && !show " class="my-box p2" style="margin-top: 2rem;margin-bottom: 0;">
       <div class="flex flex-center" v-if="loading">
-        <BaseLoading />
+        <BaseLoading/>
       </div>
       <div v-else class="loaded">
         <span>楼中楼解析完成</span>
@@ -849,6 +997,70 @@ export default {
   align-items: center;
   gap: 1rem;
   color: var(--color-font-pure);
+}
+
+.calender {
+  padding: 10px;
+  font-size: 14px;
+  color: var(--link-color);
+
+  .month {
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .ca-title {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+    }
+
+    i {
+      height: 100%;
+      width: 30px;
+      cursor: pointer;
+      color: darkgrey;
+    }
+  }
+
+  .calender-header {
+    display: flex;
+    height: 30px;
+    align-items: center;
+
+    div {
+      flex: 1;
+    }
+  }
+
+  .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+
+    .day {
+      height: 30px;
+
+      a {
+        display: inline-flex;
+        height: 100%;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    .active {
+      background: #40a9ff;
+      border-radius: 4px;
+
+      a {
+        color: white !important;
+      }
+    }
+  }
 }
 </style>
 

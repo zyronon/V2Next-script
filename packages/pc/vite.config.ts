@@ -47,6 +47,7 @@ export default defineConfig({
         homepage: 'https://github.com/zyronon/web-scripts',
         require: [
           'https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js',
+          // 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js'
           // 'https://cdn.bootcdn.net/ajax/libs /gl-matrix/3.4.2/gl-matrix.min.js'
           // 'https://lib.baomitu.com/jquery/3.7.1/jquery.min.js',
           // "https://lib.baomitu.com/gl-matrix/3.4.2/gl-matrix.min.js",
