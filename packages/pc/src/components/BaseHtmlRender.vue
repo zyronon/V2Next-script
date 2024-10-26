@@ -13,7 +13,7 @@ const handOpen = ref(false)
 
 function mouseup(e) {
   if (!config.value.base64) return;
-  let selectionText = window.win().getSelection().toString()
+  let selectionText = window.getSelection().toString()
   // console.log(selectionText)
   if (selectionText) {
     let r = selectionText.match(/([A-Za-z0-9+/=]+)/g)

@@ -16,7 +16,7 @@ import BaseSwitch from "./components/BaseSwitch.vue";
 import BaseLoading from "./components/BaseLoading.vue";
 import NotificationModal from "./components/Modal/NotificationModal.vue";
 import BaseButton from "./components/BaseButton.vue";
-import {functions, getDefaultPost} from "@v2next/core/core.ts";
+import {DefaultVal, functions, getDefaultPost} from "@v2next/core/core.ts";
 import {Icon} from "@iconify/vue";
 import dayjs from "dayjs";
 
@@ -55,9 +55,9 @@ export default {
       isNight: window.isNight,
       stopMe: window.stopMe,//停止使用脚本
       show: false,
-      current: window.clone(window.initPost),
+      current: getDefaultPost(),
       list: [],
-      config: window.clone(window.config),
+      config: functions.clone(window.config),
       tags: window.user.tags,
       configModal: {
         show: false
@@ -84,6 +84,7 @@ export default {
         number: 0
       },
       calendar: {
+        show: false,
         year: '',
         month: '',
         dayCount: 0,
@@ -109,7 +110,7 @@ export default {
   watch: {
     config: {
       handler(newVal, oldVal) {
-        console.log('config', this.clone(newVal).notice, this.clone(oldVal).notice)
+        console.log('config', functions.clone(newVal).notice, functions.clone(oldVal).notice)
         let configStr = localStorage.getItem('v2ex-config')
         if (configStr) {
           let configObj = JSON.parse(configStr)
@@ -181,15 +182,6 @@ export default {
     this.initEvent()
     window.cb = this.winCb
     if (!window.canParseV2exPage) return
-
-    let now = dayjs()
-    this.calendar.year = now.year()
-    this.calendar.month = now.month()
-    this.calendar.dayCount = now.daysInMonth();
-    this.calendar.firstDayWeek = now.startOf('month').day()
-    this.calendar.select = `${this.calendar.year}-${this.calendar.month + 1}-${now.date()}`
-    $('#Rightbar > .sep').css('height', 'unset')
-    // this.getMonthDayInfo()
 
     //A标签的
     $(document).on('click', 'a', this.clickA)
@@ -365,6 +357,22 @@ export default {
           return
         case PageType.Hot:
           let date = e.currentTarget.search.replace("?", "")
+          if (date === 'setting') {
+            if (this.calendar.show) {
+              $('#Rightbar > .sep20:first').css('height', 'var(--component-margin)')
+            } else {
+              $('#Rightbar > .sep20:first').css('height', 'unset')
+              let now = dayjs()
+              this.calendar.year = now.year()
+              this.calendar.month = now.month()
+              this.calendar.dayCount = now.daysInMonth();
+              this.calendar.firstDayWeek = now.startOf('month').day()
+              this.calendar.select = `${this.calendar.year}-${this.calendar.month + 1}-${now.date()}`
+            }
+            this.calendar.show = !this.calendar.show
+            functions.stopEvent(e)
+            return
+          }
           let now = dayjs()
           let day = ''
           switch (Number(date)) {
@@ -386,7 +394,7 @@ export default {
             default:
               day = date
               if (dayjs(day).isSame(now, 'day')) {
-                that.stopEvent(e)
+                functions.stopEvent(e)
                 return location.reload()
               }
           }
@@ -438,7 +446,7 @@ export default {
               eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '暂无点击日期的最热数据！'})
             })
           }
-          that.stopEvent(e)
+          functions.stopEvent(e)
           return
         default:
           //夜间模式切换
@@ -491,31 +499,27 @@ export default {
               }).catch(e => {
                 this.notificationModal.loading = false
               })
-              that.stopEvent(e)
+              functions.stopEvent(e)
               return
             }
           }
 
-          // that.stopEvent(e)
+          // functions.stopEvent(e)
           // console.log('click-a', e.currentTarget.pathname, e.currentTarget)
           // return
 
           if (that.config.newTabOpen) {
-            that.stopEvent(e)
+            functions.stopEvent(e)
             functions.openNewTab(e.currentTarget.href, that.config.newTabOpenActive)
           }
           return
       }
     },
-    stopEvent(e) {
-      e.preventDefault()
-      e.stopPropagation()
-    },
     async clickPost(e, id, href, title = '') {
       // id = '976890'
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
-          this.stopEvent(e)
+          functions.stopEvent(e)
           let postItem = getDefaultPost()
           let index = this.list.findIndex(v => v.id == id)
           if (index > -1) {
@@ -529,7 +533,7 @@ export default {
           return
         }
         if (this.config.newTabOpen) {
-          this.stopEvent(e)
+          functions.stopEvent(e)
           functions.openNewTab(`https://www.v2ex.com/t/${id}?p=1`, this.config.newTabOpenActive)
         }
       }
@@ -605,13 +609,16 @@ export default {
         this.stopMe = window.stopMe
       }
       if (type === 'getConfigSuccess') {
+        if (window.config.version < DefaultVal.currentVersion && window.isDeadline) {
+          $('.v2next-setting span').after(`<div class="new v2next-new">new</div>`)
+        }
+        if (window.isLogin && window.config.notice.loopCheckNotice) {
+          this.getNotice($(document.body))
+          this.timer = setInterval(this.getNotice, 1000 * 60 * Number(window.config.notice.loopCheckNoticeInterval))
+        }
+
         this.config = window.config
         this.tags = window.user.tags
-
-        if (window.isLogin && this.config.notice.loopCheckNotice) {
-          this.getNotice($(document.body))
-          this.timer = setInterval(this.getNotice, 1000 * 60 * Number(this.config.notice.loopCheckNoticeInterval))
-        }
       }
 
       if (type === 'syncList') {
@@ -645,12 +652,9 @@ export default {
       if (type === 'postReplies') {
         this.loading = false
         this.current = Object.assign(this.current, value)
-        // console.log('当前主题', this.clone(this.current))
-        this.list.push(this.clone(this.current))
+        // console.log('当前主题', functions.clone(this.current))
+        this.list.push(functions.clone(this.current))
       }
-    },
-    clone(val) {
-      return window.clone(val)
     },
     regenerateReplyList() {
       // console.log('重新生成列表')
@@ -664,7 +668,7 @@ export default {
       if (this.list.length) {
         let rIndex = this.list.findIndex(i => i.id === this.current.id)
         if (rIndex > -1) {
-          this.list[rIndex] = this.clone(this.current)
+          this.list[rIndex] = functions.clone(this.current)
         }
       }
     },
@@ -719,13 +723,13 @@ export default {
         if (rIndex > -1) {
           this.list.splice(rIndex, 1)
         }
-        this.current = this.clone(window.initPost)
+        this.current = getDefaultPost()
       })
       eventBus.on(CMD.MERGE, (val) => {
         this.current = Object.assign(this.current, val)
         let rIndex = this.list.findIndex(i => i.id === this.current.id)
         if (rIndex > -1) {
-          this.list[rIndex] = this.clone(this.current)
+          this.list[rIndex] = functions.clone(this.current)
         }
       })
       eventBus.on(CMD.ADD_REPLY, (item) => {
@@ -754,7 +758,7 @@ export default {
         })
       })
       eventBus.on(CMD.REMOVE_TAG, async ({username, tag}) => {
-        let oldTag = this.clone(this.tags)
+        let oldTag = functions.clone(this.tags)
         let tags = this.tags[username] ?? []
         let rIndex = tags.findIndex(v => v === tag)
         if (rIndex > -1) {
@@ -846,9 +850,9 @@ export default {
       await window.parse.getPostDetail(this.current, body, htmlText)
       let index = this.list.findIndex(v => v.id == this.current.id)
       if (index > -1) {
-        this.list[index] = this.clone(this.current)
+        this.list[index] = functions.clone(this.current)
       } else {
-        this.list.push(this.clone(this.current))
+        this.list.push(functions.clone(this.current))
       }
       this.refreshLoading = this.loading = false
 
@@ -885,8 +889,8 @@ export default {
   />
   <Base64Tooltip/>
   <MsgModal/>
-  <teleport to="#Rightbar > .sep">
-    <div class="">
+  <teleport to="#Rightbar > .sep20">
+    <div class="" v-if="calendar.show">
       <div class="sep"></div>
       <div class="box calender">
         <div class="month">

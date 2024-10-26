@@ -49,12 +49,12 @@ onMounted(() => {
     }
   }, {capture: true})
   const fn = () => (show.value && (show.value = false))
-  $('.post-detail', window.win().doc).on('scroll', fn)
+  $('.post-detail', document).on('scroll', fn)
 })
 
 function copy() {
-  if (window.win().navigator.clipboard) {
-    window.win().navigator.clipboard.writeText(decodeText.value);
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(decodeText.value);
     eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '复制成功'})
   } else {
     eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '复制失败！浏览器不支持！'})

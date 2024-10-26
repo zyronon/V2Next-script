@@ -104,10 +104,10 @@ export default {
       //如果是主题详情页，那么直接跳转到首页
       if (this.pageType === PageType.Post) {
         this.loading2 = true
-        let apiRes = await window.win().fetch(url)
+        let apiRes = await fetch(url)
         if (apiRes.redirected) {
           if (!this.post.isIgnore) {
-            window.win().location = location.origin
+            window.location = location.origin
           }
           eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.post.isIgnore ? '取消成功' : '忽略成功'})
           eventBus.emit(CMD.MERGE, {isIgnore: !this.post.isIgnore})
@@ -121,7 +121,7 @@ export default {
         } else {
           eventBus.emit(CMD.IGNORE)
         }
-        let apiRes = await window.win().fetch(url)
+        let apiRes = await fetch(url)
         if (apiRes.redirected) {
           if (this.post.isIgnore) {
             eventBus.emit(CMD.REFRESH_ONCE)

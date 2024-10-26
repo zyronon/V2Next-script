@@ -83,7 +83,9 @@ export interface Config {
     whenNewNoticeGlimmer: boolean
     loopCheckNotice: boolean
     loopCheckNoticeInterval: number
-  }
+  },
+  //替换imgur源
+  replaceImgur:boolean
 }
 
 export enum PageType {

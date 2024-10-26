@@ -3,7 +3,7 @@ import App from './pages/App.vue';
 import {GM_notification} from "gmApi"
 import './global.d.ts'
 import {PageType, Post, Reply} from "@v2next/core/types"
-import {DefaultConfig, DefaultPost, DefaultUser, functions} from "../../core/core";
+import {DefaultUser, functions, getDefaultConfig, getDefaultPost} from "@v2next/core";
 
 let isMobile = !document.querySelector('#Rightbar');
 
@@ -11,7 +11,6 @@ let $section = document.createElement('section')
 $section.id = 'app'
 
 function run() {
-  window.initPost = DefaultPost
   //历史遗留属性
   window.win = function () {
     return window
@@ -19,14 +18,11 @@ function run() {
   window.win().doc = window.win().document
   window.win().query = (v: any) => window.win().document.querySelector(v)
   window.query = (v: any) => window.win().document.querySelector(v)
-  //历史遗留属性
-
-  window.clone = (val: any) => JSON.parse(JSON.stringify(val))
   window.user = DefaultUser
   window.targetUserName = ''
   window.pageType = undefined
   window.pageData = {pageNo: 1}
-  window.config = {...DefaultConfig, ...{viewType: 'card'}}
+  window.config = getDefaultConfig({viewType: 'card'})
   window.const = {
     git: 'https://github.com/zyronon/v2ex-script',
     issue: 'https://github.com/zyronon/v2ex-script/issues'
@@ -410,7 +406,7 @@ function run() {
     //解析页面帖子列表
     parsePagePostList(list: any[], box: any) {
       list.forEach(itemDom => {
-        let item = window.clone(window.initPost)
+        let item = getDefaultPost()
         let item_title = itemDom.querySelector('.item_title')
         itemDom.classList.add('post-item')
         if (!item_title) return
@@ -571,11 +567,6 @@ function run() {
         if (!(value as any[]).length) delete val[key]
       }
       return await this.editNoteItem(window.user.tagPrefix + JSON.stringify(val), window.user.tagsId)
-    },
-    //已读楼层操作
-    async saveReadList(val: any) {
-      return
-      return await this.editNoteItem(window.user.readPrefix + JSON.stringify(val), window.user.readNoteItemId)
     },
     //imgur图片删除hash操作
     async saveImgurList(val: any) {
@@ -922,7 +913,7 @@ function run() {
             return
           }
 
-          let post = functions.clone(window.initPost)
+          let post = getDefaultPost()
           post.id = window.pageData.id
           let body = $(document.body)
           let htmlText = document.documentElement.outerHTML

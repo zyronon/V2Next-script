@@ -64,18 +64,18 @@
               <span class="add-tag ago" @click.stop="addTag" title="添加标签">+</span>
             </template>
           </div>
-          <BaseHtmlRender v-if="post.headerTemplate" :html="post.headerTemplate " />
-          <BaseHtmlRender v-else :html="post.jsonContent " />
+          <BaseHtmlRender v-if="post.headerTemplate" :html="post.headerTemplate "/>
+          <BaseHtmlRender v-else :html="post.jsonContent "/>
           <Toolbar @reply="isSticky = !isSticky">
             <Point
-                @addThank="addThank"
-                @recallThank="recallThank"
-                :item="{
+              @addThank="addThank"
+              @recallThank="recallThank"
+              :item="{
                 isThanked:post.isThanked,
                 thankCount:post.thankCount,
                 username:post.username
               }"
-                :api-url="'topic/'+post.id" />
+              :api-url="'topic/'+post.id"/>
           </Toolbar>
         </div>
 
@@ -85,7 +85,7 @@
             <div class="top-reply">
               <Tooltip title="收起高赞回复">
                 <div class="tool">
-                  <Icon icon="gravity-ui:chevrons-collapse-vertical" />
+                  <Icon icon="gravity-ui:chevrons-collapse-vertical"/>
                 </div>
               </Tooltip>
             </div>
@@ -94,7 +94,7 @@
             <Comment v-for="(item,index) in post.topReplyList"
                      :key="item.floor"
                      type="top"
-                     v-model="post.topReplyList[index]" />
+                     v-model="post.topReplyList[index]"/>
           </div>
         </div>
 
@@ -107,9 +107,9 @@
                   }}</span>
               </div>
               <BaseSelect
-                  v-if="config.showToolbar"
-                  :display-type="displayType"
-                  @update:display-type="e => $emit('update:displayType', e)"
+                v-if="config.showToolbar"
+                :display-type="displayType"
+                @update:display-type="e => $emit('update:displayType', e)"
               />
               <div class="fr" v-html="post.fr" v-else></div>
             </div>
@@ -117,13 +117,13 @@
 
           <template v-if="replyList.length || loading">
             <div class="loading-wrapper" v-if="loading">
-              <BaseLoading size="large" />
+              <BaseLoading size="large"/>
             </div>
             <div class="comments" v-else>
               <template v-if="modelValue">
                 <Comment v-for="(item,index) in replyList"
                          :key="item.floor"
-                         v-model="replyList[index]" />
+                         v-model="replyList[index]"/>
               </template>
             </div>
           </template>
@@ -141,10 +141,10 @@
           </div>
           <div class="p1">
             <PostEditor
-                @close="goBottom"
-                ref="post-editor"
-                useType="reply-post"
-                @click.stop="isSticky = true" />
+              @close="goBottom"
+              ref="post-editor"
+              useType="reply-post"
+              @click.stop="isSticky = true"/>
           </div>
         </div>
       </div>
@@ -153,14 +153,14 @@
         <div class="my-cell flex" @click.stop="stop">
           <span class="gray">上下文</span>
           <div class="top-reply">
-            <Icon icon="ic:round-close" @click.stop="showRelationReply = false" />
+            <Icon icon="ic:round-close" @click.stop="showRelationReply = false"/>
           </div>
         </div>
         <div class="comments" @click.stop="stop">
           <SingleComment v-for="(item,index) in relationReply"
                          :is-right="item.username === targetUser.right"
                          :key="item.floor"
-                         :comment="item" />
+                         :comment="item"/>
         </div>
       </div>
 
@@ -175,20 +175,20 @@
         </div>
       </div>
       <div class="close-btn" @click.stop="close('btn')">
-        <Icon icon="fontisto:close-a" />
+        <Icon icon="fontisto:close-a"/>
       </div>
       <div class="refresh gray" @click.stop="$emit('refresh')">
-        <BaseLoading v-if="refreshLoading" />
-        <Icon v-else icon="material-symbols:refresh" />
+        <BaseLoading v-if="refreshLoading"/>
+        <Icon v-else icon="material-symbols:refresh"/>
       </div>
       <div class="scroll-to gray" @click.stop="jump(currentFloor)">
-        <Icon icon="lucide:move-down" />
+        <Icon icon="lucide:move-down"/>
         <input type="text" v-model="currentFloor"
                @click.stop="stop"
                @keydown.enter="jump(currentFloor)">
       </div>
       <div class="scroll-top gray" @click.stop="scrollTop">
-        <Icon icon="lucide:move-up" />
+        <Icon icon="lucide:move-up"/>
       </div>
       <!--      <div class="msg gray">-->
       <!--        <Icon icon="uiw:bell" />-->
@@ -202,7 +202,7 @@
         <div class="mask"
              @click="closePreviewModal"
         ></div>
-        <Icon class="close" icon="fontisto:close-a" @click="closePreviewModal" />
+        <Icon class="close" icon="fontisto:close-a" @click="closePreviewModal"/>
       </div>
     </teleport>
   </div>
@@ -216,6 +216,7 @@ import BaseHtmlRender from "./BaseHtmlRender.vue";
 import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import {computed, nextTick} from "vue";
+import {functions} from "@v2next/core";
 import {CommentDisplayType, PageType} from "@v2next/core/types.ts";
 import Tooltip from "./Tooltip.vue";
 import PopConfirm from "./PopConfirm.vue";
@@ -238,17 +239,17 @@ function _css(el, key, value) {
     // return parseFloat(val)
   } else {
     if (
-        [
-          'top',
-          'left',
-          'bottom',
-          'right',
-          'width',
-          'height',
-          'font-size',
-          'margin',
-          'padding'
-        ].includes(key)
+      [
+        'top',
+        'left',
+        'bottom',
+        'right',
+        'width',
+        'height',
+        'font-size',
+        'margin',
+        'padding'
+      ].includes(key)
     ) {
       if (!reg.test(value)) {
         if (!String(value).includes('calc')) {
@@ -259,12 +260,12 @@ function _css(el, key, value) {
     if (key === 'transform') {
       //直接设置不生效
       el.style.webkitTransform =
-          el.style.MsTransform =
-              el.style.msTransform =
-                  el.style.MozTransform =
-                      el.style.OTransform =
-                          el.style.transform =
-                              value
+        el.style.MsTransform =
+          el.style.msTransform =
+            el.style.MozTransform =
+              el.style.OTransform =
+                el.style.transform =
+                  value
     } else {
       el.style[key] = value
     }
@@ -438,10 +439,10 @@ export default {
       // console.log('this.post.nestedReplies', this.post.nestedReplies)
       if ([CommentDisplayType.FloorInFloor, CommentDisplayType.FloorInFloorNoCallUser].includes(this.displayType)) return this.post.nestedReplies
       if (this.displayType === CommentDisplayType.Like) {
-        return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
+        return functions.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
       }
       if (this.displayType === CommentDisplayType.New) {
-        return window.clone(this.post.replyList).reverse()
+        return functions.clone(this.post.replyList).reverse()
       }
       if (this.displayType === CommentDisplayType.V2exOrigin) return this.post.replyList
       if (this.displayType === CommentDisplayType.FloorInFloorNested) return this.post.nestedRedundReplies
@@ -452,34 +453,34 @@ export default {
     relationReply() {
       if (this.targetUser.left.length && this.targetUser.right) {
         return this.post.replyList
-            .filter(v => {
-              if (this.targetUser.left.concat(this.targetUser.right).includes(v.username)) {
-                //如果超过目标楼层，只找回复目标的
-                if (v.floor > this.targetUser.rightFloor) {
-                  if (v.replyUsers.includes(this.targetUser.right)) {
-                    return true
-                  }
-                } else {
-                  // if (v.username === this.targetUser.right) return true
-                  // if (v.replyUsers.length) {
-                  //   if (v.replyUsers.includes(this.targetUser.right)) {
-                  //     return true
-                  //   }
-                  // } else {
-                  //   return true
-                  // }
+          .filter(v => {
+            if (this.targetUser.left.concat(this.targetUser.right).includes(v.username)) {
+              //如果超过目标楼层，只找回复目标的
+              if (v.floor > this.targetUser.rightFloor) {
+                if (v.replyUsers.includes(this.targetUser.right)) {
+                  return true
+                }
+              } else {
+                // if (v.username === this.targetUser.right) return true
+                // if (v.replyUsers.length) {
+                //   if (v.replyUsers.includes(this.targetUser.right)) {
+                //     return true
+                //   }
+                // } else {
+                //   return true
+                // }
+                return true
+              }
+            }
+            // return false
+            if (v.username === this.targetUser.right) {
+              for (let i = 0; i < this.targetUser.left.length; i++) {
+                if (v.replyUsers.includes(this.targetUser.left[i])) {
                   return true
                 }
               }
-              // return false
-              if (v.username === this.targetUser.right) {
-                for (let i = 0; i < this.targetUser.left.length; i++) {
-                  if (v.replyUsers.includes(this.targetUser.left[i])) {
-                    return true
-                  }
-                }
-              }
-            })
+            }
+          })
       }
       return []
     }
@@ -502,11 +503,6 @@ export default {
     modelValue: {
       handler(newVal) {
         // console.log('modelValue', newVal, window.history.state)
-        if (newVal) {
-          if ([0, 4, 5].includes(this.displayType)) {
-            window.parse.send('&b=2', 2)
-          }
-        }
         if (this.isPost) return
         if (newVal) {
           this.currentFloor = ''
@@ -528,8 +524,8 @@ export default {
     })
     if (this.isLogin) {
       const observer = new IntersectionObserver(
-          ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1),
-          {threshold: [1]}
+        ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1),
+        {threshold: [1]}
       );
       observer.observe(this.$refs.replyBox);
       window.addEventListener('keydown', this.onKeyDown)
@@ -631,10 +627,10 @@ export default {
 
         this.preview.rect = domRect
         this.preview.result = getImgSize(
-            s.naturalWidth,
-            s.naturalHeight,
-            window.innerWidth * 0.95,
-            window.innerHeight * .9
+          s.naturalWidth,
+          s.naturalHeight,
+          window.innerWidth * 0.95,
+          window.innerHeight * .9
         );
 
         this.preview.x = (window.innerWidth - this.preview.result.width) * 0.5;

@@ -1,5 +1,6 @@
 import {CommentDisplayType, Config, MAX_REPLY_LIMIT, PageType, Post, Reply, User} from "./types";
 import {GM_openInTab, GM_registerMenuCommand} from 'vite-plugin-monkey/dist/client';
+import {Constant} from "./constant";
 // import {GM_openInTab, GM_registerMenuCommand}  from 'gmApi';
 
 export const functions = {
@@ -346,21 +347,18 @@ export const functions = {
       console.error('无法使用Tampermonkey')
     }
   },
-  clone(val: any) {
-    return JSON.parse(JSON.stringify(val))
-  },
   feedback() {
-    functions.openNewTab(DefaultVal.issue)
+    functions.openNewTab(Constant.issue)
   },
   //检测页面类型
   checkPageType(a?: HTMLAnchorElement) {
-      let l = a || window.location
+    let l = a || window.location
     let data = {pageType: null, pageData: {id: '', pageNo: null}, username: ''}
     if (l.pathname === '/') {
       data.pageType = PageType.Home
     } else if (l.pathname === '/changes') {
       data.pageType = PageType.Changes
-    }else if (l.pathname === '/v2hot') {
+    } else if (l.pathname === '/v2hot') {
       data.pageType = PageType.Hot
     } else if (l.pathname === '/recent') {
       data.pageType = PageType.Changes
@@ -483,7 +481,11 @@ export const functions = {
     let body = document.createElement('html')
     body.innerHTML = bodyText[0]
     return body
-  }
+  },
+  stopEvent(e: any) {
+    e.preventDefault()
+    e.stopPropagation()
+  },
 }
 
 export const DefaultPost: Post = {
@@ -550,56 +552,52 @@ export const DefaultVal = {
   pageData: {pageNo: 1},
   targetUserName: '',
   currentVersion: 2,
-  isNight: false,
   cb: null,
-  stopMe: null,
-  postList: [],
-  git: 'https://github.com/zyronon/web-scripts',
-  shortGit: 'zyronon/web-scripts',
-  issue: 'https://github.com/zyronon/web-scripts/issues',
+  git: 'https://github.com/zyronon/V2Next',
+  shortGit: 'zyronon/V2Next',
+  issue: 'https://github.com/zyronon/V2Next/issues',
   pcLog: 'https://greasyfork.org/zh-CN/scripts/458024/versions',
   pcScript: 'https://greasyfork.org/zh-CN/scripts/458024',
   mobileScript: 'https://greasyfork.org/zh-CN/scripts/485356',
   homeUrl: 'https://v2ex-script.vercel.app/',
 }
 
-export const DefaultConfig: Config = {
-  showToolbar: true,
-  autoOpenDetail: true,
-  openTag: false,//给用户打标签
-  clickPostItemOpenDetail: true,
-  closePostDetailBySpace: true,//点击空白处关闭详情
-  contentAutoCollapse: true,//正文超长自动折叠
-  viewType: 'table',
-  commentDisplayType: CommentDisplayType.FloorInFloorNoCallUser,
-  newTabOpen: false,//新标签打开
-  newTabOpenActive: false,
-  base64: true,//base功能
-  sov2ex: false,
-  postWidth: '',
-  showTopReply: true,
-  topReplyLoveMinCount: 3,
-  topReplyCount: 5,
-  autoJumpLastReadFloor: false,
-  rememberLastReadFloor: false,
-  autoSignin: true,
-  customBgColor: '',
-  version: DefaultVal.currentVersion,
-  collectBrowserNotice: false,
-  fontSizeType: 'normal',
-  notice: {
-    uid: '',
-    text: '',
-    ddWebhook: '',
-    takeOverNoticePage: true,
-    whenNewNoticeGlimmer: false,
-    loopCheckNotice: false,
-    loopCheckNoticeInterval: 5,
-  }
-}
-
-export function getDefaultConfig(): Config {
-  return {...DefaultConfig}
+export function getDefaultConfig(val: any = {}): Config {
+  return Object.assign({
+    showToolbar: true,
+    autoOpenDetail: true,
+    openTag: false,//给用户打标签
+    clickPostItemOpenDetail: true,
+    closePostDetailBySpace: true,//点击空白处关闭详情
+    contentAutoCollapse: true,//正文超长自动折叠
+    viewType: 'card',
+    commentDisplayType: CommentDisplayType.FloorInFloorNoCallUser,
+    newTabOpen: false,//新标签打开
+    newTabOpenActive: false,
+    base64: true,//base功能
+    sov2ex: false,
+    postWidth: '',
+    showTopReply: true,
+    topReplyLoveMinCount: 3,
+    topReplyCount: 5,
+    autoJumpLastReadFloor: false,
+    rememberLastReadFloor: false,
+    autoSignin: true,
+    customBgColor: '',
+    version: DefaultVal.currentVersion,
+    collectBrowserNotice: false,
+    fontSizeType: 'normal',
+    notice: {
+      uid: '',
+      text: '',
+      ddWebhook: '',
+      takeOverNoticePage: true,
+      whenNewNoticeGlimmer: false,
+      loopCheckNotice: false,
+      loopCheckNoticeInterval: 5,
+    },
+    replaceImgur: false,
+  }, val)
 }
 
 /** emoji表情数据 */

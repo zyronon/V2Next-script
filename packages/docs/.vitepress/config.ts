@@ -21,7 +21,7 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      {icon: 'github', link: 'https://github.com/zyronon/web-scripts'}
+      {icon: 'github', link: 'https://github.com/zyronon/V2Next'}
     ],
 
   }

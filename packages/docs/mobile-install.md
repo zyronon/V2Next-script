@@ -46,7 +46,7 @@ Edge、Chrome、QQ浏览器、UC浏览器、UC浏览器极速版、夸克浏览�
 
 理论上，安卓上可用的在Ios上也可用！
 
-您如果方便的话可以把使用情况提交给我，或者提一个[Pr](https://github.com/zyronon/web-scripts/pulls)
+您如果方便的话可以把使用情况提交给我，或者提一个[Pr](https://github.com/zyronon/V2Next/pulls)
 
-## [此文档地址](https://github.com/zyronon/web-scripts/blob/master/v2next/docs/mobile-install.md)
+## [此文档地址](https://github.com/zyronon/V2Next/blob/master/v2next/docs/mobile-install.md)
 

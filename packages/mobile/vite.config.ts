@@ -46,8 +46,8 @@ export default defineConfig({
         updateURL: 'https://update.greasyfork.org/scripts/485356/V2Next-Mobile.user.js',
         downloadURL: 'https://update.greasyfork.org/scripts/485356/V2Next-Mobile.user.js',
         supportURL: 'https://update.greasyfork.org/scripts/485356/V2Next-Mobile.user.js',
-        homepageURL: 'https://github.com/zyronon/web-scripts',
-        homepage: 'https://github.com/zyronon/web-scripts'
+        homepageURL: 'https://github.com/zyronon/V2Next',
+        homepage: 'https://github.com/zyronon/V2Next'
       },
       build: {
         fileName:'V2Next-Mobile.user.js',

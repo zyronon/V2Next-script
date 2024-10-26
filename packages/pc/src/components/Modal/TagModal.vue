@@ -27,9 +27,10 @@
 
 <script setup>
 import {inject, nextTick, onMounted, reactive, ref} from "vue"
-import {CMD} from "../../utils/type.js"
-import eventBus from "../../utils/eventBus.js";
+import {CMD} from "@/utils/type.js"
+import eventBus from "@/utils/eventBus.js";
 import BaseButton from "../BaseButton.vue";
+import {functions} from '@v2next/core'
 
 const tagModal = reactive({
   show: false,
@@ -55,8 +56,8 @@ async function addTag() {
     eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请输入标签'})
     return
   }
-  let oldTag = window.clone(props.tags)
-  let tempTag = window.clone(props.tags)
+  let oldTag = functions.clone(props.tags)
+  let tempTag = functions.clone(props.tags)
   let userTags = tempTag[tagModal.currentUsername] ?? []
   let rIndex = userTags.findIndex((v) => v === tagModal.tag)
   if (rIndex > -1) {

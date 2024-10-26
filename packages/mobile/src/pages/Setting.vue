@@ -211,21 +211,18 @@ export default {
   data() {
     return {
       activeEruda: !!localStorage.getItem('active-eruda'),
-      config: window.clone(this.modelValue),
+      config: functions.clone(this.modelValue),
     }
   },
   computed: {
     DefaultVal() {
       return DefaultVal
     },
-    functions() {
-      return functions
-    },
     CommentDisplayType() {
       return CommentDisplayType
     },
     isNew() {
-      return this.config.version < window.currentVersion
+      return this.config.version < DefaultVal.currentVersion
     }
   },
   watch: {

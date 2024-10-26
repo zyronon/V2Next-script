@@ -194,10 +194,11 @@ import RelationReply from "@/components/Modal/RelationReply.vue";
 import {Icon} from "@iconify/vue";
 import BaseSelect from "@/components/BaseSelect.vue";
 import BackIcon from "@/components/BackIcon.vue";
+import {functions} from "@v2next/core";
 
 export default {
   name: "detail",
-  emits: ['saveReadList', 'refresh'],
+  emits: ['refresh'],
   components: {
     BackIcon,
     BaseSelect,
@@ -313,7 +314,7 @@ export default {
       // console.log('this.post.nestedReplies', this.post.nestedReplies)
       if ([CommentDisplayType.FloorInFloor, CommentDisplayType.FloorInFloorNoCallUser].includes(this.displayType)) return this.post.nestedReplies
       if (this.displayType === CommentDisplayType.Like) {
-        return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
+        return functions.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
       }
       if (this.displayType === CommentDisplayType.V2exOrigin) return this.post.replyList
       if (this.displayType === CommentDisplayType.FloorInFloorNested) return this.post.nestedRedundReplies
@@ -380,7 +381,6 @@ export default {
             window.document.title = this.post.title ?? 'V2EX'
           })
         } else {
-          this.$emit('saveReadList')
           window.document.title = 'V2EX'
           this.isSticky = false
           this.showRelationReply = false

@@ -38,7 +38,7 @@
                 三、层主回复时指定错了楼层号（同一，层主屏蔽了别人，导致楼层塌陷）
                 <br>
                 四、脚本解析错误，请在
-                <a href="https://github.com/zyronon/web-scripts/issues" target="_blank">这里</a>反馈
+                <a href="https://github.com/zyronon/V2Next/issues" target="_blank">这里</a>反馈
               </div>
             </div>
             <BaseHtmlRender

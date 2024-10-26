@@ -21,7 +21,7 @@ import SearchIcon from "./search-icon.vue";
         <div class="action">
           <a href="/mobile-install">安装到手机</a></div>
         <div class="action">
-          <a href="https://github.com/zyronon/web-scripts" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://github.com/zyronon/V2Next" target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </div>
 

@@ -10,6 +10,10 @@
           </div>
           <Icon icon="ic:round-close" @click="close"/>
         </div>
+        <div class="log" v-if="isNew">
+          <a @click="goPost">New：现已支持查看历史最热数据、imgur换源，点击查看详细介绍</a>
+          <div class="new"></div>
+        </div>
         <div class="body">
           <div class="left">
             <div class="tabs">
@@ -88,16 +92,21 @@
               </div>
               <div v-if="tabIndex === 1">
                 <div class="row">
-                  <label class="item-title">显示回复展示方式</label>
+                  <label class="item-title">回复类型</label>
+                  <div class="wrapper">
+                    <BaseSelect v-model:display-type="config.commentDisplayType"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="item-title">详情页中显示“回复类型”</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.showToolbar"/>
                   </div>
                 </div>
-
                 <div class="row">
-                  <label class="item-title">回复展示方式</label>
+                  <label class="item-title">替换Imgur源</label>
                   <div class="wrapper">
-                    <BaseSelect v-model:display-type="config.commentDisplayType"/>
+                    <BaseSwitch v-model="config.replaceImgur"/>
                   </div>
                 </div>
                 <div class="row">
@@ -150,13 +159,13 @@
                   </div>
                 </div>
                 <div class="row">
-                  <label class="item-title">最多显示多少个高赞回复</label>
+                  <label class="item-title">最多显示{{config.topReplyCount}}个高赞回复</label>
                   <div class="wrapper">
                     <input type="number" min="1" v-model="config.topReplyCount">
                   </div>
                 </div>
                 <div class="row">
-                  <label class="item-title">最少需要多少赞才能被判定为高赞</label>
+                  <label class="item-title">最少需要{{config.topReplyLoveMinCount}}个赞才能被判定为高赞</label>
                   <div class="wrapper">
                     <input type="number" min="1" v-model="config.topReplyLoveMinCount">
                   </div>
@@ -193,8 +202,8 @@
                 <div class="desc">
                   未设定此值时，则脚本就什么都不做，V站大部分页面背景颜色默认为 #e2e2e2，少部分页面有特定背景。接受一个合法的css
                   color值：例如<a
-                    href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value"
-                    target="_blank">red、#ffffff、rgb(222,222,22)(点此查看)</a>等等。
+                  href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value"
+                  target="_blank">red、#ffffff、rgb(222,222,22)(点此查看)</a>等等。
                 </div>
                 <div class="desc danger">
                   提示：此项需要刷新页面才能生效
@@ -289,7 +298,8 @@
 import Tooltip from "../Tooltip.vue";
 import {CommentDisplayType} from "@v2next/core/types.ts";
 import BaseSwitch from "../BaseSwitch.vue";
-import {DefaultVal} from "@v2next/core/core.ts";
+import {DefaultVal, functions} from "@v2next/core/core.ts";
+import {Constant} from "@v2next/core/constant.ts";
 import BaseSelect from "@/components/BaseSelect.vue";
 import {Icon} from "@iconify/vue";
 import PopConfirm from "@/components/PopConfirm.vue";
@@ -323,7 +333,7 @@ export default {
   data() {
     return {
       tabIndex: 0,
-      config: window.clone(this.modelValue),
+      config: functions.clone(this.modelValue),
       showNotice: false
     }
   },
@@ -335,7 +345,7 @@ export default {
       return CommentDisplayType
     },
     isNew() {
-      return this.config.version < DefaultVal.currentVersion
+      return this.config.version < DefaultVal.currentVersion && window.isDeadline
     }
   },
   watch: {
@@ -361,6 +371,9 @@ export default {
     },
     show(n) {
       if (n) {
+        if (this.config.version < DefaultVal.currentVersion) {
+          $('.v2next-new').remove()
+        }
         document.body.style.overflow = 'hidden'
       } else {
         document.body.style.overflow = 'unset'
@@ -368,8 +381,18 @@ export default {
     }
   },
   methods: {
+    goPost() {
+      fetch(Constant.hotUrl + 'new.txt').then(async r => {
+        let r2 = await r.text()
+        if (r2) {
+          window.open(r2)
+        }else{
+          window.open(Constant.git)
+        }
+      }).catch(()=>window.open(Constant.git))
+    },
     close() {
-      if (this.config.version < DefaultVal.currentVersion) {
+      if (window.isDeadline) {
         this.config.version = DefaultVal.currentVersion
       }
       this.$emit('update:show', false)
@@ -542,6 +565,16 @@ export default {
   border-radius: 1rem;
   background: #f3f3f3;
   margin-bottom: 1rem;
+}
+
+.log {
+  position: relative;
+  text-align: left;
+  margin-bottom: 20px;
+  padding-left: 20px;
+  font-size: 16px;
+  color: cornflowerblue;
+  text-decoration: underline;
 }
 
 </style>

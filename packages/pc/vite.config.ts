@@ -43,8 +43,8 @@ export default defineConfig({
         updateURL: 'https://update.greasyfork.org/scripts/458024/V2Next.user.js',
         downloadURL: 'https://update.greasyfork.org/scripts/458024/V2Next.user.js',
         supportURL: 'https://update.greasyfork.org/scripts/458024/V2Next.user.js',
-        homepageURL: 'https://github.com/zyronon/web-scripts',
-        homepage: 'https://github.com/zyronon/web-scripts',
+        homepageURL: 'https://github.com/zyronon/V2Next',
+        homepage: 'https://github.com/zyronon/V2Next',
         require: [
           'https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js',
           // 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js'

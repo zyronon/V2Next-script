@@ -15,7 +15,7 @@ import BaseSwitch from "../components/BaseSwitch.vue";
 import BaseLoading from "../components/BaseLoading.vue";
 import NotificationModal from "../components/Modal/NotificationModal.vue";
 import BaseButton from "../components/BaseButton.vue";
-import {functions} from "@v2next/core/core.ts";
+import {functions, getDefaultPost} from "@v2next/core/core.ts";
 
 export default {
   components: {
@@ -51,9 +51,9 @@ export default {
       isNight: window.isNight,
       stopMe: window.stopMe,//停止使用脚本
       show: false,
-      current: window.clone(window.initPost),
+      current: getDefaultPost(),
       list: [],
-      config: window.clone(window.config),
+      config: functions.clone(window.config),
       tags: window.user.tags,
       readList: window.user.readList,
       notificationModal: {
@@ -166,10 +166,6 @@ export default {
       }
     };
 
-    window.onbeforeunload = () => {
-      //TODO
-      // this.saveReadList()
-    }
     window.deleteNotification = (nId, token) => {
       console.log('deleteNotification', nId, token)
       let item = $("#n_" + nId)
@@ -265,18 +261,13 @@ export default {
       e.preventDefault()
       e.stopPropagation()
     },
-    saveReadList() {
-      if (this.config.rememberLastReadFloor) {
-        window.parse.saveReadList(this.readList)
-      }
-    },
     async clickPost(e, id, href, title = '') {
       // id = '976890'
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
           this.stopEvent(e)
           let index = this.list.findIndex(v => v.id == id)
-          let postItem = this.clone(window.initPost)
+          let postItem = getDefaultPost()
 
           if (index > -1) {
             postItem = this.list[index]
@@ -472,7 +463,7 @@ export default {
         }
         let el = document.querySelector(`.id_${this.current.id}`)
         if (el) el.remove()
-        this.current = this.clone(window.initPost)
+        this.current = getDefaultPost()
       })
       eventBus.on(CMD.MERGE, (val) => {
         this.current = Object.assign(this.current, val)
@@ -622,7 +613,6 @@ export default {
   <PostDetail v-model="show"
               ref="postDetail"
               v-model:displayType="config.commentDisplayType"
-              @saveReadList="saveReadList"
               @refresh="getPostDetail(current)"
               :loading="loading"
               :refreshLoading="refreshLoading"

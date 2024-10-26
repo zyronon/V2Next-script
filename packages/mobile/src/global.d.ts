@@ -2,7 +2,6 @@ import { Config, PageType, Post } from "@v2next/core/types"
 
 declare global {
   interface Window {
-    initPost: Post,
     user: any,
     targetUserName: string,//目标用户名字（用于在member界面添加标签）
     baseUrl: string,
@@ -39,7 +38,6 @@ declare global {
       createNoteItem: Function,
       editNoteItem: Function,
       saveTags: Function,
-      saveReadList: Function,
       saveImgurList: Function,
       checkPhotoLink2Img: Function,
       checkPostReplies: Promise,
