@@ -934,7 +934,7 @@ function run() {
               headerWrap.append(this)
             }
           })
-          if (window.isDeadline){
+          if (window.isDeadline && $('.tab_current').text() == '最热'){
             headerWrap.append($(`<div class="cell" id="SecondaryTabs"><div class="fr"><a href="/v2hot?3">3天最热</a> &nbsp; &nbsp; <a href="/v2hot?7">7天最热</a> &nbsp; &nbsp; <a href="/v2hot?30">30天最热</a> &nbsp; &nbsp; <a href="/v2hot?setting"><i class="fa fa-calendar" aria-hidden="true"></i></a></div><a href="/v2hot?-1">昨天最热</a> &nbsp; &nbsp; <a href="/v2hot?-2">前天最热</a> &nbsp; &nbsp; </div>`))
           }
           last = $(box).children().last()
