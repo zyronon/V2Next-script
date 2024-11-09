@@ -376,10 +376,10 @@ export default {
           let day = ''
           switch (Number(date)) {
             case -1:
-              day = now.subtract(1, 'day').format('YYYY-MM-DD')
+              day = now.subtract(1, 'day').format('YYYY-M-D')
               break
             case -2:
-              day = now.subtract(2, 'day').format('YYYY-MM-DD')
+              day = now.subtract(2, 'day').format('YYYY-M-D')
               break
             case 3:
               day = '3d'
