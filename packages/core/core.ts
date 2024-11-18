@@ -1,5 +1,5 @@
-import {CommentDisplayType, Config, PageType, Post, Reply, User} from "./types";
-import {GM_openInTab, GM_registerMenuCommand} from 'vite-plugin-monkey/dist/client';
+import { CommentDisplayType, Config, PageType, Post, Reply, User } from "./types";
+import { GM_openInTab, GM_registerMenuCommand } from 'vite-plugin-monkey/dist/client';
 // import {GM_openInTab, GM_registerMenuCommand}  from 'gmApi';
 
 export const functions = {
@@ -252,13 +252,14 @@ export const functions = {
   checkPhotoLink2Img(dom: Element) {
     let replaceImgur = window.config.replaceImgur;
     let is_add = false;
-    let prefix_img = replaceImgur ? "https://img.noobzone.ru/getimg.php?url=" : '';
+    let prefix_img = replaceImgur ? DefaultVal.imgurProxy : '';
     let imgList = dom.querySelectorAll('img')
-    imgList.forEach((a) => {
-      let href = a.src
+    imgList.forEach((img) => {
+      let href = img.src
       if (href.includes('imgur.com')) {
-        a.setAttribute('originUrl', a.src);
-        a.setAttribute('notice', '此img标签由V2Next脚本解析')
+        img.setAttribute('originUrl', img.src);
+        img.setAttribute('notice', '此img标签由V2Next脚本解析')
+        img.setAttribute('referrerpolicy', 'no-referrer')
         if (
           href.includes('.png') ||
           href.includes('.jpg') ||
@@ -280,7 +281,7 @@ export const functions = {
           is_add = true;
         }
 
-        a.src = prefix_img + href
+        img.src = prefix_img + href
       }
     })
 
@@ -301,6 +302,7 @@ export const functions = {
           let img = document.createElement('img')
           img.setAttribute('originUrl', a.href);
           img.setAttribute('notice', '此img标签由V2Next脚本解析')
+          img.setAttribute('referrerpolicy', 'no-referrer')
 
           if (href.includes('imgur.com')) {
             if (!is_add && replaceImgur) {
@@ -597,6 +599,7 @@ export const DefaultVal = {
   mobileScript: 'https://greasyfork.org/zh-CN/scripts/485356',
   homeUrl: 'https://v2ex-script.vercel.app/',
   hotUrl: 'https://v2hotlist.vercel.app/hot/',
+  imgurProxy: "https://img.noobzone.ru/getimg.php?url=",
 }
 
 export function getDefaultConfig(val: any = {}): Config {

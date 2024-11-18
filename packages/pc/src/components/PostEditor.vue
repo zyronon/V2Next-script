@@ -46,7 +46,10 @@
       <Icon icon="ic:round-close" @click.stop="isShowEmoticons = false" />
       <div class="title">经典</div>
       <div class="list">
-        <img v-for="item in classicsEmoticons" :src="item.high" @click.stop="insert(item.name);isShowEmoticons = false">
+        <img v-for="item in classicsEmoticons"
+             :src="getEmojiSrc(item.high)"
+             referrerpolicy="no-referrer"
+             @click.stop="insert(item.name);isShowEmoticons = false">
       </div>
       <div class="emoji">
         <template v-for="item in emojiEmoticons">
@@ -66,7 +69,7 @@ import eventBus from "../utils/eventBus.js";
 import {CMD} from "../utils/type.js";
 import BaseButton from "./BaseButton.vue";
 import {Icon} from '@iconify/vue'
-import {classicsEmoticons, emojiEmoticons} from '@v2next/core/core.ts'
+import {classicsEmoticons, DefaultVal, emojiEmoticons} from '@v2next/core/core.ts'
 
 const props = defineProps({
   replyUser: null,
@@ -288,6 +291,10 @@ async function submit() {
   ).catch(r => {
     console.log('catch', r)
   })
+}
+
+function getEmojiSrc(url) {
+  return window.config.replaceImgur ? DefaultVal.imgurProxy + url : url;
 }
 
 function showEmoticons(e) {

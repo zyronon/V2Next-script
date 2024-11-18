@@ -62,7 +62,8 @@ https://www.v2ex.com/poll_once 好像是换once的
 - 7天注册，弄好看点，延长到15天
 - https://www.v2ex.com/t/1033495#reply6 图烈了
 - url #reply6里面的回复楼层可以跳转
-
+- 表情的imgur源也要加可换源
+- 添加首页tab可自定义
 
 
 
