@@ -5,7 +5,8 @@ https://www.v2ex.com/poll_once 好像是换once的
 - 启用脚本后无法显示代码高亮 https://v2ex.com/t/937951
 - base64中文有乱码：https://www.v2ex.com/t/955201#reply14
 - 忽略10楼之后，导致11楼也不见了 https://www.v2ex.com/t/954949#reply10
-
+- 嵌套超过一半，但未修正 https://www.v2ex.com/t/887103
+- 
 # 测试数据
 
 - 825072 嵌套问题
@@ -20,15 +21,14 @@ https://www.v2ex.com/poll_once 好像是换once的
 - 940006 @错了人的
 - 1003405 134楼，楼层和用户匹配不上，但是未提示错误，isWrong未检测到 
 
+# 已修复
 # 回复问题
 
 - [x]  bug：https://greasyfork.org/zh-CN/scripts/397787-v2ex-pro/discussions/51302
 
 # 其他问题
 
-- [ ] https://www.v2ex.com/t/932519#reply1 无法显示email
-- [x]  回复自己的帖子失效 https://www.v2ex.com/t/887103
-- [ ]  886895 正文显示异常 开发模式显示异常，在v2ex站内显示正常
+- [x] https://www.v2ex.com/t/932519#reply1 无法显示email 
 
 # TODO
 

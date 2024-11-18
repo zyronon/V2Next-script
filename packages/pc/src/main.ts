@@ -806,6 +806,7 @@ function run() {
   }
 
   //初始化记事本数据
+  //TODO 这里逻辑有点冗余了，有空和app同步一下
   async function initNoteData() {
     //获取或创建记事本的标签
     $.get(location.origin + '/notes').then(async r => {

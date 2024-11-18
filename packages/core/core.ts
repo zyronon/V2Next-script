@@ -298,28 +298,25 @@ export const functions = {
           href.includes('.JPEG') ||
           href.includes('.GIF')
         ) {
-        } else {
-          href = href + '.png'
-        }
-        let img = document.createElement('img')
-        img.setAttribute('originUrl', a.href);
-        img.setAttribute('notice', '此img标签由V2Next脚本解析')
-        a.href = href
+          let img = document.createElement('img')
+          img.setAttribute('originUrl', a.href);
+          img.setAttribute('notice', '此img标签由V2Next脚本解析')
 
-        if (href.includes('imgur.com')) {
-          if (!is_add && replaceImgur) {
-            let meta = document.createElement('meta');
-            meta.setAttribute('name', 'referrer');
-            meta.setAttribute('content', 'no-referrer');
-            document.getElementsByTagName('head')[0].appendChild(meta);
-            is_add = true;
+          if (href.includes('imgur.com')) {
+            if (!is_add && replaceImgur) {
+              let meta = document.createElement('meta');
+              meta.setAttribute('name', 'referrer');
+              meta.setAttribute('content', 'no-referrer');
+              document.getElementsByTagName('head')[0].appendChild(meta);
+              is_add = true;
+            }
+            img.src = prefix_img + href
+          } else {
+            img.src = href
           }
-          img.src = prefix_img + href
-        } else {
-          img.src = href
+          a.innerText = ''
+          a.append(img)
         }
-        a.innerText = ''
-        a.append(img)
       }
     })
   },
