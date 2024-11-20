@@ -69,7 +69,7 @@ export const functions = {
         if (currentItem.replyUsers.length === 1 && currentItem.replyUsers[0] === item.username) {
           //先标记为使用，不然遇到“问题930155”，会出现重复回复
           currentItem.isUse = true
-          floorReplyList.push({ endList: endList.slice(i + 1), currentItem })
+          floorReplyList.push({endList: endList.slice(i + 1), currentItem})
           //问题930155：这里不能直接找子级，如果item为A，currentItem为B，但随后A又回复了B，然后C回复A。这样直接找子级就会把C归类到B的子回复，而不是直接A的子回复
           //截图：930155.png
           // fn(currentItem, endList.slice(i + 1), item)
@@ -81,7 +81,7 @@ export const functions = {
 
     //从后往前找
     //原因：问题933080，有图
-    floorReplyList.reverse().map(({ currentItem, endList }) => {
+    floorReplyList.reverse().map(({currentItem, endList}) => {
       fn(currentItem, endList, item)
     })
 
@@ -246,7 +246,7 @@ export const functions = {
     if (href.includes('/t/')) {
       id = a.pathname.substring('/t/'.length);
     }
-    return { href, id, title: a.innerText }
+    return {href, id, title: a.innerText}
   },
   //图片链接转Img标签
   checkPhotoLink2Img(dom: Element) {
@@ -357,7 +357,7 @@ export const functions = {
       }
       a.click();
     } else {
-      GM_openInTab(href, { active });
+      GM_openInTab(href, {active});
     }
   },
   async cbChecker(val: any, count = 0) {
@@ -375,7 +375,7 @@ export const functions = {
   initMonkeyMenu() {
     try {
       GM_registerMenuCommand("脚本设置", () => {
-        functions.cbChecker({ type: 'openSetting' })
+        functions.cbChecker({type: 'openSetting'})
       });
       GM_registerMenuCommand('仓库地址', () => {
         functions.openNewTab(window.const.git)
@@ -391,7 +391,7 @@ export const functions = {
   //检测页面类型
   checkPageType(a?: HTMLAnchorElement) {
     let l = a || window.location
-    let data = { pageType: null, pageData: { id: '', pageNo: null }, username: '' }
+    let data = {pageType: null, pageData: {id: '', pageNo: null}, username: ''}
     if (l.pathname === '/') {
       data.pageType = PageType.Home
     } else if (l.pathname === '/changes') {
@@ -587,7 +587,7 @@ export const DefaultUser: User = {
 
 export const DefaultVal = {
   pageType: undefined,
-  pageData: { pageNo: 1 },
+  pageData: {pageNo: 1},
   targetUserName: '',
   currentVersion: 3,
   cb: null,

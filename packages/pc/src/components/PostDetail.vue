@@ -175,7 +175,11 @@
         </div>
       </div>
       <div class="close-btn" @click.stop="close('btn')">
-        <Icon icon="fontisto:close-a"/>
+        <Icon icon="icon-park-outline:close"/>
+      </div>
+      <div class="open-new-tab"
+           @click.stop="functions.openNewTab('https://www.v2ex.com/t/'+post.id,config.newTabOpenActive)">
+        <Icon icon="majesticons:open"/>
       </div>
       <div class="refresh gray" @click.stop="$emit('refresh')">
         <BaseLoading v-if="refreshLoading"/>
@@ -401,6 +405,9 @@ export default {
     }
   },
   computed: {
+    functions() {
+      return functions
+    },
     canAppend() {
       if (this.isMy) {
         let create = new Date(this.post.createDate)
@@ -460,6 +467,13 @@ export default {
                 if (v.replyUsers.includes(this.targetUser.right)) {
                   return true
                 }
+                if (v.username === this.targetUser.right) {
+                  for (let i = 0; i < this.targetUser.left.length; i++) {
+                    if (v.replyUsers.includes(this.targetUser.left[i])) {
+                      return true
+                    }
+                  }
+                }
               } else {
                 // if (v.username === this.targetUser.right) return true
                 // if (v.replyUsers.length) {
@@ -472,14 +486,7 @@ export default {
                 return true
               }
             }
-            // return false
-            if (v.username === this.targetUser.right) {
-              for (let i = 0; i < this.targetUser.left.length; i++) {
-                if (v.replyUsers.includes(this.targetUser.left[i])) {
-                  return true
-                }
-              }
-            }
+            return false
           })
       }
       return []
@@ -894,7 +901,7 @@ export default {
     width: 100% !important;
   }
 
-  .close-btn {
+  .close-btn, .open-new-tab {
     display: none;
   }
 }
@@ -1105,7 +1112,7 @@ export default {
     position: fixed;
     top: 3rem;
     transform: translateX(4rem);
-    font-size: 1.6rem;
+    font-size: 2.4rem;
   }
 
   .top-reply {
@@ -1113,7 +1120,11 @@ export default {
     cursor: pointer;
     font-size: 2rem;
     display: flex;
+  }
 
+  .open-new-tab {
+    .close-btn;
+    top: 8rem;
   }
 }
 
