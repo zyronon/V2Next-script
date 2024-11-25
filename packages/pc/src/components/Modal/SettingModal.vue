@@ -11,7 +11,7 @@
           <Icon icon="ic:round-close" @click="close"/>
         </div>
         <div class="log" v-if="isNew">
-          <a @click="goPost">New：现已支持查看历史最热数据、imgur换源，点击查看详细介绍</a>
+          <a @click="goPost">New：手机App现已发布，支持楼中楼！PC脚本新增历史最热数据、imgur换源功能！点击查看详细介绍</a>
           <div class="new"></div>
         </div>
         <div class="body">
