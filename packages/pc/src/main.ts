@@ -21,7 +21,7 @@ function run() {
   window.stopMe = false
   window.isLogin = false
   window.postList = []
-  window.isDeadline = dayjs().isAfter(dayjs('2024-10-28'))
+  window.isDeadline = dayjs().isAfter(dayjs('2024-11-26'))
   // window.isDeadline = true
   window.parse = {
     //解析主题内容

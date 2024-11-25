@@ -589,7 +589,7 @@ export const DefaultVal = {
   pageType: undefined,
   pageData: {pageNo: 1},
   targetUserName: '',
-  currentVersion: 4,
+  currentVersion: 5,
   cb: null,
   git: 'https://github.com/zyronon/V2Next',
   shortGit: 'zyronon/V2Next',
