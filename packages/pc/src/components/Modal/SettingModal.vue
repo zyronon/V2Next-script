@@ -11,7 +11,7 @@
           <Icon icon="ic:round-close" @click="close"/>
         </div>
         <div class="log" v-if="isNew">
-          <a @click="goPost">New：现已支持查看历史最热数据、imgur换源，点击查看详细介绍</a>
+          <a @click="goPost">New：手机App现已发布，支持楼中楼！PC脚本新增历史最热数据、imgur换源功能！点击查看详细介绍</a>
           <div class="new"></div>
         </div>
         <div class="body">
@@ -159,13 +159,13 @@
                   </div>
                 </div>
                 <div class="row">
-                  <label class="item-title">最多显示{{config.topReplyCount}}个高赞回复</label>
+                  <label class="item-title">最多显示{{ config.topReplyCount }}个高赞回复</label>
                   <div class="wrapper">
                     <input type="number" min="1" v-model="config.topReplyCount">
                   </div>
                 </div>
                 <div class="row">
-                  <label class="item-title">最少需要{{config.topReplyLoveMinCount}}个赞才能被判定为高赞</label>
+                  <label class="item-title">最少需要{{ config.topReplyLoveMinCount }}个赞才能被判定为高赞</label>
                   <div class="wrapper">
                     <input type="number" min="1" v-model="config.topReplyLoveMinCount">
                   </div>
@@ -382,11 +382,11 @@ export default {
       fetch(DefaultVal.hotUrl + 'new.txt').then(async r => {
         let r2 = await r.text()
         if (r2) {
-          window.open(r2)
-        }else{
-          window.open(DefaultVal.git)
+          functions.openNewTab(r2, true)
+        } else {
+          functions.openNewTab(DefaultVal.git, true)
         }
-      }).catch(()=>window.open(DefaultVal.git))
+      }).catch(() => functions.openNewTab(DefaultVal.git, true))
     },
     close() {
       if (window.isDeadline) {
