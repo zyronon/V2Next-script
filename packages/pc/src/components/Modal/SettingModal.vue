@@ -6,7 +6,7 @@
         <div class="modal-header">
           <div class="title">
             脚本设置
-            <div class="small"><a :href="DefaultVal.mobileScript" target="_blank">(脚本现已支持移动端！)</a></div>
+            <div  style="font-size: 20px;text-decoration: underline" ><a :href="DefaultVal.mobileScript" target="_blank">(手机App已发布，支持楼中楼！)</a></div>
           </div>
           <Icon icon="ic:round-close" @click="close"/>
         </div>
@@ -277,9 +277,7 @@
                     <div>官网：<a :href="DefaultVal.homeUrl" target="_blank">{{ DefaultVal.homeUrl }}</a></div>
                     <div>GitHub地址：<a :href="DefaultVal.git" target="_blank">{{ DefaultVal.git }}</a></div>
                     <div>PC脚本地址：<a :href="DefaultVal.pcScript" target="_blank">{{ DefaultVal.pcScript }}</a></div>
-                    <div>移动端脚本地址：<a :href="DefaultVal.mobileScript" target="_blank">{{
-                        DefaultVal.mobileScript
-                      }}</a></div>
+                    <div>App地址：<a :href="DefaultVal.mobileScript" target="_blank">{{ DefaultVal.mobileScript }}</a></div>
                     <div>反馈: <a :href="DefaultVal.issue" target="_blank">{{ DefaultVal.issue }}</a></div>
                     <div>更新日志：<a :href="DefaultVal.pcLog" target="_blank">{{ DefaultVal.pcLog }}</a></div>
                   </div>

@@ -596,8 +596,8 @@ export const DefaultVal = {
   issue: 'https://github.com/zyronon/V2Next/issues',
   pcLog: 'https://greasyfork.org/zh-CN/scripts/458024/versions',
   pcScript: 'https://greasyfork.org/zh-CN/scripts/458024',
-  mobileScript: 'https://greasyfork.org/zh-CN/scripts/485356',
-  homeUrl: 'https://v2ex-script.vercel.app/',
+  mobileScript: 'https://github.com/zyronon/V2Next/releases',
+  homeUrl: 'https://vtonext.vercel.app/',
   hotUrl: 'https://v2hotlist.vercel.app/hot/',
   imgurProxy: "https://img.noobzone.ru/getimg.php?url=",
 }
@@ -610,7 +610,7 @@ export function getDefaultConfig(val: any = {}): Config {
     clickPostItemOpenDetail: true,
     closePostDetailBySpace: true,//点击空白处关闭详情
     contentAutoCollapse: true,//正文超长自动折叠
-    viewType: 'card',
+    viewType: 'table',
     commentDisplayType: CommentDisplayType.FloorInFloorNoCallUser,
     newTabOpen: false,//新标签打开
     newTabOpenActive: false,

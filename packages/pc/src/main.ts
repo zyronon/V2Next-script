@@ -895,6 +895,8 @@ function run() {
   }
 
   function addSettingText() {
+    let app = $(`<a href="${DefaultVal.mobileScript}" target='_blank' class="top"><i class="fa fa-android" aria-hidden="true"></i></a>`)
+    $('.tools').prepend(app)
     let setting = $(`<a href="/" class="top v2next-setting"><span>脚本设置</span></a>`)
     setting.on('click', function (e) {
       functions.stopEvent(e)
