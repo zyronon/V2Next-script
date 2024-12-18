@@ -17,9 +17,9 @@ export default defineConfig({
       clientAlias: 'gmApi',
       entry: 'src/main.ts',
       userscript: {
-        version: '10.24',
+        version: '10.26',
         name: 'V2EX Next V2Next',
-        icon: 'https://v2ex-script.vercel.app/favicon.ico',
+        icon: 'https://vtonext.vercel.app/favicon.ico',
         namespace: 'http://tampermonkey.net/',
         match: [
           'https://v2ex.com/',
@@ -37,7 +37,7 @@ export default defineConfig({
           'https://*.v2ex.com/member/*',
           'https://*.v2ex.com/changes*',
         ],
-        description: 'V2Next - 一个好用的V2EX脚本！ 已适配移动端',
+        description: 'V2Next - 一个好用的V2EX脚本！手机 App 已发布',
         author: 'zyronon',
         license: 'GPL License',
         updateURL: 'https://update.greasyfork.org/scripts/458024/V2Next.user.js',
