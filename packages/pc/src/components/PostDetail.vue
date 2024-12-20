@@ -545,7 +545,7 @@ export default {
         //top值要加上滚动的距离，因为val传的top是相对于视口，而不是父div
         //left要减去父级的left，原理同上
         if (this.isPost) {
-          this.callStyle.top = val.top + $(window.win()).scrollTop() + -40 + 'px'
+          this.callStyle.top = val.top + $(window).scrollTop() + -40 + 'px'
         } else {
           this.callStyle.top = val.top + $('.post-detail').scrollTop() + 15 + 'px'
         }
