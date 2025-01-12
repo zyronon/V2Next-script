@@ -317,7 +317,7 @@ function run() {
         let {users, floor} = this.parseReplyContent(item.reply_content)
         item.hideCallUserReplyContent = item.reply_content
         if (users.length === 1) {
-          item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => '')
+          item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(?:<ul [\s\S]+<\/ul>)?(\s#[\d]+)?\s(<br>)?/, () => '')
         }
         item.replyUsers = users
         item.replyFloor = floor
@@ -361,16 +361,10 @@ function run() {
       if (!str) return
       let users: any = []
       let getUsername = (userStr: string) => {
-        let endIndex = userStr.indexOf('">')
-        if (endIndex > -1) {
-          let user: string = userStr.substring(0, endIndex)
-          if (!users.find((i: any) => i === user)) {
-            users.push(user)
-          }
-        }
+        users.push(userStr);
       }
       // str = `@<a hr a> #4 @<a1 href="/member/Eiden1">Eiden1</a1>   @<a href="/member/Eiden111">Eiden21</a> #11   这也是执行阶段，所谓的安装也是程序业务的 setup 。<br>windows 、Android 并没有系统级的 CD-KEY 。`
-      let userReg = /@<a href="\/member\/([\s\S]+?)<\/a>/g
+      let userReg = /@<a href="\/member\/([^'" ]+)/g
       let has = str.matchAll(userReg)
       let res2 = [...has]
       // console.log('总匹配', res2)
@@ -387,7 +381,7 @@ function run() {
       let floor = -1
       //只有@一个人的时候才去查找是否指定楼层号。
       if (users.length === 1) {
-        let floorReg = /@<a href="\/member\/[\s\S]+?<\/a>[\s]+#([\d]+)/g
+        let floorReg = /@<a href="\/member\/[\s\S]+?<\/a>(?:<ul [\s\S]+<\/ul>)?[\s]+#([\d]+)/g
         let hasFloor = str.matchAll(floorReg)
         let res = [...hasFloor]
         // console.log('总匹配', res)
