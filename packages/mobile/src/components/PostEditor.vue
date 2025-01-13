@@ -561,7 +561,7 @@ async function submit() {
 
   item.hideCallUserReplyContent = item.reply_content
   if (item.replyUsers.length === 1) {
-    item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => '')
+    item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(?:<ul [\s\S]+<\/ul>)?(\s#[\d]+)?\s(<br>)?/, () => '')
   }
   console.log('回复', item)
   // loading.value = false
