@@ -6,7 +6,8 @@
         <div class="modal-header">
           <div class="title">
             脚本设置
-            <div  style="font-size: 20px;text-decoration: underline" ><a :href="DefaultVal.mobileScript" target="_blank">(手机App已发布，支持楼中楼！)</a></div>
+            <div style="font-size: 20px;text-decoration: underline"><a :href="DefaultVal.mobileScript" target="_blank">(手机App已发布，支持楼中楼！)</a>
+            </div>
           </div>
           <Icon icon="ic:round-close" @click="close"/>
         </div>
@@ -18,16 +19,16 @@
           <div class="left">
             <div class="tabs">
               <div class="tab" :class="tabIndex === 0 && 'active'" @click="tabIndex = 0">
-                <span>列表设置</span>
+                <span>列表</span>
               </div>
               <div class="tab" :class="tabIndex === 1 && 'active'" @click="tabIndex = 1">
-                <span>主题设置</span>
+                <span>主题</span>
               </div>
               <div class="tab" :class="tabIndex === 2 && 'active'" @click="tabIndex = 2">
-                <span>其他设置</span>
+                <span>其他</span>
               </div>
               <div class="tab" :class="tabIndex === 3 && 'active'" @click="tabIndex = 3">
-                <span>关于脚本</span>
+                <span>关于</span>
               </div>
             </div>
             <div class="icons">
@@ -173,20 +174,46 @@
               </div>
               <div v-if="tabIndex === 2">
                 <div class="row">
+                  <label class="main-title">收藏列表</label>
+                </div>
+                <div class="row">
+                  <div>
+                    <BaseButton @click="exportCollectList" :loading="exportLoading">导出</BaseButton>
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    <div style="display:inline-flex;overflow:hidden;position:relative;">
+                      <BaseButton :loading="importLoading">导入，并收藏</BaseButton>
+                      <input v-if="showInput" type="file"
+                             style="position: absolute;width: 100%;height: 100px;opacity: 0;"
+                             @change="importCollectList">
+                    </div>
+                    <div style="display:inline;margin-left: 10px;font-size: 18px;" v-if="importLoading">
+                      导入中：{{ index }}/{{ total }} ，大约需要{{ endTime }}分钟，导入完成前请勿关闭和刷新本页面
+                    </div>
+                    <div style="display:inline;margin-left: 10px;" v-if="importOk">
+                      导入完成
+                    </div>
+                  </div>
+                </div>
+                <div class="desc">
+                  默认导出为 json 文件，如需其他格式，请使用 ChatGpt/Deepseek 转换
+                </div>
+
+                <div class="line"></div>
+                <div class="row">
+                  <label class="main-title">其他</label>
+                </div>
+                <div class="row">
                   <label class="item-title">用户打标签(跨平台，数据保存在自己的记事本)：</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.openTag"/>
                   </div>
                 </div>
-
                 <div class="row">
                   <label class="item-title">划词显示Base64解码框</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.base64"/>
                   </div>
                 </div>
-
-
                 <div class="row">
                   <label class="item-title">自动签到</label>
                   <div class="wrapper">
@@ -202,8 +229,8 @@
                 <div class="desc">
                   未设定此值时，则脚本就什么都不做，V站大部分页面背景颜色默认为 #e2e2e2，少部分页面有特定背景。接受一个合法的css
                   color值：例如<a
-                  href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value"
-                  target="_blank">red、#ffffff、rgb(222,222,22)(点此查看)</a>等等。
+                    href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value"
+                    target="_blank">red、#ffffff、rgb(222,222,22)(点此查看)</a>等等。
                 </div>
                 <div class="desc danger">
                   提示：此项需要刷新页面才能生效
@@ -217,6 +244,9 @@
                 <div class="desc">
                   V站帐号一旦被封禁，则无法登录，无法查看账号收藏了
                 </div>
+
+                <div class="line"></div>
+
                 <div class="row">
                   <label class="main-title">消息通知</label>
                 </div>
@@ -277,7 +307,8 @@
                     <div>官网：<a :href="DefaultVal.homeUrl" target="_blank">{{ DefaultVal.homeUrl }}</a></div>
                     <div>GitHub地址：<a :href="DefaultVal.git" target="_blank">{{ DefaultVal.git }}</a></div>
                     <div>PC脚本地址：<a :href="DefaultVal.pcScript" target="_blank">{{ DefaultVal.pcScript }}</a></div>
-                    <div>App地址：<a :href="DefaultVal.mobileScript" target="_blank">{{ DefaultVal.mobileScript }}</a></div>
+                    <div>App地址：<a :href="DefaultVal.mobileScript" target="_blank">{{ DefaultVal.mobileScript }}</a>
+                    </div>
                     <div>反馈: <a :href="DefaultVal.issue" target="_blank">{{ DefaultVal.issue }}</a></div>
                     <div>更新日志：<a :href="DefaultVal.pcLog" target="_blank">{{ DefaultVal.pcLog }}</a></div>
                   </div>
@@ -301,10 +332,14 @@ import BaseSelect from "@/components/BaseSelect.vue";
 import {Icon} from "@iconify/vue";
 import PopConfirm from "@/components/PopConfirm.vue";
 import NoticeModal from "@/components/Modal/NoticeModal.vue";
+import BaseButton from "@/components/BaseButton.vue";
+import eventBus from "@/utils/eventBus.js";
+import {CMD} from "@/utils/type.js";
 
 export default {
   name: "Setting",
   components: {
+    BaseButton,
     NoticeModal,
     PopConfirm,
     Icon,
@@ -312,7 +347,7 @@ export default {
     BaseSwitch,
     Tooltip
   },
-  inject: ['isNight'],
+  inject: ['isNight', 'isLogin'],
   props: {
     modelValue: {
       type: Object,
@@ -331,7 +366,14 @@ export default {
     return {
       tabIndex: 0,
       config: functions.clone(this.modelValue),
-      showNotice: false
+      showNotice: false,
+      exportLoading: false,
+      importLoading: false,
+      importOk: false,
+      showInput: true,
+      total: 0,
+      index: 0,
+      endTime: '0',
     }
   },
   computed: {
@@ -393,6 +435,128 @@ export default {
         this.config.version = DefaultVal.currentVersion
       }
       this.$emit('update:show', false)
+    },
+    exportCollectList() {
+      if (!this.isLogin) {
+        return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
+      }
+      try {
+        let allList = []
+        this.exportLoading = true
+
+        function run(i) {
+          return new Promise(resolve => {
+            $.get(`/my/topics?p=${i}`).then(res => {
+              let body = $(functions.genDomFromHtmlString(res))
+              let total = body.find('.page_normal').last().text()
+              if (typeof total === 'string') {
+                total = Number(total)
+              }
+              let list = []
+              body.find('.topic-link').each(function () {
+                let a = functions.parseA(this)
+                list.push({
+                  title: a.title,
+                  url: location.origin + '/t/' + a.id
+                })
+              })
+              resolve({list, total})
+            })
+          })
+        }
+
+        run(1).then(async r => {
+          allList = allList.concat(r.list)
+          if (r.total > 1) {
+            let getList = []
+            for (let i = 2; i <= r.total; i++) {
+              getList.push(run(i))
+            }
+            let b = await Promise.allSettled(getList)
+            allList = allList.concat(b.map(v => v.value.list).flat())
+          }
+          console.log('all', allList)
+          let pom = document.createElement('a');
+          pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(allList, null, 2)));
+          pom.setAttribute('download', 'V2EX-收藏.json');
+          if (document.createEvent) {
+            let event = document.createEvent('MouseEvents');
+            event.initEvent('click', true, true);
+            pom.dispatchEvent(event);
+          } else {
+            pom.click();
+          }
+          this.exportLoading = false
+          eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '收藏列表导出成功！'})
+        })
+      } catch (e) {
+        this.exportLoading = false
+        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '收藏列表导出失败！'})
+      }
+    },
+    importCollectList(e) {
+      if (!this.isLogin) {
+        return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
+      }
+      let file = e.target.files[0]
+      let fileName = file.name.split('.').pop().toLowerCase()
+      console.log('e', file, fileName)
+      if (fileName !== 'json') {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '请导入 json 格式文件！'})
+      }
+
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = async () => {
+        if (reader.result) {
+          try {
+            let list = JSON.parse(reader.result)
+            console.log(list)
+            this.importLoading = true
+            this.total = list.length
+            for (let i = 0; i < list.length; i++) {
+              this.endTime = Math.floor((list.length - i) * 10 / 60)
+              // for (let i = 0; i < 10; i++) {
+              this.index = i
+              let v = list[i]
+              // let v = {url:'https://www.v2ex.com/t/489267'}
+              // let v = {url: 'https://www.v2ex.com/t/395121'}
+              let a = document.createElement('a')
+              a.href = v.url
+              let {id} = functions.parseA(a)
+              a.remove()
+              let apiRes = await fetch(v.url)
+              let htmlText = await apiRes.text()
+              let hasPermission = htmlText.search('你要查看的页面需要先登录')
+              if (hasPermission > -1 || apiRes.status === 404 || apiRes.status === 404 || apiRes.redirected) {
+                console.log('无权限', v.url, v.title)
+                continue
+              }
+              if (htmlText.search('加入收藏') > -1) {
+                console.log('未收藏========>>', v.url, v.title)
+                let once = await window.fetchOnce()
+                let url = `${location.origin}/favorite/topic/${id}?once=${once}`
+                await fetch(url)
+                await functions.sleep(10000)
+              } else {
+                console.log('已收藏', v.url, v.title)
+              }
+              await functions.sleep(1000)
+            }
+            this.importLoading = false
+            this.importOk = true
+          } catch (e) {
+            eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '数据解析失败！'})
+          }
+        } else {
+          eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '数据为空！'})
+        }
+      }
+
+      this.showInput = false
+      setTimeout(() => {
+        this.showInput = true
+      }, 200)
     }
   }
 }
@@ -447,7 +611,7 @@ export default {
 
           .tab {
             cursor: pointer;
-            padding: 1rem 1.5rem;
+            padding: 1rem 3rem;
             border-radius: .8rem;
             display: flex;
             align-items: center;

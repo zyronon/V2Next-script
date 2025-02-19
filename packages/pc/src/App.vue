@@ -594,7 +594,7 @@ export default {
           }
         } else {
           $('#money').parent().prev().replaceWith(`<a href="/notifications">${text}</a>`)
-          console.log('消息清空',)
+          // console.log('消息清空',)
           this.config.notice.text = ''
         }
       }
