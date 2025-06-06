@@ -5,8 +5,11 @@
        v-show="modelValue"
        :class="[isNight?'isNight':'',pageType]"
        @click="close('space')">
-    <div ref="main" class="main" tabindex="1" @click="stop">
-      <div class="main-wrapper" ref="mainWrapper"
+    <div ref="main" class="main"
+         :class="isSpecificArea?'specific-area':''"
+         tabindex="1" @click="stop">
+      <div class="main-wrapper"
+           ref="mainWrapper"
            :style="{width:config.postWidth+'!important'}">
         <div class="my-box post-wrapper">
           <div class="header">
@@ -19,7 +22,7 @@
                      style="width: 73px;height: 73px;"
                      border="0" align="default" :alt="post.member.username"></a>
             </div>
-            <a href="/packages/pcckages/pc/public">V2EX</a>
+            <a href="/">V2EX</a>
             <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
             <a :href="post.node.url">{{ post.node.title }}</a>
             <div class="sep10"></div>
@@ -191,7 +194,7 @@
                @click.stop="stop"
                @keydown.enter="jump(currentFloor)">
       </div>
-      <div class="scroll-top gray" @click.stop="scrollTop">
+      <div class="v2next-scroll-top gray" @click.stop="scrollTop">
         <Icon icon="lucide:move-up"/>
       </div>
       <!--      <div class="msg gray">-->
@@ -407,6 +410,15 @@ export default {
   computed: {
     functions() {
       return functions
+    },
+    //wow区和东京区的css要特定
+    isSpecificArea() {
+      if ([PageType.Node, PageType.Post].includes(this.pageType)) {
+        if (['东京', "World of Warcraft"].includes(this.post.node.title)) {
+          return true
+        }
+      }
+      return false
     },
     canAppend() {
       if (this.isMy) {
@@ -1059,7 +1071,7 @@ export default {
   }
 
 
-  .scroll-top {
+  .v2next-scroll-top {
     cursor: pointer;
     position: fixed;
     border-radius: .6rem;
@@ -1082,12 +1094,12 @@ export default {
   }
 
   .refresh {
-    .scroll-top;
+    .v2next-scroll-top;
     bottom: 23.5rem;
   }
 
   .scroll-to {
-    .scroll-top;
+    .v2next-scroll-top;
     bottom: 15rem;
     display: flex;
     flex-direction: column;
@@ -1102,7 +1114,7 @@ export default {
   }
 
   .msg {
-    .scroll-top;
+    .v2next-scroll-top;
     bottom: 5rem;
   }
 
@@ -1128,4 +1140,23 @@ export default {
   }
 }
 
+//wow区和东京区的css要特定
+.specific-area {
+  --color-line: rgb(106 104 104);
+  --color-floor: rgb(71 71 71 / 48%);
+  --color-top-reply-wrap-bg: rgb(71 71 71 / 48%);
+  --color-sp-btn-bg: rgb(71 71 71 / 48%);
+  --color-editor-toolbar: #303e64;
+  --color-font-pure: white;
+  --color-main-bg: rgb(84 84 84);
+  --box-background-color: rgba(0, 0, 0, 0.5);
+  --box-background-hover-color: rgba(0, 0, 0, 0.5);
+
+  .my-box {
+    color: #fff;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
+  }
+}
 </style>

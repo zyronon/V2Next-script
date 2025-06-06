@@ -42,7 +42,7 @@
               </div>
             </div>
             <BaseHtmlRender
-                v-if="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser && type !== 'top'"
+                v-if="[CommentDisplayType.Like, CommentDisplayType.FloorInFloorNoCallUser].includes(config.commentDisplayType) && type !== 'top'"
                 class="reply_content" :html="modelValue.hideCallUserReplyContent"/>
             <BaseHtmlRender v-else class="reply_content" :html="modelValue.reply_content"/>
             <PostEditor v-if="edit"

@@ -548,7 +548,7 @@ function run() {
           max-width:1100px !important;
       }
 
-      ${location.href.includes('wow') ? '' : `
+      ${(location.pathname.includes('wow')||location.pathname.includes('tokyo')) ? '' : `
        .post-item {
           background: white;
       } 
@@ -696,6 +696,10 @@ function run() {
         right: -9px;
         top: -3px;
       }
+      
+      /*解决hdr头像太亮的问题*/
+      img{filter: brightness(0.95) contrast(0.95) saturate(0.95);}
+
     }
     `
     let addStyle2: HTMLStyleElement = document.createElement("style");
