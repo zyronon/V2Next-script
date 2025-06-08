@@ -6,8 +6,6 @@
         <div class="modal-header">
           <div class="title">
             脚本设置
-            <div style="font-size: 20px;text-decoration: underline"><a :href="DefaultVal.mobileScript" target="_blank">(手机App已发布，支持楼中楼！)</a>
-            </div>
           </div>
           <Icon icon="ic:round-close" @click="close"/>
         </div>
@@ -19,71 +17,94 @@
           <div class="left">
             <div class="tabs">
               <div class="tab" :class="tabIndex === 0 && 'active'" @click="tabIndex = 0">
+                <Icon icon="weui:setting-outlined"/>
                 <span>列表</span>
               </div>
               <div class="tab" :class="tabIndex === 1 && 'active'" @click="tabIndex = 1">
+                <Icon icon="stash:article-alt-light"/>
                 <span>主题</span>
               </div>
               <div class="tab" :class="tabIndex === 2 && 'active'" @click="tabIndex = 2">
+                <Icon icon="fluent:more-circle-20-regular"/>
                 <span>其他</span>
               </div>
               <div class="tab" :class="tabIndex === 3 && 'active'" @click="tabIndex = 3">
+                <Icon icon="ix:about"/>
                 <span>关于</span>
               </div>
+              <div class="tab" :class="tabIndex === 4 && 'active'" @click="tabIndex = 4">
+                <Icon icon="ix:about"/>
+                <span>插件</span>
+              </div>
             </div>
-            <div class="icons">
-              <a :href="DefaultVal.git" target="_blank">
-                <Icon icon="mdi:github"/>
-              </a>
-              <a :href="DefaultVal.homeUrl" target="_blank">
-                <Icon icon="iconamoon:home-light"/>
-              </a>
+            <div class="bottom">
+              <div class="tip">
+                如果可以的话欢迎点个star支持一下~
+              </div>
+              <div class="icons">
+                <a :href="DefaultVal.git" target="_blank">
+                  <Icon icon="mdi:github"/>
+                </a>
+                <a :href="DefaultVal.homeUrl" target="_blank">
+                  <Icon icon="iconamoon:home-light"/>
+                </a>
+              </div>
             </div>
+
           </div>
           <div class="modal-content">
             <div class="scroll">
               <div v-if="tabIndex === 0">
-                <div class="row">
-                  <label class="item-title">列表展示方式</label>
-                  <div class="wrapper">
-                    <div class="radio-group2">
-                      <div class="radio"
-                           @click="config.viewType = 'simple'"
-                           :class="config.viewType === 'simple'?'active':''">简洁
-                      </div>
-                      <div class="radio"
-                           @click="config.viewType = 'table'"
-                           :class="config.viewType === 'table'?'active':''">表格
-                      </div>
-                      <div class="radio"
-                           @click="showNotice = true"
-                           :class="config.viewType === 'card'?'active':''">卡片
+                <div class="border">
+                  <div class="row">
+                    <label class="item-title">列表展示方式</label>
+                    <div class="wrapper">
+                      <div class="radio-group2">
+                        <div class="radio"
+                             @click="config.viewType = 'simple'"
+                             :class="config.viewType === 'simple'?'active':''">简洁
+                        </div>
+                        <div class="radio"
+                             @click="config.viewType = 'table'"
+                             :class="config.viewType === 'table'?'active':''">表格
+                        </div>
+                        <div class="radio"
+                             @click="showNotice = true"
+                             :class="config.viewType === 'card'?'active':''">卡片
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="desc danger">
-                  提示：此项需要刷新页面才能生效
+                  <div class="desc danger">
+                    提示：此项需要刷新页面才能生效
+                  </div>
                 </div>
 
-                <div class="row">
-                  <label class="item-title">主题弹框显示</label>
-                  <div class="wrapper">
-                    <BaseSwitch v-model="config.clickPostItemOpenDetail"/>
+
+                <div class="border">
+                  <div class="row">
+                    <label class="item-title">主题弹框显示</label>
+                    <div class="wrapper">
+                      <BaseSwitch v-model="config.clickPostItemOpenDetail"/>
+                    </div>
+                  </div>
+                  <div class="desc">
+                    开启此选项后，主题会<span class="danger">始终</span>以弹框的方式显示。优先级大于“新标签页打开链接”
                   </div>
                 </div>
-                <div class="desc">
-                  开启此选项后，主题会<span class="danger">始终</span>以弹框的方式显示。优先级大于“新标签页打开链接”
-                </div>
-                <div class="row">
-                  <label class="item-title">新标签页打开链接</label>
-                  <div class="wrapper">
-                    <BaseSwitch v-model="config.newTabOpen"/>
+
+                <div class="border">
+                  <div class="row">
+                    <label class="item-title">新标签页打开链接</label>
+                    <div class="wrapper">
+                      <BaseSwitch v-model="config.newTabOpen"/>
+                    </div>
+                  </div>
+                  <div class="desc">
+                    网页上所有链接通过新标签页打开
                   </div>
                 </div>
-                <div class="desc">
-                  网页上所有链接通过新标签页打开
-                </div>
+
                 <div class="row">
                   <label class="item-title">打开新标签页时立即切换过去</label>
                   <div class="wrapper">
@@ -92,80 +113,86 @@
                 </div>
               </div>
               <div v-if="tabIndex === 1">
-                <div class="row">
+                <div class="row border">
                   <label class="item-title">回复类型</label>
                   <div class="wrapper">
                     <BaseSelect v-model:display-type="config.commentDisplayType"/>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row border">
                   <label class="item-title">详情页中显示“回复类型”</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.showToolbar"/>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row border">
                   <label class="item-title">替换Imgur源</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.replaceImgur"/>
                   </div>
                 </div>
-                <div class="row">
-                  <label class="item-title">单独打开主题时默认显示楼中楼</label>
-                  <div class="wrapper">
-                    <BaseSwitch v-model="config.autoOpenDetail"/>
+                <div class="border">
+                  <div class="row">
+                    <label class="item-title">单独打开主题时默认显示楼中楼</label>
+                    <div class="wrapper">
+                      <BaseSwitch v-model="config.autoOpenDetail"/>
+                    </div>
+                  </div>
+                  <div class="desc">
+                    单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼
                   </div>
                 </div>
-                <div class="desc">
-                  单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼
-                </div>
-                <div class="row">
+
+                <div class="row border">
                   <label class="item-title">点击左右两侧透明处关闭主题详情弹框</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.closePostDetailBySpace"/>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row border">
                   <label class="item-title">正文超长自动折叠</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.contentAutoCollapse"/>
                   </div>
                 </div>
-                <div class="row">
-                  <label class="item-title">主题宽度</label>
-                  <div class="wrapper">
-                    <input type="text" v-model="config.postWidth">
+                <div class="border">
+                  <div class="row ">
+                    <label class="item-title">主题宽度</label>
+                    <div class="wrapper">
+                      <input type="text" v-model="config.postWidth">
+                    </div>
                   </div>
-                </div>
-                <div class="desc">
-                  未设定此值时，则默认宽度为77rem。接受合法的width值：
-                  <a href="https://vue3js.cn/interview/css/em_px_rem_vh_vw.html#%E4%BA%8C%E3%80%81%E5%8D%95%E4%BD%8D"
-                     target="_blank">rem、px、vw、vh(点此查看)</a>。
-                  vw代表屏幕百分比，如想要屏幕的66%，请填写66vw
-                </div>
-                <div class="desc">
-                  提示：此项设置以后，单独打开详情页时会出现主题突然变宽（窄）的问题，暂时无解
-                </div>
-                <div class="desc danger">
-                  提示：此项需要刷新页面才能生效
+                  <div class="desc">
+                    未设定此值时，则默认宽度为77rem。接受合法的width值：
+                    <a style="color: #40a9ff;text-decoration: underline;"
+                       href="https://vue3js.cn/interview/css/em_px_rem_vh_vw.html#%E4%BA%8C%E3%80%81%E5%8D%95%E4%BD%8D"
+                       target="_blank">rem、px、vw、vh(点此查看)</a>。
+                    vw代表屏幕百分比，如想要屏幕的66%，请填写66vw
+                  </div>
+                  <div class="desc">
+                    提示：此项设置以后，单独打开详情页时会出现主题突然变宽（窄）的问题，暂时无解
+                  </div>
+                  <div class="desc danger">
+                    提示：此项需要刷新页面才能生效
+                  </div>
                 </div>
 
                 <div class="row">
                   <label class="main-title">高赞回复</label>
                 </div>
-                <div class="row">
+                <div class="row border">
                   <label class="item-title">显示高赞回复</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.showTopReply"/>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row border">
                   <label class="item-title">最多显示{{ config.topReplyCount }}个高赞回复</label>
                   <div class="wrapper">
                     <input type="number" min="1" v-model="config.topReplyCount">
                   </div>
                 </div>
-                <div class="row">
+                <div class="row border">
                   <label class="item-title">最少需要{{ config.topReplyLoveMinCount }}个赞才能被判定为高赞</label>
                   <div class="wrapper">
                     <input type="number" min="1" v-model="config.topReplyLoveMinCount">
@@ -176,33 +203,44 @@
                 <div class="row">
                   <label class="main-title">收藏列表</label>
                 </div>
+                <div class="border">
+                  <div class="row">
+                    <div>
+                      <BaseButton @click="exportCollectList" :loading="exportLoading">导出</BaseButton>
+                      <span>&nbsp;&nbsp;&nbsp;</span>
+                      <div style="display:inline-flex;overflow:hidden;position:relative;">
+                        <BaseButton :loading="importLoading">导入，并收藏</BaseButton>
+                        <input v-if="showInput" type="file"
+                               style="position: absolute;width: 100%;height: 100px;opacity: 0;"
+                               @change="importCollectList">
+                      </div>
+                      <div style="display:inline;margin-left: 10px;font-size: 18px;" v-if="importLoading">
+                        导入中：{{ index }}/{{ total }} ，大约需要{{ endTime }}分钟，导入完成前请勿关闭和刷新本页面
+                      </div>
+                      <div style="display:inline;margin-left: 10px;" v-if="importOk">
+                        导入完成
+                      </div>
+                    </div>
+                  </div>
+                  <div class="desc">
+                    默认导出为 json 文件，如需其他格式，请使用 ChatGpt/Deepseek 转换
+                  </div>
+                </div>
+
                 <div class="row">
-                  <div>
-                    <BaseButton @click="exportCollectList" :loading="exportLoading">导出</BaseButton>
-                    <span>&nbsp;&nbsp;&nbsp;</span>
-                    <div style="display:inline-flex;overflow:hidden;position:relative;">
-                      <BaseButton :loading="importLoading">导入，并收藏</BaseButton>
-                      <input v-if="showInput" type="file"
-                             style="position: absolute;width: 100%;height: 100px;opacity: 0;"
-                             @change="importCollectList">
-                    </div>
-                    <div style="display:inline;margin-left: 10px;font-size: 18px;" v-if="importLoading">
-                      导入中：{{ index }}/{{ total }} ，大约需要{{ endTime }}分钟，导入完成前请勿关闭和刷新本页面
-                    </div>
-                    <div style="display:inline;margin-left: 10px;" v-if="importOk">
-                      导入完成
-                    </div>
+                  <label class="item-title">收藏时提醒添加到书签</label>
+                  <div class="wrapper">
+                    <BaseSwitch v-model="config.collectBrowserNotice"/>
                   </div>
                 </div>
                 <div class="desc">
-                  默认导出为 json 文件，如需其他格式，请使用 ChatGpt/Deepseek 转换
+                  解释：V站帐号一旦被封禁，则无法登录，无法查看账号收藏了
                 </div>
 
-                <div class="line"></div>
-                <div class="row">
+                <div class="row border">
                   <label class="main-title">其他</label>
                 </div>
-                <div class="row">
+                <div class="row border">
                   <label class="item-title">用户打标签(跨平台，数据保存在自己的记事本)：</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.openTag"/>
@@ -214,48 +252,40 @@
                     <BaseSwitch v-model="config.base64"/>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row border">
                   <label class="item-title">自动签到</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.autoSignin"/>
                   </div>
                 </div>
-                <div class="row">
-                  <label class="item-title">自定义背景</label>
-                  <div class="wrapper">
-                    <input type="text" v-model="config.customBgColor">
+                <div class="border">
+                  <div class="row ">
+                    <label class="item-title">自定义背景</label>
+                    <div class="wrapper">
+                      <input type="text" v-model="config.customBgColor">
+                    </div>
                   </div>
-                </div>
-                <div class="desc">
-                  未设定此值时，则脚本就什么都不做，V站大部分页面背景颜色默认为 #e2e2e2，少部分页面有特定背景。接受一个合法的css
-                  color值：例如<a
+                  <div class="desc">
+                    未设定此值时，则脚本就什么都不做，V站大部分页面背景颜色默认为 #e2e2e2，少部分页面有特定背景。接受一个合法的css
+                    color值：例如<a
                     href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value"
                     target="_blank">red、#ffffff、rgb(222,222,22)(点此查看)</a>等等。
-                </div>
-                <div class="desc danger">
-                  提示：此项需要刷新页面才能生效
-                </div>
-                <div class="row">
-                  <label class="item-title">收藏时提醒添加到书签</label>
-                  <div class="wrapper">
-                    <BaseSwitch v-model="config.collectBrowserNotice"/>
+                  </div>
+                  <div class="desc danger">
+                    提示：此项需要刷新页面才能生效
                   </div>
                 </div>
-                <div class="desc">
-                  V站帐号一旦被封禁，则无法登录，无法查看账号收藏了
-                </div>
-
-                <div class="line"></div>
 
                 <div class="row">
                   <label class="main-title">消息通知</label>
                 </div>
-                <div class="row">
+                <div class="row border">
                   <label class="item-title">接管未读提醒页面</label>
                   <div class="wrapper">
                     <BaseSwitch v-model="config.notice.takeOverNoticePage"/>
                   </div>
                 </div>
+
                 <div class="row">
                   <label class="item-title">定时查询未读提醒</label>
                   <div class="wrapper">
@@ -313,6 +343,33 @@
                     <div>更新日志：<a :href="DefaultVal.pcLog" target="_blank">{{ DefaultVal.pcLog }}</a></div>
                   </div>
                 </div>
+                <div class="tips2">
+                  <Icon icon="icon-park-outline:tips"/>
+                  <span>代码完全开源，greasyfork上的脚本代码与github上的代码打包后是一样的，不放心也可自行打包~</span>
+                </div>
+              </div>
+              <div v-if="tabIndex === 4">
+                <div class="row ">
+                  <label class="item-title">主题宽度</label>
+                  <div class="wrapper">
+                    <input type="text" v-model="config.postWidth">
+                    <BaseButton @click="exportCollectList" :loading="exportLoading">导出</BaseButton>
+                  </div>
+                </div>
+                <div class="border">
+                  <div class="row ">
+                    <label class="item-title">v2新帖挂件</label>
+                    <div class="wrapper">
+                      <BaseSwitch v-model="config.notice.loopCheckNotice"/>
+                    </div>
+                  </div>
+                  <div class="desc">
+                    脚本地址：https://greasyfork.org/zh-CN/scripts/448472
+                    加载版本号： 0.11
+                    加载地址：https://update.greasyfork.org/scripts/448472/1074290/v2%E6%96%B0%E5%B8%96%E6%8C%82%E4%BB%B6.user.js
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -566,21 +623,22 @@ export default {
 .setting-modal {
   .modal-root {
     z-index: 9;
-    background: var(--color-main-bg);
-    border-radius: 1rem;
-    font-size: 1.4rem;
+    //background: var(--color-main-bg);
+    background: white;
+    border-radius: 2rem;
+    font-size: 1.6rem;
     overflow: hidden;
     //box-shadow: 0 0 6px 4px gainsboro;
     color: var(--color-font-pure);
 
     .modal-header {
-      padding: 2.4rem;
+      padding: 2rem;
       display: flex;
       justify-content: space-between;
+      border-bottom: 1px solid var(--color-input-border);
 
       .title {
-        font-size: 2.6rem;
-        font-weight: bold;
+        font-size: 2rem;
         text-align: left;
         margin-bottom: 0;
       }
@@ -592,8 +650,8 @@ export default {
     }
 
     .body {
-      width: 45vw;
-      height: 70vh;
+      width: 65rem;
+      height: 45rem;
       display: flex;
 
       .left {
@@ -601,33 +659,54 @@ export default {
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        font-size: 1.8rem;
+        padding:0 1.4rem;
 
         .tabs {
-          padding: 1rem 2rem;
+          padding: 1rem 0rem;
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 0.8rem;
 
           .tab {
             cursor: pointer;
-            padding: 1rem 3rem;
+            padding: 0.8rem 1.5rem;
+            width: 10rem;
             border-radius: .8rem;
+            text-align: start;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            justify-content: flex-start;
+            gap: 0.6rem;
+
+            svg {
+              font-size: 1.8rem;
+            }
 
             &.active {
-              background: var(--color-item-bg);
+              background: var(--color-active);
+              background: #E6F4FF;
+              color: var(--color-font-pure);
             }
           }
         }
 
-        .icons {
+        .bottom {
           display: flex;
-          gap: 1rem;
-          margin-bottom: 2rem;
-          font-size: 2.4rem;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
+
+          .tip {
+            width: 12rem;
+            font-size: 1.2rem;
+            color: var(--color-font);
+          }
+
+          .icons {
+            display: flex;
+            gap: 1rem;
+            font-size: 2.4rem;
+          }
         }
       }
 
@@ -636,8 +715,8 @@ export default {
         flex: 1;
         height: 100%;
         box-sizing: border-box;
-        padding: 1rem 2rem;
         padding-right: 1rem;
+        padding-left: 0;
         @d: 1.6rem;
         border-radius: 1rem;
         display: flex;
@@ -688,14 +767,14 @@ export default {
             }
 
             .main-title {
-              font-size: 2.2rem;
+              font-size: 1.8rem;
               font-weight: bold;
               color: var(--color-font-8);
             }
+          }
 
-            .item-title {
-              font-size: 1.8rem;
-            }
+          .border {
+            border-bottom: 1px solid var(--color-input-border);
           }
 
           .desc {
@@ -708,7 +787,7 @@ export default {
           .project-desc {
             text-align: start;
             font-size: 1.6rem;
-            padding-bottom: 10rem;
+            padding-bottom: 1rem;
           }
 
           .line {
@@ -736,6 +815,16 @@ export default {
   font-size: 16px;
   color: cornflowerblue;
   text-decoration: underline;
+}
+
+.tips2 {
+  text-align: left;
+  color: var(--color-font);
+  svg {
+    transform: translateY(0.3rem);
+    margin-right: 0.6rem;
+  }
+
 }
 
 </style>

@@ -1,5 +1,5 @@
-import { CommentDisplayType, Config, PageType, Post, Reply, User } from "./types";
-import { GM_openInTab, GM_registerMenuCommand } from 'vite-plugin-monkey/dist/client';
+import {CommentDisplayType, Config, PageType, Post, Reply, User} from "./types";
+import {GM_openInTab, GM_registerMenuCommand, GM_xmlhttpRequest} from 'vite-plugin-monkey/dist/client';
 // import {GM_openInTab, GM_registerMenuCommand}  from 'gmApi';
 
 export const functions = {
@@ -524,6 +524,18 @@ export const functions = {
     e.preventDefault()
     e.stopPropagation()
   },
+  loadAndRunScript(url: string) {
+    GM_xmlhttpRequest({
+      method: "GET",
+      url,
+      onload: function (response) {
+        const code = response.responseText;
+        eval(code);
+      }
+    });
+  }
+
+
 }
 
 export const DefaultPost: Post = {

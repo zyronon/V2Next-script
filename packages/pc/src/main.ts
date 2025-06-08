@@ -1,9 +1,50 @@
-import { createApp } from 'vue';
+import {createApp} from 'vue';
 import App from './App.vue';
 import './global.d.ts'
-import { GM_registerMenuCommand } from "gmApi"
-import { PageType, Post, Reply } from "@v2next/core/types"
-import { DefaultUser, DefaultVal, functions, getDefaultConfig, getDefaultPost } from "@v2next/core";
+import {
+  GM_registerMenuCommand,
+  GM_xmlhttpRequest,
+  GM_addStyle,
+  GM_addElement,
+  GM_addElement,
+  GM_addStyle, GM_deleteValue,
+  GM_getResourceUrl,
+  GM_getValue,
+  GM_info,
+  GM_listValues,
+  GM_notification,
+  GM_openInTab,
+  GM_registerMenuCommand,
+  GM_setClipboard,
+  GM_setValue,
+  GM_xmlHttpRequest,
+  GM_addElement,
+  GM_addStyle,
+  GM_addValueChangeListener,
+  GM_cookie,
+  GM_deleteValue,
+  GM_download,
+  GM_getResourceText,
+  GM_getResourceURL,
+  GM_getTab,
+  GM_getTabs,
+  GM_getValue,
+  GM_info,
+  GM_listValues,
+  GM_log,
+  GM_notification,
+  GM_openInTab,
+  GM_registerMenuCommand,
+  GM_removeValueChangeListener,
+  GM_saveTab,
+  GM_setClipboard,
+  GM_setValue,
+  GM_unregisterMenuCommand,
+  GM_webRequest,
+  GM_xmlhttpRequest
+} from "gmApi"
+import {PageType, Post, Reply} from "@v2next/core/types"
+import {DefaultUser, DefaultVal, functions, getDefaultConfig, getDefaultPost} from "@v2next/core";
 import dayjs from "dayjs";
 
 let isMobile = !document.querySelector('#Rightbar');
@@ -14,7 +55,7 @@ function run() {
   window.user = DefaultUser
   window.targetUserName = ''
   window.pageType = undefined
-  window.pageData = { pageNo: 1 }
+  window.pageData = {pageNo: 1}
   window.config = getDefaultConfig()
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -190,7 +231,7 @@ function run() {
         let repliesMap: any[] = []
         //如果第二条有id，就说明是第二条是回复。只有一页回复
         if (cells[1].id) {
-          repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(1)) })
+          repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
           let replyList = functions.getAllReply(repliesMap)
           functions.createList(post, replyList)
           return post
@@ -198,7 +239,7 @@ function run() {
           let promiseList: any = []
           // console.log(this.current.repliesMap)
           return new Promise((resolve, reject) => {
-            repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) })
+            repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
 
             let pages = cells[1].querySelectorAll('a.page_normal')
             pages = Array.from(pages)
@@ -228,10 +269,10 @@ function run() {
           let box = $(s[0]).find('#Main .box')[1]
           let cells: any = box!.querySelectorAll('.cell')
           cells = Array.from(cells)
-          resolve({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) })
+          resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
         }).catch((r: any) => {
           if (r.status === 403) {
-            functions.cbChecker({ type: 'restorePost', value: null })
+            functions.cbChecker({type: 'restorePost', value: null})
           }
         })
       })
@@ -256,7 +297,7 @@ function run() {
         item.reply_content = reply_content!.innerHTML
         item.reply_text = reply_content!.textContent!
 
-        let { users, floor } = this.parseReplyContent(item.reply_content)
+        let {users, floor} = this.parseReplyContent(item.reply_content)
         item.hideCallUserReplyContent = item.reply_content
         if (users.length === 1) {
           item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(?:<ul [\s\S]+<\/ul>)?(\s#[\d]+)?\s(<br>)?/, () => '')
@@ -330,7 +371,7 @@ function run() {
           floor = Number(res[0][1])
         }
       }
-      return { users, floor }
+      return {users, floor}
     },
     //获取主题详情
     async getPostDetail(post: Post, body: JQuery, htmlText: string, pageNo = 1) {
@@ -345,7 +386,7 @@ function run() {
         let item = getDefaultPost()
         itemDom.classList.add('post-item')
         let a = item_title.querySelector('a')
-        let { href, id } = functions.parseA(a)
+        let {href, id} = functions.parseA(a)
         item.id = String(Number(id))
         a.href = item.href = href
         item.url = location.origin + '/api/topics/show.json?id=' + item.id
@@ -380,7 +421,7 @@ function run() {
           if (d !== 0) {
             window.stopMe = true
             localStorage.setItem('d', '1')
-            functions.cbChecker({ type: 'syncData' })
+            functions.cbChecker({type: 'syncData'})
           } else {
             localStorage.setItem('d', '')
           }
@@ -398,7 +439,7 @@ function run() {
         let rIndex = window.postList.findIndex(w => w.id == res.id)
         if (rIndex > -1) {
           window.postList[rIndex] = Object.assign(window.postList[rIndex], res)
-          functions.cbChecker({ type: 'syncList' })
+          functions.cbChecker({type: 'syncList'})
         }
         let itemDom = box.querySelector(`.id_${res.id}`)
         itemDom.classList.add('preview')
@@ -451,7 +492,7 @@ function run() {
         data.append('content', itemName)
         data.append('parent_id', 0)
         data.append('syntax', 0)
-        let apiRes = await fetch(`${location.origin}/notes/new`, { method: 'post', body: data })
+        let apiRes = await fetch(`${location.origin}/notes/new`, {method: 'post', body: data})
         if (apiRes.redirected && apiRes.status === 200) {
           resolve(apiRes.url.substr(-5))
           return
@@ -491,7 +532,7 @@ function run() {
   function initMonkeyMenu() {
     try {
       GM_registerMenuCommand("脚本设置", () => {
-        functions.cbChecker({ type: 'openSetting' })
+        functions.cbChecker({type: 'openSetting'})
       });
       GM_registerMenuCommand('仓库地址', () => {
         functions.openNewTab(DefaultVal.git, true)
@@ -548,7 +589,7 @@ function run() {
           max-width:1100px !important;
       }
 
-      ${(location.pathname.includes('wow')||location.pathname.includes('tokyo')) ? '' : `
+      ${(location.pathname.includes('wow') || location.pathname.includes('tokyo')) ? '' : `
        .post-item {
           background: white;
       } 
@@ -702,12 +743,7 @@ function run() {
 
     }
     `
-    let addStyle2: HTMLStyleElement = document.createElement("style");
-    // @ts-ignore
-    addStyle2.rel = "stylesheet";
-    addStyle2.type = "text/css";
-    addStyle2.innerHTML = style2
-    window.document.head.append(addStyle2)
+    GM_addStyle(style2)
   }
 
   // 自动签到（后台）
@@ -732,50 +768,6 @@ function run() {
       } else { //                                                新旧签到时间一致
         // console.info('[V2Next] 自动签到完成！')
       }
-    }
-  }
-
-  // 自动签到（后台）
-  function qianDao2() {
-    let timeNow = new Date().getUTCFullYear() + '/' + (new Date().getUTCMonth() + 1) + '/' + new Date().getUTCDate() // 当前 UTC-0 时间（V2EX 按这个时间的）
-    // return qianDao_(null, timeNow); //
-    let timeOld = localStorage.getItem('menu_clockInTime')
-    if (!timeOld || timeOld != timeNow) {
-      $.get(location.origin + '/mission/daily').then(r => {
-        let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-        let html = $(bodyText[0])
-        if (html.find('input[value^="领取"]').length) { //     还没有签到...
-          let url = (location.origin + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector('div#Top .tools, #menu-body').innerHTML)[0]);
-          // console.log('url', url)
-          $.get(url).then(r => {
-            let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-            let html = $(bodyText[0])
-            if (html.find('li.fa.fa-ok-sign').length) {
-              // @ts-ignore
-              html = html.find('#Main').text().match(/已连续登录 (\d+?) 天/)[0];
-              localStorage.setItem('menu_clockInTime', timeNow); // 写入签到时间以供后续比较
-              console.info('[V2Next] 自动签到完成！')
-              if (qiandao) {
-                qiandao.textContent = `自动签到完成！${html}`;
-                qiandao.href = 'javascript:void(0);';
-              }
-            } else {
-              // GM_notification({
-              //   text: '自动签到失败！请关闭其他插件或脚本。\n如果连续几天都签到失败，请联系作者解决！',
-              //   timeout: 4000,
-              //   onclick() {
-              //     functions.feedback()
-              //   }
-              // });
-              console.warn('[V2Next] 自动签到失败！请关闭其他插件或脚本。如果连续几天都签到失败，请联系作者解决！')
-              if (qiandao) qiandao.textContent = '自动签到失败！请尝试手动签到！';
-            }
-          })
-        } else { //                                              已经签到了...
-          console.info('[V2Next] 已经签过到了。')
-          localStorage.setItem('menu_clockInTime', timeNow); //         写入签到时间以供后续比较
-        }
-      })
     }
   }
 
@@ -887,8 +879,8 @@ function run() {
           r && (window.user.imgurNoteId = r);
         }
       }
-      functions.cbChecker({ type: 'syncData' })
-      functions.cbChecker({ type: 'getConfigSuccess' })
+      functions.cbChecker({type: 'syncData'})
+      functions.cbChecker({type: 'getConfigSuccess'})
     })
   }
 
@@ -898,7 +890,7 @@ function run() {
     let setting = $(`<a href="/" class="top v2next-setting"><span>脚本设置</span></a>`)
     setting.on('click', function (e) {
       functions.stopEvent(e)
-      functions.cbChecker({ type: 'openSetting' })
+      functions.cbChecker({type: 'openSetting'})
     })
     $('.tools').prepend(setting)
   }
@@ -920,7 +912,7 @@ function run() {
     // window.pageType = PageType.Post
     // window.pageData.id = 1007682
 
-    let { pageData, pageType, username } = functions.checkPageType()
+    let {pageData, pageType, username} = functions.checkPageType()
     window.pageType = pageType
     window.pageData = pageData
     window.targetUserName = username
@@ -1001,7 +993,7 @@ function run() {
         let d: string = localStorage.getItem('d')
         if (d) {
           window.stopMe = true
-          functions.cbChecker({ type: 'syncData' })
+          functions.cbChecker({type: 'syncData'})
           return
         }
         box = document.querySelector('#Wrapper #Main .box')
@@ -1011,8 +1003,8 @@ function run() {
         let r = await functions.checkPostReplies(window.pageData.id, false)
         if (r) {
           window.stopMe = true
-          functions.cbChecker({ type: 'syncData' })
-          functions.cbChecker({ type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼' })
+          functions.cbChecker({type: 'syncData'})
+          functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，脚本已停止解析楼中楼'})
           return
         }
 
@@ -1034,7 +1026,7 @@ function run() {
           Main.after($('#Rightbar'))
         }
 
-        let post = getDefaultPost({ id: window.pageData.id })
+        let post = getDefaultPost({id: window.pageData.id})
         let body = $(document.body)
         let htmlText = document.documentElement.outerHTML
 
@@ -1044,7 +1036,7 @@ function run() {
           htmlText
         ).then(async (res: any) => {
           // console.log('详情页-基本信息解析完成', Date.now())
-          await functions.cbChecker({ type: 'postContent', value: res })
+          await functions.cbChecker({type: 'postContent', value: res})
           //引用修改
           await window.parse.parseOp(res)
           // console.log('详情页-OP信息解析完成', Date.now())
@@ -1058,7 +1050,7 @@ function run() {
           window.pageData.pageNo
         ).then(async (res1: any) => {
           // console.log('详情页-回复解析完成', Date.now())
-          await functions.cbChecker({ type: 'postReplies', value: res1 })
+          await functions.cbChecker({type: 'postReplies', value: res1})
         })
         break
       case PageType.Member:
@@ -1103,7 +1095,7 @@ function run() {
         break
       default:
         window.stopMe = true
-        functions.cbChecker({ type: 'syncData' })
+        functions.cbChecker({type: 'syncData'})
         console.error('未知页面')
         break
     }
@@ -1143,12 +1135,12 @@ function run() {
     let box: any = document.querySelector('#Wrapper #Main .box')
     box.after($section)
     window.stopMe = true
-    functions.cbChecker({ type: 'syncData' })
+    functions.cbChecker({type: 'syncData'})
     if (window.location.search.includes('script=0')) {
-      functions.cbChecker({ type: 'warningNotice', value: '脚本无法查看此主题，已为您单独打开此主题' })
+      functions.cbChecker({type: 'warningNotice', value: '脚本无法查看此主题，已为您单独打开此主题'})
     }
     if (window.location.search.includes('script=1')) {
-      functions.cbChecker({ type: 'warningNotice', value: '由于回复数量较多，已为您单独打开此主题并停止解析楼中楼' })
+      functions.cbChecker({type: 'warningNotice', value: '由于回复数量较多，已为您单独打开此主题并停止解析楼中楼'})
     }
   }
 }
@@ -1159,4 +1151,7 @@ if (!isMobile) {
   let vueApp = createApp(App)
   vueApp.config.unwrapInjectedRef = true
   vueApp.mount($section);
+
+  // functions.loadAndRunScript("https://update.greasyfork.org/scripts/448472/v2%E6%96%B0%E5%B8%96%E6%8C%82%E4%BB%B6.user.js")
+  functions.loadAndRunScript("https://update.greasyfork.org/scripts/448472/1074290/v2%E6%96%B0%E5%B8%96%E6%8C%82%E4%BB%B6.user.js")
 }
