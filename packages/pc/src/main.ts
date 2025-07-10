@@ -331,6 +331,8 @@ function run() {
         let mod = node.querySelector('.mod')
         if (mod) {
           item.isMod = true
+        } else {
+          item.isMod = ['Livid','Kai','Olivia','GordianZ','sparanoid','drymonfidelia','GordianZ','sillydaddy'].includes(item.username)
         }
         // console.log('item', item)
 

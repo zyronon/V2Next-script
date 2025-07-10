@@ -345,7 +345,7 @@ function showCallPopover(text) {
     // console.log('e', e)
     start = content.value.slice(0, lastCallPos + 1)
     if (e === '管理员') {
-      e = 'Livid @Kai @Olivia @GordianZ @sparanoid @drymonfidelia'
+      e = 'Livid @Kai @Olivia @GordianZ @sparanoid @drymonfidelia @GordianZ @sillydaddy'
     }
     if (e === '所有人') {
       e = allReplyUsers.value.map((v, i) => {
