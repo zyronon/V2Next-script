@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         V2EX Next V2Next
 // @namespace    http://tampermonkey.net/
-// @version      10.30
+// @version      10.31
 // @author       zyronon
 // @description  V2Next - 一个好用的V2EX脚本！手机 App 已发布
 // @license      GPL License
@@ -26,14 +26,14 @@
 // @match        https://*.v2ex.com/member/*
 // @match        https://*.v2ex.com/changes*
 // @require      https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js
-// @require      https://cdn.jsdelivr.net/npm/vue@3.4.14/dist/vue.global.prod.min.js
-// @require      https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js
+// @require      https://cdn.jsdelivr.net/npm/vue@3.5.21/dist/vue.global.prod.min.js
+// @require      https://cdn.jsdelivr.net/npm/dayjs@1.11.18/dayjs.min.js
 // @grant        GM_addStyle
 // @grant        GM_openInTab
 // @grant        GM_registerMenuCommand
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-(o=>{if(typeof GM_addStyle=="function"){GM_addStyle(o);return}const r=document.createElement("style");r.textContent=o,document.head.append(r)})(' .tip[data-v-ee672411]{position:fixed;font-size:1.6rem;z-index:9999;max-width:10rem;border-radius:.5rem;padding:1rem;color:var(--color-font-8);background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow)}.v-enter-active[data-v-e7c0fbef],.v-leave-active[data-v-e7c0fbef]{transition:opacity .3s ease}.v-enter-from[data-v-e7c0fbef],.v-leave-to[data-v-e7c0fbef]{opacity:0}.username[data-v-e7c0fbef]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-e7c0fbef]{font-size:1.2rem;font-weight:700;color:#e02a2a}.owner[data-v-e7c0fbef]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-e7c0fbef]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-e7c0fbef]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove[data-v-e7c0fbef]{display:inline}.my-tag .remove[data-v-e7c0fbef]{cursor:pointer;margin-left:.5rem;display:none}.add-tag[data-v-e7c0fbef]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;cursor:pointer;position:absolute;display:none}.floor[data-v-e7c0fbef]{margin-left:.5rem;font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;background-color:var(--color-floor);color:var(--color-floor-font);padding:3px 9px;cursor:default}[data-v-e7c0fbef]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--color-top-reply-wrap-bg: #f2f3f5;--color-top-reply-wrap-line: #d2d2d2}html.dark[data-v-e7c0fbef]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e;--color-top-reply-wrap-bg: #212f3e;--color-top-reply-wrap-line: #3b536d}html[data-v-e7c0fbef],body[data-v-e7c0fbef]{font-size:62.5%}.flex[data-v-e7c0fbef]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-e7c0fbef]{justify-content:flex-end}.flex-center[data-v-e7c0fbef]{justify-content:center}.p1[data-v-e7c0fbef]{padding:1rem}.p2[data-v-e7c0fbef]{padding:2rem}.p0[data-v-e7c0fbef]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-e7c0fbef]{text-underline-offset:.7ex;text-decoration:underline 1px}a[data-v-e7c0fbef]{text-decoration:none;cursor:pointer}a[data-v-e7c0fbef]:hover{text-decoration:underline}.tool[data-v-e7c0fbef]{position:relative;display:flex;align-items:center;border-radius:.3rem;cursor:pointer;height:2.6rem;padding:0 .5rem;gap:.2rem}.tool>svg[data-v-e7c0fbef]{width:1.6rem!important;height:1.6rem!important}.tool[data-v-e7c0fbef]:hover{background:var(--color-third-bg)}.tool.no-hover[data-v-e7c0fbef]{cursor:default}.tool.no-hover[data-v-e7c0fbef]:hover{background:unset!important}.tool.disabled[data-v-e7c0fbef]{cursor:not-allowed}.tool.disabled[data-v-e7c0fbef]:hover{background:unset!important}.my-node[data-v-e7c0fbef]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node[data-v-e7c0fbef]:hover{text-decoration:none;background:#e2e2e2}.msgs[data-v-e7c0fbef]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-e7c0fbef]{box-shadow:0 2px 3px #0000001a;box-shadow:#00000014 0 4px 12px;border-radius:var(--box-border-radius);background:var(--box-background-color);margin-bottom:2rem;width:100%;box-sizing:border-box;transition:background-color .3s}.my-cell[data-v-e7c0fbef]{color:var(--color-font);padding:.8rem 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-e7c0fbef]{position:fixed;z-index:1001;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-e7c0fbef]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-e7c0fbef]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-e7c0fbef]{position:relative}.modal .mask[data-v-e7c0fbef]{position:fixed;width:100vw;height:100vh;left:0;top:0;background-color:#1d1c1c47}.radio-group2[data-v-e7c0fbef]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-e7c0fbef]{cursor:pointer;background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-e7c0fbef]:first-child{border-left:none}.radio-group2 .active[data-v-e7c0fbef]{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm[data-v-e7c0fbef]{position:relative;display:inline-flex;justify-content:center}input[data-v-e7c0fbef]{height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-e7c0fbef]:hover{border:1px solid var(--color-input-border-hover)}input[data-v-e7c0fbef]:focus{border:1px solid var(--color-active)}.danger[data-v-e7c0fbef]{color:red!important}.pop-confirm-content[data-v-e7c0fbef]{position:fixed;background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow);color:var(--color-font-8);padding:1.5rem;border-radius:.8rem;transform:translate(-50%,calc(-100% - 1rem));z-index:1003}.pop-confirm-content .text[data-v-e7c0fbef]{text-align:start;font-size:1.6rem;width:15rem;min-width:15rem}.pop-confirm-content .options[data-v-e7c0fbef]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1rem}img[data-v-e7c0fbef]{max-width:100%}.switch[data-v-e7c0fbef]{width:4.5rem;height:2.2rem;border-radius:2rem;position:relative;display:flex;align-items:center;background:var(--color-swtich-bg);transition:all .3s}.switch.active[data-v-e7c0fbef]{background:var(--color-active)}.switch.active[data-v-e7c0fbef]:before{right:.2rem}.switch[data-v-e7c0fbef]:before{position:absolute;content:" ";transition:all .3s;right:calc(100% - 2rem);width:1.8rem;height:1.8rem;background:white;border-radius:50%}.display-type[data-v-e4f684be]{height:3rem;padding:0 .3rem;background:var(--color-sp-btn-bg);border-radius:1rem;display:flex;font-size:1.4rem;align-items:center;color:#a9a9a9}.display-type .type[data-v-e4f684be]{border-radius:.8rem;padding:0 1.3rem;height:2.8rem;align-items:center;display:flex;position:relative;cursor:pointer}.display-type .type.active[data-v-e4f684be]{background:var(--color-second-bg);color:var(--color-font-pure);box-shadow:0 0 6px 0 var(--color-tooltip-shadow)}.display-type .type-list[data-v-e4f684be]{position:absolute;background:var(--color-sp-btn-bg);right:0;top:3rem;font-size:1.4rem;box-shadow:0 0 6px 0 var(--color-tooltip-shadow);border-radius:.6rem;z-index:9;color:var(--color-font)}.display-type .type-list .item[data-v-e4f684be]{word-break:keep-all;padding:.8rem 1rem;cursor:pointer}.display-type .type-list .item.active[data-v-e4f684be],.display-type .type-list .item[data-v-e4f684be]:hover{color:var(--color-font-pure)}.display-type svg[data-v-e4f684be]{width:1.5rem}.loading[data-v-2697baa2]{border:2px solid;border-color:var(--color-loading-2) var(--color-loading-1) var(--color-loading-1) var(--color-loading-1);border-radius:100%;animation:circle-2697baa2 infinite 1s linear;width:2rem;height:2rem}.loading.small[data-v-2697baa2]{width:1.2rem;height:1.2rem}.loading.large[data-v-2697baa2]{width:3rem;height:3rem}@keyframes circle-2697baa2{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.base-button[data-v-5a7d79ba]{cursor:pointer;border-radius:.6rem;padding:0 1.5rem;display:inline-flex;align-items:center;justify-content:center;transition:all .3s;height:3.6rem;line-height:1;position:relative}.base-button .loading[data-v-5a7d79ba]{position:absolute}.base-button.disabled[data-v-5a7d79ba]{opacity:.6;cursor:not-allowed;-webkit-user-select:none;user-select:none}.base-button.small[data-v-5a7d79ba]{height:3rem}.base-button.small>span[data-v-5a7d79ba]{font-size:1.3rem}.base-button.large[data-v-5a7d79ba]{height:5rem;font-size:1.8rem;padding:0 2.2rem}.base-button.large>span[data-v-5a7d79ba]{font-size:1.8rem}.base-button[data-v-5a7d79ba]:hover:not(.link){opacity:.7}.base-button.primary[data-v-5a7d79ba]{background:var(--color-active)}.base-button.primary>span[data-v-5a7d79ba]{color:#fff}.base-button.gary[data-v-5a7d79ba]{background:#4b5563}.base-button.link[data-v-5a7d79ba]{border-radius:0;border-bottom:2px solid transparent}.base-button.link>span[data-v-5a7d79ba]{color:var(--color-font-8)}.base-button.link[data-v-5a7d79ba]:hover{border-bottom:2px solid var(--color-font-8)}.base-button.active[data-v-5a7d79ba]{opacity:.4}.key-notice[data-v-5a7d79ba]{margin-left:1rem;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff}.key-notice .key[data-v-5a7d79ba]{transform:scale(.8)}.setting-modal .modal-root[data-v-386b43d0]{z-index:9;background:var(--color-main-bg);border-radius:1rem;font-size:1.4rem;overflow:hidden;color:var(--color-font-pure)}.setting-modal .modal-root .modal-header[data-v-386b43d0]{padding:1.4rem;display:flex;justify-content:center;position:relative}.setting-modal .modal-root .modal-header .title[data-v-386b43d0]{font-size:2.2rem;text-align:left;margin-bottom:0}.setting-modal .modal-root .modal-header svg[data-v-386b43d0]{position:absolute;right:1rem;cursor:pointer;font-size:2.6rem}.setting-modal .modal-root .body[data-v-386b43d0]{width:60rem}.setting-modal .modal-root .body .modal-content[data-v-386b43d0]{background:var(--color-second-bg);flex:1;height:100%;box-sizing:border-box;padding:1rem 1rem 1rem 2rem;font-size:1.6rem;text-align:left;line-height:1.6}.setting-modal .modal-root .body .btns[data-v-386b43d0]{margin:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1.5rem;font-size:1.4rem}.setting-modal .modal-root[data-v-90d3e265]{z-index:9;background:white;border-radius:2rem;font-size:1.6rem;overflow:hidden;color:var(--color-font-pure)}.setting-modal .modal-root .modal-header[data-v-90d3e265]{padding:2rem;display:flex;justify-content:space-between;border-bottom:1px solid var(--color-input-border)}.setting-modal .modal-root .modal-header .title[data-v-90d3e265]{font-size:2rem;text-align:left;margin-bottom:0}.setting-modal .modal-root .modal-header svg[data-v-90d3e265]{cursor:pointer;font-size:2.6rem}.setting-modal .modal-root .body[data-v-90d3e265]{width:65rem;height:45rem;display:flex}.setting-modal .modal-root .body .left[data-v-90d3e265]{display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:0 1.4rem}.setting-modal .modal-root .body .left .tabs[data-v-90d3e265]{padding:1rem 0rem;display:flex;flex-direction:column;gap:.8rem}.setting-modal .modal-root .body .left .tabs .tab[data-v-90d3e265]{cursor:pointer;padding:.8rem 1.5rem;width:10rem;border-radius:.8rem;text-align:start;display:flex;align-items:center;justify-content:flex-start;gap:.6rem}.setting-modal .modal-root .body .left .tabs .tab svg[data-v-90d3e265]{font-size:1.8rem}.setting-modal .modal-root .body .left .tabs .tab.active[data-v-90d3e265]{background:var(--color-active);background:#E6F4FF;color:var(--color-font-pure)}.setting-modal .modal-root .body .left .bottom[data-v-90d3e265]{display:flex;flex-direction:column;justify-content:space-between;align-items:center}.setting-modal .modal-root .body .left .bottom .tip[data-v-90d3e265]{width:12rem;font-size:1.2rem;color:var(--color-font)}.setting-modal .modal-root .body .left .bottom .icons[data-v-90d3e265]{display:flex;gap:1rem;font-size:2.4rem}.setting-modal .modal-root .body .modal-content[data-v-90d3e265]{background:var(--color-second-bg);flex:1;height:100%;box-sizing:border-box;padding-right:1rem;padding-left:0;border-radius:1rem;display:flex}.setting-modal .modal-root .body .modal-content .scroll[data-v-90d3e265]{flex:1;padding-right:1rem;overflow:auto}.setting-modal .modal-root .body .modal-content .scroll .row[data-v-90d3e265]{min-height:5rem;display:flex;justify-content:space-between;align-items:center}.setting-modal .modal-root .body .modal-content .scroll .row .wrapper[data-v-90d3e265]{height:3rem;flex:1;display:flex;justify-content:flex-end;align-items:center;gap:var(--space)}.setting-modal .modal-root .body .modal-content .scroll .row .wrapper span[data-v-90d3e265]{text-align:right;font-size:1.4rem;color:gray}.setting-modal .modal-root .body .modal-content .scroll .row .wrapper .set-key[data-v-90d3e265]{align-items:center}.setting-modal .modal-root .body .modal-content .scroll .row .wrapper .set-key input[data-v-90d3e265]{width:15rem;box-sizing:border-box;margin-right:1rem;height:2.8rem;outline:none;font-size:1.6rem;border:1px solid gray;border-radius:.3rem;padding:0 .5rem;background:var(--color-second-bg);color:var(--color-font-1)}.setting-modal .modal-root .body .modal-content .scroll .row .main-title[data-v-90d3e265]{font-size:1.8rem;font-weight:700;color:var(--color-font-8)}.setting-modal .modal-root .body .modal-content .scroll .border[data-v-90d3e265]{border-bottom:1px solid var(--color-input-border)}.setting-modal .modal-root .body .modal-content .scroll .desc[data-v-90d3e265]{margin-bottom:1rem;font-size:1.4rem;text-align:left;color:var(--color-font)}.setting-modal .modal-root .body .modal-content .scroll .project-desc[data-v-90d3e265]{text-align:start;font-size:1.6rem;padding-bottom:1rem}.setting-modal .modal-root .body .modal-content .scroll .line[data-v-90d3e265]{border-bottom:1px solid #c4c3c3}.sub-content[data-v-90d3e265]{padding:0 2rem 1rem;border-radius:1rem;background:#f3f3f3;margin-bottom:1rem}.log[data-v-90d3e265]{position:relative;text-align:left;margin-bottom:20px;padding-left:20px;font-size:16px;color:#6495ed;text-decoration:underline}.tips2[data-v-90d3e265]{text-align:left;color:var(--color-font)}.tips2 svg[data-v-90d3e265]{transform:translateY(.3rem);margin-right:.6rem}.Author[data-v-64aa1930]{display:flex;align-items:center;justify-content:space-between;font-size:1.2rem;position:relative}.Author.expand[data-v-64aa1930]{margin-bottom:0}.Author .Author-left[data-v-64aa1930]{display:flex;align-items:center;max-width:65%;word-break:break-all}.Author .Author-left .username[data-v-64aa1930]{font-size:1.4rem;margin-right:.6rem}.Author .Author-left .expand-icon[data-v-64aa1930]{cursor:pointer;margin-right:.6rem;width:2rem;height:2rem;transform:rotate(90deg)}.Author .Author-left .avatar[data-v-64aa1930]{margin-right:.8rem;display:flex}.Author .Author-left .avatar img[data-v-64aa1930]{width:2.8rem;height:2.8rem;border-radius:.4rem}.Author .Author-left .texts[data-v-64aa1930]{flex:1}.Author .Author-left .owner[data-v-64aa1930]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:.6rem;transform:scale(.8)}.Author .Author-left .dup[data-v-64aa1930]{display:inline-block;background-color:transparent;color:red;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid red;font-size:1.2rem;font-weight:700;margin-right:.6rem;transform:scale(.8)}.Author .Author-left .mod[data-v-64aa1930]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:.6rem}.Author:hover .add-tag[data-v-64aa1930]{display:inline-block}.Author .Author-right[data-v-64aa1930]{position:absolute;right:0;display:flex;align-items:center}.Author .Author-right .toolbar[data-v-64aa1930]{display:flex;align-items:center;color:var(--color-gray);opacity:0;gap:.2rem}.Author .Author-right .toolbar[data-v-64aa1930]:hover{opacity:1}.post-editor-wrapper[data-v-85e09b4e]{width:100%;box-sizing:border-box;position:relative;overflow:hidden;transition:all .3s;color:var(--color-font)}.post-editor-wrapper.reply-post .post-editor[data-v-85e09b4e]{border:1px solid var(--color-line)}.post-editor-wrapper.reply-post.isFocus .post-editor[data-v-85e09b4e]{border:1px solid var(--color-active)}.post-editor-wrapper.reply-comment[data-v-85e09b4e]{border-radius:var(--box-border-radius);overflow:hidden;border:1px solid var(--color-line)}.post-editor-wrapper.reply-comment.isFocus[data-v-85e09b4e]{border:1px solid var(--color-active)}.post-editor-wrapper.reply-comment .toolbar[data-v-85e09b4e]{background:var(--color-editor-toolbar)}.post-editor-wrapper .post-editor[data-v-85e09b4e]{border-radius:var(--box-border-radius);transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.4rem;min-height:13rem;resize:none;background:var(--box-background-color);color:var(--color-font-pure);border:1px solid transparent}.post-editor-wrapper .toolbar[data-v-85e09b4e]{box-sizing:border-box;padding:.5rem 1rem;width:100%;position:relative;display:flex;justify-content:space-between;align-items:center}.post-editor-wrapper .toolbar .left[data-v-85e09b4e]{display:flex;align-items:center;gap:1rem;font-size:2.6rem}.post-editor-wrapper .toolbar .left svg[data-v-85e09b4e]{cursor:pointer}.post-editor-wrapper .toolbar .left .upload[data-v-85e09b4e]{width:2.6rem;height:2.6rem;overflow:hidden;display:flex;justify-content:center;align-items:center}.post-editor-wrapper .toolbar .left .upload input[data-v-85e09b4e]{width:2.6rem;height:2.6rem;cursor:pointer;position:absolute;opacity:0}.post-editor-wrapper .toolbar span[data-v-85e09b4e]{color:gray;font-size:1.3rem}.post-editor-wrapper .get-cursor[data-v-85e09b4e]{border-radius:var(--box-border-radius);transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.4rem;min-height:13rem;resize:none;background:var(--box-background-color);color:var(--color-font-pure);border:1px solid transparent;position:absolute;top:0;z-index:-100}.post-editor-wrapper .emoticon-pack[data-v-85e09b4e]{z-index:999999999;border-radius:1rem;padding:1rem;width:31rem;max-width:31rem;height:30rem;max-height:30rem;overflow:auto;background:var(--color-third-bg);border:1px solid var(--color-font-3);box-shadow:0 9px 24px -3px #0000000f,0 4px 8px -1px #0000001f;position:fixed;bottom:11rem;left:14rem}.post-editor-wrapper .emoticon-pack svg[data-v-85e09b4e]{cursor:pointer;position:absolute;right:.8rem;font-size:2.4rem}.post-editor-wrapper .emoticon-pack .list[data-v-85e09b4e]{margin:1rem 0;display:flex;flex-wrap:wrap}.post-editor-wrapper .emoticon-pack img[data-v-85e09b4e]{cursor:pointer;width:calc(100% / 7);padding:.5rem;box-sizing:border-box}.post-editor-wrapper .emoticon-pack span[data-v-85e09b4e]{width:calc(100% / 7);display:inline-block;cursor:pointer;font-size:2.3rem;text-align:center}.v-enter-active[data-v-6f61a860],.v-leave-active[data-v-6f61a860]{transition:opacity .3s ease}.v-enter-from[data-v-6f61a860],.v-leave-to[data-v-6f61a860]{opacity:0}.username[data-v-6f61a860]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-6f61a860]{font-size:1.2rem;font-weight:700;color:#e02a2a}.owner[data-v-6f61a860]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-6f61a860]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-6f61a860]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove[data-v-6f61a860]{display:inline}.my-tag .remove[data-v-6f61a860]{cursor:pointer;margin-left:.5rem;display:none}.add-tag[data-v-6f61a860]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;cursor:pointer;position:absolute;display:none}.floor[data-v-6f61a860]{margin-left:.5rem;font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;background-color:var(--color-floor);color:var(--color-floor-font);padding:3px 9px;cursor:default}[data-v-6f61a860]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--color-top-reply-wrap-bg: #f2f3f5;--color-top-reply-wrap-line: #d2d2d2}html.dark[data-v-6f61a860]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e;--color-top-reply-wrap-bg: #212f3e;--color-top-reply-wrap-line: #3b536d}html[data-v-6f61a860],body[data-v-6f61a860]{font-size:62.5%}.flex[data-v-6f61a860]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-6f61a860]{justify-content:flex-end}.flex-center[data-v-6f61a860]{justify-content:center}.p1[data-v-6f61a860]{padding:1rem}.p2[data-v-6f61a860]{padding:2rem}.p0[data-v-6f61a860]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-6f61a860]{text-underline-offset:.7ex;text-decoration:underline 1px}a[data-v-6f61a860]{text-decoration:none;cursor:pointer}a[data-v-6f61a860]:hover{text-decoration:underline}.tool[data-v-6f61a860]{position:relative;display:flex;align-items:center;border-radius:.3rem;cursor:pointer;height:2.6rem;padding:0 .5rem;gap:.2rem}.tool>svg[data-v-6f61a860]{width:1.6rem!important;height:1.6rem!important}.tool[data-v-6f61a860]:hover{background:var(--color-third-bg)}.tool.no-hover[data-v-6f61a860]{cursor:default}.tool.no-hover[data-v-6f61a860]:hover{background:unset!important}.tool.disabled[data-v-6f61a860]{cursor:not-allowed}.tool.disabled[data-v-6f61a860]:hover{background:unset!important}.my-node[data-v-6f61a860]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node[data-v-6f61a860]:hover{text-decoration:none;background:#e2e2e2}.msgs[data-v-6f61a860]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-6f61a860]{box-shadow:0 2px 3px #0000001a;box-shadow:#00000014 0 4px 12px;border-radius:var(--box-border-radius);background:var(--box-background-color);margin-bottom:2rem;width:100%;box-sizing:border-box;transition:background-color .3s}.my-cell[data-v-6f61a860]{color:var(--color-font);padding:.8rem 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-6f61a860]{position:fixed;z-index:1001;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-6f61a860]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-6f61a860]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-6f61a860]{position:relative}.modal .mask[data-v-6f61a860]{position:fixed;width:100vw;height:100vh;left:0;top:0;background-color:#1d1c1c47}.radio-group2[data-v-6f61a860]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-6f61a860]{cursor:pointer;background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-6f61a860]:first-child{border-left:none}.radio-group2 .active[data-v-6f61a860]{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm[data-v-6f61a860]{position:relative;display:inline-flex;justify-content:center}input[data-v-6f61a860]{height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-6f61a860]:hover{border:1px solid var(--color-input-border-hover)}input[data-v-6f61a860]:focus{border:1px solid var(--color-active)}.danger[data-v-6f61a860]{color:red!important}.pop-confirm-content[data-v-6f61a860]{position:fixed;background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow);color:var(--color-font-8);padding:1.5rem;border-radius:.8rem;transform:translate(-50%,calc(-100% - 1rem));z-index:1003}.pop-confirm-content .text[data-v-6f61a860]{text-align:start;font-size:1.6rem;width:15rem;min-width:15rem}.pop-confirm-content .options[data-v-6f61a860]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1rem}img[data-v-6f61a860]{max-width:100%}.html-wrapper[data-v-6f61a860]{position:relative}.html-wrapper .mask[data-v-6f61a860]{max-height:90rem;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent)}.html-wrapper .expand[data-v-6f61a860]{position:absolute;z-index:1;bottom:2rem;padding:.2rem 1.5rem;border-radius:2rem;border:1px solid gray;background:white;color:gray;left:50%;transform:translate(-50%);cursor:pointer}.top-sub-comment[data-v-d3f8c94b]{width:100%;box-sizing:border-box;margin-top:.8rem;display:flex;position:relative}.top-sub-comment .expand-line[data-v-d3f8c94b]{width:1.6rem;position:relative}.top-sub-comment .expand-line[data-v-d3f8c94b]:after{position:absolute;left:50%;top:2%;content:" ";height:98%;width:0;border-right:1px solid var(--color-top-reply-wrap-line)}.top-sub-comment .right[data-v-d3f8c94b]{flex:1;width:calc(100% - 3rem)}.top-sub-comment .right .w .post-editor-wrapper[data-v-d3f8c94b]{margin-top:1rem}.top-sub-comment[data-v-d3f8c94b] .avatar{display:none!important}.top-sub-comment.top-sub-reply[data-v-d3f8c94b]:first-child{margin-top:0}.top-sub-comment.top-sub-reply>.expand-line[data-v-d3f8c94b]{width:1rem}.top-sub-comment.top-sub-reply>.expand-line[data-v-d3f8c94b]:after{display:none}.comment[data-v-984ba483]{width:100%;box-sizing:border-box;margin-top:.6rem}.comment.isLevelOne[data-v-984ba483]{border-bottom:1px solid var(--color-line);padding:.8rem 1rem;margin-top:0}.comment.ding[data-v-984ba483]{background:rgba(255,255,0,.3)!important}.comment.isSimple .avatar[data-v-984ba483],.comment.isSimple .expand-line[data-v-984ba483]{display:none}.comment.isSimple .simple-wrapper[data-v-984ba483]{padding-left:2.8rem}.comment.isSimple .w[data-v-984ba483]{padding-left:0!important;padding-top:.5rem}.comment .comment-content-w .more[data-v-984ba483]{text-align:center;margin:2rem 0}.comment .comment-content[data-v-984ba483]{display:flex;position:relative}.comment .comment-content .expand-line[data-v-984ba483]{cursor:pointer;margin-top:.6rem;width:2rem;min-width:2rem;position:relative}.comment .comment-content .expand-line[data-v-984ba483]:after{position:absolute;left:50%;content:" ";height:100%;width:0;border-right:1px solid var(--color-line)}.comment .comment-content .expand-line[data-v-984ba483]:hover:after{border-right:2px solid var(--color-active)}.comment .comment-content .right[data-v-984ba483]{flex:1;width:calc(100% - 3rem)}.comment .comment-content .right .w[data-v-984ba483]{padding-left:1rem}.comment .comment-content .right .w .post-editor-wrapper[data-v-984ba483]{margin-top:1rem}.wrong-wrapper[data-v-984ba483]{font-size:1.4rem;margin-bottom:1rem}.wrong-wrapper span[data-v-984ba483]{cursor:pointer}.wrong-wrapper .del-line[data-v-984ba483]{text-decoration:line-through}.wrong-wrapper .wrong-icon[data-v-984ba483]{margin-left:.5rem}.wrong-wrapper .warning[data-v-984ba483]{border-top:1px solid #e1e1e1;border-bottom:1px solid #e1e1e1;padding:1rem 0;margin-top:1rem;font-size:1.2rem;color:red}.reply-count[data-v-984ba483]{padding:.8rem 0 .4rem;border-radius:.2rem;font-size:1.3rem;display:flex;align-items:center;color:gray;gap:1rem;cursor:pointer}.reply-count .gang[data-v-984ba483]{width:2rem;height:0;border-bottom:1px solid #d5d5d5}.reply-count svg[data-v-984ba483]{font-size:1rem}.top-reply-wrap[data-v-984ba483]{background:var(--color-top-reply-wrap-bg);border-radius:.8rem;padding:.6rem;padding-left:0;margin-left:1rem}.toolbar[data-v-30dac564]{border-top:1px solid var(--color-line);height:3.8rem;padding-left:.6rem;display:flex;align-items:center;color:var(--color-gray);font-size:1.2rem;gap:.5rem}.comment[data-v-4a063111]{width:100%;box-sizing:border-box;display:flex;gap:1rem;padding:1rem;border-bottom:1px solid var(--color-line)}.comment.isSimple .avatar[data-v-4a063111]{display:none}.comment.isSimple .reply_content[data-v-4a063111]{margin-top:.5rem!important}.comment .avatar[data-v-4a063111]{display:flex}.comment .avatar img[data-v-4a063111]{width:3.8rem;height:3.8rem;border-radius:.3rem}.comment .comment-body[data-v-4a063111]{flex:1;display:flex;flex-direction:column}.comment .comment-body .texts[data-v-4a063111]{display:flex;align-items:center}.comment .comment-body .reply_content[data-v-4a063111]{margin-top:1rem;max-width:calc(100% - 5rem)}.comment .isRight[data-v-4a063111]{align-items:flex-end}.comment .isRight .owner[data-v-4a063111],.comment .isRight .mod[data-v-4a063111],.comment .isRight .username[data-v-4a063111]{margin:0 0 0 1rem}.comment .Author-right[data-v-4a063111]{display:flex;flex-direction:column;align-items:center}.comment .Author-right .floor[data-v-4a063111]{margin-left:0}.comment .Author-right .jump[data-v-4a063111]{color:#929596;margin-top:.4rem;font-size:1.4rem}.comment .point[data-v-4a063111]{margin:0 .5rem;font-size:1.6rem;display:flex;gap:.5rem;align-items:center;font-weight:700;color:#000}.sticky{position:sticky;bottom:-2px;z-index:2;background:var(--box-background-hover-color)!important}.sticky[stuck]{box-shadow:0 2px 20px #00000059!important}.preview-modal{position:fixed;width:100vw;height:100vh;left:0;top:-1000vh;z-index:9999}.preview-modal .close{font-size:2rem;color:#fff;position:absolute;right:2rem;top:2rem;cursor:pointer}.preview-modal .mask{position:absolute;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.7);transition:all .3s}.v-enter-active[data-v-d39217d8],.v-leave-active[data-v-d39217d8]{transition:opacity .3s ease}.v-enter-from[data-v-d39217d8],.v-leave-to[data-v-d39217d8]{opacity:0}.username[data-v-d39217d8]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-d39217d8]{font-size:1.2rem;font-weight:700;color:#e02a2a}.owner[data-v-d39217d8]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-d39217d8]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-d39217d8]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove[data-v-d39217d8]{display:inline}.my-tag .remove[data-v-d39217d8]{cursor:pointer;margin-left:.5rem;display:none}.add-tag[data-v-d39217d8]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;cursor:pointer;position:absolute;display:none}.floor[data-v-d39217d8]{margin-left:.5rem;font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;background-color:var(--color-floor);color:var(--color-floor-font);padding:3px 9px;cursor:default}[data-v-d39217d8]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--color-top-reply-wrap-bg: #f2f3f5;--color-top-reply-wrap-line: #d2d2d2}html.dark[data-v-d39217d8]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e;--color-top-reply-wrap-bg: #212f3e;--color-top-reply-wrap-line: #3b536d}html[data-v-d39217d8],body[data-v-d39217d8]{font-size:62.5%}.flex[data-v-d39217d8]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-d39217d8]{justify-content:flex-end}.flex-center[data-v-d39217d8]{justify-content:center}.p1[data-v-d39217d8]{padding:1rem}.p2[data-v-d39217d8]{padding:2rem}.p0[data-v-d39217d8]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-d39217d8]{text-underline-offset:.7ex;text-decoration:underline 1px}a[data-v-d39217d8]{text-decoration:none;cursor:pointer}a[data-v-d39217d8]:hover{text-decoration:underline}.tool[data-v-d39217d8]{position:relative;display:flex;align-items:center;border-radius:.3rem;cursor:pointer;height:2.6rem;padding:0 .5rem;gap:.2rem}.tool>svg[data-v-d39217d8]{width:1.6rem!important;height:1.6rem!important}.tool[data-v-d39217d8]:hover{background:var(--color-third-bg)}.tool.no-hover[data-v-d39217d8]{cursor:default}.tool.no-hover[data-v-d39217d8]:hover{background:unset!important}.tool.disabled[data-v-d39217d8]{cursor:not-allowed}.tool.disabled[data-v-d39217d8]:hover{background:unset!important}.my-node[data-v-d39217d8]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node[data-v-d39217d8]:hover{text-decoration:none;background:#e2e2e2}.msgs[data-v-d39217d8]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-d39217d8]{box-shadow:0 2px 3px #0000001a;box-shadow:#00000014 0 4px 12px;border-radius:var(--box-border-radius);background:var(--box-background-color);margin-bottom:2rem;width:100%;box-sizing:border-box;transition:background-color .3s}.my-cell[data-v-d39217d8]{color:var(--color-font);padding:.8rem 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-d39217d8]{position:fixed;z-index:1001;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-d39217d8]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-d39217d8]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-d39217d8]{position:relative}.modal .mask[data-v-d39217d8]{position:fixed;width:100vw;height:100vh;left:0;top:0;background-color:#1d1c1c47}.radio-group2[data-v-d39217d8]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-d39217d8]{cursor:pointer;background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-d39217d8]:first-child{border-left:none}.radio-group2 .active[data-v-d39217d8]{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm[data-v-d39217d8]{position:relative;display:inline-flex;justify-content:center}input[data-v-d39217d8]{height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-d39217d8]:hover{border:1px solid var(--color-input-border-hover)}input[data-v-d39217d8]:focus{border:1px solid var(--color-active)}.danger[data-v-d39217d8]{color:red!important}.pop-confirm-content[data-v-d39217d8]{position:fixed;background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow);color:var(--color-font-8);padding:1.5rem;border-radius:.8rem;transform:translate(-50%,calc(-100% - 1rem));z-index:1003}.pop-confirm-content .text[data-v-d39217d8]{text-align:start;font-size:1.6rem;width:15rem;min-width:15rem}.pop-confirm-content .options[data-v-d39217d8]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1rem}img[data-v-d39217d8]{max-width:100%}.Post[data-v-d39217d8]{position:unset!important;background:transparent!important;overflow:unset!important}.Post .main[data-v-d39217d8]{background:transparent!important;padding:unset!important;width:100%!important}.Post .close-btn[data-v-d39217d8],.Post .open-new-tab[data-v-d39217d8]{display:none}.post-detail[data-v-d39217d8]{text-align:start;position:fixed;z-index:1002;left:0;right:0;bottom:0;top:0;background:rgba(46,47,48,.8);overflow:auto;font-size:1.4rem;display:flex;justify-content:center;flex-wrap:wrap}.post-detail[data-v-d39217d8] .subtle{background-color:#ecfdf5e6;border-left:4px solid #a7f3d0}.post-detail.isNight[data-v-d39217d8] .subtle{background-color:#1a3332;border-left:4px solid #047857}.post-detail .main[data-v-d39217d8]{display:flex;justify-content:flex-end;padding:3rem 8rem 15rem;background:var(--color-main-bg);position:relative;outline:none}.post-detail .main .main-wrapper[data-v-d39217d8]{width:77rem;padding-bottom:2rem;display:flex;flex-direction:column;align-items:center;position:relative}.post-detail .main .main-wrapper .post-wrapper .header:hover .add-tag[data-v-d39217d8]{display:inline-block}.post-detail .main .main-wrapper .loading-wrapper[data-v-d39217d8]{height:20rem;display:flex;justify-content:center;align-items:center}.post-detail .main .main-wrapper #no-comments-yet[data-v-d39217d8]{color:#a9a9a9;font-weight:700;text-align:center;width:100%;margin-bottom:2rem;box-sizing:border-box}.post-detail .main .relationReply[data-v-d39217d8]{position:fixed;width:25vw;top:6.5rem;bottom:15rem;z-index:100;transform:translate(calc(100% + 2rem));font-size:2rem;overflow:hidden}.post-detail .main .relationReply .my-cell[data-v-d39217d8]{background:var(--color-second-bg);border-radius:var(--box-border-radius) var(--box-border-radius) 0 0}.post-detail .main .relationReply .comments[data-v-d39217d8]{max-height:calc(100% - 4.2rem);overflow:auto;background:var(--color-second-bg);border-radius:0 0 var(--box-border-radius) var(--box-border-radius)}.post-detail .main .call-list[data-v-d39217d8]{z-index:9;position:absolute;top:12rem;border:1px solid var(--color-main-bg);background:var(--color-call-list-bg);box-shadow:0 5px 15px #0000001a;overflow:auto;max-height:30rem;border-radius:var(--box-border-radius);min-width:8rem;box-sizing:content-box}.post-detail .main .call-list .call-item[data-v-d39217d8]{border-top:1px solid var(--color-main-bg);height:3rem;display:flex;padding:0 1rem;align-items:center;cursor:pointer;font-size:14px;box-sizing:border-box}.post-detail .main .call-list .call-item .select[data-v-d39217d8],.post-detail .main .call-list .call-item[data-v-d39217d8]:hover,.post-detail .main .call-list .call-item.select[data-v-d39217d8]{background:var(--color-main-bg);text-decoration:none}.post-detail .main .call-list .call-item[data-v-d39217d8]:nth-child(1){border-top:1px solid transparent}@media screen and (max-width: 1280px){.post-detail .main-wrapper[data-v-d39217d8]{width:60vw!important}}.post-detail .v2next-scroll-top[data-v-d39217d8]{cursor:pointer;position:fixed;border-radius:.6rem;display:flex;align-items:center;justify-content:center;bottom:10rem;z-index:99;padding:.8rem 0;gap:1rem;width:4.2rem;transform:translate(6rem);font-size:2rem;background:var(--color-sp-btn-bg);color:var(--color-font-3)}.post-detail .v2next-scroll-top svg[data-v-d39217d8]{font-size:2.4rem}.post-detail .refresh[data-v-d39217d8]{cursor:pointer;position:fixed;border-radius:.6rem;display:flex;align-items:center;justify-content:center;bottom:10rem;z-index:99;padding:.8rem 0;gap:1rem;width:4.2rem;transform:translate(6rem);font-size:2rem;background:var(--color-sp-btn-bg);color:var(--color-font-3);bottom:23.5rem}.post-detail .refresh svg[data-v-d39217d8]{font-size:2.4rem}.post-detail .scroll-to[data-v-d39217d8]{cursor:pointer;position:fixed;border-radius:.6rem;align-items:center;justify-content:center;bottom:10rem;z-index:99;padding:.8rem 0;gap:1rem;width:4.2rem;transform:translate(6rem);font-size:2rem;background:var(--color-sp-btn-bg);color:var(--color-font-3);bottom:15rem;display:flex;flex-direction:column}.post-detail .scroll-to svg[data-v-d39217d8]{font-size:2.4rem}.post-detail .scroll-to input[data-v-d39217d8]{height:2.6rem;width:3.6rem;font-size:1.4rem;text-align:center;color:gray}.post-detail .msg[data-v-d39217d8]{cursor:pointer;position:fixed;border-radius:.6rem;display:flex;align-items:center;justify-content:center;bottom:10rem;z-index:99;padding:.8rem 0;gap:1rem;width:4.2rem;transform:translate(6rem);font-size:2rem;background:var(--color-sp-btn-bg);color:var(--color-font-3);bottom:5rem}.post-detail .msg svg[data-v-d39217d8]{font-size:2.4rem}.post-detail .close-btn[data-v-d39217d8]{color:var(--color-font-3);cursor:pointer;position:fixed;top:3rem;transform:translate(4rem);font-size:2.4rem}.post-detail .top-reply[data-v-d39217d8]{color:var(--color-font-3);cursor:pointer;font-size:2rem;display:flex}.post-detail .open-new-tab[data-v-d39217d8]{color:var(--color-font-3);cursor:pointer;position:fixed;top:3rem;transform:translate(4rem);font-size:2.4rem;top:8rem}.specific-area[data-v-d39217d8]{--color-line: #6a6868;--color-floor: rgba(71, 71, 71, .48);--color-top-reply-wrap-bg: rgba(71, 71, 71, .48);--color-sp-btn-bg: rgba(71, 71, 71, .48);--color-editor-toolbar: #303e64;--color-font-pure: white;--color-main-bg: #545454;--box-background-color: rgba(0, 0, 0, .5);--box-background-hover-color: rgba(0, 0, 0, .5)}.specific-area .my-box[data-v-d39217d8]{color:#fff;border-bottom:2px solid rgba(0,0,0,.4);-webkit-backdrop-filter:blur(15px);backdrop-filter:blur(15px)}.base64_tooltip[data-v-06429e70]{box-shadow:0 3px 6px -4px #0000001f,0 6px 16px #00000014,0 9px 28px 8px #0000000d;background:var(--color-third-bg);min-height:2.2rem;max-width:20rem;padding:1rem;position:fixed;z-index:9998;display:flex;align-items:center;border-radius:.5rem;cursor:pointer;line-break:anywhere;font-size:1.4rem;color:var(--color-font-8)}.base64_tooltip svg[data-v-06429e70]{margin-left:1rem;font-size:3rem;color:var(--color-gray)}.base64_tooltip[data-v-06429e70] .base-button{margin-left:1rem;margin-top:1rem}.msg[data-v-8bf692ea]{cursor:default;margin-bottom:2rem;display:flex;font-size:1.4rem;box-sizing:border-box;border-radius:var(--box-border-radius);color:var(--color-font-8);background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow)}.msg.success .left[data-v-8bf692ea]{background:var(--color-active)}.msg.warning .left[data-v-8bf692ea]{background:#c8c002}.msg.error .left[data-v-8bf692ea]{background:red}.msg .left[data-v-8bf692ea]{border-radius:var(--box-border-radius) 0 0 var(--box-border-radius);display:flex;align-items:center;background:var(--color-active);color:#fff;width:3.6rem;font-size:2.4rem;justify-content:center}.msg .left svg[data-v-8bf692ea]{cursor:pointer}.msg .right[data-v-8bf692ea]{flex:1;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}.tag-modal[data-v-0f1f99f7]{z-index:1003}.tag-modal .wrapper[data-v-0f1f99f7]{z-index:9;background:var(--color-main-bg);color:var(--color-font-8);border-radius:1rem;font-size:1.4rem;padding:2rem 4rem;width:25rem}.tag-modal .wrapper .title[data-v-0f1f99f7]{font-weight:700}.tag-modal .wrapper .btns[data-v-0f1f99f7]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1.5rem;font-size:1.4rem}.msgs[data-v-b73f4332]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.NotificationModal .modal-root[data-v-77aa374e]{z-index:9;background:var(--color-second-bg);color:var(--color-font-8);border-radius:1rem;font-size:1.4rem;width:50vw;height:80vh;display:flex;flex-direction:column;padding:1.4rem;gap:1rem}.NotificationModal .modal-root .modal-header[data-v-77aa374e]{display:flex;justify-content:space-between}.NotificationModal .modal-root .modal-header .title[data-v-77aa374e]{font-size:2.6rem;font-weight:700;text-align:left;margin-bottom:0}.NotificationModal .modal-root .modal-header i[data-v-77aa374e]{cursor:pointer;font-size:2.2rem}.NotificationModal .modal-root .modal-body[data-v-77aa374e]{padding-top:0;flex:1;gap:1rem;display:flex;flex-direction:column;overflow:hidden}.NotificationModal .modal-root .modal-body .filter[data-v-77aa374e]{display:flex;gap:1rem}.NotificationModal .modal-root .modal-body .filter div[data-v-77aa374e]{border-radius:.4rem;padding:.4rem 1rem;background:gainsboro;cursor:pointer}.NotificationModal .modal-root .modal-body .filter div.active[data-v-77aa374e]{background:#445;color:#fff}.NotificationModal .modal-root .modal-body .list-wrap[data-v-77aa374e]{flex:1;position:relative;overflow:hidden}.NotificationModal .modal-root .modal-body .list-wrap .loading-wrap[data-v-77aa374e]{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:rgba(255,255,255,.7)}.NotificationModal .modal-root .modal-body .list-wrap .notify-wrap[data-v-77aa374e]{overflow:auto;height:100%}.NotificationModal .modal-root .modal-body .list-wrap #notifications[data-v-77aa374e] .cell{display:none;padding:1.2rem 0}.NotificationModal .modal-root .modal-body .list-wrap #notifications[data-v-77aa374e] .cell a.node{padding:.6rem 1rem;border-radius:.4rem}.NotificationModal .modal-root .modal-body .list-wrap #notifications[data-v-77aa374e] .cell .payload{margin-top:.4rem;font-size:1.7rem}.NotificationModal .modal-root .modal-body #notifications.all[data-v-77aa374e] .cell,.NotificationModal .modal-root .modal-body #notifications.reply[data-v-77aa374e] .reply,.NotificationModal .modal-root .modal-body #notifications.star[data-v-77aa374e] .star,.NotificationModal .modal-root .modal-body #notifications.collect[data-v-77aa374e] .collect{display:block}.NotificationModal .modal-root .modal-body .footer[data-v-77aa374e]{width:100%;display:flex;align-items:center;gap:2rem}.NotificationModal .modal-root .modal-body .footer .pages[data-v-77aa374e]{flex:1}.NotificationModal .modal-root .modal-body .footer .total[data-v-77aa374e]{font-weight:700}.NotificationModal .modal-root .modal-body .footer .total span[data-v-77aa374e]{color:#d3d3d3;font-weight:400;margin-right:.4rem}.NotificationModal .modal-root .modal-body[data-v-77aa374e] .super.button{padding:0;background:unset;height:26px;width:37px}.NotificationModal .modal-root .modal-body[data-v-77aa374e] .super.button a{display:block}.NotificationModal .modal-root .modal-body[data-v-77aa374e] .super.button a:hover{text-decoration:none}.v-enter-active,.v-leave-active{transition:opacity .3s ease}.v-enter-from,.v-leave-to{opacity:0}.username{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num{font-size:1.2rem;font-weight:700;color:#e02a2a}.owner{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove{display:inline}.my-tag .remove{cursor:pointer;margin-left:.5rem;display:none}.add-tag{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;cursor:pointer;position:absolute;display:none}.floor{margin-left:.5rem;font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;background-color:var(--color-floor);color:var(--color-floor-font);padding:3px 9px;cursor:default}:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--color-top-reply-wrap-bg: #f2f3f5;--color-top-reply-wrap-line: #d2d2d2}html.dark{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e;--color-top-reply-wrap-bg: #212f3e;--color-top-reply-wrap-line: #3b536d}html,body{font-size:62.5%}.flex{display:flex;align-items:center;justify-content:space-between}.flex-end{justify-content:flex-end}.flex-center{justify-content:center}.p1{padding:1rem}.p2{padding:2rem}.p0{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http]{text-underline-offset:.7ex;text-decoration:underline 1px}a{text-decoration:none;cursor:pointer}a:hover{text-decoration:underline}.tool{position:relative;display:flex;align-items:center;border-radius:.3rem;cursor:pointer;height:2.6rem;padding:0 .5rem;gap:.2rem}.tool>svg{width:1.6rem!important;height:1.6rem!important}.tool:hover{background:var(--color-third-bg)}.tool.no-hover{cursor:default}.tool.no-hover:hover{background:unset!important}.tool.disabled{cursor:not-allowed}.tool.disabled:hover{background:unset!important}.my-node{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node:hover{text-decoration:none;background:#e2e2e2}.msgs{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box{box-shadow:0 2px 3px #0000001a;box-shadow:#00000014 0 4px 12px;border-radius:var(--box-border-radius);background:var(--box-background-color);margin-bottom:2rem;width:100%;box-sizing:border-box;transition:background-color .3s}.my-cell{color:var(--color-font);padding:.8rem 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal{position:fixed;z-index:1001;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option{display:flex;align-items:center;padding:.6rem 0}.modal .option>span{position:relative}.modal .mask{position:fixed;width:100vw;height:100vh;left:0;top:0;background-color:#1d1c1c47}.radio-group2{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio{cursor:pointer;background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio:first-child{border-left:none}.radio-group2 .active{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm{position:relative;display:inline-flex;justify-content:center}input{height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input:hover{border:1px solid var(--color-input-border-hover)}input:focus{border:1px solid var(--color-active)}.danger{color:red!important}.pop-confirm-content{position:fixed;background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow);color:var(--color-font-8);padding:1.5rem;border-radius:.8rem;transform:translate(-50%,calc(-100% - 1rem));z-index:1003}.pop-confirm-content .text{text-align:start;font-size:1.6rem;width:15rem;min-width:15rem}.pop-confirm-content .options{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1rem}img{max-width:100%}.target-user-tags[data-v-a73f564c]{background:var(--color-second-bg);color:var(--color-font);word-break:break-all;text-align:start;font-size:1.4rem;box-shadow:0 2px 3px #0000001a;border-bottom-left-radius:3px;border-bottom-right-radius:3px}.target-user-tags .add-tag[data-v-a73f564c]{display:inline-block}.loaded[data-v-a73f564c]{font-size:1.4rem;display:flex;align-items:center;gap:1rem;color:var(--color-font-pure)}.calender[data-v-a73f564c]{padding:10px;font-size:14px;color:var(--link-color)}.calender .month[data-v-a73f564c]{height:30px;display:flex;justify-content:space-between;align-items:center}.calender .month .ca-title[data-v-a73f564c]{flex:1;display:flex;justify-content:flex-end;align-items:center;gap:10px}.calender .month i[data-v-a73f564c]{height:100%;width:30px;cursor:pointer;color:#a9a9a9}.calender .calender-header[data-v-a73f564c]{display:flex;height:30px;align-items:center}.calender .calender-header div[data-v-a73f564c]{flex:1}.calender .days[data-v-a73f564c]{display:grid;grid-template-columns:repeat(7,1fr)}.calender .days .day[data-v-a73f564c]{height:30px}.calender .days .day a[data-v-a73f564c]{display:inline-flex;height:100%;width:100%;justify-content:center;align-items:center}.calender .days .active[data-v-a73f564c]{background:#40a9ff;border-radius:4px}.calender .days .active a[data-v-a73f564c]{color:#fff!important} ');
 
 (function (vue, dayjs) {
   'use strict';
@@ -150,6 +150,7 @@
   var _GM_addStyle = /* @__PURE__ */ (() => typeof GM_addStyle != "undefined" ? GM_addStyle : void 0)();
   var _GM_openInTab = /* @__PURE__ */ (() => typeof GM_openInTab != "undefined" ? GM_openInTab : void 0)();
   var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
+  var _GM_xmlhttpRequest = /* @__PURE__ */ (() => typeof GM_xmlhttpRequest != "undefined" ? GM_xmlhttpRequest : void 0)();
   const functions = {
     async refreshOnce(once) {
       return new Promise((resolve) => {
@@ -580,6 +581,16 @@
     stopEvent(e2) {
       e2.preventDefault();
       e2.stopPropagation();
+    },
+    loadAndRunScript(url) {
+      _GM_xmlhttpRequest({
+        method: "GET",
+        url,
+        onload: function(response) {
+          const code = response.responseText;
+          eval(code);
+        }
+      });
     }
   };
   const DefaultPost = {
@@ -994,7 +1005,9 @@
     if (!icon) {
       return false;
     }
-    return !!((icon.provider === "" || icon.provider.match(matchIconName)) && (allowSimpleName && icon.prefix === "" || icon.prefix.match(matchIconName)) && icon.name.match(matchIconName));
+    return !!// Check prefix: cannot be empty, unless allowSimpleName is enabled
+    // Check name: cannot be empty
+    ((allowSimpleName && icon.prefix === "" || !!icon.prefix) && !!icon.name);
   };
   const defaultIconDimensions = Object.freeze(
     {
@@ -1065,7 +1078,7 @@
       }
       return resolved[name];
     }
-    (names || Object.keys(icons).concat(Object.keys(aliases))).forEach(resolve);
+    Object.keys(icons).concat(Object.keys(aliases)).forEach(resolve);
     return resolved;
   }
   function internalGetIconData(data, name, tree) {
@@ -1131,10 +1144,15 @@
     const icons = data.icons;
     for (const name in icons) {
       const icon = icons[name];
-      if (!name.match(matchIconName) || typeof icon.body !== "string" || !checkOptionalProps(
-        icon,
-        defaultExtendedIconProps
-      )) {
+      if (
+        // Name cannot be empty
+        !name || // Must have body
+        typeof icon.body !== "string" || // Check other props
+        !checkOptionalProps(
+          icon,
+          defaultExtendedIconProps
+        )
+      ) {
         return null;
       }
     }
@@ -1142,10 +1160,15 @@
     for (const name in aliases) {
       const icon = aliases[name];
       const parent = icon.parent;
-      if (!name.match(matchIconName) || typeof parent !== "string" || !icons[parent] && !aliases[parent] || !checkOptionalProps(
-        icon,
-        defaultExtendedIconProps
-      )) {
+      if (
+        // Name cannot be empty
+        !name || // Parent must be set and point to existing icon
+        typeof parent !== "string" || !icons[parent] && !aliases[parent] || // Check other props
+        !checkOptionalProps(
+          icon,
+          defaultExtendedIconProps
+        )
+      ) {
         return null;
       }
     }
@@ -1207,7 +1230,12 @@
       return false;
     }
     const storage2 = getStorage(icon.provider, icon.prefix);
-    return addIconToStorage(storage2, icon.name, data);
+    if (data) {
+      return addIconToStorage(storage2, icon.name, data);
+    } else {
+      storage2.missing.add(icon.name);
+      return true;
+    }
   }
   function addCollection(data, provider) {
     if (typeof data !== "object") {
@@ -1221,7 +1249,7 @@
       if (quicklyValidateIconSet(data)) {
         data.prefix = "";
         parseIconSet(data, (name, icon) => {
-          if (icon && addIcon(name, icon)) {
+          if (addIcon(name, icon)) {
             added = true;
           }
         });
@@ -1267,25 +1295,53 @@
       return size;
     }
     const newParts = [];
-    let code = oldParts.shift();
-    let isNumber = unitsTest.test(code);
+    let code2 = oldParts.shift();
+    let isNumber = unitsTest.test(code2);
     while (true) {
       if (isNumber) {
-        const num = parseFloat(code);
+        const num = parseFloat(code2);
         if (isNaN(num)) {
-          newParts.push(code);
+          newParts.push(code2);
         } else {
           newParts.push(Math.ceil(num * ratio * precision) / precision);
         }
       } else {
-        newParts.push(code);
+        newParts.push(code2);
       }
-      code = oldParts.shift();
-      if (code === void 0) {
+      code2 = oldParts.shift();
+      if (code2 === void 0) {
         return newParts.join("");
       }
       isNumber = !isNumber;
     }
+  }
+  function splitSVGDefs(content, tag = "defs") {
+    let defs = "";
+    const index = content.indexOf("<" + tag);
+    while (index >= 0) {
+      const start = content.indexOf(">", index);
+      const end = content.indexOf("</" + tag);
+      if (start === -1 || end === -1) {
+        break;
+      }
+      const endEnd = content.indexOf(">", end);
+      if (endEnd === -1) {
+        break;
+      }
+      defs += content.slice(start + 1, end).trim();
+      content = content.slice(0, index).trim() + content.slice(endEnd + 1);
+    }
+    return {
+      defs,
+      content
+    };
+  }
+  function mergeDefsAndContent(defs, content) {
+    return defs ? "<defs>" + defs + "</defs>" + content : content;
+  }
+  function wrapSVGContent(body, start, end) {
+    const split = splitSVGDefs(body);
+    return mergeDefsAndContent(split.defs, start + split.content + end);
   }
   const isUnsetKeyword = (value) => value === "unset" || value === "undefined" || value === "none";
   function iconToSVG(icon, customisations) {
@@ -1363,7 +1419,11 @@
         }
       }
       if (transformations.length) {
-        body = '<g transform="' + transformations.join(" ") + '">' + body + "</g>";
+        body = wrapSVGContent(
+          body,
+          '<g transform="' + transformations.join(" ") + '">',
+          "</g>"
+        );
       }
     });
     const customisationsWidth = fullCustomisations.width;
@@ -1387,9 +1447,11 @@
     };
     setAttr("width", width);
     setAttr("height", height);
-    attributes.viewBox = box.left.toString() + " " + box.top.toString() + " " + boxWidth.toString() + " " + boxHeight.toString();
+    const viewBox = [box.left, box.top, boxWidth, boxHeight];
+    attributes.viewBox = viewBox.join(" ");
     return {
       attributes,
+      viewBox,
       body
     };
   }
@@ -1512,8 +1574,8 @@
         const host = item;
         maxHostLength = Math.max(maxHostLength, host.length);
       });
-      const url = prefix + ".json?icons=";
-      result = config2.maxURL - maxHostLength - config2.path.length - url.length;
+      const url2 = prefix + ".json?icons=";
+      result = config2.maxURL - maxHostLength - config2.path.length - url2.length;
     }
     return result;
   }
@@ -1584,8 +1646,8 @@
         return;
     }
     let defaultError = 503;
-    fetchModule(host + path).then((response) => {
-      const status = response.status;
+    fetchModule(host + path).then((response2) => {
+      const status = response2.status;
       if (status !== 200) {
         setTimeout(() => {
           callback(shouldAbort(status) ? "abort" : "next", status);
@@ -1593,7 +1655,7 @@
         return;
       }
       defaultError = 501;
-      return response.json();
+      return response2.json();
     }).then((data) => {
       if (typeof data !== "object" || data === null) {
         setTimeout(() => {
@@ -1838,8 +1900,8 @@
       });
       queue = [];
     }
-    function moduleResponse(item, response, data) {
-      const isError = response !== "success";
+    function moduleResponse(item, response2, data) {
+      const isError = response2 !== "success";
       queue = queue.filter((queued) => queued !== item);
       switch (status) {
         case "pending":
@@ -1852,7 +1914,7 @@
         default:
           return;
       }
-      if (response === "abort") {
+      if (response2 === "abort") {
         lastError = data;
         failQuery();
         return;
@@ -2005,192 +2067,6 @@
     }
     return redundancy.query(query, send2, callback)().abort;
   }
-  const browserCacheVersion = "iconify2";
-  const browserCachePrefix = "iconify";
-  const browserCacheCountKey = browserCachePrefix + "-count";
-  const browserCacheVersionKey = browserCachePrefix + "-version";
-  const browserStorageHour = 36e5;
-  const browserStorageCacheExpiration = 168;
-  function getStoredItem(func, key) {
-    try {
-      return func.getItem(key);
-    } catch (err) {
-    }
-  }
-  function setStoredItem(func, key, value) {
-    try {
-      func.setItem(key, value);
-      return true;
-    } catch (err) {
-    }
-  }
-  function removeStoredItem(func, key) {
-    try {
-      func.removeItem(key);
-    } catch (err) {
-    }
-  }
-  function setBrowserStorageItemsCount(storage2, value) {
-    return setStoredItem(storage2, browserCacheCountKey, value.toString());
-  }
-  function getBrowserStorageItemsCount(storage2) {
-    return parseInt(getStoredItem(storage2, browserCacheCountKey)) || 0;
-  }
-  const browserStorageConfig = {
-    local: true,
-    session: true
-  };
-  const browserStorageEmptyItems = {
-    local: /* @__PURE__ */ new Set(),
-    session: /* @__PURE__ */ new Set()
-  };
-  let browserStorageStatus = false;
-  function setBrowserStorageStatus(status) {
-    browserStorageStatus = status;
-  }
-  let _window = typeof window === "undefined" ? {} : window;
-  function getBrowserStorage(key) {
-    const attr = key + "Storage";
-    try {
-      if (_window && _window[attr] && typeof _window[attr].length === "number") {
-        return _window[attr];
-      }
-    } catch (err) {
-    }
-    browserStorageConfig[key] = false;
-  }
-  function iterateBrowserStorage(key, callback) {
-    const func = getBrowserStorage(key);
-    if (!func) {
-      return;
-    }
-    const version = getStoredItem(func, browserCacheVersionKey);
-    if (version !== browserCacheVersion) {
-      if (version) {
-        const total2 = getBrowserStorageItemsCount(func);
-        for (let i = 0; i < total2; i++) {
-          removeStoredItem(func, browserCachePrefix + i.toString());
-        }
-      }
-      setStoredItem(func, browserCacheVersionKey, browserCacheVersion);
-      setBrowserStorageItemsCount(func, 0);
-      return;
-    }
-    const minTime = Math.floor(Date.now() / browserStorageHour) - browserStorageCacheExpiration;
-    const parseItem = (index) => {
-      const name = browserCachePrefix + index.toString();
-      const item = getStoredItem(func, name);
-      if (typeof item !== "string") {
-        return;
-      }
-      try {
-        const data = JSON.parse(item);
-        if (typeof data === "object" && typeof data.cached === "number" && data.cached > minTime && typeof data.provider === "string" && typeof data.data === "object" && typeof data.data.prefix === "string" && // Valid item: run callback
-        callback(data, index)) {
-          return true;
-        }
-      } catch (err) {
-      }
-      removeStoredItem(func, name);
-    };
-    let total = getBrowserStorageItemsCount(func);
-    for (let i = total - 1; i >= 0; i--) {
-      if (!parseItem(i)) {
-        if (i === total - 1) {
-          total--;
-          setBrowserStorageItemsCount(func, total);
-        } else {
-          browserStorageEmptyItems[key].add(i);
-        }
-      }
-    }
-  }
-  function initBrowserStorage() {
-    if (browserStorageStatus) {
-      return;
-    }
-    setBrowserStorageStatus(true);
-    for (const key in browserStorageConfig) {
-      iterateBrowserStorage(key, (item) => {
-        const iconSet = item.data;
-        const provider = item.provider;
-        const prefix = iconSet.prefix;
-        const storage2 = getStorage(
-          provider,
-          prefix
-        );
-        if (!addIconSet(storage2, iconSet).length) {
-          return false;
-        }
-        const lastModified = iconSet.lastModified || -1;
-        storage2.lastModifiedCached = storage2.lastModifiedCached ? Math.min(storage2.lastModifiedCached, lastModified) : lastModified;
-        return true;
-      });
-    }
-  }
-  function updateLastModified(storage2, lastModified) {
-    const lastValue = storage2.lastModifiedCached;
-    if (
-      // Matches or newer
-      lastValue && lastValue >= lastModified
-    ) {
-      return lastValue === lastModified;
-    }
-    storage2.lastModifiedCached = lastModified;
-    if (lastValue) {
-      for (const key in browserStorageConfig) {
-        iterateBrowserStorage(key, (item) => {
-          const iconSet = item.data;
-          return item.provider !== storage2.provider || iconSet.prefix !== storage2.prefix || iconSet.lastModified === lastModified;
-        });
-      }
-    }
-    return true;
-  }
-  function storeInBrowserStorage(storage2, data) {
-    if (!browserStorageStatus) {
-      initBrowserStorage();
-    }
-    function store(key) {
-      let func;
-      if (!browserStorageConfig[key] || !(func = getBrowserStorage(key))) {
-        return;
-      }
-      const set = browserStorageEmptyItems[key];
-      let index;
-      if (set.size) {
-        set.delete(index = Array.from(set).shift());
-      } else {
-        index = getBrowserStorageItemsCount(func);
-        if (!setBrowserStorageItemsCount(func, index + 1)) {
-          return;
-        }
-      }
-      const item = {
-        cached: Math.floor(Date.now() / browserStorageHour),
-        provider: storage2.provider,
-        data
-      };
-      return setStoredItem(
-        func,
-        browserCachePrefix + index.toString(),
-        JSON.stringify(item)
-      );
-    }
-    if (data.lastModified && !updateLastModified(storage2, data.lastModified)) {
-      return;
-    }
-    if (!Object.keys(data.icons).length) {
-      return;
-    }
-    if (data.not_found) {
-      data = Object.assign({}, data);
-      delete data.not_found;
-    }
-    if (!store("local")) {
-      store("session");
-    }
-  }
   function emptyCallback() {
   }
   function loadedNewIcons(storage2) {
@@ -2200,6 +2076,54 @@
         storage2.iconsLoaderFlag = false;
         updateCallbacks(storage2);
       });
+    }
+  }
+  function checkIconNamesForAPI(icons) {
+    const valid = [];
+    const invalid = [];
+    icons.forEach((name) => {
+      (name.match(matchIconName) ? valid : invalid).push(name);
+    });
+    return {
+      valid,
+      invalid
+    };
+  }
+  function parseLoaderResponse(storage2, icons, data) {
+    function checkMissing() {
+      const pending = storage2.pendingIcons;
+      icons.forEach((name) => {
+        if (pending) {
+          pending.delete(name);
+        }
+        if (!storage2.icons[name]) {
+          storage2.missing.add(name);
+        }
+      });
+    }
+    if (data && typeof data === "object") {
+      try {
+        const parsed = addIconSet(storage2, data);
+        if (!parsed.length) {
+          checkMissing();
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    checkMissing();
+    loadedNewIcons(storage2);
+  }
+  function parsePossiblyAsyncResponse(response2, callback) {
+    if (response2 instanceof Promise) {
+      response2.then((data) => {
+        callback(data);
+      }).catch(() => {
+        callback(null);
+      });
+    } else {
+      callback(response2);
     }
   }
   function loadNewIcons(storage2, icons) {
@@ -2215,38 +2139,50 @@
         const { provider, prefix } = storage2;
         const icons2 = storage2.iconsToLoad;
         delete storage2.iconsToLoad;
-        let api;
-        if (!icons2 || !(api = getAPIModule(provider))) {
+        if (!icons2 || !icons2.length) {
           return;
         }
-        const params = api.prepare(provider, prefix, icons2);
+        const customIconLoader = storage2.loadIcon;
+        if (storage2.loadIcons && (icons2.length > 1 || !customIconLoader)) {
+          parsePossiblyAsyncResponse(
+            storage2.loadIcons(icons2, prefix, provider),
+            (data) => {
+              parseLoaderResponse(storage2, icons2, data);
+            }
+          );
+          return;
+        }
+        if (customIconLoader) {
+          icons2.forEach((name) => {
+            const response2 = customIconLoader(name, prefix, provider);
+            parsePossiblyAsyncResponse(response2, (data) => {
+              const iconSet = data ? {
+                prefix,
+                icons: {
+                  [name]: data
+                }
+              } : null;
+              parseLoaderResponse(storage2, [name], iconSet);
+            });
+          });
+          return;
+        }
+        const { valid, invalid } = checkIconNamesForAPI(icons2);
+        if (invalid.length) {
+          parseLoaderResponse(storage2, invalid, null);
+        }
+        if (!valid.length) {
+          return;
+        }
+        const api = prefix.match(matchIconName) ? getAPIModule(provider) : null;
+        if (!api) {
+          parseLoaderResponse(storage2, valid, null);
+          return;
+        }
+        const params = api.prepare(provider, prefix, valid);
         params.forEach((item) => {
           sendAPIQuery(provider, item, (data) => {
-            if (typeof data !== "object") {
-              item.icons.forEach((name) => {
-                storage2.missing.add(name);
-              });
-            } else {
-              try {
-                const parsed = addIconSet(
-                  storage2,
-                  data
-                );
-                if (!parsed.length) {
-                  return;
-                }
-                const pending = storage2.pendingIcons;
-                if (pending) {
-                  parsed.forEach((name) => {
-                    pending.delete(name);
-                  });
-                }
-                storeInBrowserStorage(storage2, data);
-              } catch (err) {
-                console.error(err);
-              }
-            }
-            loadedNewIcons(storage2);
+            parseLoaderResponse(storage2, item.icons, data);
           });
         });
       });
@@ -2299,9 +2235,9 @@
       }
     });
     sources.forEach((storage2) => {
-      const { provider, prefix } = storage2;
-      if (newIcons[provider][prefix].length) {
-        loadNewIcons(storage2, newIcons[provider][prefix]);
+      const list = newIcons[storage2.provider][storage2.prefix];
+      if (list.length) {
+        loadNewIcons(storage2, list);
       }
     });
     return callback ? storeCallback(callback, sortedIcons, sources) : emptyCallback;
@@ -2446,6 +2382,7 @@
         case "style":
         case "onLoad":
         case "mode":
+        case "ssr":
           break;
         case "inline":
         case "hFlip":
@@ -2525,10 +2462,9 @@
   allowSimpleNames(true);
   setAPIModule("", fetchAPIModule);
   if (typeof document !== "undefined" && typeof window !== "undefined") {
-    initBrowserStorage();
-    const _window2 = window;
-    if (_window2.IconifyPreload !== void 0) {
-      const preload = _window2.IconifyPreload;
+    const _window = window;
+    if (_window.IconifyPreload !== void 0) {
+      const preload = _window.IconifyPreload;
       const err = "Invalid IconifyPreload syntax.";
       if (typeof preload === "object" && preload !== null) {
         (preload instanceof Array ? preload : [preload]).forEach((item) => {
@@ -2547,8 +2483,8 @@
         });
       }
     }
-    if (_window2.IconifyProviders !== void 0) {
-      const providers = _window2.IconifyProviders;
+    if (_window.IconifyProviders !== void 0) {
+      const providers = _window.IconifyProviders;
       if (typeof providers === "object" && providers !== null) {
         for (let key in providers) {
           const err = "IconifyProviders[" + key + "] is invalid.";
@@ -2577,6 +2513,10 @@
     // Set initial data
     data() {
       return {
+        // Current icon name
+        _name: "",
+        // Loading
+        _loadingIcon: null,
         // Mounted status
         iconMounted: false,
         // Callback counter to trigger re-render
@@ -2584,8 +2524,6 @@
       };
     },
     mounted() {
-      this._name = "";
-      this._loadingIcon = null;
       this.iconMounted = true;
     },
     unmounted() {
@@ -2599,7 +2537,7 @@
         }
       },
       // Get data for icon to render or null
-      getIcon(icon, onload) {
+      getIcon(icon, onload, customise) {
         if (typeof icon === "object" && icon !== null && typeof icon.body === "string") {
           this._name = "";
           this.abortLoading();
@@ -2612,7 +2550,7 @@
           this.abortLoading();
           return null;
         }
-        const data = getIconData(iconName);
+        let data = getIconData(iconName);
         if (!data) {
           if (!this._loadingIcon || this._loadingIcon.name !== icon) {
             this.abortLoading();
@@ -2635,6 +2573,13 @@
             onload(icon);
           }
         }
+        if (customise) {
+          data = Object.assign({}, data);
+          const customised = customise(data.body, iconName.name, iconName.prefix, iconName.provider);
+          if (typeof customised === "string") {
+            data.body = customised;
+          }
+        }
         const classes = ["iconify"];
         if (iconName.prefix !== "") {
           classes.push("iconify--" + iconName.prefix);
@@ -2649,7 +2594,7 @@
     render() {
       this.counter;
       const props = this.$attrs;
-      const icon = this.iconMounted ? this.getIcon(props.icon, props.onLoad) : null;
+      const icon = this.iconMounted || props.ssr ? this.getIcon(props.icon, props.onLoad, props.customise) : null;
       if (!icon) {
         return render(emptyIcon, props);
       }
@@ -2668,7 +2613,7 @@
   });
   const _hoisted_1$i = { class: "display-type" };
   const _hoisted_2$f = { style: { "position": "relative" } };
-  const _hoisted_3$c = {
+  const _hoisted_3$b = {
     key: 0,
     class: "type-list"
   };
@@ -2736,7 +2681,7 @@
               vue.createElementVNode("span", null, vue.toDisplayString(currentDisplayType.value), 1),
               vue.createVNode(vue.unref(Icon), { icon: "mingcute:down-line" })
             ], 2),
-            vue.unref(state).showChangeDisplayType ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$c, [
+            vue.unref(state).showChangeDisplayType ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$b, [
               vue.createElementVNode("div", {
                 class: vue.normalizeClass(["item", _ctx.displayType === vue.unref(CommentDisplayType).FloorInFloorNoCallUser && "active"]),
                 onClick: _cache[2] || (_cache[2] = vue.withModifiers(($event) => changeOption(vue.unref(CommentDisplayType).FloorInFloorNoCallUser), ["stop"]))
@@ -2974,32 +2919,14 @@
       }
     }
   };
-  const _withScopeId$b = (n2) => (vue.pushScopeId("data-v-386b43d0"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$g = {
     key: 0,
     class: "setting-modal modal"
   };
   const _hoisted_2$d = { class: "modal-root" };
-  const _hoisted_3$b = { class: "modal-header" };
-  const _hoisted_4$b = /* @__PURE__ */ _withScopeId$b(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "title" }, " 使用需知 ", -1));
-  const _hoisted_5$9 = { class: "body" };
-  const _hoisted_6$9 = /* @__PURE__ */ _withScopeId$b(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "modal-content" }, [
-    /* @__PURE__ */ vue.createElementVNode("div", null, "开启此功能会带来以下影响"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "缺点"),
-    /* @__PURE__ */ vue.createElementVNode("div", { style: { "color": "red" } }, [
-      /* @__PURE__ */ vue.createElementVNode("div", null, "1、你的IP可能会被封禁"),
-      /* @__PURE__ */ vue.createElementVNode("div", null, "2、消耗更多流量，给服务器带来更大的负担"),
-      /* @__PURE__ */ vue.createElementVNode("div", null, "3、你的V站浏览进度条会变快")
-    ]),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "优点"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "1、卡片模式，无需打开主题即可查看内容"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "2、打开主题时提前预览正文内容，无需等待加载"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "原理"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "1、解析列表所有主题ID，批量调用show.json接口，获取对应主题的正文"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "2、请求的主题数据会缓存到本地，不会重复请求，超过3天的数据会删除"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "3、前面4条会并发请求，4条以后的一秒请求一条")
-  ], -1));
-  const _hoisted_7$8 = { class: "btns" };
+  const _hoisted_3$a = { class: "modal-header" };
+  const _hoisted_4$9 = { class: "body" };
+  const _hoisted_5$8 = { class: "btns" };
   function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Icon = vue.resolveComponent("Icon");
     const _component_BaseButton = vue.resolveComponent("BaseButton");
@@ -3011,29 +2938,44 @@
             onClick: _cache[0] || (_cache[0] = (...args) => $options.close && $options.close(...args))
           }),
           vue.createElementVNode("div", _hoisted_2$d, [
-            vue.createElementVNode("div", _hoisted_3$b, [
-              _hoisted_4$b,
+            vue.createElementVNode("div", _hoisted_3$a, [
+              _cache[1] || (_cache[1] = vue.createElementVNode("div", { class: "title" }, " 使用需知 ", -1)),
               vue.createVNode(_component_Icon, {
                 icon: "ic:round-close",
                 onClick: $options.close
               }, null, 8, ["onClick"])
             ]),
-            vue.createElementVNode("div", _hoisted_5$9, [
-              _hoisted_6$9,
-              vue.createElementVNode("div", _hoisted_7$8, [
+            vue.createElementVNode("div", _hoisted_4$9, [
+              _cache[4] || (_cache[4] = vue.createElementVNode("div", { class: "modal-content" }, [
+                vue.createElementVNode("div", null, "开启此功能会带来以下影响"),
+                vue.createElementVNode("div", null, "缺点"),
+                vue.createElementVNode("div", { style: { "color": "red" } }, [
+                  vue.createElementVNode("div", null, "1、你的IP可能会被封禁"),
+                  vue.createElementVNode("div", null, "2、消耗更多流量，给服务器带来更大的负担"),
+                  vue.createElementVNode("div", null, "3、你的V站浏览进度条会变快")
+                ]),
+                vue.createElementVNode("div", null, "优点"),
+                vue.createElementVNode("div", null, "1、卡片模式，无需打开主题即可查看内容"),
+                vue.createElementVNode("div", null, "2、打开主题时提前预览正文内容，无需等待加载"),
+                vue.createElementVNode("div", null, "原理"),
+                vue.createElementVNode("div", null, "1、解析列表所有主题ID，批量调用show.json接口，获取对应主题的正文"),
+                vue.createElementVNode("div", null, "2、请求的主题数据会缓存到本地，不会重复请求，超过3天的数据会删除"),
+                vue.createElementVNode("div", null, "3、前面4条会并发请求，4条以后的一秒请求一条")
+              ], -1)),
+              vue.createElementVNode("div", _hoisted_5$8, [
                 vue.createVNode(_component_BaseButton, {
                   type: "link",
                   onClick: $options.close
                 }, {
-                  default: vue.withCtx(() => [
-                    vue.createTextVNode("不同意")
-                  ]),
+                  default: vue.withCtx(() => [..._cache[2] || (_cache[2] = [
+                    vue.createTextVNode("不同意", -1)
+                  ])]),
                   _: 1
                 }, 8, ["onClick"]),
                 vue.createVNode(_component_BaseButton, { onClick: $options.confirm }, {
-                  default: vue.withCtx(() => [
-                    vue.createTextVNode("同意")
-                  ]),
+                  default: vue.withCtx(() => [..._cache[3] || (_cache[3] = [
+                    vue.createTextVNode("同意", -1)
+                  ])]),
                   _: 1
                 }, 8, ["onClick"])
               ])
@@ -3238,8 +3180,8 @@
                 if (htmlText.search("加入收藏") > -1) {
                   console.log("未收藏========>>", v.url, v.title);
                   let once = await window.fetchOnce();
-                  let url = `${location.origin}/favorite/topic/${id}?once=${once}`;
-                  await fetch(url);
+                  let url2 = `${location.origin}/favorite/topic/${id}?once=${once}`;
+                  await fetch(url2);
                   await functions.sleep(1e4);
                 } else {
                   console.log("已收藏", v.url, v.title);
@@ -3262,191 +3204,117 @@
       }
     }
   };
-  const _withScopeId$a = (n2) => (vue.pushScopeId("data-v-90d3e265"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$f = {
     key: 0,
     class: "setting-modal modal"
   };
   const _hoisted_2$c = { class: "modal-root" };
-  const _hoisted_3$a = { class: "modal-header" };
-  const _hoisted_4$a = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "title" }, " 脚本设置 ", -1));
-  const _hoisted_5$8 = {
+  const _hoisted_3$9 = { class: "modal-header" };
+  const _hoisted_4$8 = {
     key: 0,
     class: "log"
   };
-  const _hoisted_6$8 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "new" }, null, -1));
-  const _hoisted_7$7 = { class: "body" };
-  const _hoisted_8$7 = { class: "left" };
-  const _hoisted_9$7 = { class: "tabs" };
-  const _hoisted_10$7 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("span", null, "列表", -1));
-  const _hoisted_11$7 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("span", null, "主题", -1));
-  const _hoisted_12$7 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("span", null, "其他", -1));
-  const _hoisted_13$7 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("span", null, "关于", -1));
-  const _hoisted_14$6 = { class: "bottom" };
-  const _hoisted_15$5 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "tip" }, " 如果可以的话欢迎点个star支持一下~ ", -1));
-  const _hoisted_16$5 = { class: "icons" };
-  const _hoisted_17$5 = ["href"];
-  const _hoisted_18$5 = ["href"];
-  const _hoisted_19$4 = { class: "modal-content" };
-  const _hoisted_20$3 = { class: "scroll" };
-  const _hoisted_21$3 = { key: 0 };
-  const _hoisted_22$3 = { class: "border" };
-  const _hoisted_23$3 = { class: "row" };
-  const _hoisted_24$2 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "列表展示方式", -1));
-  const _hoisted_25$1 = { class: "wrapper" };
-  const _hoisted_26$1 = { class: "radio-group2" };
-  const _hoisted_27$1 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc danger" }, " 提示：此项需要刷新页面才能生效 ", -1));
-  const _hoisted_28$1 = { class: "border" };
-  const _hoisted_29$1 = { class: "row" };
-  const _hoisted_30$1 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "主题弹框显示", -1));
+  const _hoisted_5$7 = { class: "body" };
+  const _hoisted_6$7 = { class: "left" };
+  const _hoisted_7$7 = { class: "tabs" };
+  const _hoisted_8$7 = { class: "bottom" };
+  const _hoisted_9$7 = { class: "icons" };
+  const _hoisted_10$7 = ["href"];
+  const _hoisted_11$6 = ["href"];
+  const _hoisted_12$5 = { class: "modal-content" };
+  const _hoisted_13$5 = { class: "scroll" };
+  const _hoisted_14$4 = { key: 0 };
+  const _hoisted_15$3 = { class: "border" };
+  const _hoisted_16$3 = { class: "row" };
+  const _hoisted_17$2 = { class: "wrapper" };
+  const _hoisted_18$2 = { class: "radio-group2" };
+  const _hoisted_19$2 = { class: "border" };
+  const _hoisted_20$2 = { class: "row" };
+  const _hoisted_21$1 = { class: "wrapper" };
+  const _hoisted_22$1 = { class: "border" };
+  const _hoisted_23$1 = { class: "row" };
+  const _hoisted_24$1 = { class: "wrapper" };
+  const _hoisted_25$1 = { class: "row" };
+  const _hoisted_26$1 = { class: "wrapper" };
+  const _hoisted_27$1 = { key: 1 };
+  const _hoisted_28$1 = { class: "row border" };
+  const _hoisted_29$1 = { class: "wrapper" };
+  const _hoisted_30$1 = { class: "row border" };
   const _hoisted_31$1 = { class: "wrapper" };
-  const _hoisted_32$1 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, [
-    /* @__PURE__ */ vue.createTextVNode(" 开启此选项后，主题会"),
-    /* @__PURE__ */ vue.createElementVNode("span", { class: "danger" }, "始终"),
-    /* @__PURE__ */ vue.createTextVNode("以弹框的方式显示。优先级大于“新标签页打开链接” ")
-  ], -1));
-  const _hoisted_33$1 = { class: "border" };
-  const _hoisted_34$1 = { class: "row" };
-  const _hoisted_35$1 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "新标签页打开链接", -1));
-  const _hoisted_36$1 = { class: "wrapper" };
-  const _hoisted_37$1 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " 网页上所有链接通过新标签页打开 ", -1));
-  const _hoisted_38$1 = { class: "row" };
-  const _hoisted_39$1 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "打开新标签页时立即切换过去", -1));
-  const _hoisted_40$1 = { class: "wrapper" };
-  const _hoisted_41$1 = { key: 1 };
-  const _hoisted_42$1 = { class: "row border" };
-  const _hoisted_43$1 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "回复类型", -1));
-  const _hoisted_44$1 = { class: "wrapper" };
-  const _hoisted_45$1 = { class: "row border" };
-  const _hoisted_46$1 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "详情页中显示“回复类型”", -1));
-  const _hoisted_47$1 = { class: "wrapper" };
-  const _hoisted_48 = { class: "row border" };
-  const _hoisted_49 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "替换Imgur源", -1));
-  const _hoisted_50 = { class: "wrapper" };
-  const _hoisted_51 = { class: "border" };
-  const _hoisted_52 = { class: "row" };
-  const _hoisted_53 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "单独打开主题时默认显示楼中楼", -1));
-  const _hoisted_54 = { class: "wrapper" };
-  const _hoisted_55 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " 单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼 ", -1));
-  const _hoisted_56 = { class: "row border" };
-  const _hoisted_57 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "点击左右两侧透明处关闭主题详情弹框", -1));
-  const _hoisted_58 = { class: "wrapper" };
-  const _hoisted_59 = { class: "row border" };
-  const _hoisted_60 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "正文超长自动折叠", -1));
-  const _hoisted_61 = { class: "wrapper" };
-  const _hoisted_62 = { class: "border" };
-  const _hoisted_63 = { class: "row" };
-  const _hoisted_64 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "主题宽度", -1));
-  const _hoisted_65 = { class: "wrapper" };
-  const _hoisted_66 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, [
-    /* @__PURE__ */ vue.createTextVNode(" 未设定此值时，则默认宽度为77rem。接受合法的width值： "),
-    /* @__PURE__ */ vue.createElementVNode("a", {
-      style: { "color": "#40a9ff", "text-decoration": "underline" },
-      href: "https://vue3js.cn/interview/css/em_px_rem_vh_vw.html#%E4%BA%8C%E3%80%81%E5%8D%95%E4%BD%8D",
-      target: "_blank"
-    }, "rem、px、vw、vh(点此查看)"),
-    /* @__PURE__ */ vue.createTextVNode("。 vw代表屏幕百分比，如想要屏幕的66%，请填写66vw ")
-  ], -1));
-  const _hoisted_67 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " 提示：此项设置以后，单独打开详情页时会出现主题突然变宽（窄）的问题，暂时无解 ", -1));
-  const _hoisted_68 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc danger" }, " 提示：此项需要刷新页面才能生效 ", -1));
-  const _hoisted_69 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
-    /* @__PURE__ */ vue.createElementVNode("label", { class: "main-title" }, "高赞回复")
-  ], -1));
-  const _hoisted_70 = { class: "row border" };
-  const _hoisted_71 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "显示高赞回复", -1));
-  const _hoisted_72 = { class: "wrapper" };
-  const _hoisted_73 = { class: "row border" };
-  const _hoisted_74 = { class: "item-title" };
-  const _hoisted_75 = { class: "wrapper" };
-  const _hoisted_76 = { class: "row border" };
-  const _hoisted_77 = { class: "item-title" };
-  const _hoisted_78 = { class: "wrapper" };
-  const _hoisted_79 = { key: 2 };
-  const _hoisted_80 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
-    /* @__PURE__ */ vue.createElementVNode("label", { class: "main-title" }, "收藏列表")
-  ], -1));
-  const _hoisted_81 = { class: "border" };
-  const _hoisted_82 = { class: "row" };
-  const _hoisted_83 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("span", null, "   ", -1));
-  const _hoisted_84 = { style: { "display": "inline-flex", "overflow": "hidden", "position": "relative" } };
-  const _hoisted_85 = {
+  const _hoisted_32$1 = { class: "row border" };
+  const _hoisted_33$1 = { class: "wrapper" };
+  const _hoisted_34$1 = { class: "border" };
+  const _hoisted_35 = { class: "row" };
+  const _hoisted_36 = { class: "wrapper" };
+  const _hoisted_37 = { class: "row border" };
+  const _hoisted_38 = { class: "wrapper" };
+  const _hoisted_39 = { class: "row border" };
+  const _hoisted_40 = { class: "wrapper" };
+  const _hoisted_41 = { class: "border" };
+  const _hoisted_42 = { class: "row" };
+  const _hoisted_43 = { class: "wrapper" };
+  const _hoisted_44 = { class: "row border" };
+  const _hoisted_45 = { class: "wrapper" };
+  const _hoisted_46 = { class: "row border" };
+  const _hoisted_47 = { class: "item-title" };
+  const _hoisted_48 = { class: "wrapper" };
+  const _hoisted_49 = { class: "row border" };
+  const _hoisted_50 = { class: "item-title" };
+  const _hoisted_51 = { class: "wrapper" };
+  const _hoisted_52 = { key: 2 };
+  const _hoisted_53 = { class: "border" };
+  const _hoisted_54 = { class: "row" };
+  const _hoisted_55 = { style: { "display": "inline-flex", "overflow": "hidden", "position": "relative" } };
+  const _hoisted_56 = {
     key: 0,
     style: { "display": "inline", "margin-left": "10px", "font-size": "18px" }
   };
-  const _hoisted_86 = {
+  const _hoisted_57 = {
     key: 1,
     style: { "display": "inline", "margin-left": "10px" }
   };
-  const _hoisted_87 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " 默认导出为 json 文件，如需其他格式，请使用 ChatGpt/Deepseek 转换 ", -1));
-  const _hoisted_88 = { class: "row" };
-  const _hoisted_89 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "收藏时提醒添加到书签", -1));
-  const _hoisted_90 = { class: "wrapper" };
-  const _hoisted_91 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " 解释：V站帐号一旦被封禁，则无法登录，无法查看账号收藏了 ", -1));
-  const _hoisted_92 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row border" }, [
-    /* @__PURE__ */ vue.createElementVNode("label", { class: "main-title" }, "其他")
-  ], -1));
-  const _hoisted_93 = { class: "row border" };
-  const _hoisted_94 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "用户打标签(跨平台，数据保存在自己的记事本)：", -1));
-  const _hoisted_95 = { class: "wrapper" };
-  const _hoisted_96 = { class: "row" };
-  const _hoisted_97 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "划词显示Base64解码框", -1));
-  const _hoisted_98 = { class: "wrapper" };
-  const _hoisted_99 = { class: "row border" };
-  const _hoisted_100 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "自动签到", -1));
-  const _hoisted_101 = { class: "wrapper" };
-  const _hoisted_102 = { class: "border" };
-  const _hoisted_103 = { class: "row" };
-  const _hoisted_104 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "自定义背景", -1));
-  const _hoisted_105 = { class: "wrapper" };
-  const _hoisted_106 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, [
-    /* @__PURE__ */ vue.createTextVNode(" 未设定此值时，则脚本就什么都不做，V站大部分页面背景颜色默认为 #e2e2e2，少部分页面有特定背景。接受一个合法的css color值：例如"),
-    /* @__PURE__ */ vue.createElementVNode("a", {
-      href: "https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value",
-      target: "_blank"
-    }, "red、#ffffff、rgb(222,222,22)(点此查看)"),
-    /* @__PURE__ */ vue.createTextVNode("等等。 ")
-  ], -1));
-  const _hoisted_107 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc danger" }, " 提示：此项需要刷新页面才能生效 ", -1));
-  const _hoisted_108 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
-    /* @__PURE__ */ vue.createElementVNode("label", { class: "main-title" }, "消息通知")
-  ], -1));
-  const _hoisted_109 = { class: "row border" };
-  const _hoisted_110 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "接管未读提醒页面", -1));
-  const _hoisted_111 = { class: "wrapper" };
-  const _hoisted_112 = { class: "row" };
-  const _hoisted_113 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "定时查询未读提醒", -1));
-  const _hoisted_114 = { class: "wrapper" };
-  const _hoisted_115 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " 开启此功能会带来以下影响： 1、你的IP可能会被封禁 2、消耗更多流量，给服务器带来更大的负担 3、你的V站浏览进度条会变快 ", -1));
-  const _hoisted_116 = {
+  const _hoisted_58 = { class: "row" };
+  const _hoisted_59 = { class: "wrapper" };
+  const _hoisted_60 = { class: "row border" };
+  const _hoisted_61 = { class: "wrapper" };
+  const _hoisted_62 = { class: "row" };
+  const _hoisted_63 = { class: "wrapper" };
+  const _hoisted_64 = { class: "row border" };
+  const _hoisted_65 = { class: "wrapper" };
+  const _hoisted_66 = { class: "border" };
+  const _hoisted_67 = { class: "row" };
+  const _hoisted_68 = { class: "wrapper" };
+  const _hoisted_69 = { class: "row border" };
+  const _hoisted_70 = { class: "wrapper" };
+  const _hoisted_71 = { class: "row" };
+  const _hoisted_72 = { class: "wrapper" };
+  const _hoisted_73 = {
     key: 0,
     class: "sub-content"
   };
-  const _hoisted_117 = { class: "row" };
-  const _hoisted_118 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "查询间隔", -1));
-  const _hoisted_119 = { class: "wrapper" };
-  const _hoisted_120 = ["value"];
-  const _hoisted_121 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc" }, " 设置值太小，会导致频繁请求，你的IP可能会被封禁，建议设置为5，即每次5分钟查询一次 ", -1));
-  const _hoisted_122 = { class: "row" };
-  const _hoisted_123 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "当有新未读提醒时，网页标题闪烁", -1));
-  const _hoisted_124 = { class: "wrapper" };
-  const _hoisted_125 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "row" }, [
-    /* @__PURE__ */ vue.createElementVNode("label", { class: "item-title" }, "钉钉Webhook地址")
-  ], -1));
-  const _hoisted_126 = { class: "desc" };
-  const _hoisted_127 = ["value"];
-  const _hoisted_128 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "desc danger" }, " 提示：此项需要刷新页面才能生效 ", -1));
-  const _hoisted_129 = { key: 3 };
-  const _hoisted_130 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("h1", null, "V2EX Next", -1));
-  const _hoisted_131 = { class: "project-desc" };
-  const _hoisted_132 = { style: { "line-height": "2" } };
-  const _hoisted_133 = ["href"];
-  const _hoisted_134 = ["href"];
-  const _hoisted_135 = ["href"];
-  const _hoisted_136 = ["href"];
-  const _hoisted_137 = ["href"];
-  const _hoisted_138 = ["href"];
-  const _hoisted_139 = { class: "tips2" };
-  const _hoisted_140 = /* @__PURE__ */ _withScopeId$a(() => /* @__PURE__ */ vue.createElementVNode("span", null, "代码完全开源，greasyfork上的脚本代码与github上的代码打包后是一样的，不放心也可自行打包~", -1));
+  const _hoisted_74 = { class: "row" };
+  const _hoisted_75 = { class: "wrapper" };
+  const _hoisted_76 = ["value"];
+  const _hoisted_77 = { class: "row" };
+  const _hoisted_78 = { class: "wrapper" };
+  const _hoisted_79 = { class: "desc" };
+  const _hoisted_80 = ["value"];
+  const _hoisted_81 = { key: 3 };
+  const _hoisted_82 = { class: "project-desc" };
+  const _hoisted_83 = { style: { "line-height": "2" } };
+  const _hoisted_84 = ["href"];
+  const _hoisted_85 = ["href"];
+  const _hoisted_86 = ["href"];
+  const _hoisted_87 = ["href"];
+  const _hoisted_88 = ["href"];
+  const _hoisted_89 = ["href"];
+  const _hoisted_90 = { class: "tips2" };
+  const _hoisted_91 = { key: 4 };
+  const _hoisted_92 = { class: "row" };
+  const _hoisted_93 = { class: "wrapper" };
+  const _hoisted_94 = { class: "border" };
+  const _hoisted_95 = { class: "row" };
+  const _hoisted_96 = { class: "wrapper" };
   function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Icon = vue.resolveComponent("Icon");
     const _component_BaseSwitch = vue.resolveComponent("BaseSwitch");
@@ -3461,431 +3329,501 @@
             onClick: _cache[0] || (_cache[0] = (...args) => $options.close && $options.close(...args))
           }),
           vue.createElementVNode("div", _hoisted_2$c, [
-            vue.createElementVNode("div", _hoisted_3$a, [
-              _hoisted_4$a,
+            vue.createElementVNode("div", _hoisted_3$9, [
+              _cache[38] || (_cache[38] = vue.createElementVNode("div", { class: "title" }, " 脚本设置 ", -1)),
               vue.createVNode(_component_Icon, {
                 icon: "ic:round-close",
                 onClick: $options.close
               }, null, 8, ["onClick"])
             ]),
-            $options.isNew ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_5$8, [
+            $options.isNew ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_4$8, [
               vue.createElementVNode("a", {
                 onClick: _cache[1] || (_cache[1] = (...args) => $options.goPost && $options.goPost(...args))
               }, "New：手机App现已发布，支持楼中楼！PC脚本新增历史最热数据、imgur换源功能！点击查看详细介绍"),
-              _hoisted_6$8
+              _cache[39] || (_cache[39] = vue.createElementVNode("div", { class: "new" }, null, -1))
             ])) : vue.createCommentVNode("", true),
-            vue.createElementVNode("div", _hoisted_7$7, [
-              vue.createElementVNode("div", _hoisted_8$7, [
-                vue.createElementVNode("div", _hoisted_9$7, [
+            vue.createElementVNode("div", _hoisted_5$7, [
+              vue.createElementVNode("div", _hoisted_6$7, [
+                vue.createElementVNode("div", _hoisted_7$7, [
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["tab", $data.tabIndex === 0 && "active"]),
                     onClick: _cache[2] || (_cache[2] = ($event) => $data.tabIndex = 0)
                   }, [
                     vue.createVNode(_component_Icon, { icon: "weui:setting-outlined" }),
-                    _hoisted_10$7
+                    _cache[40] || (_cache[40] = vue.createElementVNode("span", null, "列表", -1))
                   ], 2),
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["tab", $data.tabIndex === 1 && "active"]),
                     onClick: _cache[3] || (_cache[3] = ($event) => $data.tabIndex = 1)
                   }, [
                     vue.createVNode(_component_Icon, { icon: "stash:article-alt-light" }),
-                    _hoisted_11$7
+                    _cache[41] || (_cache[41] = vue.createElementVNode("span", null, "主题", -1))
                   ], 2),
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["tab", $data.tabIndex === 2 && "active"]),
                     onClick: _cache[4] || (_cache[4] = ($event) => $data.tabIndex = 2)
                   }, [
                     vue.createVNode(_component_Icon, { icon: "fluent:more-circle-20-regular" }),
-                    _hoisted_12$7
+                    _cache[42] || (_cache[42] = vue.createElementVNode("span", null, "其他", -1))
                   ], 2),
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["tab", $data.tabIndex === 3 && "active"]),
                     onClick: _cache[5] || (_cache[5] = ($event) => $data.tabIndex = 3)
                   }, [
                     vue.createVNode(_component_Icon, { icon: "ix:about" }),
-                    _hoisted_13$7
+                    _cache[43] || (_cache[43] = vue.createElementVNode("span", null, "关于", -1))
+                  ], 2),
+                  vue.createElementVNode("div", {
+                    class: vue.normalizeClass(["tab", $data.tabIndex === 4 && "active"]),
+                    onClick: _cache[6] || (_cache[6] = ($event) => $data.tabIndex = 4)
+                  }, [
+                    vue.createVNode(_component_Icon, { icon: "ix:about" }),
+                    _cache[44] || (_cache[44] = vue.createElementVNode("span", null, "插件", -1))
                   ], 2)
                 ]),
-                vue.createElementVNode("div", _hoisted_14$6, [
-                  _hoisted_15$5,
-                  vue.createElementVNode("div", _hoisted_16$5, [
+                vue.createElementVNode("div", _hoisted_8$7, [
+                  _cache[45] || (_cache[45] = vue.createElementVNode("div", { class: "tip" }, " 如果可以的话欢迎点个star支持一下~ ", -1)),
+                  vue.createElementVNode("div", _hoisted_9$7, [
                     vue.createElementVNode("a", {
                       href: $options.DefaultVal.git,
                       target: "_blank"
                     }, [
                       vue.createVNode(_component_Icon, { icon: "mdi:github" })
-                    ], 8, _hoisted_17$5),
+                    ], 8, _hoisted_10$7),
                     vue.createElementVNode("a", {
                       href: $options.DefaultVal.homeUrl,
                       target: "_blank"
                     }, [
                       vue.createVNode(_component_Icon, { icon: "iconamoon:home-light" })
-                    ], 8, _hoisted_18$5)
+                    ], 8, _hoisted_11$6)
                   ])
                 ])
               ]),
-              vue.createElementVNode("div", _hoisted_19$4, [
-                vue.createElementVNode("div", _hoisted_20$3, [
-                  $data.tabIndex === 0 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_21$3, [
-                    vue.createElementVNode("div", _hoisted_22$3, [
-                      vue.createElementVNode("div", _hoisted_23$3, [
-                        _hoisted_24$2,
-                        vue.createElementVNode("div", _hoisted_25$1, [
-                          vue.createElementVNode("div", _hoisted_26$1, [
+              vue.createElementVNode("div", _hoisted_12$5, [
+                vue.createElementVNode("div", _hoisted_13$5, [
+                  $data.tabIndex === 0 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_14$4, [
+                    vue.createElementVNode("div", _hoisted_15$3, [
+                      vue.createElementVNode("div", _hoisted_16$3, [
+                        _cache[46] || (_cache[46] = vue.createElementVNode("label", { class: "item-title" }, "列表展示方式", -1)),
+                        vue.createElementVNode("div", _hoisted_17$2, [
+                          vue.createElementVNode("div", _hoisted_18$2, [
                             vue.createElementVNode("div", {
                               class: vue.normalizeClass(["radio", $data.config.viewType === "simple" ? "active" : ""]),
-                              onClick: _cache[6] || (_cache[6] = ($event) => $data.config.viewType = "simple")
+                              onClick: _cache[7] || (_cache[7] = ($event) => $data.config.viewType = "simple")
                             }, "简洁 ", 2),
                             vue.createElementVNode("div", {
                               class: vue.normalizeClass(["radio", $data.config.viewType === "table" ? "active" : ""]),
-                              onClick: _cache[7] || (_cache[7] = ($event) => $data.config.viewType = "table")
+                              onClick: _cache[8] || (_cache[8] = ($event) => $data.config.viewType = "table")
                             }, "表格 ", 2),
                             vue.createElementVNode("div", {
                               class: vue.normalizeClass(["radio", $data.config.viewType === "card" ? "active" : ""]),
-                              onClick: _cache[8] || (_cache[8] = ($event) => $data.showNotice = true)
+                              onClick: _cache[9] || (_cache[9] = ($event) => $data.showNotice = true)
                             }, "卡片 ", 2)
                           ])
                         ])
                       ]),
-                      _hoisted_27$1
+                      _cache[47] || (_cache[47] = vue.createElementVNode("div", { class: "desc danger" }, " 提示：此项需要刷新页面才能生效 ", -1))
                     ]),
-                    vue.createElementVNode("div", _hoisted_28$1, [
-                      vue.createElementVNode("div", _hoisted_29$1, [
-                        _hoisted_30$1,
-                        vue.createElementVNode("div", _hoisted_31$1, [
+                    vue.createElementVNode("div", _hoisted_19$2, [
+                      vue.createElementVNode("div", _hoisted_20$2, [
+                        _cache[48] || (_cache[48] = vue.createElementVNode("label", { class: "item-title" }, "主题弹框显示", -1)),
+                        vue.createElementVNode("div", _hoisted_21$1, [
                           vue.createVNode(_component_BaseSwitch, {
                             modelValue: $data.config.clickPostItemOpenDetail,
-                            "onUpdate:modelValue": _cache[9] || (_cache[9] = ($event) => $data.config.clickPostItemOpenDetail = $event)
+                            "onUpdate:modelValue": _cache[10] || (_cache[10] = ($event) => $data.config.clickPostItemOpenDetail = $event)
                           }, null, 8, ["modelValue"])
                         ])
                       ]),
-                      _hoisted_32$1
+                      _cache[49] || (_cache[49] = vue.createElementVNode("div", { class: "desc" }, [
+                        vue.createTextVNode(" 开启此选项后，主题会"),
+                        vue.createElementVNode("span", { class: "danger" }, "始终"),
+                        vue.createTextVNode("以弹框的方式显示。优先级大于“新标签页打开链接” ")
+                      ], -1))
                     ]),
-                    vue.createElementVNode("div", _hoisted_33$1, [
-                      vue.createElementVNode("div", _hoisted_34$1, [
-                        _hoisted_35$1,
-                        vue.createElementVNode("div", _hoisted_36$1, [
+                    vue.createElementVNode("div", _hoisted_22$1, [
+                      vue.createElementVNode("div", _hoisted_23$1, [
+                        _cache[50] || (_cache[50] = vue.createElementVNode("label", { class: "item-title" }, "新标签页打开链接", -1)),
+                        vue.createElementVNode("div", _hoisted_24$1, [
                           vue.createVNode(_component_BaseSwitch, {
                             modelValue: $data.config.newTabOpen,
-                            "onUpdate:modelValue": _cache[10] || (_cache[10] = ($event) => $data.config.newTabOpen = $event)
+                            "onUpdate:modelValue": _cache[11] || (_cache[11] = ($event) => $data.config.newTabOpen = $event)
                           }, null, 8, ["modelValue"])
                         ])
                       ]),
-                      _hoisted_37$1
+                      _cache[51] || (_cache[51] = vue.createElementVNode("div", { class: "desc" }, " 网页上所有链接通过新标签页打开 ", -1))
                     ]),
-                    vue.createElementVNode("div", _hoisted_38$1, [
-                      _hoisted_39$1,
-                      vue.createElementVNode("div", _hoisted_40$1, [
+                    vue.createElementVNode("div", _hoisted_25$1, [
+                      _cache[52] || (_cache[52] = vue.createElementVNode("label", { class: "item-title" }, "打开新标签页时立即切换过去", -1)),
+                      vue.createElementVNode("div", _hoisted_26$1, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.newTabOpenActive,
-                          "onUpdate:modelValue": _cache[11] || (_cache[11] = ($event) => $data.config.newTabOpenActive = $event)
+                          "onUpdate:modelValue": _cache[12] || (_cache[12] = ($event) => $data.config.newTabOpenActive = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ])
                   ])) : vue.createCommentVNode("", true),
-                  $data.tabIndex === 1 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_41$1, [
-                    vue.createElementVNode("div", _hoisted_42$1, [
-                      _hoisted_43$1,
-                      vue.createElementVNode("div", _hoisted_44$1, [
+                  $data.tabIndex === 1 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_27$1, [
+                    vue.createElementVNode("div", _hoisted_28$1, [
+                      _cache[53] || (_cache[53] = vue.createElementVNode("label", { class: "item-title" }, "回复类型", -1)),
+                      vue.createElementVNode("div", _hoisted_29$1, [
                         vue.createVNode(_component_BaseSelect, {
                           "display-type": $data.config.commentDisplayType,
-                          "onUpdate:displayType": _cache[12] || (_cache[12] = ($event) => $data.config.commentDisplayType = $event)
+                          "onUpdate:displayType": _cache[13] || (_cache[13] = ($event) => $data.config.commentDisplayType = $event)
                         }, null, 8, ["display-type"])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_45$1, [
-                      _hoisted_46$1,
-                      vue.createElementVNode("div", _hoisted_47$1, [
+                    vue.createElementVNode("div", _hoisted_30$1, [
+                      _cache[54] || (_cache[54] = vue.createElementVNode("label", { class: "item-title" }, "详情页中显示“回复类型”", -1)),
+                      vue.createElementVNode("div", _hoisted_31$1, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.showToolbar,
-                          "onUpdate:modelValue": _cache[13] || (_cache[13] = ($event) => $data.config.showToolbar = $event)
+                          "onUpdate:modelValue": _cache[14] || (_cache[14] = ($event) => $data.config.showToolbar = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_48, [
-                      _hoisted_49,
-                      vue.createElementVNode("div", _hoisted_50, [
+                    vue.createElementVNode("div", _hoisted_32$1, [
+                      _cache[55] || (_cache[55] = vue.createElementVNode("label", { class: "item-title" }, "替换Imgur源", -1)),
+                      vue.createElementVNode("div", _hoisted_33$1, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.replaceImgur,
-                          "onUpdate:modelValue": _cache[14] || (_cache[14] = ($event) => $data.config.replaceImgur = $event)
+                          "onUpdate:modelValue": _cache[15] || (_cache[15] = ($event) => $data.config.replaceImgur = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_51, [
-                      vue.createElementVNode("div", _hoisted_52, [
-                        _hoisted_53,
-                        vue.createElementVNode("div", _hoisted_54, [
+                    vue.createElementVNode("div", _hoisted_34$1, [
+                      vue.createElementVNode("div", _hoisted_35, [
+                        _cache[56] || (_cache[56] = vue.createElementVNode("label", { class: "item-title" }, "单独打开主题时默认显示楼中楼", -1)),
+                        vue.createElementVNode("div", _hoisted_36, [
                           vue.createVNode(_component_BaseSwitch, {
                             modelValue: $data.config.autoOpenDetail,
-                            "onUpdate:modelValue": _cache[15] || (_cache[15] = ($event) => $data.config.autoOpenDetail = $event)
+                            "onUpdate:modelValue": _cache[16] || (_cache[16] = ($event) => $data.config.autoOpenDetail = $event)
                           }, null, 8, ["modelValue"])
                         ])
                       ]),
-                      _hoisted_55
+                      _cache[57] || (_cache[57] = vue.createElementVNode("div", { class: "desc" }, " 单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼 ", -1))
                     ]),
-                    vue.createElementVNode("div", _hoisted_56, [
-                      _hoisted_57,
-                      vue.createElementVNode("div", _hoisted_58, [
+                    vue.createElementVNode("div", _hoisted_37, [
+                      _cache[58] || (_cache[58] = vue.createElementVNode("label", { class: "item-title" }, "点击左右两侧透明处关闭主题详情弹框", -1)),
+                      vue.createElementVNode("div", _hoisted_38, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.closePostDetailBySpace,
-                          "onUpdate:modelValue": _cache[16] || (_cache[16] = ($event) => $data.config.closePostDetailBySpace = $event)
+                          "onUpdate:modelValue": _cache[17] || (_cache[17] = ($event) => $data.config.closePostDetailBySpace = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_59, [
-                      _hoisted_60,
-                      vue.createElementVNode("div", _hoisted_61, [
+                    vue.createElementVNode("div", _hoisted_39, [
+                      _cache[59] || (_cache[59] = vue.createElementVNode("label", { class: "item-title" }, "正文超长自动折叠", -1)),
+                      vue.createElementVNode("div", _hoisted_40, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.contentAutoCollapse,
-                          "onUpdate:modelValue": _cache[17] || (_cache[17] = ($event) => $data.config.contentAutoCollapse = $event)
+                          "onUpdate:modelValue": _cache[18] || (_cache[18] = ($event) => $data.config.contentAutoCollapse = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_62, [
-                      vue.createElementVNode("div", _hoisted_63, [
-                        _hoisted_64,
-                        vue.createElementVNode("div", _hoisted_65, [
+                    vue.createElementVNode("div", _hoisted_41, [
+                      vue.createElementVNode("div", _hoisted_42, [
+                        _cache[60] || (_cache[60] = vue.createElementVNode("label", { class: "item-title" }, "主题宽度", -1)),
+                        vue.createElementVNode("div", _hoisted_43, [
                           vue.withDirectives(vue.createElementVNode("input", {
                             type: "text",
-                            "onUpdate:modelValue": _cache[18] || (_cache[18] = ($event) => $data.config.postWidth = $event)
+                            "onUpdate:modelValue": _cache[19] || (_cache[19] = ($event) => $data.config.postWidth = $event)
                           }, null, 512), [
                             [vue.vModelText, $data.config.postWidth]
                           ])
                         ])
                       ]),
-                      _hoisted_66,
-                      _hoisted_67,
-                      _hoisted_68
+                      _cache[61] || (_cache[61] = vue.createElementVNode("div", { class: "desc" }, [
+                        vue.createTextVNode(" 未设定此值时，则默认宽度为77rem。接受合法的width值： "),
+                        vue.createElementVNode("a", {
+                          style: { "color": "#40a9ff", "text-decoration": "underline" },
+                          href: "https://vue3js.cn/interview/css/em_px_rem_vh_vw.html#%E4%BA%8C%E3%80%81%E5%8D%95%E4%BD%8D",
+                          target: "_blank"
+                        }, "rem、px、vw、vh(点此查看)"),
+                        vue.createTextVNode("。 vw代表屏幕百分比，如想要屏幕的66%，请填写66vw ")
+                      ], -1)),
+                      _cache[62] || (_cache[62] = vue.createElementVNode("div", { class: "desc" }, " 提示：此项设置以后，单独打开详情页时会出现主题突然变宽（窄）的问题，暂时无解 ", -1)),
+                      _cache[63] || (_cache[63] = vue.createElementVNode("div", { class: "desc danger" }, " 提示：此项需要刷新页面才能生效 ", -1))
                     ]),
-                    _hoisted_69,
-                    vue.createElementVNode("div", _hoisted_70, [
-                      _hoisted_71,
-                      vue.createElementVNode("div", _hoisted_72, [
+                    _cache[65] || (_cache[65] = vue.createElementVNode("div", { class: "row" }, [
+                      vue.createElementVNode("label", { class: "main-title" }, "高赞回复")
+                    ], -1)),
+                    vue.createElementVNode("div", _hoisted_44, [
+                      _cache[64] || (_cache[64] = vue.createElementVNode("label", { class: "item-title" }, "显示高赞回复", -1)),
+                      vue.createElementVNode("div", _hoisted_45, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.showTopReply,
-                          "onUpdate:modelValue": _cache[19] || (_cache[19] = ($event) => $data.config.showTopReply = $event)
+                          "onUpdate:modelValue": _cache[20] || (_cache[20] = ($event) => $data.config.showTopReply = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_73, [
-                      vue.createElementVNode("label", _hoisted_74, "最多显示" + vue.toDisplayString($data.config.topReplyCount) + "个高赞回复", 1),
-                      vue.createElementVNode("div", _hoisted_75, [
+                    vue.createElementVNode("div", _hoisted_46, [
+                      vue.createElementVNode("label", _hoisted_47, "最多显示" + vue.toDisplayString($data.config.topReplyCount) + "个高赞回复", 1),
+                      vue.createElementVNode("div", _hoisted_48, [
                         vue.withDirectives(vue.createElementVNode("input", {
                           type: "number",
                           min: "1",
-                          "onUpdate:modelValue": _cache[20] || (_cache[20] = ($event) => $data.config.topReplyCount = $event)
+                          "onUpdate:modelValue": _cache[21] || (_cache[21] = ($event) => $data.config.topReplyCount = $event)
                         }, null, 512), [
                           [vue.vModelText, $data.config.topReplyCount]
                         ])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_76, [
-                      vue.createElementVNode("label", _hoisted_77, "最少需要" + vue.toDisplayString($data.config.topReplyLoveMinCount) + "个赞才能被判定为高赞", 1),
-                      vue.createElementVNode("div", _hoisted_78, [
+                    vue.createElementVNode("div", _hoisted_49, [
+                      vue.createElementVNode("label", _hoisted_50, "最少需要" + vue.toDisplayString($data.config.topReplyLoveMinCount) + "个赞才能被判定为高赞", 1),
+                      vue.createElementVNode("div", _hoisted_51, [
                         vue.withDirectives(vue.createElementVNode("input", {
                           type: "number",
                           min: "1",
-                          "onUpdate:modelValue": _cache[21] || (_cache[21] = ($event) => $data.config.topReplyLoveMinCount = $event)
+                          "onUpdate:modelValue": _cache[22] || (_cache[22] = ($event) => $data.config.topReplyLoveMinCount = $event)
                         }, null, 512), [
                           [vue.vModelText, $data.config.topReplyLoveMinCount]
                         ])
                       ])
                     ])
                   ])) : vue.createCommentVNode("", true),
-                  $data.tabIndex === 2 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_79, [
-                    _hoisted_80,
-                    vue.createElementVNode("div", _hoisted_81, [
-                      vue.createElementVNode("div", _hoisted_82, [
+                  $data.tabIndex === 2 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_52, [
+                    _cache[84] || (_cache[84] = vue.createElementVNode("div", { class: "row" }, [
+                      vue.createElementVNode("label", { class: "main-title" }, "收藏列表")
+                    ], -1)),
+                    vue.createElementVNode("div", _hoisted_53, [
+                      vue.createElementVNode("div", _hoisted_54, [
                         vue.createElementVNode("div", null, [
                           vue.createVNode(_component_BaseButton, {
                             onClick: $options.exportCollectList,
                             loading: $data.exportLoading
                           }, {
-                            default: vue.withCtx(() => [
-                              vue.createTextVNode("导出")
-                            ]),
+                            default: vue.withCtx(() => [..._cache[66] || (_cache[66] = [
+                              vue.createTextVNode("导出", -1)
+                            ])]),
                             _: 1
                           }, 8, ["onClick", "loading"]),
-                          _hoisted_83,
-                          vue.createElementVNode("div", _hoisted_84, [
+                          _cache[68] || (_cache[68] = vue.createElementVNode("span", null, "   ", -1)),
+                          vue.createElementVNode("div", _hoisted_55, [
                             vue.createVNode(_component_BaseButton, { loading: $data.importLoading }, {
-                              default: vue.withCtx(() => [
-                                vue.createTextVNode("导入，并收藏")
-                              ]),
+                              default: vue.withCtx(() => [..._cache[67] || (_cache[67] = [
+                                vue.createTextVNode("导入，并收藏", -1)
+                              ])]),
                               _: 1
                             }, 8, ["loading"]),
                             $data.showInput ? (vue.openBlock(), vue.createElementBlock("input", {
                               key: 0,
                               type: "file",
                               style: { "position": "absolute", "width": "100%", "height": "100px", "opacity": "0" },
-                              onChange: _cache[22] || (_cache[22] = (...args) => $options.importCollectList && $options.importCollectList(...args))
+                              onChange: _cache[23] || (_cache[23] = (...args) => $options.importCollectList && $options.importCollectList(...args))
                             }, null, 32)) : vue.createCommentVNode("", true)
                           ]),
-                          $data.importLoading ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_85, " 导入中：" + vue.toDisplayString($data.index) + "/" + vue.toDisplayString($data.total) + " ，大约需要" + vue.toDisplayString($data.endTime) + "分钟，导入完成前请勿关闭和刷新本页面 ", 1)) : vue.createCommentVNode("", true),
-                          $data.importOk ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_86, " 导入完成 ")) : vue.createCommentVNode("", true)
+                          $data.importLoading ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_56, " 导入中：" + vue.toDisplayString($data.index) + "/" + vue.toDisplayString($data.total) + " ，大约需要" + vue.toDisplayString($data.endTime) + "分钟，导入完成前请勿关闭和刷新本页面 ", 1)) : vue.createCommentVNode("", true),
+                          $data.importOk ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_57, " 导入完成 ")) : vue.createCommentVNode("", true)
                         ])
                       ]),
-                      _hoisted_87
+                      _cache[69] || (_cache[69] = vue.createElementVNode("div", { class: "desc" }, " 默认导出为 json 文件，如需其他格式，请使用 ChatGpt/Deepseek 转换 ", -1))
                     ]),
-                    vue.createElementVNode("div", _hoisted_88, [
-                      _hoisted_89,
-                      vue.createElementVNode("div", _hoisted_90, [
+                    vue.createElementVNode("div", _hoisted_58, [
+                      _cache[70] || (_cache[70] = vue.createElementVNode("label", { class: "item-title" }, "收藏时提醒添加到书签", -1)),
+                      vue.createElementVNode("div", _hoisted_59, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.collectBrowserNotice,
-                          "onUpdate:modelValue": _cache[23] || (_cache[23] = ($event) => $data.config.collectBrowserNotice = $event)
+                          "onUpdate:modelValue": _cache[24] || (_cache[24] = ($event) => $data.config.collectBrowserNotice = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ]),
-                    _hoisted_91,
-                    _hoisted_92,
-                    vue.createElementVNode("div", _hoisted_93, [
-                      _hoisted_94,
-                      vue.createElementVNode("div", _hoisted_95, [
+                    _cache[85] || (_cache[85] = vue.createElementVNode("div", { class: "desc" }, " 解释：V站帐号一旦被封禁，则无法登录，无法查看账号收藏了 ", -1)),
+                    _cache[86] || (_cache[86] = vue.createElementVNode("div", { class: "row border" }, [
+                      vue.createElementVNode("label", { class: "main-title" }, "其他")
+                    ], -1)),
+                    vue.createElementVNode("div", _hoisted_60, [
+                      _cache[71] || (_cache[71] = vue.createElementVNode("label", { class: "item-title" }, "用户打标签(跨平台，数据保存在自己的记事本)：", -1)),
+                      vue.createElementVNode("div", _hoisted_61, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.openTag,
-                          "onUpdate:modelValue": _cache[24] || (_cache[24] = ($event) => $data.config.openTag = $event)
+                          "onUpdate:modelValue": _cache[25] || (_cache[25] = ($event) => $data.config.openTag = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_96, [
-                      _hoisted_97,
-                      vue.createElementVNode("div", _hoisted_98, [
+                    vue.createElementVNode("div", _hoisted_62, [
+                      _cache[72] || (_cache[72] = vue.createElementVNode("label", { class: "item-title" }, "划词显示Base64解码框", -1)),
+                      vue.createElementVNode("div", _hoisted_63, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.base64,
-                          "onUpdate:modelValue": _cache[25] || (_cache[25] = ($event) => $data.config.base64 = $event)
+                          "onUpdate:modelValue": _cache[26] || (_cache[26] = ($event) => $data.config.base64 = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_99, [
-                      _hoisted_100,
-                      vue.createElementVNode("div", _hoisted_101, [
+                    vue.createElementVNode("div", _hoisted_64, [
+                      _cache[73] || (_cache[73] = vue.createElementVNode("label", { class: "item-title" }, "自动签到", -1)),
+                      vue.createElementVNode("div", _hoisted_65, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.autoSignin,
-                          "onUpdate:modelValue": _cache[26] || (_cache[26] = ($event) => $data.config.autoSignin = $event)
+                          "onUpdate:modelValue": _cache[27] || (_cache[27] = ($event) => $data.config.autoSignin = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_102, [
-                      vue.createElementVNode("div", _hoisted_103, [
-                        _hoisted_104,
-                        vue.createElementVNode("div", _hoisted_105, [
+                    vue.createElementVNode("div", _hoisted_66, [
+                      vue.createElementVNode("div", _hoisted_67, [
+                        _cache[74] || (_cache[74] = vue.createElementVNode("label", { class: "item-title" }, "自定义背景", -1)),
+                        vue.createElementVNode("div", _hoisted_68, [
                           vue.withDirectives(vue.createElementVNode("input", {
                             type: "text",
-                            "onUpdate:modelValue": _cache[27] || (_cache[27] = ($event) => $data.config.customBgColor = $event)
+                            "onUpdate:modelValue": _cache[28] || (_cache[28] = ($event) => $data.config.customBgColor = $event)
                           }, null, 512), [
                             [vue.vModelText, $data.config.customBgColor]
                           ])
                         ])
                       ]),
-                      _hoisted_106,
-                      _hoisted_107
+                      _cache[75] || (_cache[75] = vue.createElementVNode("div", { class: "desc" }, [
+                        vue.createTextVNode(" 未设定此值时，则脚本就什么都不做，V站大部分页面背景颜色默认为 #e2e2e2，少部分页面有特定背景。接受一个合法的css color值：例如"),
+                        vue.createElementVNode("a", {
+                          href: "https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value",
+                          target: "_blank"
+                        }, "red、#ffffff、rgb(222,222,22)(点此查看)"),
+                        vue.createTextVNode("等等。 ")
+                      ], -1)),
+                      _cache[76] || (_cache[76] = vue.createElementVNode("div", { class: "desc danger" }, " 提示：此项需要刷新页面才能生效 ", -1))
                     ]),
-                    _hoisted_108,
-                    vue.createElementVNode("div", _hoisted_109, [
-                      _hoisted_110,
-                      vue.createElementVNode("div", _hoisted_111, [
+                    _cache[87] || (_cache[87] = vue.createElementVNode("div", { class: "row" }, [
+                      vue.createElementVNode("label", { class: "main-title" }, "消息通知")
+                    ], -1)),
+                    vue.createElementVNode("div", _hoisted_69, [
+                      _cache[77] || (_cache[77] = vue.createElementVNode("label", { class: "item-title" }, "接管未读提醒页面", -1)),
+                      vue.createElementVNode("div", _hoisted_70, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.notice.takeOverNoticePage,
-                          "onUpdate:modelValue": _cache[28] || (_cache[28] = ($event) => $data.config.notice.takeOverNoticePage = $event)
+                          "onUpdate:modelValue": _cache[29] || (_cache[29] = ($event) => $data.config.notice.takeOverNoticePage = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_112, [
-                      _hoisted_113,
-                      vue.createElementVNode("div", _hoisted_114, [
+                    vue.createElementVNode("div", _hoisted_71, [
+                      _cache[78] || (_cache[78] = vue.createElementVNode("label", { class: "item-title" }, "定时查询未读提醒", -1)),
+                      vue.createElementVNode("div", _hoisted_72, [
                         vue.createVNode(_component_BaseSwitch, {
                           modelValue: $data.config.notice.loopCheckNotice,
-                          "onUpdate:modelValue": _cache[29] || (_cache[29] = ($event) => $data.config.notice.loopCheckNotice = $event)
+                          "onUpdate:modelValue": _cache[30] || (_cache[30] = ($event) => $data.config.notice.loopCheckNotice = $event)
                         }, null, 8, ["modelValue"])
                       ])
                     ]),
-                    _hoisted_115,
-                    $data.config.notice.loopCheckNotice ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_116, [
-                      vue.createElementVNode("div", _hoisted_117, [
-                        _hoisted_118,
-                        vue.createElementVNode("div", _hoisted_119, [
+                    _cache[88] || (_cache[88] = vue.createElementVNode("div", { class: "desc" }, " 开启此功能会带来以下影响： 1、你的IP可能会被封禁 2、消耗更多流量，给服务器带来更大的负担 3、你的V站浏览进度条会变快 ", -1)),
+                    $data.config.notice.loopCheckNotice ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_73, [
+                      vue.createElementVNode("div", _hoisted_74, [
+                        _cache[80] || (_cache[80] = vue.createElementVNode("label", { class: "item-title" }, "查询间隔", -1)),
+                        vue.createElementVNode("div", _hoisted_75, [
                           vue.createElementVNode("input", {
                             type: "number",
                             value: $data.config.notice.loopCheckNoticeInterval,
-                            onBlur: _cache[30] || (_cache[30] = (e2) => $data.config.notice.loopCheckNoticeInterval = e2.target.value),
+                            onBlur: _cache[31] || (_cache[31] = (e2) => $data.config.notice.loopCheckNoticeInterval = e2.target.value),
                             style: { "margin-right": "1rem" }
-                          }, null, 40, _hoisted_120),
-                          vue.createTextVNode("分钟 ")
+                          }, null, 40, _hoisted_76),
+                          _cache[79] || (_cache[79] = vue.createTextVNode("分钟 ", -1))
                         ])
                       ]),
-                      _hoisted_121,
-                      vue.createElementVNode("div", _hoisted_122, [
-                        _hoisted_123,
-                        vue.createElementVNode("div", _hoisted_124, [
+                      _cache[82] || (_cache[82] = vue.createElementVNode("div", { class: "desc" }, " 设置值太小，会导致频繁请求，你的IP可能会被封禁，建议设置为5，即每次5分钟查询一次 ", -1)),
+                      vue.createElementVNode("div", _hoisted_77, [
+                        _cache[81] || (_cache[81] = vue.createElementVNode("label", { class: "item-title" }, "当有新未读提醒时，网页标题闪烁", -1)),
+                        vue.createElementVNode("div", _hoisted_78, [
                           vue.createVNode(_component_BaseSwitch, {
                             modelValue: $data.config.notice.whenNewNoticeGlimmer,
-                            "onUpdate:modelValue": _cache[31] || (_cache[31] = ($event) => $data.config.notice.whenNewNoticeGlimmer = $event)
+                            "onUpdate:modelValue": _cache[32] || (_cache[32] = ($event) => $data.config.notice.whenNewNoticeGlimmer = $event)
                           }, null, 8, ["modelValue"])
                         ])
                       ]),
-                      _hoisted_125,
-                      vue.createElementVNode("div", _hoisted_126, [
+                      _cache[83] || (_cache[83] = vue.createElementVNode("div", { class: "row" }, [
+                        vue.createElementVNode("label", { class: "item-title" }, "钉钉Webhook地址")
+                      ], -1)),
+                      vue.createElementVNode("div", _hoisted_79, [
                         vue.createElementVNode("input", {
                           type: "text",
                           value: $data.config.notice.ddWebhook,
-                          onBlur: _cache[32] || (_cache[32] = (e2) => $data.config.notice.ddWebhook = e2.target.value),
+                          onBlur: _cache[33] || (_cache[33] = (e2) => $data.config.notice.ddWebhook = e2.target.value),
                           style: { "width": "100%" }
-                        }, null, 40, _hoisted_127)
+                        }, null, 40, _hoisted_80)
                       ])
                     ])) : vue.createCommentVNode("", true),
-                    _hoisted_128
+                    _cache[89] || (_cache[89] = vue.createElementVNode("div", { class: "desc danger" }, " 提示：此项需要刷新页面才能生效 ", -1))
                   ])) : vue.createCommentVNode("", true),
-                  $data.tabIndex === 3 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_129, [
-                    _hoisted_130,
-                    vue.createElementVNode("div", _hoisted_131, [
-                      vue.createElementVNode("div", _hoisted_132, [
+                  $data.tabIndex === 3 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_81, [
+                    _cache[97] || (_cache[97] = vue.createElementVNode("h1", null, "V2EX Next", -1)),
+                    vue.createElementVNode("div", _hoisted_82, [
+                      vue.createElementVNode("div", _hoisted_83, [
                         vue.createElementVNode("div", null, [
-                          vue.createTextVNode("官网："),
+                          _cache[90] || (_cache[90] = vue.createTextVNode("官网：", -1)),
                           vue.createElementVNode("a", {
                             href: $options.DefaultVal.homeUrl,
                             target: "_blank"
-                          }, vue.toDisplayString($options.DefaultVal.homeUrl), 9, _hoisted_133)
+                          }, vue.toDisplayString($options.DefaultVal.homeUrl), 9, _hoisted_84)
                         ]),
                         vue.createElementVNode("div", null, [
-                          vue.createTextVNode("GitHub地址："),
+                          _cache[91] || (_cache[91] = vue.createTextVNode("GitHub地址：", -1)),
                           vue.createElementVNode("a", {
                             href: $options.DefaultVal.git,
                             target: "_blank"
-                          }, vue.toDisplayString($options.DefaultVal.git), 9, _hoisted_134)
+                          }, vue.toDisplayString($options.DefaultVal.git), 9, _hoisted_85)
                         ]),
                         vue.createElementVNode("div", null, [
-                          vue.createTextVNode("PC脚本地址："),
+                          _cache[92] || (_cache[92] = vue.createTextVNode("PC脚本地址：", -1)),
                           vue.createElementVNode("a", {
                             href: $options.DefaultVal.pcScript,
                             target: "_blank"
-                          }, vue.toDisplayString($options.DefaultVal.pcScript), 9, _hoisted_135)
+                          }, vue.toDisplayString($options.DefaultVal.pcScript), 9, _hoisted_86)
                         ]),
                         vue.createElementVNode("div", null, [
-                          vue.createTextVNode("App地址："),
+                          _cache[93] || (_cache[93] = vue.createTextVNode("App地址：", -1)),
                           vue.createElementVNode("a", {
                             href: $options.DefaultVal.mobileScript,
                             target: "_blank"
-                          }, vue.toDisplayString($options.DefaultVal.mobileScript), 9, _hoisted_136)
+                          }, vue.toDisplayString($options.DefaultVal.mobileScript), 9, _hoisted_87)
                         ]),
                         vue.createElementVNode("div", null, [
-                          vue.createTextVNode("反馈: "),
+                          _cache[94] || (_cache[94] = vue.createTextVNode("反馈: ", -1)),
                           vue.createElementVNode("a", {
                             href: $options.DefaultVal.issue,
                             target: "_blank"
-                          }, vue.toDisplayString($options.DefaultVal.issue), 9, _hoisted_137)
+                          }, vue.toDisplayString($options.DefaultVal.issue), 9, _hoisted_88)
                         ]),
                         vue.createElementVNode("div", null, [
-                          vue.createTextVNode("更新日志："),
+                          _cache[95] || (_cache[95] = vue.createTextVNode("更新日志：", -1)),
                           vue.createElementVNode("a", {
                             href: $options.DefaultVal.pcLog,
                             target: "_blank"
-                          }, vue.toDisplayString($options.DefaultVal.pcLog), 9, _hoisted_138)
+                          }, vue.toDisplayString($options.DefaultVal.pcLog), 9, _hoisted_89)
                         ])
                       ])
                     ]),
-                    vue.createElementVNode("div", _hoisted_139, [
+                    vue.createElementVNode("div", _hoisted_90, [
                       vue.createVNode(_component_Icon, { icon: "icon-park-outline:tips" }),
-                      _hoisted_140
+                      _cache[96] || (_cache[96] = vue.createElementVNode("span", null, "代码完全开源，greasyfork上的脚本代码与github上的代码打包后是一样的，不放心也可自行打包~", -1))
+                    ])
+                  ])) : vue.createCommentVNode("", true),
+                  $data.tabIndex === 4 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_91, [
+                    vue.createElementVNode("div", _hoisted_92, [
+                      _cache[99] || (_cache[99] = vue.createElementVNode("label", { class: "item-title" }, "主题宽度", -1)),
+                      vue.createElementVNode("div", _hoisted_93, [
+                        vue.withDirectives(vue.createElementVNode("input", {
+                          type: "text",
+                          "onUpdate:modelValue": _cache[34] || (_cache[34] = ($event) => $data.config.postWidth = $event)
+                        }, null, 512), [
+                          [vue.vModelText, $data.config.postWidth]
+                        ]),
+                        vue.createVNode(_component_BaseButton, {
+                          onClick: $options.exportCollectList,
+                          loading: $data.exportLoading
+                        }, {
+                          default: vue.withCtx(() => [..._cache[98] || (_cache[98] = [
+                            vue.createTextVNode("导出", -1)
+                          ])]),
+                          _: 1
+                        }, 8, ["onClick", "loading"])
+                      ])
+                    ]),
+                    vue.createElementVNode("div", _hoisted_94, [
+                      vue.createElementVNode("div", _hoisted_95, [
+                        _cache[100] || (_cache[100] = vue.createElementVNode("label", { class: "item-title" }, "v2新帖挂件", -1)),
+                        vue.createElementVNode("div", _hoisted_96, [
+                          vue.createVNode(_component_BaseSwitch, {
+                            modelValue: $data.config.notice.loopCheckNotice,
+                            "onUpdate:modelValue": _cache[35] || (_cache[35] = ($event) => $data.config.notice.loopCheckNotice = $event)
+                          }, null, 8, ["modelValue"])
+                        ])
+                      ]),
+                      _cache[101] || (_cache[101] = vue.createElementVNode("div", { class: "desc" }, " 脚本地址：https://greasyfork.org/zh-CN/scripts/448472 加载版本号： 0.11 加载地址：https://update.greasyfork.org/scripts/448472/1074290/v2%E6%96%B0%E5%B8%96%E6%8C%82%E4%BB%B6.user.js ", -1))
                     ])
                   ])) : vue.createCommentVNode("", true)
                 ])
@@ -3894,15 +3832,15 @@
           ]),
           vue.createVNode(_component_NoticeModal, {
             show: $data.showNotice,
-            "onUpdate:show": _cache[33] || (_cache[33] = ($event) => $data.showNotice = $event),
-            onConfirm: _cache[34] || (_cache[34] = ($event) => $data.config.viewType = "card")
+            "onUpdate:show": _cache[36] || (_cache[36] = ($event) => $data.showNotice = $event),
+            onConfirm: _cache[37] || (_cache[37] = ($event) => $data.config.viewType = "card")
           }, null, 8, ["show"])
         ])) : vue.createCommentVNode("", true)
       ]),
       _: 1
     });
   }
-  const Setting = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$8], ["__scopeId", "data-v-90d3e265"]]);
+  const Setting = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$8], ["__scopeId", "data-v-086214a4"]]);
   const _sfc_main$e = {
     name: "Point",
     components: { PopConfirm, Icon },
@@ -3935,8 +3873,8 @@
       },
       async thank() {
         this.$emit("addThank");
-        let url = `${location.origin}/thank/${this.apiUrl}?once=${this.post.once}`;
-        $.post(url).then((res) => {
+        let url2 = `${location.origin}/thank/${this.apiUrl}?once=${this.post.once}`;
+        $.post(url2).then((res) => {
           if (!res.success) {
             this.$emit("recallThank");
             eventBus.emit(CMD.SHOW_MSG, { type: "error", text: res.message });
@@ -4058,13 +3996,12 @@
       }
     }
   };
-  const _withScopeId$9 = (n2) => (vue.pushScopeId("data-v-64aa1930"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$d = { class: "Author-left" };
   const _hoisted_2$a = ["href"];
-  const _hoisted_3$9 = ["src"];
-  const _hoisted_4$9 = { class: "texts" };
-  const _hoisted_5$7 = ["href"];
-  const _hoisted_6$7 = {
+  const _hoisted_3$8 = ["src"];
+  const _hoisted_4$7 = { class: "texts" };
+  const _hoisted_5$6 = ["href"];
+  const _hoisted_6$6 = {
     key: 0,
     class: "owner"
   };
@@ -4078,18 +4015,13 @@
   };
   const _hoisted_9$6 = { class: "ago" };
   const _hoisted_10$6 = { class: "my-tag" };
-  const _hoisted_11$6 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
-  const _hoisted_12$6 = ["onClick"];
-  const _hoisted_13$6 = { class: "Author-right" };
-  const _hoisted_14$5 = {
+  const _hoisted_11$5 = ["onClick"];
+  const _hoisted_12$4 = { class: "Author-right" };
+  const _hoisted_13$4 = {
     key: 0,
     class: "toolbar"
   };
-  const _hoisted_15$4 = { class: "tool" };
-  const _hoisted_16$4 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("span", null, "隐藏", -1));
-  const _hoisted_17$4 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("span", null, "上下文", -1));
-  const _hoisted_18$4 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("span", null, "跳转", -1));
-  const _hoisted_19$3 = /* @__PURE__ */ _withScopeId$9(() => /* @__PURE__ */ vue.createElementVNode("span", null, "回复", -1));
+  const _hoisted_14$3 = { class: "tool" };
   function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Icon = vue.resolveComponent("Icon");
     const _component_PopConfirm = vue.resolveComponent("PopConfirm");
@@ -4113,28 +4045,28 @@
           vue.createElementVNode("img", {
             src: $props.comment.avatar,
             alt: ""
-          }, null, 8, _hoisted_3$9)
+          }, null, 8, _hoisted_3$8)
         ], 8, _hoisted_2$a)) : vue.createCommentVNode("", true),
-        vue.createElementVNode("span", _hoisted_4$9, [
+        vue.createElementVNode("span", _hoisted_4$7, [
           vue.createElementVNode("strong", null, [
             vue.createElementVNode("a", {
               href: `/member/${$props.comment.username}`,
               class: vue.normalizeClass(["username", { "dark": $options.isNight }])
-            }, vue.toDisplayString($props.comment.username), 11, _hoisted_5$7)
+            }, vue.toDisplayString($props.comment.username), 11, _hoisted_5$6)
           ]),
-          $props.comment.isOp ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_6$7, "OP")) : vue.createCommentVNode("", true),
+          $props.comment.isOp ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_6$6, "OP")) : vue.createCommentVNode("", true),
           $props.comment.isDup ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_7$6, "DUP")) : vue.createCommentVNode("", true),
           $props.comment.isMod ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_8$6, "MOD")) : vue.createCommentVNode("", true),
           vue.createElementVNode("span", _hoisted_9$6, vue.toDisplayString($props.comment.date), 1),
           $options.isLogin && $options.config.openTag ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 3 }, [
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($options.myTags, (i) => {
               return vue.openBlock(), vue.createElementBlock("span", _hoisted_10$6, [
-                _hoisted_11$6,
+                _cache[6] || (_cache[6] = vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1)),
                 vue.createElementVNode("span", null, vue.toDisplayString(i), 1),
                 vue.createElementVNode("i", {
                   class: "fa fa-trash-o remove",
                   onClick: vue.withModifiers(($event) => $options.removeTag(i), ["stop"])
-                }, null, 8, _hoisted_12$6)
+                }, null, 8, _hoisted_11$5)
               ]);
             }), 256)),
             vue.createElementVNode("span", {
@@ -4145,16 +4077,16 @@
           ], 64)) : vue.createCommentVNode("", true)
         ])
       ]),
-      vue.createElementVNode("div", _hoisted_13$6, [
-        $options.isLogin ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_14$5, [
+      vue.createElementVNode("div", _hoisted_12$4, [
+        $options.isLogin ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_13$4, [
           vue.createVNode(_component_PopConfirm, {
             title: "确认隐藏这条回复?",
             onConfirm: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("hide"))
           }, {
             default: vue.withCtx(() => [
-              vue.createElementVNode("div", _hoisted_15$4, [
+              vue.createElementVNode("div", _hoisted_14$3, [
                 vue.createVNode(_component_Icon, { icon: "fluent:eye-hide-24-regular" }),
-                _hoisted_16$4
+                _cache[7] || (_cache[7] = vue.createElementVNode("span", null, "隐藏", -1))
               ])
             ]),
             _: 1
@@ -4165,7 +4097,7 @@
             onClick: _cache[3] || (_cache[3] = vue.withModifiers((...args) => $options.showRelationReply && $options.showRelationReply(...args), ["stop"]))
           }, [
             vue.createVNode(_component_Icon, { icon: "iconoir:page-search" }),
-            _hoisted_17$4
+            _cache[8] || (_cache[8] = vue.createElementVNode("span", null, "上下文", -1))
           ])) : vue.createCommentVNode("", true),
           $props.type === "top" ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 1,
@@ -4173,14 +4105,14 @@
             onClick: _cache[4] || (_cache[4] = vue.withModifiers((...args) => $options.jump && $options.jump(...args), ["stop"]))
           }, [
             vue.createVNode(_component_Icon, { icon: "icon-park-outline:to-bottom" }),
-            _hoisted_18$4
+            _cache[9] || (_cache[9] = vue.createElementVNode("span", null, "跳转", -1))
           ])) : vue.createCommentVNode("", true),
           vue.createElementVNode("div", {
             class: "tool",
             onClick: _cache[5] || (_cache[5] = vue.withModifiers(($event) => $options.checkIsLogin("reply"), ["stop"]))
           }, [
             vue.createVNode(_component_Icon, { icon: "mynaui:message" }),
-            _hoisted_19$3
+            _cache[10] || (_cache[10] = vue.createElementVNode("span", null, "回复", -1))
           ]),
           vue.withDirectives(vue.createVNode(_component_Point, {
             item: $options.pointInfo,
@@ -4206,24 +4138,22 @@
     ], 2);
   }
   const Author = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$6], ["__scopeId", "data-v-64aa1930"]]);
-  const _withScopeId$8 = (n2) => (vue.pushScopeId("data-v-85e09b4e"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$c = { class: "get-cursor" };
   const _hoisted_2$9 = ["innerHTML"];
-  const _hoisted_3$8 = { class: "toolbar" };
-  const _hoisted_4$8 = { class: "left" };
-  const _hoisted_5$6 = { class: "upload" };
-  const _hoisted_6$6 = {
+  const _hoisted_3$7 = { class: "toolbar" };
+  const _hoisted_4$6 = { class: "left" };
+  const _hoisted_5$5 = { class: "upload" };
+  const _hoisted_6$5 = {
     key: 0,
     style: { "color": "black", "font-size": "1.4rem" }
   };
   const _hoisted_7$5 = { class: "right" };
-  const _hoisted_8$5 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "title" }, "经典", -1));
-  const _hoisted_9$5 = { class: "list" };
-  const _hoisted_10$5 = ["src", "onClick"];
-  const _hoisted_11$5 = { class: "emoji" };
-  const _hoisted_12$5 = { class: "title" };
-  const _hoisted_13$5 = { class: "list" };
-  const _hoisted_14$4 = ["onClick"];
+  const _hoisted_8$5 = { class: "list" };
+  const _hoisted_9$5 = ["src", "onClick"];
+  const _hoisted_10$5 = { class: "emoji" };
+  const _hoisted_11$4 = { class: "title" };
+  const _hoisted_12$3 = { class: "list" };
+  const _hoisted_13$3 = ["onClick"];
   const _sfc_main$c = {
     __name: "PostEditor",
     props: {
@@ -4363,8 +4293,8 @@
         if (item.replyUsers.length === 1) {
           item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(?:<ul [\s\S]+<\/ul>)?(\s#[\d]+)?\s(<br>)?/, () => "");
         }
-        let url = `${location.origin}/t/${post.value.id}`;
-        $.post(url, { content: submit_content, once: post.value.once }).then(
+        let url2 = `${location.origin}/t/${post.value.id}`;
+        $.post(url2, { content: submit_content, once: post.value.once }).then(
           // $.post(url, {content: submit_content, once: 123}).then(
           (res) => {
             loading.value = false;
@@ -4409,8 +4339,8 @@
           console.log("catch", r2);
         });
       }
-      function getEmojiSrc(url) {
-        return window.config.replaceImgur ? DefaultVal.imgurProxy + url : url;
+      function getEmojiSrc(url2) {
+        return window.config.replaceImgur ? DefaultVal.imgurProxy + url2 : url2;
       }
       function showEmoticons(e2) {
         if (isShowEmoticons.value) {
@@ -4452,7 +4382,7 @@
           let lastCallPos = start.lastIndexOf("@");
           start = content.value.slice(0, lastCallPos + 1);
           if (e2 === "管理员") {
-            e2 = "Livid @Kai @Olivia @GordianZ @sparanoid @drymonfidelia";
+            e2 = "Livid @Kai @Olivia @GordianZ @sparanoid @drymonfidelia @GordianZ @sillydaddy";
           }
           if (e2 === "所有人") {
             e2 = allReplyUsers.value.map((v, i) => {
@@ -4472,8 +4402,8 @@
         });
       }
       function onKeydown(e2) {
-        let code = e2.keyCode;
-        switch (code) {
+        let code2 = e2.keyCode;
+        switch (code2) {
           case 8:
             if (content.value === "@") {
               off();
@@ -4604,13 +4534,13 @@
               ref: cursorRef
             }, "|", 512)
           ]),
-          vue.createElementVNode("div", _hoisted_3$8, [
-            vue.createElementVNode("div", _hoisted_4$8, [
+          vue.createElementVNode("div", _hoisted_3$7, [
+            vue.createElementVNode("div", _hoisted_4$6, [
               vue.createVNode(vue.unref(Icon), {
                 onClick: vue.withModifiers(showEmoticons, ["stop"]),
                 icon: "streamline:smiley-happy"
               }),
-              vue.createElementVNode("div", _hoisted_5$6, [
+              vue.createElementVNode("div", _hoisted_5$5, [
                 vue.createElementVNode("input", {
                   type: "file",
                   accept: "image/*",
@@ -4618,7 +4548,7 @@
                 }, null, 32),
                 vue.createVNode(vue.unref(Icon), { icon: "lets-icons:img-load-box-fill" })
               ]),
-              uploadLoading.value ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_6$6, "上传中.....")) : vue.createCommentVNode("", true)
+              uploadLoading.value ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_6$5, "上传中.....")) : vue.createCommentVNode("", true)
             ]),
             vue.createElementVNode("div", _hoisted_7$5, [
               vue.unref(useType) === "reply-comment" ? (vue.openBlock(), vue.createBlock(BaseButton, {
@@ -4628,9 +4558,9 @@
                 style: { "margin-right": "1rem", "cursor": "pointer" },
                 onClick: _cache[3] || (_cache[3] = vue.withModifiers(($event) => emits("close"), ["stop"]))
               }, {
-                default: vue.withCtx(() => [
-                  vue.createTextVNode(" 关闭 ")
-                ]),
+                default: vue.withCtx(() => [..._cache[5] || (_cache[5] = [
+                  vue.createTextVNode(" 关闭 ", -1)
+                ])]),
                 _: 1
               })) : vue.createCommentVNode("", true),
               vue.createVNode(BaseButton, {
@@ -4639,9 +4569,9 @@
                 loading: loading.value,
                 onClick: vue.withModifiers(submit, ["stop"])
               }, {
-                default: vue.withCtx(() => [
-                  vue.createTextVNode("回复 ")
-                ]),
+                default: vue.withCtx(() => [..._cache[6] || (_cache[6] = [
+                  vue.createTextVNode("回复 ", -1)
+                ])]),
                 _: 1
               }, 8, ["disabled", "loading"])
             ])
@@ -4655,8 +4585,8 @@
               icon: "ic:round-close",
               onClick: _cache[4] || (_cache[4] = vue.withModifiers(($event) => isShowEmoticons.value = false, ["stop"]))
             }),
-            _hoisted_8$5,
-            vue.createElementVNode("div", _hoisted_9$5, [
+            _cache[7] || (_cache[7] = vue.createElementVNode("div", { class: "title" }, "经典", -1)),
+            vue.createElementVNode("div", _hoisted_8$5, [
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(classicsEmoticons), (item) => {
                 return vue.openBlock(), vue.createElementBlock("img", {
                   src: getEmojiSrc(item.high),
@@ -4665,21 +4595,21 @@
                     insert(item.name);
                     isShowEmoticons.value = false;
                   }, ["stop"])
-                }, null, 8, _hoisted_10$5);
+                }, null, 8, _hoisted_9$5);
               }), 256))
             ]),
-            vue.createElementVNode("div", _hoisted_11$5, [
+            vue.createElementVNode("div", _hoisted_10$5, [
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(emojiEmoticons), (item) => {
                 return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
-                  vue.createElementVNode("div", _hoisted_12$5, vue.toDisplayString(item.title), 1),
-                  vue.createElementVNode("div", _hoisted_13$5, [
+                  vue.createElementVNode("div", _hoisted_11$4, vue.toDisplayString(item.title), 1),
+                  vue.createElementVNode("div", _hoisted_12$3, [
                     (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item.list, (emoji) => {
                       return vue.openBlock(), vue.createElementBlock("span", {
                         onClick: vue.withModifiers(($event) => {
                           insert(emoji);
                           isShowEmoticons.value = false;
                         }, ["stop"])
-                      }, vue.toDisplayString(emoji), 9, _hoisted_14$4);
+                      }, vue.toDisplayString(emoji), 9, _hoisted_13$3);
                     }), 256))
                   ])
                 ], 64);
@@ -4692,7 +4622,7 @@
       };
     }
   };
-  const PostEditor = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["__scopeId", "data-v-85e09b4e"]]);
+  const PostEditor = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["__scopeId", "data-v-0e56c62c"]]);
   const _hoisted_1$b = {
     key: 0,
     class: "html-wrapper"
@@ -4806,11 +4736,9 @@
       }
     }
   };
-  const _withScopeId$7 = (n2) => (vue.pushScopeId("data-v-d3f8c94b"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$a = ["data-floor"];
-  const _hoisted_2$7 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "left expand-line" }, null, -1));
-  const _hoisted_3$7 = { class: "right" };
-  const _hoisted_4$7 = { class: "simple-wrapper" };
+  const _hoisted_2$7 = { class: "right" };
+  const _hoisted_3$6 = { class: "simple-wrapper" };
   function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Author = vue.resolveComponent("Author");
     const _component_BaseHtmlRender = vue.resolveComponent("BaseHtmlRender");
@@ -4821,8 +4749,8 @@
       ref: "comment",
       "data-floor": $data.floor
     }, [
-      _hoisted_2$7,
-      vue.createElementVNode("div", _hoisted_3$7, [
+      _cache[3] || (_cache[3] = vue.createElementVNode("div", { class: "left expand-line" }, null, -1)),
+      vue.createElementVNode("div", _hoisted_2$7, [
         vue.createVNode(_component_Author, {
           modelValue: $data.expand,
           "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.expand = $event),
@@ -4841,7 +4769,7 @@
           replyUser: $props.modelValue.username,
           replyFloor: $props.modelValue.floor
         }, null, 8, ["replyInfo", "replyUser", "replyFloor"])) : vue.createCommentVNode("", true),
-        vue.createElementVNode("div", _hoisted_4$7, [
+        vue.createElementVNode("div", _hoisted_3$6, [
           (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($props.modelValue.children, (item, index) => {
             return vue.openBlock(), vue.createBlock(_component_TopSubComment, {
               modelValue: $props.modelValue.children[index],
@@ -4933,9 +4861,9 @@
         }, 2e3);
       },
       hide() {
-        let url = `${location.origin}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`;
+        let url2 = `${location.origin}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`;
         eventBus.emit(CMD.REMOVE, this.modelValue.floor);
-        $.post(url).then((res) => {
+        $.post(url2).then((res) => {
           eventBus.emit(CMD.REFRESH_ONCE);
           eventBus.emit(CMD.SHOW_MSG, { type: "success", text: "隐藏成功" });
         }, (err) => {
@@ -4950,37 +4878,22 @@
       }
     }
   };
-  const _withScopeId$6 = (n2) => (vue.pushScopeId("data-v-984ba483"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$9 = ["data-floor"];
   const _hoisted_2$6 = { class: "comment-content" };
-  const _hoisted_3$6 = { class: "right" };
-  const _hoisted_4$6 = { class: "w" };
-  const _hoisted_5$5 = {
+  const _hoisted_3$5 = { class: "right" };
+  const _hoisted_4$5 = { class: "w" };
+  const _hoisted_5$4 = {
     key: 0,
     class: "wrong-wrapper"
   };
-  const _hoisted_6$5 = ["href"];
+  const _hoisted_6$4 = ["href"];
   const _hoisted_7$4 = { class: "del-line" };
-  const _hoisted_8$4 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("i", {
-    class: "fa fa-question-circle-o wrong-icon",
-    "aria-hidden": "true"
-  }, null, -1));
-  const _hoisted_9$4 = {
+  const _hoisted_8$4 = {
     key: 0,
     class: "warning"
   };
-  const _hoisted_10$4 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
-  const _hoisted_11$4 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
-  const _hoisted_12$4 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
-  const _hoisted_13$4 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
-  const _hoisted_14$3 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("br", null, null, -1));
-  const _hoisted_15$3 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("a", {
-    href: "https://github.com/zyronon/V2Next/issues",
-    target: "_blank"
-  }, "这里", -1));
-  const _hoisted_16$3 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "gang" }, null, -1));
-  const _hoisted_17$3 = { class: "simple-wrapper" };
-  const _hoisted_18$3 = {
+  const _hoisted_9$4 = { class: "simple-wrapper" };
+  const _hoisted_10$4 = {
     key: 0,
     class: "top-reply-wrap"
   };
@@ -5024,34 +4937,40 @@
             class: "left expand-line",
             onClick: _cache[4] || (_cache[4] = (...args) => $options.toggle && $options.toggle(...args))
           }),
-          vue.createElementVNode("div", _hoisted_3$6, [
-            vue.createElementVNode("div", _hoisted_4$6, [
-              $props.modelValue.isWrong ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_5$5, [
+          vue.createElementVNode("div", _hoisted_3$5, [
+            vue.createElementVNode("div", _hoisted_4$5, [
+              $props.modelValue.isWrong ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_5$4, [
                 vue.createElementVNode("span", {
                   onClick: _cache[5] || (_cache[5] = ($event) => $data.expandWrong = !$data.expandWrong),
                   title: "点击楼层号查看提示"
                 }, [
                   vue.createElementVNode("a", {
                     href: "/member/" + $props.modelValue.replyUsers[0]
-                  }, "@" + vue.toDisplayString($props.modelValue.replyUsers[0]) + "  ", 9, _hoisted_6$5),
+                  }, "@" + vue.toDisplayString($props.modelValue.replyUsers[0]) + "  ", 9, _hoisted_6$4),
                   vue.createElementVNode("span", _hoisted_7$4, "#" + vue.toDisplayString($props.modelValue.replyFloor), 1),
-                  _hoisted_8$4
+                  _cache[9] || (_cache[9] = vue.createElementVNode("i", {
+                    class: "fa fa-question-circle-o wrong-icon",
+                    "aria-hidden": "true"
+                  }, null, -1))
                 ]),
-                $data.expandWrong ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9$4, [
-                  vue.createTextVNode(" 这条回复似乎有点问题，指定的楼层号与@的人对应不上 "),
-                  _hoisted_10$4,
-                  vue.createTextVNode(" 原因可能有下面几种： "),
-                  _hoisted_11$4,
-                  vue.createTextVNode(" 一、屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1 "),
-                  _hoisted_12$4,
-                  vue.createTextVNode(" 二、忽略回复导致楼层塌陷：原理同上 "),
-                  _hoisted_13$4,
-                  vue.createTextVNode(" 三、层主回复时指定错了楼层号（同一，层主屏蔽了别人，导致楼层塌陷） "),
-                  _hoisted_14$3,
-                  vue.createTextVNode(" 四、脚本解析错误，请在 "),
-                  _hoisted_15$3,
-                  vue.createTextVNode("反馈 ")
-                ])) : vue.createCommentVNode("", true)
+                $data.expandWrong ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_8$4, [..._cache[10] || (_cache[10] = [
+                  vue.createTextVNode(" 这条回复似乎有点问题，指定的楼层号与@的人对应不上 ", -1),
+                  vue.createElementVNode("br", null, null, -1),
+                  vue.createTextVNode(" 原因可能有下面几种： ", -1),
+                  vue.createElementVNode("br", null, null, -1),
+                  vue.createTextVNode(" 一、屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1 ", -1),
+                  vue.createElementVNode("br", null, null, -1),
+                  vue.createTextVNode(" 二、忽略回复导致楼层塌陷：原理同上 ", -1),
+                  vue.createElementVNode("br", null, null, -1),
+                  vue.createTextVNode(" 三、层主回复时指定错了楼层号（同一，层主屏蔽了别人，导致楼层塌陷） ", -1),
+                  vue.createElementVNode("br", null, null, -1),
+                  vue.createTextVNode(" 四、脚本解析错误，请在 ", -1),
+                  vue.createElementVNode("a", {
+                    href: "https://github.com/zyronon/V2Next/issues",
+                    target: "_blank"
+                  }, "这里", -1),
+                  vue.createTextVNode("反馈 ", -1)
+                ])])) : vue.createCommentVNode("", true)
               ])) : vue.createCommentVNode("", true),
               [$options.CommentDisplayType.Like, $options.CommentDisplayType.FloorInFloorNoCallUser].includes($options.config.commentDisplayType) && $props.type !== "top" ? (vue.openBlock(), vue.createBlock(_component_BaseHtmlRender, {
                 key: 1,
@@ -5074,7 +4993,7 @@
                 class: "reply-count",
                 onClick: _cache[7] || (_cache[7] = ($event) => $data.expandTopReply = !$data.expandTopReply)
               }, [
-                _hoisted_16$3,
+                _cache[11] || (_cache[11] = vue.createElementVNode("div", { class: "gang" }, null, -1)),
                 vue.createElementVNode("span", null, " 共有" + vue.toDisplayString($props.modelValue.replyCount) + " 条回复 ", 1),
                 $data.expandTopReply ? (vue.openBlock(), vue.createBlock(_component_Icon, {
                   key: 0,
@@ -5085,9 +5004,9 @@
                 }))
               ])) : vue.createCommentVNode("", true)
             ]),
-            vue.createElementVNode("div", _hoisted_17$3, [
+            vue.createElementVNode("div", _hoisted_9$4, [
               $props.type === "top" ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
-                $data.expandTopReply && $props.modelValue.replyCount ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_18$3, [
+                $data.expandTopReply && $props.modelValue.replyCount ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_10$4, [
                   (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($props.modelValue.children, (item, index) => {
                     return vue.openBlock(), vue.createBlock(_component_TopSubComment, {
                       level: 1,
@@ -5144,8 +5063,8 @@
       tweet() {
         var _a;
         let username = ((_a = window.user) == null ? void 0 : _a.username) ?? "";
-        let url = `https://twitter.com/intent/tweet?url=${location.origin}/t/${this.post.id}?r=${username}&related=v2ex&text=${this.post.title}`;
-        window.open(url, "_blank", "width=550,height=370");
+        let url2 = `https://twitter.com/intent/tweet?url=${location.origin}/t/${this.post.id}?r=${username}&related=v2ex&text=${this.post.title}`;
+        window.open(url2, "_blank", "width=550,height=370");
       },
       async report() {
         if (!this.checkIsLogin())
@@ -5157,9 +5076,9 @@
           eventBus.emit(CMD.SHOW_MSG, { type: "success", text: "你已对本主题进行了报告" });
           return;
         }
-        let url = `${location.origin}/report/topic/${this.post.id}?once=${this.post.once}`;
+        let url2 = `${location.origin}/report/topic/${this.post.id}?once=${this.post.once}`;
         this.loading3 = true;
-        let apiRes = await fetch(url);
+        let apiRes = await fetch(url2);
         this.loading3 = false;
         if (apiRes.redirected) {
           let htmlText = await apiRes.text();
@@ -5176,10 +5095,10 @@
       async toggleIgnore() {
         if (!this.checkIsLogin())
           return;
-        let url = `${location.origin}/${this.post.isIgnore ? "unignore" : "ignore"}/topic/${this.post.id}?once=${this.post.once}`;
+        let url2 = `${location.origin}/${this.post.isIgnore ? "unignore" : "ignore"}/topic/${this.post.id}?once=${this.post.once}`;
         if (this.pageType === PageType.Post) {
           this.loading2 = true;
-          let apiRes = await fetch(url);
+          let apiRes = await fetch(url2);
           if (apiRes.redirected) {
             if (!this.post.isIgnore) {
               window.location = location.origin;
@@ -5196,7 +5115,7 @@
           } else {
             eventBus.emit(CMD.IGNORE);
           }
-          let apiRes = await fetch(url);
+          let apiRes = await fetch(url2);
           if (apiRes.redirected) {
             if (this.post.isIgnore) {
               eventBus.emit(CMD.REFRESH_ONCE);
@@ -5218,9 +5137,9 @@
         if (!isFavorite && config.collectBrowserNotice) {
           eventBus.emit(CMD.SHOW_MSG, { type: "success", text: "别忘记按Command/Cmd/CTRL + D添加到书签哦" });
         }
-        let url = `${location.origin}/${isFavorite ? "unfavorite" : "favorite"}/topic/${this.post.id}?once=${this.post.once}`;
+        let url2 = `${location.origin}/${isFavorite ? "unfavorite" : "favorite"}/topic/${this.post.id}?once=${this.post.once}`;
         this.loading = true;
-        let apiRes = await fetch(url);
+        let apiRes = await fetch(url2);
         this.loading = false;
         if (apiRes.redirected) {
           let htmlText = await apiRes.text();
@@ -5237,14 +5156,11 @@
       }
     }
   };
-  const _withScopeId$5 = (n2) => (vue.pushScopeId("data-v-30dac564"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$8 = { class: "toolbar" };
-  const _hoisted_2$5 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("span", null, "回复", -1));
-  const _hoisted_3$5 = {
+  const _hoisted_2$5 = {
     key: 0,
     class: "tool no-hover"
   };
-  const _hoisted_4$5 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("span", null, "Tweet", -1));
   function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Icon = vue.resolveComponent("Icon");
     const _component_BaseLoading = vue.resolveComponent("BaseLoading");
@@ -5255,7 +5171,7 @@
         onClick: _cache[0] || (_cache[0] = vue.withModifiers(($event) => $options.checkIsLogin("reply"), ["stop"]))
       }, [
         vue.createVNode(_component_Icon, { icon: "mynaui:message" }),
-        _hoisted_2$5
+        _cache[5] || (_cache[5] = vue.createElementVNode("span", null, "回复", -1))
       ]),
       vue.createElementVNode("div", {
         class: vue.normalizeClass(["tool", { disabled: $data.loading }]),
@@ -5276,7 +5192,7 @@
         ], 64)),
         vue.createElementVNode("span", null, vue.toDisplayString($options.post.isFavorite ? "取消" : "") + "收藏", 1)
       ], 2),
-      $options.post.collectCount !== 0 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$5, [
+      $options.post.collectCount !== 0 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$5, [
         vue.createElementVNode("span", null, vue.toDisplayString($options.post.collectCount + "人收藏"), 1)
       ])) : vue.createCommentVNode("", true),
       vue.createElementVNode("div", {
@@ -5284,7 +5200,7 @@
         onClick: _cache[2] || (_cache[2] = vue.withModifiers((...args) => $options.tweet && $options.tweet(...args), ["stop"]))
       }, [
         vue.createVNode(_component_Icon, { icon: "uil:share" }),
-        _hoisted_4$5
+        _cache[6] || (_cache[6] = vue.createElementVNode("span", null, "Tweet", -1))
       ]),
       vue.createElementVNode("div", {
         class: vue.normalizeClass(["tool", { "disabled": $data.loading2 }]),
@@ -5316,7 +5232,6 @@
     ]);
   }
   const Toolbar = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$3], ["__scopeId", "data-v-30dac564"]]);
-  const _withScopeId$4 = (n2) => (vue.pushScopeId("data-v-4a063111"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$7 = ["href"];
   const _hoisted_2$4 = ["src"];
   const _hoisted_3$4 = { class: "texts" };
@@ -5324,49 +5239,43 @@
     key: 0,
     class: "point"
   };
-  const _hoisted_5$4 = { class: "link-num" };
-  const _hoisted_6$4 = { class: "my-tag" };
-  const _hoisted_7$3 = /* @__PURE__ */ _withScopeId$4(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
-  const _hoisted_8$3 = {
+  const _hoisted_5$3 = { class: "link-num" };
+  const _hoisted_6$3 = { class: "my-tag" };
+  const _hoisted_7$3 = {
     key: 2,
     class: "ago"
   };
-  const _hoisted_9$3 = {
+  const _hoisted_8$3 = {
     key: 3,
     class: "mod"
   };
-  const _hoisted_10$3 = {
+  const _hoisted_9$3 = {
     key: 4,
     class: "owner"
   };
-  const _hoisted_11$3 = ["href"];
-  const _hoisted_12$3 = {
+  const _hoisted_10$3 = ["href"];
+  const _hoisted_11$3 = {
     key: 5,
     class: "owner"
   };
-  const _hoisted_13$3 = {
+  const _hoisted_12$2 = {
     key: 6,
     class: "mod"
   };
-  const _hoisted_14$2 = {
+  const _hoisted_13$2 = {
     key: 7,
     class: "ago"
   };
-  const _hoisted_15$2 = { class: "my-tag" };
-  const _hoisted_16$2 = /* @__PURE__ */ _withScopeId$4(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
-  const _hoisted_17$2 = {
+  const _hoisted_14$2 = { class: "my-tag" };
+  const _hoisted_15$2 = {
     key: 9,
     class: "point"
   };
-  const _hoisted_18$2 = { class: "link-num" };
-  const _hoisted_19$2 = ["href"];
-  const _hoisted_20$2 = ["src"];
-  const _hoisted_21$2 = { class: "Author-right" };
-  const _hoisted_22$2 = { class: "floor" };
-  const _hoisted_23$2 = /* @__PURE__ */ _withScopeId$4(() => /* @__PURE__ */ vue.createElementVNode("span", null, "跳转", -1));
-  const _hoisted_24$1 = [
-    _hoisted_23$2
-  ];
+  const _hoisted_16$2 = { class: "link-num" };
+  const _hoisted_17$1 = ["href"];
+  const _hoisted_18$1 = ["src"];
+  const _hoisted_19$1 = { class: "Author-right" };
+  const _hoisted_20$1 = { class: "floor" };
   const _sfc_main$7 = {
     __name: "SingleComment",
     props: {
@@ -5420,31 +5329,31 @@
                   color: !__props.comment.thankCount ? null : "rgb(224,42,42)",
                   icon: "icon-park-outline:like"
                 }, null, 8, ["color"])),
-                vue.createElementVNode("div", _hoisted_5$4, vue.toDisplayString(__props.comment.thankCount), 1)
+                vue.createElementVNode("div", _hoisted_5$3, vue.toDisplayString(__props.comment.thankCount), 1)
               ])) : vue.createCommentVNode("", true),
               vue.unref(isLogin) && vue.unref(config2).openTag && __props.isRight ? (vue.openBlock(true), vue.createElementBlock(vue.Fragment, { key: 1 }, vue.renderList(myTags.value, (i) => {
-                return vue.openBlock(), vue.createElementBlock("span", _hoisted_6$4, [
-                  _hoisted_7$3,
+                return vue.openBlock(), vue.createElementBlock("span", _hoisted_6$3, [
+                  _cache[0] || (_cache[0] = vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1)),
                   vue.createElementVNode("span", null, vue.toDisplayString(i), 1)
                 ]);
               }), 256)) : vue.createCommentVNode("", true),
-              __props.isRight ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_8$3, vue.toDisplayString(__props.comment.date), 1)) : vue.createCommentVNode("", true),
-              __props.comment.isMod && __props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9$3, "MOD")) : vue.createCommentVNode("", true),
-              __props.comment.isOp && __props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_10$3, "OP")) : vue.createCommentVNode("", true),
+              __props.isRight ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_7$3, vue.toDisplayString(__props.comment.date), 1)) : vue.createCommentVNode("", true),
+              __props.comment.isMod && __props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_8$3, "MOD")) : vue.createCommentVNode("", true),
+              __props.comment.isOp && __props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9$3, "OP")) : vue.createCommentVNode("", true),
               vue.createElementVNode("a", {
                 href: `/member/${__props.comment.username}`,
                 class: "username"
-              }, vue.toDisplayString(__props.comment.username), 9, _hoisted_11$3),
-              __props.comment.isOp && !__props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_12$3, "OP")) : vue.createCommentVNode("", true),
-              __props.comment.isMod && !__props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_13$3, "MOD")) : vue.createCommentVNode("", true),
-              !__props.isRight ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_14$2, vue.toDisplayString(__props.comment.date), 1)) : vue.createCommentVNode("", true),
+              }, vue.toDisplayString(__props.comment.username), 9, _hoisted_10$3),
+              __props.comment.isOp && !__props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_11$3, "OP")) : vue.createCommentVNode("", true),
+              __props.comment.isMod && !__props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_12$2, "MOD")) : vue.createCommentVNode("", true),
+              !__props.isRight ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_13$2, vue.toDisplayString(__props.comment.date), 1)) : vue.createCommentVNode("", true),
               vue.unref(isLogin) && vue.unref(config2).openTag && !__props.isRight ? (vue.openBlock(true), vue.createElementBlock(vue.Fragment, { key: 8 }, vue.renderList(myTags.value, (i) => {
-                return vue.openBlock(), vue.createElementBlock("span", _hoisted_15$2, [
-                  _hoisted_16$2,
+                return vue.openBlock(), vue.createElementBlock("span", _hoisted_14$2, [
+                  _cache[1] || (_cache[1] = vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1)),
                   vue.createElementVNode("span", null, vue.toDisplayString(i), 1)
                 ]);
               }), 256)) : vue.createCommentVNode("", true),
-              __props.comment.thankCount && !__props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_17$2, [
+              __props.comment.thankCount && !__props.isRight ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_15$2, [
                 __props.comment.isThanked ? (vue.openBlock(), vue.createBlock(vue.unref(Icon), {
                   key: 0,
                   color: "rgb(224,42,42)",
@@ -5454,7 +5363,7 @@
                   color: !__props.comment.thankCount ? null : "rgb(224,42,42)",
                   icon: "icon-park-outline:like"
                 }, null, 8, ["color"])),
-                vue.createElementVNode("div", _hoisted_18$2, vue.toDisplayString(__props.comment.thankCount), 1)
+                vue.createElementVNode("div", _hoisted_16$2, vue.toDisplayString(__props.comment.thankCount), 1)
               ])) : vue.createCommentVNode("", true)
             ]),
             vue.createVNode(BaseHtmlRender, {
@@ -5470,14 +5379,16 @@
             vue.createElementVNode("img", {
               src: __props.comment.avatar,
               alt: ""
-            }, null, 8, _hoisted_20$2)
-          ], 8, _hoisted_19$2)) : vue.createCommentVNode("", true),
-          vue.createElementVNode("div", _hoisted_21$2, [
-            vue.createElementVNode("div", _hoisted_22$2, vue.toDisplayString(__props.comment.floor), 1),
+            }, null, 8, _hoisted_18$1)
+          ], 8, _hoisted_17$1)) : vue.createCommentVNode("", true),
+          vue.createElementVNode("div", _hoisted_19$1, [
+            vue.createElementVNode("div", _hoisted_20$1, vue.toDisplayString(__props.comment.floor), 1),
             vue.createElementVNode("div", {
               class: "tool jump",
               onClick: vue.withModifiers(jump, ["stop"])
-            }, _hoisted_24$1)
+            }, [..._cache[2] || (_cache[2] = [
+              vue.createElementVNode("span", null, "跳转", -1)
+            ])])
           ])
         ], 2);
       };
@@ -5822,17 +5733,17 @@
       },
       closePreviewModal() {
         let previewModal = document.querySelector(".preview-modal");
-        let s2 = document.querySelector(".shadow");
+        let s = document.querySelector(".shadow");
         let domRect = this.preview.rect;
-        _css(s2, "transition", "all 0.3s");
-        _css(s2, "width", domRect.width);
-        _css(s2, "height", domRect.height);
-        _css(s2, "transform", `translate3d(${domRect.x}px, ${domRect.y}px, 0) scale(1)`);
+        _css(s, "transition", "all 0.3s");
+        _css(s, "width", domRect.width);
+        _css(s, "height", domRect.height);
+        _css(s, "transform", `translate3d(${domRect.x}px, ${domRect.y}px, 0) scale(1)`);
         let mask = document.querySelector(".preview-modal .mask");
         _css(mask, "opacity", 0);
         setTimeout(() => {
-          _css(s2, "transition", "all 0s");
-          s2.remove();
+          _css(s, "transition", "all 0s");
+          s.remove();
           _css(previewModal, "top", "-1000vh");
           _css(document.body, "overflow", "auto");
         }, 300);
@@ -5858,13 +5769,13 @@
           let domRect = e2.target.getBoundingClientRect();
           let previewModal = document.querySelector(".preview-modal");
           _css(previewModal, "top", "0");
-          let s2 = e2.target.cloneNode();
-          s2.classList.add("shadow");
-          previewModal.append(s2);
-          _css(s2, "transition", "all 0s");
-          _css(s2, "width", domRect.width);
-          _css(s2, "height", domRect.height);
-          _css(s2, "transform", `translate3d(${domRect.x}px, ${domRect.y}px, 0) scale(1)`);
+          let s = e2.target.cloneNode();
+          s.classList.add("shadow");
+          previewModal.append(s);
+          _css(s, "transition", "all 0s");
+          _css(s, "width", domRect.width);
+          _css(s, "height", domRect.height);
+          _css(s, "transform", `translate3d(${domRect.x}px, ${domRect.y}px, 0) scale(1)`);
           let t = ".3";
           let sw = domRect.width / window.innerWidth;
           let sh = domRect.height / window.innerHeight;
@@ -5872,8 +5783,8 @@
           domRect.sh = sh;
           this.preview.rect = domRect;
           this.preview.result = getImgSize(
-            s2.naturalWidth,
-            s2.naturalHeight,
+            s.naturalWidth,
+            s.naturalHeight,
             window.innerWidth * 0.95,
             window.innerHeight * 0.9
           );
@@ -5883,13 +5794,13 @@
           let isMove = false;
           let lastPointermove = { x: 0, y: 0 };
           let diff = { x: 0, y: 0 };
-          s2.addEventListener("pointerdown", function(e3) {
+          s.addEventListener("pointerdown", function(e3) {
             isPointerdown = true;
             isMove = false;
-            s2.setPointerCapture(e3.pointerId);
+            s.setPointerCapture(e3.pointerId);
             lastPointermove = { x: e3.clientX, y: e3.clientY };
           });
-          s2.addEventListener("pointermove", (e3) => {
+          s.addEventListener("pointermove", (e3) => {
             if (isPointerdown) {
               isMove = true;
               const current = { x: e3.clientX, y: e3.clientY };
@@ -5898,12 +5809,12 @@
               lastPointermove = { x: current.x, y: current.y };
               this.preview.x += diff.x;
               this.preview.y += diff.y;
-              _css(s2, "transition", "all 0.1s");
-              _css(s2, "transform", `translate3d(${this.preview.x}px, ${this.preview.y}px, 0) scale(${this.preview.scale})`);
+              _css(s, "transition", "all 0.1s");
+              _css(s, "transform", `translate3d(${this.preview.x}px, ${this.preview.y}px, 0) scale(${this.preview.scale})`);
             }
             e3.preventDefault();
           });
-          s2.addEventListener("pointerup", () => {
+          s.addEventListener("pointerup", () => {
             if (isPointerdown) {
               isPointerdown = false;
               if (!isMove) {
@@ -5911,7 +5822,7 @@
               }
             }
           });
-          s2.addEventListener("pointercancel", function(e3) {
+          s.addEventListener("pointercancel", function(e3) {
             if (isPointerdown) {
               isPointerdown = false;
             }
@@ -5920,12 +5831,12 @@
           _css(mask, "transition", "all 0s");
           _css(mask, "opacity", 0);
           setTimeout(() => {
-            _css(s2, "transition", `all ${t}s`);
+            _css(s, "transition", `all ${t}s`);
             _css(mask, "transition", `all ${t}s`);
             _css(mask, "opacity", 1);
-            _css(s2, "transform", `translate3d(${this.preview.x}px, ${this.preview.y}px, 0) scale(${this.preview.scale})`);
-            _css(s2, "width", this.preview.result.width);
-            _css(s2, "height", this.preview.result.height);
+            _css(s, "transform", `translate3d(${this.preview.x}px, ${this.preview.y}px, 0) scale(${this.preview.scale})`);
+            _css(s, "width", this.preview.result.width);
+            _css(s, "height", this.preview.result.height);
           }, 0);
           setTimeout(() => {
             _css(document.body, "overflow", "hidden");
@@ -5954,9 +5865,9 @@
           this.preview.x -= d2 * (e2.clientX - this.preview.x) - origin.x;
           this.preview.y -= d2 * (e2.clientY - this.preview.y) - origin.y;
         }
-        let s2 = document.querySelector(".shadow");
-        _css(s2, "transition", "all 0.2s");
-        _css(s2, "transform", `translate3d(${this.preview.x}px, ${this.preview.y}px, 0) scale(${this.preview.scale})`);
+        let s = document.querySelector(".shadow");
+        _css(s, "transition", "all 0.2s");
+        _css(s, "transform", `translate3d(${this.preview.x}px, ${this.preview.y}px, 0) scale(${this.preview.scale})`);
         e2.preventDefault();
       },
       jump(floor) {
@@ -6068,73 +5979,55 @@
       }
     }
   };
-  const _withScopeId$3 = (n2) => (vue.pushScopeId("data-v-d39217d8"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$6 = { class: "my-box post-wrapper" };
   const _hoisted_2$3 = { class: "header" };
   const _hoisted_3$3 = { class: "fr" };
   const _hoisted_4$3 = ["href"];
-  const _hoisted_5$3 = ["src", "alt"];
-  const _hoisted_6$3 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("a", { href: "/" }, "V2EX", -1));
-  const _hoisted_7$2 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("span", { class: "chevron" }, "  ›  ", -1));
-  const _hoisted_8$2 = ["href"];
-  const _hoisted_9$2 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "sep10" }, null, -1));
-  const _hoisted_10$2 = ["id"];
-  const _hoisted_11$2 = ["onclick"];
-  const _hoisted_12$2 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("li", { class: "fa fa-chevron-up" }, null, -1));
-  const _hoisted_13$2 = ["onclick"];
-  const _hoisted_14$1 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("li", { class: "fa fa-chevron-down" }, null, -1));
-  const _hoisted_15$1 = [
-    _hoisted_14$1
-  ];
-  const _hoisted_16$1 = { class: "gray" };
-  const _hoisted_17$1 = ["href"];
-  const _hoisted_18$1 = ["title"];
-  const _hoisted_19$1 = ["href"];
-  const _hoisted_20$1 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("li", { class: "fa fa-info-circle" }, null, -1));
-  const _hoisted_21$1 = [
-    _hoisted_20$1
-  ];
-  const _hoisted_22$1 = ["href"];
-  const _hoisted_23$1 = ["href"];
-  const _hoisted_24 = ["href"];
-  const _hoisted_25 = { class: "my-tag" };
-  const _hoisted_26 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
-  const _hoisted_27 = ["onClick"];
-  const _hoisted_28 = {
+  const _hoisted_5$2 = ["src", "alt"];
+  const _hoisted_6$2 = ["href"];
+  const _hoisted_7$2 = ["id"];
+  const _hoisted_8$2 = ["onclick"];
+  const _hoisted_9$2 = ["onclick"];
+  const _hoisted_10$2 = { class: "gray" };
+  const _hoisted_11$2 = ["href"];
+  const _hoisted_12$1 = ["title"];
+  const _hoisted_13$1 = ["href"];
+  const _hoisted_14$1 = ["href"];
+  const _hoisted_15$1 = ["href"];
+  const _hoisted_16$1 = ["href"];
+  const _hoisted_17 = { class: "my-tag" };
+  const _hoisted_18 = ["onClick"];
+  const _hoisted_19 = {
     key: 0,
     class: "my-box"
   };
-  const _hoisted_29 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("span", null, "高赞回复", -1));
-  const _hoisted_30 = { class: "top-reply" };
-  const _hoisted_31 = { class: "tool" };
-  const _hoisted_32 = { ref: "topReply" };
-  const _hoisted_33 = { class: "my-box comment-wrapper" };
-  const _hoisted_34 = {
+  const _hoisted_20 = { class: "top-reply" };
+  const _hoisted_21 = { class: "tool" };
+  const _hoisted_22 = { ref: "topReply" };
+  const _hoisted_23 = { class: "my-box comment-wrapper" };
+  const _hoisted_24 = {
     key: 0,
     class: "my-cell flex"
   };
-  const _hoisted_35 = { key: 0 };
-  const _hoisted_36 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("strong", { class: "snow" }, "•", -1));
-  const _hoisted_37 = ["innerHTML"];
-  const _hoisted_38 = {
+  const _hoisted_25 = { key: 0 };
+  const _hoisted_26 = ["innerHTML"];
+  const _hoisted_27 = {
     key: 0,
     class: "loading-wrapper"
   };
-  const _hoisted_39 = {
+  const _hoisted_28 = {
     key: 1,
     class: "comments"
   };
-  const _hoisted_40 = {
+  const _hoisted_29 = {
     key: 1,
     id: "no-comments-yet"
   };
-  const _hoisted_41 = { class: "my-cell flex" };
-  const _hoisted_42 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("span", null, "添加一条新回复", -1));
-  const _hoisted_43 = { class: "notice-right gray" };
-  const _hoisted_44 = { class: "p1" };
-  const _hoisted_45 = /* @__PURE__ */ _withScopeId$3(() => /* @__PURE__ */ vue.createElementVNode("span", { class: "gray" }, "上下文", -1));
-  const _hoisted_46 = { class: "top-reply" };
-  const _hoisted_47 = ["onClick"];
+  const _hoisted_30 = { class: "my-cell flex" };
+  const _hoisted_31 = { class: "notice-right gray" };
+  const _hoisted_32 = { class: "p1" };
+  const _hoisted_33 = { class: "top-reply" };
+  const _hoisted_34 = ["onClick"];
   function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_BaseHtmlRender = vue.resolveComponent("BaseHtmlRender");
     const _component_Point = vue.resolveComponent("Point");
@@ -6178,15 +6071,15 @@
                     border: "0",
                     align: "default",
                     alt: $options.post.member.username
-                  }, null, 8, _hoisted_5$3)) : vue.createCommentVNode("", true)
+                  }, null, 8, _hoisted_5$2)) : vue.createCommentVNode("", true)
                 ], 8, _hoisted_4$3)
               ]),
-              _hoisted_6$3,
-              _hoisted_7$2,
+              _cache[35] || (_cache[35] = vue.createElementVNode("a", { href: "/" }, "V2EX", -1)),
+              _cache[36] || (_cache[36] = vue.createElementVNode("span", { class: "chevron" }, "  ›  ", -1)),
               vue.createElementVNode("a", {
                 href: $options.post.node.url
-              }, vue.toDisplayString($options.post.node.title), 9, _hoisted_8$2),
-              _hoisted_9$2,
+              }, vue.toDisplayString($options.post.node.title), 9, _hoisted_6$2),
+              _cache[37] || (_cache[37] = vue.createElementVNode("div", { class: "sep10" }, null, -1)),
               vue.createElementVNode("h1", null, vue.toDisplayString($options.post.title), 1),
               vue.createElementVNode("div", {
                 id: `topic_${$options.post.id}_votes`,
@@ -6196,69 +6089,73 @@
                   href: "javascript:",
                   onclick: `upVoteTopic(${$options.post.id});`,
                   class: "vote"
-                }, [
-                  _hoisted_12$2,
-                  vue.createTextVNode("   ")
-                ], 8, _hoisted_11$2),
-                vue.createTextVNode("   "),
+                }, [..._cache[24] || (_cache[24] = [
+                  vue.createElementVNode("li", { class: "fa fa-chevron-up" }, null, -1),
+                  vue.createTextVNode("   ", -1)
+                ])], 8, _hoisted_8$2),
+                _cache[26] || (_cache[26] = vue.createTextVNode("   ", -1)),
                 vue.createElementVNode("a", {
                   href: "javascript:",
                   onclick: `downVoteTopic(${$options.post.id});`,
                   class: "vote"
-                }, _hoisted_15$1, 8, _hoisted_13$2)
-              ], 8, _hoisted_10$2),
-              vue.createTextVNode("   "),
-              vue.createElementVNode("small", _hoisted_16$1, [
+                }, [..._cache[25] || (_cache[25] = [
+                  vue.createElementVNode("li", { class: "fa fa-chevron-down" }, null, -1)
+                ])], 8, _hoisted_9$2)
+              ], 8, _hoisted_7$2),
+              _cache[38] || (_cache[38] = vue.createTextVNode("   ", -1)),
+              vue.createElementVNode("small", _hoisted_10$2, [
                 vue.createElementVNode("a", {
                   href: `/member/${$options.post.member.username}`
-                }, vue.toDisplayString($options.post.member.username), 9, _hoisted_17$1),
-                vue.createTextVNode(" · "),
+                }, vue.toDisplayString($options.post.member.username), 9, _hoisted_11$2),
+                _cache[33] || (_cache[33] = vue.createTextVNode(" · ", -1)),
                 $options.post.member.createDate ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
                   vue.createElementVNode("span", {
                     class: vue.normalizeClass($options.post.member.isNew && "danger")
                   }, vue.toDisplayString($options.post.member.createDate), 3),
-                  vue.createTextVNode(" · ")
+                  _cache[27] || (_cache[27] = vue.createTextVNode(" · ", -1))
                 ], 64)) : vue.createCommentVNode("", true),
                 $options.post.createDateAgo ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 1 }, [
                   vue.createElementVNode("span", {
                     title: $options.post.createDate
-                  }, vue.toDisplayString($options.post.createDateAgo), 9, _hoisted_18$1),
-                  vue.createTextVNode(" · ")
+                  }, vue.toDisplayString($options.post.createDateAgo), 9, _hoisted_12$1),
+                  _cache[28] || (_cache[28] = vue.createTextVNode(" · ", -1))
                 ], 64)) : vue.createCommentVNode("", true),
                 vue.createTextVNode(" " + vue.toDisplayString($options.post.clickCount) + " 次点击 ", 1),
                 $options.isMy ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 2 }, [
-                  vue.createTextVNode("   "),
+                  _cache[31] || (_cache[31] = vue.createTextVNode("   ", -1)),
                   vue.createElementVNode("a", {
                     href: `/t/${$options.post.id}/info`
-                  }, _hoisted_21$1, 8, _hoisted_19$1),
-                  vue.createTextVNode("   "),
+                  }, [..._cache[29] || (_cache[29] = [
+                    vue.createElementVNode("li", { class: "fa fa-info-circle" }, null, -1)
+                  ])], 8, _hoisted_13$1),
+                  _cache[32] || (_cache[32] = vue.createTextVNode("   ", -1)),
                   $options.canAppend ? (vue.openBlock(), vue.createElementBlock("a", {
                     key: 0,
                     href: `/append/topic/${$options.post.id}`,
                     class: "op"
-                  }, "APPEND", 8, _hoisted_22$1)) : vue.createCommentVNode("", true),
+                  }, "APPEND", 8, _hoisted_14$1)) : vue.createCommentVNode("", true),
                   $options.canEditMove ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 1 }, [
                     vue.createElementVNode("a", {
                       href: `/move/topic/${$options.post.id}`,
                       class: "op"
-                    }, "MOVE", 8, _hoisted_23$1),
-                    vue.createTextVNode("  "),
+                    }, "MOVE", 8, _hoisted_15$1),
+                    _cache[30] || (_cache[30] = vue.createTextVNode("  ", -1)),
                     vue.createElementVNode("a", {
                       href: `/edit/topic/${$options.post.id}`,
                       class: "op"
-                    }, "EDIT", 8, _hoisted_24)
+                    }, "EDIT", 8, _hoisted_16$1)
                   ], 64)) : vue.createCommentVNode("", true)
                 ], 64)) : vue.createCommentVNode("", true)
               ]),
               $options.isLogin && $options.config.openTag ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
                 (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($options.myTags, (i) => {
-                  return vue.openBlock(), vue.createElementBlock("span", _hoisted_25, [
-                    _hoisted_26,
+                  return vue.openBlock(), vue.createElementBlock("span", _hoisted_17, [
+                    _cache[34] || (_cache[34] = vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1)),
                     vue.createElementVNode("span", null, vue.toDisplayString(i), 1),
                     vue.createElementVNode("i", {
                       class: "fa fa-trash-o remove",
                       onClick: vue.withModifiers(($event) => $options.removeTag(i), ["stop"])
-                    }, null, 8, _hoisted_27)
+                    }, null, 8, _hoisted_18)
                   ]);
                 }), 256)),
                 vue.createElementVNode("span", {
@@ -6293,16 +6190,16 @@
               _: 1
             })
           ]),
-          $options.post.topReplyList.length && $options.config.showTopReply ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_28, [
+          $options.post.topReplyList.length && $options.config.showTopReply ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_19, [
             vue.createElementVNode("div", {
               class: "my-cell flex",
               onClick: _cache[2] || (_cache[2] = vue.withModifiers((...args) => $options.collapseTopReplyList && $options.collapseTopReplyList(...args), ["stop"]))
             }, [
-              _hoisted_29,
-              vue.createElementVNode("div", _hoisted_30, [
+              _cache[39] || (_cache[39] = vue.createElementVNode("span", null, "高赞回复", -1)),
+              vue.createElementVNode("div", _hoisted_20, [
                 vue.createVNode(_component_Tooltip, { title: "收起高赞回复" }, {
                   default: vue.withCtx(() => [
-                    vue.createElementVNode("div", _hoisted_31, [
+                    vue.createElementVNode("div", _hoisted_21, [
                       vue.createVNode(_component_Icon, { icon: "gravity-ui:chevrons-collapse-vertical" })
                     ])
                   ]),
@@ -6310,7 +6207,7 @@
                 })
               ])
             ]),
-            vue.createElementVNode("div", _hoisted_32, [
+            vue.createElementVNode("div", _hoisted_22, [
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($options.post.topReplyList, (item, index) => {
                 return vue.openBlock(), vue.createBlock(_component_Comment, {
                   key: item.floor,
@@ -6321,13 +6218,13 @@
               }), 128))
             ], 512)
           ])) : vue.createCommentVNode("", true),
-          vue.createElementVNode("div", _hoisted_33, [
-            $options.post.replyList.length || $props.loading ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_34, [
+          vue.createElementVNode("div", _hoisted_23, [
+            $options.post.replyList.length || $props.loading ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_24, [
               vue.createElementVNode("div", null, [
                 vue.createTextVNode(vue.toDisplayString($options.post.replyCount) + " 条回复 ", 1),
-                $options.post.lastReplyDate ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_35, [
-                  vue.createTextVNode("  "),
-                  _hoisted_36,
+                $options.post.lastReplyDate ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_25, [
+                  _cache[40] || (_cache[40] = vue.createTextVNode("  ", -1)),
+                  _cache[41] || (_cache[41] = vue.createElementVNode("strong", { class: "snow" }, "•", -1)),
                   vue.createTextVNode("  " + vue.toDisplayString($options.post.lastReplyDate), 1)
                 ])) : vue.createCommentVNode("", true)
               ]),
@@ -6339,12 +6236,12 @@
                 key: 1,
                 class: "fr",
                 innerHTML: $options.post.fr
-              }, null, 8, _hoisted_37))
+              }, null, 8, _hoisted_26))
             ])) : vue.createCommentVNode("", true),
             $options.replyList.length || $props.loading ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 1 }, [
-              $props.loading ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_38, [
+              $props.loading ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_27, [
                 vue.createVNode(_component_BaseLoading, { size: "large" })
-              ])) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_39, [
+              ])) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_28, [
                 $props.modelValue ? (vue.openBlock(true), vue.createElementBlock(vue.Fragment, { key: 0 }, vue.renderList($options.replyList, (item, index) => {
                   return vue.openBlock(), vue.createBlock(_component_Comment, {
                     key: item.floor,
@@ -6355,15 +6252,15 @@
               ]))
             ], 64)) : vue.createCommentVNode("", true)
           ]),
-          !($options.replyList.length || $props.loading) ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_40, "目前尚无回复")) : vue.createCommentVNode("", true),
+          !($options.replyList.length || $props.loading) ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_29, "目前尚无回复")) : vue.createCommentVNode("", true),
           $options.isLogin ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 2,
             class: vue.normalizeClass(["my-box", { "sticky": $data.isSticky }]),
             ref: "replyBox"
           }, [
-            vue.createElementVNode("div", _hoisted_41, [
-              _hoisted_42,
-              vue.createElementVNode("div", _hoisted_43, [
+            vue.createElementVNode("div", _hoisted_30, [
+              _cache[42] || (_cache[42] = vue.createElementVNode("span", null, "添加一条新回复", -1)),
+              vue.createElementVNode("div", _hoisted_31, [
                 $data.isSticky ? (vue.openBlock(), vue.createElementBlock("a", {
                   key: 0,
                   style: { "margin-right": "2rem" },
@@ -6374,7 +6271,7 @@
                 }, "回到顶部")
               ])
             ]),
-            vue.createElementVNode("div", _hoisted_44, [
+            vue.createElementVNode("div", _hoisted_32, [
               vue.createVNode(_component_PostEditor, {
                 onClose: $options.goBottom,
                 ref: "post-editor",
@@ -6393,8 +6290,8 @@
             class: "my-cell flex",
             onClick: _cache[8] || (_cache[8] = vue.withModifiers((...args) => $options.stop && $options.stop(...args), ["stop"]))
           }, [
-            _hoisted_45,
-            vue.createElementVNode("div", _hoisted_46, [
+            _cache[43] || (_cache[43] = vue.createElementVNode("span", { class: "gray" }, "上下文", -1)),
+            vue.createElementVNode("div", _hoisted_33, [
               vue.createVNode(_component_Icon, {
                 icon: "ic:round-close",
                 onClick: _cache[7] || (_cache[7] = vue.withModifiers(($event) => $data.showRelationReply = false, ["stop"]))
@@ -6425,7 +6322,7 @@
               onClick: vue.withModifiers(($event) => $options.setCall(item), ["stop"])
             }, [
               vue.createElementVNode("a", null, vue.toDisplayString(item), 1)
-            ], 10, _hoisted_47);
+            ], 10, _hoisted_34);
           }), 256))
         ], 4)) : vue.createCommentVNode("", true),
         vue.createElementVNode("div", {
@@ -6565,9 +6462,9 @@
               size: "small",
               onClick: copy
             }, {
-              default: vue.withCtx(() => [
-                vue.createTextVNode("点击复制")
-              ]),
+              default: vue.withCtx(() => [..._cache[0] || (_cache[0] = [
+                vue.createTextVNode("点击复制", -1)
+              ])]),
               _: 1
             })
           ]))
@@ -6607,16 +6504,13 @@
     ], 2);
   }
   const Msg = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$1], ["__scopeId", "data-v-8bf692ea"]]);
-  const _withScopeId$2 = (n2) => (vue.pushScopeId("data-v-0f1f99f7"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$3 = {
     key: 0,
     class: "tag-modal modal"
   };
   const _hoisted_2$2 = { class: "wrapper" };
-  const _hoisted_3$2 = /* @__PURE__ */ _withScopeId$2(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "title" }, " 添加标签 ", -1));
-  const _hoisted_4$2 = { class: "option" };
-  const _hoisted_5$2 = /* @__PURE__ */ _withScopeId$2(() => /* @__PURE__ */ vue.createElementVNode("span", null, "用户：", -1));
-  const _hoisted_6$2 = { class: "btns" };
+  const _hoisted_3$2 = { class: "option" };
+  const _hoisted_4$2 = { class: "btns" };
   const _sfc_main$3 = {
     __name: "TagModal",
     props: ["tags"],
@@ -6673,9 +6567,9 @@
                 onClick: _cache[0] || (_cache[0] = vue.withModifiers(($event) => tagModal.show = false, ["stop"]))
               }),
               vue.createElementVNode("div", _hoisted_2$2, [
-                _hoisted_3$2,
-                vue.createElementVNode("div", _hoisted_4$2, [
-                  _hoisted_5$2,
+                _cache[6] || (_cache[6] = vue.createElementVNode("div", { class: "title" }, " 添加标签 ", -1)),
+                vue.createElementVNode("div", _hoisted_3$2, [
+                  _cache[3] || (_cache[3] = vue.createElementVNode("span", null, "用户：", -1)),
                   vue.createElementVNode("div", null, [
                     vue.createElementVNode("b", null, vue.toDisplayString(tagModal.currentUsername), 1)
                   ])
@@ -6690,7 +6584,7 @@
                 }, null, 544), [
                   [vue.vModelText, tagModal.tag]
                 ]),
-                vue.createElementVNode("div", _hoisted_6$2, [
+                vue.createElementVNode("div", _hoisted_4$2, [
                   vue.createVNode(BaseButton, {
                     type: "link",
                     onClick: _cache[2] || (_cache[2] = vue.withModifiers(($event) => {
@@ -6698,17 +6592,17 @@
                       tagModal.tag = "";
                     }, ["stop"]))
                   }, {
-                    default: vue.withCtx(() => [
-                      vue.createTextVNode("取消")
-                    ]),
+                    default: vue.withCtx(() => [..._cache[4] || (_cache[4] = [
+                      vue.createTextVNode("取消", -1)
+                    ])]),
                     _: 1
                   }),
                   vue.createVNode(BaseButton, {
                     onClick: vue.withModifiers(addTag, ["stop"])
                   }, {
-                    default: vue.withCtx(() => [
-                      vue.createTextVNode("确定")
-                    ]),
+                    default: vue.withCtx(() => [..._cache[5] || (_cache[5] = [
+                      vue.createTextVNode("确定", -1)
+                    ])]),
                     _: 1
                   })
                 ])
@@ -6790,30 +6684,27 @@
           e(h2);
         }
       });
-    } catch (s2) {
-      e(s2);
+    } catch (s) {
+      e(s);
     }
   }
-  const _withScopeId$1 = (n2) => (vue.pushScopeId("data-v-77aa374e"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1$1 = {
     key: 0,
     class: "NotificationModal modal"
   };
   const _hoisted_2$1 = { class: "modal-root" };
-  const _hoisted_3$1 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "title" }, " 提醒系统 ", -1));
-  const _hoisted_4$1 = { class: "modal-body" };
-  const _hoisted_5$1 = { class: "filter" };
-  const _hoisted_6$1 = { class: "list-wrap" };
-  const _hoisted_7$1 = { class: "notify-wrap" };
-  const _hoisted_8$1 = ["innerHTML"];
-  const _hoisted_9$1 = {
+  const _hoisted_3$1 = { class: "modal-body" };
+  const _hoisted_4$1 = { class: "filter" };
+  const _hoisted_5$1 = { class: "list-wrap" };
+  const _hoisted_6$1 = { class: "notify-wrap" };
+  const _hoisted_7$1 = ["innerHTML"];
+  const _hoisted_8$1 = {
     key: 0,
     class: "loading-wrap"
   };
-  const _hoisted_10$1 = { class: "footer" };
-  const _hoisted_11$1 = ["innerHTML"];
-  const _hoisted_12$1 = { class: "total" };
-  const _hoisted_13$1 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ vue.createElementVNode("span", null, "总共收到提醒", -1));
+  const _hoisted_9$1 = { class: "footer" };
+  const _hoisted_10$1 = ["innerHTML"];
+  const _hoisted_11$1 = { class: "total" };
   const _sfc_main$1 = {
     __name: "NotificationModal",
     props: ["modelValue", "list", "total", "pages", "loading"],
@@ -6848,14 +6739,14 @@
               }),
               vue.createElementVNode("div", _hoisted_2$1, [
                 vue.createElementVNode("div", { class: "modal-header" }, [
-                  _hoisted_3$1,
+                  _cache[4] || (_cache[4] = vue.createElementVNode("div", { class: "title" }, " 提醒系统 ", -1)),
                   vue.createElementVNode("i", {
                     class: "fa fa-times",
                     onClick: close
                   })
                 ]),
-                vue.createElementVNode("div", _hoisted_4$1, [
-                  vue.createElementVNode("div", _hoisted_5$1, [
+                vue.createElementVNode("div", _hoisted_3$1, [
+                  vue.createElementVNode("div", _hoisted_4$1, [
                     vue.createElementVNode("div", {
                       class: vue.normalizeClass(index.value === "all" && "active"),
                       onClick: _cache[0] || (_cache[0] = ($event) => index.value = "all")
@@ -6873,25 +6764,25 @@
                       onClick: _cache[3] || (_cache[3] = ($event) => index.value = "collect")
                     }, "收藏", 2)
                   ]),
-                  vue.createElementVNode("div", _hoisted_6$1, [
-                    vue.createElementVNode("div", _hoisted_7$1, [
+                  vue.createElementVNode("div", _hoisted_5$1, [
+                    vue.createElementVNode("div", _hoisted_6$1, [
                       vue.createElementVNode("div", {
                         id: "notifications",
                         class: vue.normalizeClass(index.value),
                         innerHTML: __props.list
-                      }, null, 10, _hoisted_8$1)
+                      }, null, 10, _hoisted_7$1)
                     ]),
-                    __props.loading ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9$1, [
+                    __props.loading ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_8$1, [
                       vue.createVNode(BaseLoading)
                     ])) : vue.createCommentVNode("", true)
                   ]),
-                  vue.createElementVNode("div", _hoisted_10$1, [
+                  vue.createElementVNode("div", _hoisted_9$1, [
                     vue.createElementVNode("div", {
                       innerHTML: __props.pages,
                       class: "pages"
-                    }, null, 8, _hoisted_11$1),
-                    vue.createElementVNode("div", _hoisted_12$1, [
-                      _hoisted_13$1,
+                    }, null, 8, _hoisted_10$1),
+                    vue.createElementVNode("div", _hoisted_11$1, [
+                      _cache[5] || (_cache[5] = vue.createElementVNode("span", null, "总共收到提醒", -1)),
                       vue.createTextVNode(vue.toDisplayString(__props.total), 1)
                     ])
                   ])
@@ -7282,7 +7173,7 @@
                 let r1 = await r2.json();
                 $(".cell.item.post-item").remove();
                 r1.reverse().map((v) => {
-                  let s2 = `
+                  let s = `
 <div class="cell item post-item id_${v.id}" style="" data-href="https://www.v2ex.com/t/${v.id}#reply${v.replyCount}">
     <table cellpadding="0" cellspacing="0" border="0" width="100%">
       <tbody>
@@ -7319,7 +7210,7 @@
     </table>
   </div>
                 `;
-                  $("#app").after($(s2));
+                  $("#app").after($(s));
                 });
               }).catch((e3) => {
                 eventBus.emit(CMD.SHOW_MSG, { type: "error", text: "暂无点击日期的最热数据！" });
@@ -7443,8 +7334,8 @@
               this.config.notice.text = text;
               if (this.config.notice.ddWebhook) {
                 let n2 = /* @__PURE__ */ new Date();
-                let s2 = n2.getSeconds();
-                s2 = s2 < 10 ? "0" + s2 : s2;
+                let s = n2.getSeconds();
+                s = s < 10 ? "0" + s : s;
                 let m = n2.getMinutes();
                 m = m < 10 ? "0" + m : m;
                 let h2 = n2.getHours();
@@ -7454,7 +7345,7 @@
                   contentType: "application/json",
                   data: JSON.stringify({
                     url: this.config.notice.ddWebhook,
-                    "text": notify.text() + `，时间：${n2.getFullYear()}/${n2.getMonth() + 1}/${n2.getDate()} ${h2}:${m}:${s2}`
+                    "text": notify.text() + `，时间：${n2.getFullYear()}/${n2.getMonth() + 1}/${n2.getDate()} ${h2}:${m}:${s}`
                   })
                 });
               }
@@ -7632,8 +7523,8 @@
       async getPostDetail(post) {
         this.current = post;
         this.show = true;
-        let url = location.origin + "/t/" + this.current.id;
-        this.current.url = url;
+        let url2 = location.origin + "/t/" + this.current.id;
+        this.current.url = url2;
         let alreadyHasReply = this.current.replyList.length;
         if (alreadyHasReply) {
           this.refreshLoading = true;
@@ -7659,7 +7550,7 @@
             }
           });
         }
-        let apiRes = await window.fetch(url + "?p=1");
+        let apiRes = await window.fetch(url2 + "?p=1");
         if (apiRes.status === 404) {
           eventBus.emit(CMD.SHOW_MSG, { type: "error", text: "主题未找到" });
           return this.refreshLoading = this.loading = false;
@@ -7708,58 +7599,42 @@
       }
     }
   };
-  const _withScopeId = (n2) => (vue.pushScopeId("data-v-a73f564c"), n2 = n2(), vue.popScopeId(), n2);
   const _hoisted_1 = {
     key: 0,
     class: ""
   };
-  const _hoisted_2 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "sep" }, null, -1));
-  const _hoisted_3 = { class: "box calender" };
-  const _hoisted_4 = { class: "month" };
-  const _hoisted_5 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "fade" }, "历史最热", -1));
-  const _hoisted_6 = { class: "ca-title" };
-  const _hoisted_7 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "calender-header" }, [
-    /* @__PURE__ */ vue.createElementVNode("div", null, "日"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "一"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "二"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "三"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "四"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "五"),
-    /* @__PURE__ */ vue.createElementVNode("div", null, "六")
-  ], -1));
-  const _hoisted_8 = { class: "days" };
-  const _hoisted_9 = ["onClick"];
-  const _hoisted_10 = ["href"];
-  const _hoisted_11 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "sep" }, null, -1));
-  const _hoisted_12 = {
+  const _hoisted_2 = { class: "box calender" };
+  const _hoisted_3 = { class: "month" };
+  const _hoisted_4 = { class: "ca-title" };
+  const _hoisted_5 = { class: "days" };
+  const _hoisted_6 = ["onClick"];
+  const _hoisted_7 = ["href"];
+  const _hoisted_8 = {
     key: 0,
     class: "target-user-tags p1"
   };
-  const _hoisted_13 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ vue.createElementVNode("span", null, "标签：", -1));
-  const _hoisted_14 = { class: "my-tag" };
-  const _hoisted_15 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
-  const _hoisted_16 = ["onClick"];
-  const _hoisted_17 = {
+  const _hoisted_9 = { class: "my-tag" };
+  const _hoisted_10 = ["onClick"];
+  const _hoisted_11 = {
     key: 1,
     class: "my-box p2",
     style: { "margin-top": "2rem", "margin-bottom": "0" }
   };
-  const _hoisted_18 = {
+  const _hoisted_12 = {
     key: 0,
     class: "flex flex-center"
   };
-  const _hoisted_19 = {
+  const _hoisted_13 = {
     key: 1,
     class: "loaded"
   };
-  const _hoisted_20 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ vue.createElementVNode("span", null, "楼中楼解析完成", -1));
-  const _hoisted_21 = {
+  const _hoisted_14 = {
     key: 0,
     ref: "tip",
     class: "pop-confirm-content"
   };
-  const _hoisted_22 = { class: "text" };
-  const _hoisted_23 = { class: "options" };
+  const _hoisted_15 = { class: "text" };
+  const _hoisted_16 = { class: "options" };
   function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Setting = vue.resolveComponent("Setting");
     const _component_TagModal = vue.resolveComponent("TagModal");
@@ -7794,11 +7669,11 @@
       vue.createVNode(_component_MsgModal),
       (vue.openBlock(), vue.createBlock(vue.Teleport, { to: "#Rightbar > .sep20" }, [
         $data.calendar.show ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1, [
-          _hoisted_2,
-          vue.createElementVNode("div", _hoisted_3, [
-            vue.createElementVNode("div", _hoisted_4, [
-              _hoisted_5,
-              vue.createElementVNode("div", _hoisted_6, [
+          _cache[12] || (_cache[12] = vue.createElementVNode("div", { class: "sep" }, null, -1)),
+          vue.createElementVNode("div", _hoisted_2, [
+            vue.createElementVNode("div", _hoisted_3, [
+              _cache[10] || (_cache[10] = vue.createElementVNode("div", { class: "fade" }, "历史最热", -1)),
+              vue.createElementVNode("div", _hoisted_4, [
                 vue.createElementVNode("i", {
                   class: "fa fa-arrow-left",
                   onClick: _cache[6] || (_cache[6] = ($event) => $options.getMonthDayInfo(-1)),
@@ -7812,8 +7687,16 @@
                 })
               ])
             ]),
-            _hoisted_7,
-            vue.createElementVNode("div", _hoisted_8, [
+            _cache[11] || (_cache[11] = vue.createElementVNode("div", { class: "calender-header" }, [
+              vue.createElementVNode("div", null, "日"),
+              vue.createElementVNode("div", null, "一"),
+              vue.createElementVNode("div", null, "二"),
+              vue.createElementVNode("div", null, "三"),
+              vue.createElementVNode("div", null, "四"),
+              vue.createElementVNode("div", null, "五"),
+              vue.createElementVNode("div", null, "六")
+            ], -1)),
+            vue.createElementVNode("div", _hoisted_5, [
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($data.calendar.dayCount + $data.calendar.firstDayWeek, (i) => {
                 return vue.openBlock(), vue.createElementBlock("div", {
                   class: vue.normalizeClass([
@@ -7825,12 +7708,12 @@
                   i - $data.calendar.firstDayWeek > 0 ? (vue.openBlock(), vue.createElementBlock("a", {
                     key: 0,
                     href: `/v2hot?${$data.calendar.year}-${$data.calendar.month + 1}-${i - $data.calendar.firstDayWeek}`
-                  }, vue.toDisplayString(i - $data.calendar.firstDayWeek > 0 ? i - $data.calendar.firstDayWeek : ""), 9, _hoisted_10)) : vue.createCommentVNode("", true)
-                ], 10, _hoisted_9);
+                  }, vue.toDisplayString(i - $data.calendar.firstDayWeek > 0 ? i - $data.calendar.firstDayWeek : ""), 9, _hoisted_7)) : vue.createCommentVNode("", true)
+                ], 10, _hoisted_6);
               }), 256))
             ])
           ]),
-          _hoisted_11
+          _cache[13] || (_cache[13] = vue.createElementVNode("div", { class: "sep" }, null, -1))
         ])) : vue.createCommentVNode("", true)
       ])),
       vue.createVNode(_component_NotificationModal, {
@@ -7842,16 +7725,16 @@
         pages: $data.notificationModal.pages
       }, null, 8, ["modelValue", "list", "loading", "total", "pages"]),
       !$data.stopMe ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
-        $options.isMember && $data.isLogin && $data.config.openTag ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_12, [
-          _hoisted_13,
+        $options.isMember && $data.isLogin && $data.config.openTag ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_8, [
+          _cache[15] || (_cache[15] = vue.createElementVNode("span", null, "标签：", -1)),
           (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($options.targetUserTags, (i) => {
-            return vue.openBlock(), vue.createElementBlock("span", _hoisted_14, [
-              _hoisted_15,
+            return vue.openBlock(), vue.createElementBlock("span", _hoisted_9, [
+              _cache[14] || (_cache[14] = vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1)),
               vue.createElementVNode("span", null, vue.toDisplayString(i), 1),
               vue.createElementVNode("i", {
                 class: "fa fa-trash-o remove",
                 onClick: ($event) => $options.removeTargetUserTag(i)
-              }, null, 8, _hoisted_16)
+              }, null, 8, _hoisted_10)
             ]);
           }), 256)),
           vue.createElementVNode("span", {
@@ -7860,18 +7743,18 @@
             title: "添加标签"
           }, "+")
         ])) : vue.createCommentVNode("", true),
-        $options.isPost && !$data.show ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_17, [
-          $data.loading ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_18, [
+        $options.isPost && !$data.show ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_11, [
+          $data.loading ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_12, [
             vue.createVNode(_component_BaseLoading)
-          ])) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_19, [
-            _hoisted_20,
+          ])) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_13, [
+            _cache[17] || (_cache[17] = vue.createElementVNode("span", null, "楼中楼解析完成", -1)),
             vue.createVNode(_component_BaseButton, {
               size: "small",
               onClick: $options.showPost
             }, {
-              default: vue.withCtx(() => [
-                vue.createTextVNode("点击显示")
-              ]),
+              default: vue.withCtx(() => [..._cache[16] || (_cache[16] = [
+                vue.createTextVNode("点击显示", -1)
+              ])]),
               _: 1
             }, 8, ["onClick"])
           ]))
@@ -7880,26 +7763,26 @@
       (vue.openBlock(), vue.createBlock(vue.Teleport, { to: "body" }, [
         vue.createVNode(vue.Transition, null, {
           default: vue.withCtx(() => [
-            $data.popConfirmModal.show ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_21, [
-              vue.createElementVNode("div", _hoisted_22, vue.toDisplayString($data.popConfirmModal.title), 1),
-              vue.createElementVNode("div", _hoisted_23, [
+            $data.popConfirmModal.show ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_14, [
+              vue.createElementVNode("div", _hoisted_15, vue.toDisplayString($data.popConfirmModal.title), 1),
+              vue.createElementVNode("div", _hoisted_16, [
                 vue.createVNode(_component_BaseButton, {
                   type: "link",
                   size: "small",
                   onClick: vue.withModifiers($options.popConfirmModalCancel, ["stop"])
                 }, {
-                  default: vue.withCtx(() => [
-                    vue.createTextVNode("取消")
-                  ]),
+                  default: vue.withCtx(() => [..._cache[18] || (_cache[18] = [
+                    vue.createTextVNode("取消", -1)
+                  ])]),
                   _: 1
                 }, 8, ["onClick"]),
                 vue.createVNode(_component_BaseButton, {
                   size: "small",
                   onClick: vue.withModifiers($options.popConfirmModalConfirm, ["stop"])
                 }, {
-                  default: vue.withCtx(() => [
-                    vue.createTextVNode("确认")
-                  ]),
+                  default: vue.withCtx(() => [..._cache[19] || (_cache[19] = [
+                    vue.createTextVNode("确认", -1)
+                  ])]),
                   _: 1
                 }, 8, ["onClick"])
               ])
@@ -8049,10 +7932,11 @@
           return post;
         }
         let boxs = body.find(`#Main .box`);
-        let box = boxs[1];
+        let box = findReplyBox(boxs);
         let cells = box.querySelectorAll(".cell");
         if (cells && cells.length) {
-          post.fr = cells[0].querySelector(".cell .fr").innerHTML;
+          const frElement = cells[0].querySelector(".cell .fr");
+          post.fr = frElement ? frElement.innerHTML : "";
           cells = Array.from(cells);
           let snow = cells[0].querySelector(".snow");
           post.lastReplyDate = ((_b = (_a = snow == null ? void 0 : snow.nextSibling) == null ? void 0 : _a.nodeValue) == null ? void 0 : _b.trim()) || "";
@@ -8068,10 +7952,10 @@
               repliesMap.push({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) });
               let pages = cells[1].querySelectorAll("a.page_normal");
               pages = Array.from(pages);
-              let url = location.origin + "/t/" + post.id;
+              let url2 = location.origin + "/t/" + post.id;
               for (let i = 0; i < pages.length; i++) {
                 let currentPageNo = Number(pages[i].innerText);
-                promiseList.push(this.fetchPostOtherPageReplies(url + "?p=" + currentPageNo, currentPageNo));
+                promiseList.push(this.fetchPostOtherPageReplies(url2 + "?p=" + currentPageNo, currentPageNo));
               }
               Promise.allSettled(promiseList).then(
                 (results) => {
@@ -8089,8 +7973,10 @@
       fetchPostOtherPageReplies(href, pageNo) {
         return new Promise((resolve) => {
           $.get(href).then((res) => {
-            let s2 = res.match(/<body[^>]*>([\s\S]+?)<\/body>/g);
-            let box = $(s2[0]).find("#Main .box")[1];
+            let s = res.match(/<body[^>]*>([\s\S]+?)<\/body>/g);
+            let $body = $(s[0]);
+            let boxs = $body.find("#Main .box");
+            let box = findReplyBox(boxs);
             let cells = box.querySelectorAll(".cell");
             cells = Array.from(cells);
             resolve({ i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1)) });
@@ -8150,6 +8036,8 @@
           let mod = node.querySelector(".mod");
           if (mod) {
             item.isMod = true;
+          } else {
+            item.isMod = ["Livid", "Kai", "Olivia", "GordianZ", "sparanoid", "drymonfidelia", "GordianZ", "sillydaddy"].includes(item.username);
           }
           replyList.push(item);
         });
@@ -8555,9 +8443,9 @@
     function qianDao() {
       let timeNow = (/* @__PURE__ */ new Date()).getUTCFullYear() + "/" + ((/* @__PURE__ */ new Date()).getUTCMonth() + 1) + "/" + (/* @__PURE__ */ new Date()).getUTCDate();
       if (window.pageType === PageType.Home) {
-        let qiandao2 = document.querySelector('.box .inner a[href="/mission/daily"]');
-        if (qiandao2) {
-          qianDao_(qiandao2, timeNow);
+        let qiandao = document.querySelector('.box .inner a[href="/mission/daily"]');
+        if (qiandao) {
+          qianDao_(qiandao, timeNow);
         } else if (document.getElementById("gift_v2excellent")) {
           document.getElementById("gift_v2excellent").click();
           localStorage.setItem("menu_clockInTime", timeNow);
@@ -8570,23 +8458,23 @@
         }
       }
     }
-    function qianDao_(qiandao2, timeNow) {
-      let url = location.origin + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector("div#Top .tools, #menu-body").innerHTML)[0];
-      $.get(url).then((r2) => {
+    function qianDao_(qiandao, timeNow) {
+      let url2 = location.origin + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector("div#Top .tools, #menu-body").innerHTML)[0];
+      $.get(url2).then((r2) => {
         let bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g);
         let html = $(bodyText[0]);
         if (html.find("li.fa.fa-ok-sign").length) {
           html = html.find("#Main").text().match(/已连续登录 (\d+?) 天/)[0];
           localStorage.setItem("menu_clockInTime", timeNow);
           console.info("[V2Next] 自动签到完成！");
-          if (qiandao2) {
-            qiandao2.textContent = `自动签到完成！${html}`;
-            qiandao2.href = "javascript:void(0);";
+          if (qiandao) {
+            qiandao.textContent = `自动签到完成！${html}`;
+            qiandao.href = "javascript:void(0);";
           }
         } else {
           console.warn("[V2Next] 自动签到失败！请关闭其他插件或脚本。如果连续几天都签到失败，请联系作者解决！");
-          if (qiandao2)
-            qiandao2.textContent = "自动签到失败！请尝试手动签到！";
+          if (qiandao)
+            qiandao.textContent = "自动签到失败！请尝试手动签到！";
         }
       });
     }
@@ -8856,6 +8744,24 @@
         }
       }, true);
     }
+    function findReplyBox(boxs) {
+      var _a, _b;
+      for (let i = 1; i < boxs.length; i++) {
+        const box = boxs[i];
+        const cells = box.querySelectorAll ? box.querySelectorAll(".cell") : [];
+        if (cells && cells.length > 0) {
+          const firstCell = cells[0];
+          if ((_a = firstCell.querySelector) == null ? void 0 : _a.call(firstCell, ".snow")) {
+            return box;
+          }
+          if ((_b = firstCell.querySelector) == null ? void 0 : _b.call(firstCell, ".fa-tag")) {
+            return box;
+          }
+        }
+      }
+      console.warn("[V2Next] 无法智能检测回复区域，使用默认位置");
+      return boxs[1];
+    }
     window.canParseV2exPage = !window.location.search.includes("script");
     if (window.canParseV2exPage) {
       init();
@@ -8873,122 +8779,14 @@
     }
   }
   if (!isMobile) {
+    (o=>{if(typeof GM_addStyle=="function"){GM_addStyle(o);return}const r=document.createElement("style");r.textContent=o,document.head.append(r)})(' .tip[data-v-ee672411]{position:fixed;font-size:1.6rem;z-index:9999;max-width:10rem;border-radius:.5rem;padding:1rem;color:var(--color-font-8);background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow)}.v-enter-active[data-v-e7c0fbef],.v-leave-active[data-v-e7c0fbef]{transition:opacity .3s ease}.v-enter-from[data-v-e7c0fbef],.v-leave-to[data-v-e7c0fbef]{opacity:0}.username[data-v-e7c0fbef]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-e7c0fbef]{font-size:1.2rem;font-weight:700;color:#e02a2a}.owner[data-v-e7c0fbef]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-e7c0fbef]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-e7c0fbef]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove[data-v-e7c0fbef]{display:inline}.my-tag .remove[data-v-e7c0fbef]{cursor:pointer;margin-left:.5rem;display:none}.add-tag[data-v-e7c0fbef]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;cursor:pointer;position:absolute;display:none}.floor[data-v-e7c0fbef]{margin-left:.5rem;font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;background-color:var(--color-floor);color:var(--color-floor-font);padding:3px 9px;cursor:default}[data-v-e7c0fbef]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--color-top-reply-wrap-bg: #f2f3f5;--color-top-reply-wrap-line: #d2d2d2}html.dark[data-v-e7c0fbef]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e;--color-top-reply-wrap-bg: #212f3e;--color-top-reply-wrap-line: #3b536d}html[data-v-e7c0fbef],body[data-v-e7c0fbef]{font-size:62.5%}.flex[data-v-e7c0fbef]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-e7c0fbef]{justify-content:flex-end}.flex-center[data-v-e7c0fbef]{justify-content:center}.p1[data-v-e7c0fbef]{padding:1rem}.p2[data-v-e7c0fbef]{padding:2rem}.p0[data-v-e7c0fbef]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-e7c0fbef]{text-underline-offset:.7ex;text-decoration:underline 1px}a[data-v-e7c0fbef]{text-decoration:none;cursor:pointer}a[data-v-e7c0fbef]:hover{text-decoration:underline}.tool[data-v-e7c0fbef]{position:relative;display:flex;align-items:center;border-radius:.3rem;cursor:pointer;height:2.6rem;padding:0 .5rem;gap:.2rem}.tool>svg[data-v-e7c0fbef]{width:1.6rem!important;height:1.6rem!important}.tool[data-v-e7c0fbef]:hover{background:var(--color-third-bg)}.tool.no-hover[data-v-e7c0fbef]{cursor:default}.tool.no-hover[data-v-e7c0fbef]:hover{background:unset!important}.tool.disabled[data-v-e7c0fbef]{cursor:not-allowed}.tool.disabled[data-v-e7c0fbef]:hover{background:unset!important}.my-node[data-v-e7c0fbef]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node[data-v-e7c0fbef]:hover{text-decoration:none;background:#e2e2e2}.msgs[data-v-e7c0fbef]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-e7c0fbef]{box-shadow:0 2px 3px #0000001a;box-shadow:#00000014 0 4px 12px;border-radius:var(--box-border-radius);background:var(--box-background-color);margin-bottom:2rem;width:100%;box-sizing:border-box;transition:background-color .3s}.my-cell[data-v-e7c0fbef]{color:var(--color-font);padding:.8rem 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-e7c0fbef]{position:fixed;z-index:1001;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-e7c0fbef]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-e7c0fbef]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-e7c0fbef]{position:relative}.modal .mask[data-v-e7c0fbef]{position:fixed;width:100vw;height:100vh;left:0;top:0;background-color:#1d1c1c47}.radio-group2[data-v-e7c0fbef]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-e7c0fbef]{cursor:pointer;background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-e7c0fbef]:first-child{border-left:none}.radio-group2 .active[data-v-e7c0fbef]{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm[data-v-e7c0fbef]{position:relative;display:inline-flex;justify-content:center}input[data-v-e7c0fbef]{height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-e7c0fbef]:hover{border:1px solid var(--color-input-border-hover)}input[data-v-e7c0fbef]:focus{border:1px solid var(--color-active)}.danger[data-v-e7c0fbef]{color:red!important}.pop-confirm-content[data-v-e7c0fbef]{position:fixed;background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow);color:var(--color-font-8);padding:1.5rem;border-radius:.8rem;transform:translate(-50%,calc(-100% - 1rem));z-index:1003}.pop-confirm-content .text[data-v-e7c0fbef]{text-align:start;font-size:1.6rem;width:15rem;min-width:15rem}.pop-confirm-content .options[data-v-e7c0fbef]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1rem}img[data-v-e7c0fbef]{max-width:100%}.switch[data-v-e7c0fbef]{width:4.5rem;height:2.2rem;border-radius:2rem;position:relative;display:flex;align-items:center;background:var(--color-swtich-bg);transition:all .3s}.switch.active[data-v-e7c0fbef]{background:var(--color-active)}.switch.active[data-v-e7c0fbef]:before{right:.2rem}.switch[data-v-e7c0fbef]:before{position:absolute;content:" ";transition:all .3s;right:calc(100% - 2rem);width:1.8rem;height:1.8rem;background:white;border-radius:50%}.display-type[data-v-e4f684be]{height:3rem;padding:0 .3rem;background:var(--color-sp-btn-bg);border-radius:1rem;display:flex;font-size:1.4rem;align-items:center;color:#a9a9a9}.display-type .type[data-v-e4f684be]{border-radius:.8rem;padding:0 1.3rem;height:2.8rem;align-items:center;display:flex;position:relative;cursor:pointer}.display-type .type.active[data-v-e4f684be]{background:var(--color-second-bg);color:var(--color-font-pure);box-shadow:0 0 6px 0 var(--color-tooltip-shadow)}.display-type .type-list[data-v-e4f684be]{position:absolute;background:var(--color-sp-btn-bg);right:0;top:3rem;font-size:1.4rem;box-shadow:0 0 6px 0 var(--color-tooltip-shadow);border-radius:.6rem;z-index:9;color:var(--color-font)}.display-type .type-list .item[data-v-e4f684be]{word-break:keep-all;padding:.8rem 1rem;cursor:pointer}.display-type .type-list .item.active[data-v-e4f684be],.display-type .type-list .item[data-v-e4f684be]:hover{color:var(--color-font-pure)}.display-type svg[data-v-e4f684be]{width:1.5rem}.loading[data-v-2697baa2]{border:2px solid;border-color:var(--color-loading-2) var(--color-loading-1) var(--color-loading-1) var(--color-loading-1);border-radius:100%;animation:circle-2697baa2 infinite 1s linear;width:2rem;height:2rem}.loading.small[data-v-2697baa2]{width:1.2rem;height:1.2rem}.loading.large[data-v-2697baa2]{width:3rem;height:3rem}@keyframes circle-2697baa2{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.base-button[data-v-5a7d79ba]{cursor:pointer;border-radius:.6rem;padding:0 1.5rem;display:inline-flex;align-items:center;justify-content:center;transition:all .3s;height:3.6rem;line-height:1;position:relative}.base-button .loading[data-v-5a7d79ba]{position:absolute}.base-button.disabled[data-v-5a7d79ba]{opacity:.6;cursor:not-allowed;-webkit-user-select:none;user-select:none}.base-button.small[data-v-5a7d79ba]{height:3rem}.base-button.small>span[data-v-5a7d79ba]{font-size:1.3rem}.base-button.large[data-v-5a7d79ba]{height:5rem;font-size:1.8rem;padding:0 2.2rem}.base-button.large>span[data-v-5a7d79ba]{font-size:1.8rem}.base-button[data-v-5a7d79ba]:hover:not(.link){opacity:.7}.base-button.primary[data-v-5a7d79ba]{background:var(--color-active)}.base-button.primary>span[data-v-5a7d79ba]{color:#fff}.base-button.gary[data-v-5a7d79ba]{background:#4b5563}.base-button.link[data-v-5a7d79ba]{border-radius:0;border-bottom:2px solid transparent}.base-button.link>span[data-v-5a7d79ba]{color:var(--color-font-8)}.base-button.link[data-v-5a7d79ba]:hover{border-bottom:2px solid var(--color-font-8)}.base-button.active[data-v-5a7d79ba]{opacity:.4}.key-notice[data-v-5a7d79ba]{margin-left:1rem;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff}.key-notice .key[data-v-5a7d79ba]{transform:scale(.8)}.setting-modal .modal-root[data-v-386b43d0]{z-index:9;background:var(--color-main-bg);border-radius:1rem;font-size:1.4rem;overflow:hidden;color:var(--color-font-pure)}.setting-modal .modal-root .modal-header[data-v-386b43d0]{padding:1.4rem;display:flex;justify-content:center;position:relative}.setting-modal .modal-root .modal-header .title[data-v-386b43d0]{font-size:2.2rem;text-align:left;margin-bottom:0}.setting-modal .modal-root .modal-header svg[data-v-386b43d0]{position:absolute;right:1rem;cursor:pointer;font-size:2.6rem}.setting-modal .modal-root .body[data-v-386b43d0]{width:60rem}.setting-modal .modal-root .body .modal-content[data-v-386b43d0]{background:var(--color-second-bg);flex:1;height:100%;box-sizing:border-box;padding:1rem 1rem 1rem 2rem;font-size:1.6rem;text-align:left;line-height:1.6}.setting-modal .modal-root .body .btns[data-v-386b43d0]{margin:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1.5rem;font-size:1.4rem}.setting-modal .modal-root[data-v-086214a4]{z-index:9;background:white;border-radius:2rem;font-size:1.6rem;overflow:hidden;color:var(--color-font-pure)}.setting-modal .modal-root .modal-header[data-v-086214a4]{padding:2rem;display:flex;justify-content:space-between;border-bottom:1px solid var(--color-input-border)}.setting-modal .modal-root .modal-header .title[data-v-086214a4]{font-size:2rem;text-align:left;margin-bottom:0}.setting-modal .modal-root .modal-header svg[data-v-086214a4]{cursor:pointer;font-size:2.6rem}.setting-modal .modal-root .body[data-v-086214a4]{width:65rem;height:45rem;display:flex}.setting-modal .modal-root .body .left[data-v-086214a4]{display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:0 1.4rem}.setting-modal .modal-root .body .left .tabs[data-v-086214a4]{padding:1rem 0rem;display:flex;flex-direction:column;gap:.8rem}.setting-modal .modal-root .body .left .tabs .tab[data-v-086214a4]{cursor:pointer;padding:.8rem 1.5rem;width:10rem;border-radius:.8rem;text-align:start;display:flex;align-items:center;justify-content:flex-start;gap:.6rem}.setting-modal .modal-root .body .left .tabs .tab svg[data-v-086214a4]{font-size:1.8rem}.setting-modal .modal-root .body .left .tabs .tab.active[data-v-086214a4]{background:var(--color-active);background:#E6F4FF;color:var(--color-font-pure)}.setting-modal .modal-root .body .left .bottom[data-v-086214a4]{display:flex;flex-direction:column;justify-content:space-between;align-items:center}.setting-modal .modal-root .body .left .bottom .tip[data-v-086214a4]{width:12rem;font-size:1.2rem;color:var(--color-font)}.setting-modal .modal-root .body .left .bottom .icons[data-v-086214a4]{display:flex;gap:1rem;font-size:2.4rem}.setting-modal .modal-root .body .modal-content[data-v-086214a4]{background:var(--color-second-bg);flex:1;height:100%;box-sizing:border-box;padding-right:1rem;padding-left:0;border-radius:1rem;display:flex}.setting-modal .modal-root .body .modal-content .scroll[data-v-086214a4]{flex:1;padding-right:1rem;overflow:auto}.setting-modal .modal-root .body .modal-content .scroll .row[data-v-086214a4]{min-height:5rem;display:flex;justify-content:space-between;align-items:center}.setting-modal .modal-root .body .modal-content .scroll .row .wrapper[data-v-086214a4]{height:3rem;flex:1;display:flex;justify-content:flex-end;align-items:center;gap:var(--space)}.setting-modal .modal-root .body .modal-content .scroll .row .wrapper span[data-v-086214a4]{text-align:right;font-size:1.4rem;color:gray}.setting-modal .modal-root .body .modal-content .scroll .row .wrapper .set-key[data-v-086214a4]{align-items:center}.setting-modal .modal-root .body .modal-content .scroll .row .wrapper .set-key input[data-v-086214a4]{width:15rem;box-sizing:border-box;margin-right:1rem;height:2.8rem;outline:none;font-size:1.6rem;border:1px solid gray;border-radius:.3rem;padding:0 .5rem;background:var(--color-second-bg);color:var(--color-font-1)}.setting-modal .modal-root .body .modal-content .scroll .row .main-title[data-v-086214a4]{font-size:1.8rem;font-weight:700;color:var(--color-font-8)}.setting-modal .modal-root .body .modal-content .scroll .border[data-v-086214a4]{border-bottom:1px solid var(--color-input-border)}.setting-modal .modal-root .body .modal-content .scroll .desc[data-v-086214a4]{margin-bottom:1rem;font-size:1.4rem;text-align:left;color:var(--color-font)}.setting-modal .modal-root .body .modal-content .scroll .project-desc[data-v-086214a4]{text-align:start;font-size:1.6rem;padding-bottom:1rem}.setting-modal .modal-root .body .modal-content .scroll .line[data-v-086214a4]{border-bottom:1px solid #c4c3c3}.sub-content[data-v-086214a4]{padding:0 2rem 1rem;border-radius:1rem;background:#f3f3f3;margin-bottom:1rem}.log[data-v-086214a4]{position:relative;text-align:left;margin-bottom:20px;padding-left:20px;font-size:16px;color:#6495ed;text-decoration:underline}.tips2[data-v-086214a4]{text-align:left;color:var(--color-font)}.tips2 svg[data-v-086214a4]{transform:translateY(.3rem);margin-right:.6rem}.Author[data-v-64aa1930]{display:flex;align-items:center;justify-content:space-between;font-size:1.2rem;position:relative}.Author.expand[data-v-64aa1930]{margin-bottom:0}.Author .Author-left[data-v-64aa1930]{display:flex;align-items:center;max-width:65%;word-break:break-all}.Author .Author-left .username[data-v-64aa1930]{font-size:1.4rem;margin-right:.6rem}.Author .Author-left .expand-icon[data-v-64aa1930]{cursor:pointer;margin-right:.6rem;width:2rem;height:2rem;transform:rotate(90deg)}.Author .Author-left .avatar[data-v-64aa1930]{margin-right:.8rem;display:flex}.Author .Author-left .avatar img[data-v-64aa1930]{width:2.8rem;height:2.8rem;border-radius:.4rem}.Author .Author-left .texts[data-v-64aa1930]{flex:1}.Author .Author-left .owner[data-v-64aa1930]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:.6rem;transform:scale(.8)}.Author .Author-left .dup[data-v-64aa1930]{display:inline-block;background-color:transparent;color:red;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid red;font-size:1.2rem;font-weight:700;margin-right:.6rem;transform:scale(.8)}.Author .Author-left .mod[data-v-64aa1930]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:.6rem}.Author:hover .add-tag[data-v-64aa1930]{display:inline-block}.Author .Author-right[data-v-64aa1930]{position:absolute;right:0;display:flex;align-items:center}.Author .Author-right .toolbar[data-v-64aa1930]{display:flex;align-items:center;color:var(--color-gray);opacity:0;gap:.2rem}.Author .Author-right .toolbar[data-v-64aa1930]:hover{opacity:1}.post-editor-wrapper[data-v-0e56c62c]{width:100%;box-sizing:border-box;position:relative;overflow:hidden;transition:all .3s;color:var(--color-font)}.post-editor-wrapper.reply-post .post-editor[data-v-0e56c62c]{border:1px solid var(--color-line)}.post-editor-wrapper.reply-post.isFocus .post-editor[data-v-0e56c62c]{border:1px solid var(--color-active)}.post-editor-wrapper.reply-comment[data-v-0e56c62c]{border-radius:var(--box-border-radius);overflow:hidden;border:1px solid var(--color-line)}.post-editor-wrapper.reply-comment.isFocus[data-v-0e56c62c]{border:1px solid var(--color-active)}.post-editor-wrapper.reply-comment .toolbar[data-v-0e56c62c]{background:var(--color-editor-toolbar)}.post-editor-wrapper .post-editor[data-v-0e56c62c]{border-radius:var(--box-border-radius);transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.4rem;min-height:13rem;resize:none;background:var(--box-background-color);color:var(--color-font-pure);border:1px solid transparent}.post-editor-wrapper .toolbar[data-v-0e56c62c]{box-sizing:border-box;padding:.5rem 1rem;width:100%;position:relative;display:flex;justify-content:space-between;align-items:center}.post-editor-wrapper .toolbar .left[data-v-0e56c62c]{display:flex;align-items:center;gap:1rem;font-size:2.6rem}.post-editor-wrapper .toolbar .left svg[data-v-0e56c62c]{cursor:pointer}.post-editor-wrapper .toolbar .left .upload[data-v-0e56c62c]{width:2.6rem;height:2.6rem;overflow:hidden;display:flex;justify-content:center;align-items:center}.post-editor-wrapper .toolbar .left .upload input[data-v-0e56c62c]{width:2.6rem;height:2.6rem;cursor:pointer;position:absolute;opacity:0}.post-editor-wrapper .toolbar span[data-v-0e56c62c]{color:gray;font-size:1.3rem}.post-editor-wrapper .get-cursor[data-v-0e56c62c]{border-radius:var(--box-border-radius);transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.4rem;min-height:13rem;resize:none;background:var(--box-background-color);color:var(--color-font-pure);border:1px solid transparent;position:absolute;top:0;z-index:-100}.post-editor-wrapper .emoticon-pack[data-v-0e56c62c]{z-index:999999999;border-radius:1rem;padding:1rem;width:31rem;max-width:31rem;height:30rem;max-height:30rem;overflow:auto;background:var(--color-third-bg);border:1px solid var(--color-font-3);box-shadow:0 9px 24px -3px #0000000f,0 4px 8px -1px #0000001f;position:fixed;bottom:11rem;left:14rem}.post-editor-wrapper .emoticon-pack svg[data-v-0e56c62c]{cursor:pointer;position:absolute;right:.8rem;font-size:2.4rem}.post-editor-wrapper .emoticon-pack .list[data-v-0e56c62c]{margin:1rem 0;display:flex;flex-wrap:wrap}.post-editor-wrapper .emoticon-pack img[data-v-0e56c62c]{cursor:pointer;width:calc(100% / 7);padding:.5rem;box-sizing:border-box}.post-editor-wrapper .emoticon-pack span[data-v-0e56c62c]{width:calc(100% / 7);display:inline-block;cursor:pointer;font-size:2.3rem;text-align:center}.v-enter-active[data-v-6f61a860],.v-leave-active[data-v-6f61a860]{transition:opacity .3s ease}.v-enter-from[data-v-6f61a860],.v-leave-to[data-v-6f61a860]{opacity:0}.username[data-v-6f61a860]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-6f61a860]{font-size:1.2rem;font-weight:700;color:#e02a2a}.owner[data-v-6f61a860]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-6f61a860]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-6f61a860]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove[data-v-6f61a860]{display:inline}.my-tag .remove[data-v-6f61a860]{cursor:pointer;margin-left:.5rem;display:none}.add-tag[data-v-6f61a860]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;cursor:pointer;position:absolute;display:none}.floor[data-v-6f61a860]{margin-left:.5rem;font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;background-color:var(--color-floor);color:var(--color-floor-font);padding:3px 9px;cursor:default}[data-v-6f61a860]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--color-top-reply-wrap-bg: #f2f3f5;--color-top-reply-wrap-line: #d2d2d2}html.dark[data-v-6f61a860]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e;--color-top-reply-wrap-bg: #212f3e;--color-top-reply-wrap-line: #3b536d}html[data-v-6f61a860],body[data-v-6f61a860]{font-size:62.5%}.flex[data-v-6f61a860]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-6f61a860]{justify-content:flex-end}.flex-center[data-v-6f61a860]{justify-content:center}.p1[data-v-6f61a860]{padding:1rem}.p2[data-v-6f61a860]{padding:2rem}.p0[data-v-6f61a860]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-6f61a860]{text-underline-offset:.7ex;text-decoration:underline 1px}a[data-v-6f61a860]{text-decoration:none;cursor:pointer}a[data-v-6f61a860]:hover{text-decoration:underline}.tool[data-v-6f61a860]{position:relative;display:flex;align-items:center;border-radius:.3rem;cursor:pointer;height:2.6rem;padding:0 .5rem;gap:.2rem}.tool>svg[data-v-6f61a860]{width:1.6rem!important;height:1.6rem!important}.tool[data-v-6f61a860]:hover{background:var(--color-third-bg)}.tool.no-hover[data-v-6f61a860]{cursor:default}.tool.no-hover[data-v-6f61a860]:hover{background:unset!important}.tool.disabled[data-v-6f61a860]{cursor:not-allowed}.tool.disabled[data-v-6f61a860]:hover{background:unset!important}.my-node[data-v-6f61a860]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node[data-v-6f61a860]:hover{text-decoration:none;background:#e2e2e2}.msgs[data-v-6f61a860]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-6f61a860]{box-shadow:0 2px 3px #0000001a;box-shadow:#00000014 0 4px 12px;border-radius:var(--box-border-radius);background:var(--box-background-color);margin-bottom:2rem;width:100%;box-sizing:border-box;transition:background-color .3s}.my-cell[data-v-6f61a860]{color:var(--color-font);padding:.8rem 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-6f61a860]{position:fixed;z-index:1001;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-6f61a860]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-6f61a860]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-6f61a860]{position:relative}.modal .mask[data-v-6f61a860]{position:fixed;width:100vw;height:100vh;left:0;top:0;background-color:#1d1c1c47}.radio-group2[data-v-6f61a860]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-6f61a860]{cursor:pointer;background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-6f61a860]:first-child{border-left:none}.radio-group2 .active[data-v-6f61a860]{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm[data-v-6f61a860]{position:relative;display:inline-flex;justify-content:center}input[data-v-6f61a860]{height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-6f61a860]:hover{border:1px solid var(--color-input-border-hover)}input[data-v-6f61a860]:focus{border:1px solid var(--color-active)}.danger[data-v-6f61a860]{color:red!important}.pop-confirm-content[data-v-6f61a860]{position:fixed;background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow);color:var(--color-font-8);padding:1.5rem;border-radius:.8rem;transform:translate(-50%,calc(-100% - 1rem));z-index:1003}.pop-confirm-content .text[data-v-6f61a860]{text-align:start;font-size:1.6rem;width:15rem;min-width:15rem}.pop-confirm-content .options[data-v-6f61a860]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1rem}img[data-v-6f61a860]{max-width:100%}.html-wrapper[data-v-6f61a860]{position:relative}.html-wrapper .mask[data-v-6f61a860]{max-height:90rem;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent)}.html-wrapper .expand[data-v-6f61a860]{position:absolute;z-index:1;bottom:2rem;padding:.2rem 1.5rem;border-radius:2rem;border:1px solid gray;background:white;color:gray;left:50%;transform:translate(-50%);cursor:pointer}.top-sub-comment[data-v-d3f8c94b]{width:100%;box-sizing:border-box;margin-top:.8rem;display:flex;position:relative}.top-sub-comment .expand-line[data-v-d3f8c94b]{width:1.6rem;position:relative}.top-sub-comment .expand-line[data-v-d3f8c94b]:after{position:absolute;left:50%;top:2%;content:" ";height:98%;width:0;border-right:1px solid var(--color-top-reply-wrap-line)}.top-sub-comment .right[data-v-d3f8c94b]{flex:1;width:calc(100% - 3rem)}.top-sub-comment .right .w .post-editor-wrapper[data-v-d3f8c94b]{margin-top:1rem}.top-sub-comment[data-v-d3f8c94b] .avatar{display:none!important}.top-sub-comment.top-sub-reply[data-v-d3f8c94b]:first-child{margin-top:0}.top-sub-comment.top-sub-reply>.expand-line[data-v-d3f8c94b]{width:1rem}.top-sub-comment.top-sub-reply>.expand-line[data-v-d3f8c94b]:after{display:none}.comment[data-v-984ba483]{width:100%;box-sizing:border-box;margin-top:.6rem}.comment.isLevelOne[data-v-984ba483]{border-bottom:1px solid var(--color-line);padding:.8rem 1rem;margin-top:0}.comment.ding[data-v-984ba483]{background:rgba(255,255,0,.3)!important}.comment.isSimple .avatar[data-v-984ba483],.comment.isSimple .expand-line[data-v-984ba483]{display:none}.comment.isSimple .simple-wrapper[data-v-984ba483]{padding-left:2.8rem}.comment.isSimple .w[data-v-984ba483]{padding-left:0!important;padding-top:.5rem}.comment .comment-content-w .more[data-v-984ba483]{text-align:center;margin:2rem 0}.comment .comment-content[data-v-984ba483]{display:flex;position:relative}.comment .comment-content .expand-line[data-v-984ba483]{cursor:pointer;margin-top:.6rem;width:2rem;min-width:2rem;position:relative}.comment .comment-content .expand-line[data-v-984ba483]:after{position:absolute;left:50%;content:" ";height:100%;width:0;border-right:1px solid var(--color-line)}.comment .comment-content .expand-line[data-v-984ba483]:hover:after{border-right:2px solid var(--color-active)}.comment .comment-content .right[data-v-984ba483]{flex:1;width:calc(100% - 3rem)}.comment .comment-content .right .w[data-v-984ba483]{padding-left:1rem}.comment .comment-content .right .w .post-editor-wrapper[data-v-984ba483]{margin-top:1rem}.wrong-wrapper[data-v-984ba483]{font-size:1.4rem;margin-bottom:1rem}.wrong-wrapper span[data-v-984ba483]{cursor:pointer}.wrong-wrapper .del-line[data-v-984ba483]{text-decoration:line-through}.wrong-wrapper .wrong-icon[data-v-984ba483]{margin-left:.5rem}.wrong-wrapper .warning[data-v-984ba483]{border-top:1px solid #e1e1e1;border-bottom:1px solid #e1e1e1;padding:1rem 0;margin-top:1rem;font-size:1.2rem;color:red}.reply-count[data-v-984ba483]{padding:.8rem 0 .4rem;border-radius:.2rem;font-size:1.3rem;display:flex;align-items:center;color:gray;gap:1rem;cursor:pointer}.reply-count .gang[data-v-984ba483]{width:2rem;height:0;border-bottom:1px solid #d5d5d5}.reply-count svg[data-v-984ba483]{font-size:1rem}.top-reply-wrap[data-v-984ba483]{background:var(--color-top-reply-wrap-bg);border-radius:.8rem;padding:.6rem;padding-left:0;margin-left:1rem}.toolbar[data-v-30dac564]{border-top:1px solid var(--color-line);height:3.8rem;padding-left:.6rem;display:flex;align-items:center;color:var(--color-gray);font-size:1.2rem;gap:.5rem}.comment[data-v-4a063111]{width:100%;box-sizing:border-box;display:flex;gap:1rem;padding:1rem;border-bottom:1px solid var(--color-line)}.comment.isSimple .avatar[data-v-4a063111]{display:none}.comment.isSimple .reply_content[data-v-4a063111]{margin-top:.5rem!important}.comment .avatar[data-v-4a063111]{display:flex}.comment .avatar img[data-v-4a063111]{width:3.8rem;height:3.8rem;border-radius:.3rem}.comment .comment-body[data-v-4a063111]{flex:1;display:flex;flex-direction:column}.comment .comment-body .texts[data-v-4a063111]{display:flex;align-items:center}.comment .comment-body .reply_content[data-v-4a063111]{margin-top:1rem;max-width:calc(100% - 5rem)}.comment .isRight[data-v-4a063111]{align-items:flex-end}.comment .isRight .owner[data-v-4a063111],.comment .isRight .mod[data-v-4a063111],.comment .isRight .username[data-v-4a063111]{margin:0 0 0 1rem}.comment .Author-right[data-v-4a063111]{display:flex;flex-direction:column;align-items:center}.comment .Author-right .floor[data-v-4a063111]{margin-left:0}.comment .Author-right .jump[data-v-4a063111]{color:#929596;margin-top:.4rem;font-size:1.4rem}.comment .point[data-v-4a063111]{margin:0 .5rem;font-size:1.6rem;display:flex;gap:.5rem;align-items:center;font-weight:700;color:#000}.sticky{position:sticky;bottom:-2px;z-index:2;background:var(--box-background-hover-color)!important}.sticky[stuck]{box-shadow:0 2px 20px #00000059!important}.preview-modal{position:fixed;width:100vw;height:100vh;left:0;top:-1000vh;z-index:9999}.preview-modal .close{font-size:2rem;color:#fff;position:absolute;right:2rem;top:2rem;cursor:pointer}.preview-modal .mask{position:absolute;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.7);transition:all .3s}.v-enter-active[data-v-d39217d8],.v-leave-active[data-v-d39217d8]{transition:opacity .3s ease}.v-enter-from[data-v-d39217d8],.v-leave-to[data-v-d39217d8]{opacity:0}.username[data-v-d39217d8]{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num[data-v-d39217d8]{font-size:1.2rem;font-weight:700;color:#e02a2a}.owner[data-v-d39217d8]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-d39217d8]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-d39217d8]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove[data-v-d39217d8]{display:inline}.my-tag .remove[data-v-d39217d8]{cursor:pointer;margin-left:.5rem;display:none}.add-tag[data-v-d39217d8]{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;cursor:pointer;position:absolute;display:none}.floor[data-v-d39217d8]{margin-left:.5rem;font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;background-color:var(--color-floor);color:var(--color-floor-font);padding:3px 9px;cursor:default}[data-v-d39217d8]:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--color-top-reply-wrap-bg: #f2f3f5;--color-top-reply-wrap-line: #d2d2d2}html.dark[data-v-d39217d8]{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e;--color-top-reply-wrap-bg: #212f3e;--color-top-reply-wrap-line: #3b536d}html[data-v-d39217d8],body[data-v-d39217d8]{font-size:62.5%}.flex[data-v-d39217d8]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-d39217d8]{justify-content:flex-end}.flex-center[data-v-d39217d8]{justify-content:center}.p1[data-v-d39217d8]{padding:1rem}.p2[data-v-d39217d8]{padding:2rem}.p0[data-v-d39217d8]{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http][data-v-d39217d8]{text-underline-offset:.7ex;text-decoration:underline 1px}a[data-v-d39217d8]{text-decoration:none;cursor:pointer}a[data-v-d39217d8]:hover{text-decoration:underline}.tool[data-v-d39217d8]{position:relative;display:flex;align-items:center;border-radius:.3rem;cursor:pointer;height:2.6rem;padding:0 .5rem;gap:.2rem}.tool>svg[data-v-d39217d8]{width:1.6rem!important;height:1.6rem!important}.tool[data-v-d39217d8]:hover{background:var(--color-third-bg)}.tool.no-hover[data-v-d39217d8]{cursor:default}.tool.no-hover[data-v-d39217d8]:hover{background:unset!important}.tool.disabled[data-v-d39217d8]{cursor:not-allowed}.tool.disabled[data-v-d39217d8]:hover{background:unset!important}.my-node[data-v-d39217d8]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node[data-v-d39217d8]:hover{text-decoration:none;background:#e2e2e2}.msgs[data-v-d39217d8]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box[data-v-d39217d8]{box-shadow:0 2px 3px #0000001a;box-shadow:#00000014 0 4px 12px;border-radius:var(--box-border-radius);background:var(--box-background-color);margin-bottom:2rem;width:100%;box-sizing:border-box;transition:background-color .3s}.my-cell[data-v-d39217d8]{color:var(--color-font);padding:.8rem 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal[data-v-d39217d8]{position:fixed;z-index:1001;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-d39217d8]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-d39217d8]{display:flex;align-items:center;padding:.6rem 0}.modal .option>span[data-v-d39217d8]{position:relative}.modal .mask[data-v-d39217d8]{position:fixed;width:100vw;height:100vh;left:0;top:0;background-color:#1d1c1c47}.radio-group2[data-v-d39217d8]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio[data-v-d39217d8]{cursor:pointer;background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio[data-v-d39217d8]:first-child{border-left:none}.radio-group2 .active[data-v-d39217d8]{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm[data-v-d39217d8]{position:relative;display:inline-flex;justify-content:center}input[data-v-d39217d8]{height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input[data-v-d39217d8]:hover{border:1px solid var(--color-input-border-hover)}input[data-v-d39217d8]:focus{border:1px solid var(--color-active)}.danger[data-v-d39217d8]{color:red!important}.pop-confirm-content[data-v-d39217d8]{position:fixed;background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow);color:var(--color-font-8);padding:1.5rem;border-radius:.8rem;transform:translate(-50%,calc(-100% - 1rem));z-index:1003}.pop-confirm-content .text[data-v-d39217d8]{text-align:start;font-size:1.6rem;width:15rem;min-width:15rem}.pop-confirm-content .options[data-v-d39217d8]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1rem}img[data-v-d39217d8]{max-width:100%}.Post[data-v-d39217d8]{position:unset!important;background:transparent!important;overflow:unset!important}.Post .main[data-v-d39217d8]{background:transparent!important;padding:unset!important;width:100%!important}.Post .close-btn[data-v-d39217d8],.Post .open-new-tab[data-v-d39217d8]{display:none}.post-detail[data-v-d39217d8]{text-align:start;position:fixed;z-index:1002;left:0;right:0;bottom:0;top:0;background:rgba(46,47,48,.8);overflow:auto;font-size:1.4rem;display:flex;justify-content:center;flex-wrap:wrap}.post-detail[data-v-d39217d8] .subtle{background-color:#ecfdf5e6;border-left:4px solid #a7f3d0}.post-detail.isNight[data-v-d39217d8] .subtle{background-color:#1a3332;border-left:4px solid #047857}.post-detail .main[data-v-d39217d8]{display:flex;justify-content:flex-end;padding:3rem 8rem 15rem;background:var(--color-main-bg);position:relative;outline:none}.post-detail .main .main-wrapper[data-v-d39217d8]{width:77rem;padding-bottom:2rem;display:flex;flex-direction:column;align-items:center;position:relative}.post-detail .main .main-wrapper .post-wrapper .header:hover .add-tag[data-v-d39217d8]{display:inline-block}.post-detail .main .main-wrapper .loading-wrapper[data-v-d39217d8]{height:20rem;display:flex;justify-content:center;align-items:center}.post-detail .main .main-wrapper #no-comments-yet[data-v-d39217d8]{color:#a9a9a9;font-weight:700;text-align:center;width:100%;margin-bottom:2rem;box-sizing:border-box}.post-detail .main .relationReply[data-v-d39217d8]{position:fixed;width:25vw;top:6.5rem;bottom:15rem;z-index:100;transform:translate(calc(100% + 2rem));font-size:2rem;overflow:hidden}.post-detail .main .relationReply .my-cell[data-v-d39217d8]{background:var(--color-second-bg);border-radius:var(--box-border-radius) var(--box-border-radius) 0 0}.post-detail .main .relationReply .comments[data-v-d39217d8]{max-height:calc(100% - 4.2rem);overflow:auto;background:var(--color-second-bg);border-radius:0 0 var(--box-border-radius) var(--box-border-radius)}.post-detail .main .call-list[data-v-d39217d8]{z-index:9;position:absolute;top:12rem;border:1px solid var(--color-main-bg);background:var(--color-call-list-bg);box-shadow:0 5px 15px #0000001a;overflow:auto;max-height:30rem;border-radius:var(--box-border-radius);min-width:8rem;box-sizing:content-box}.post-detail .main .call-list .call-item[data-v-d39217d8]{border-top:1px solid var(--color-main-bg);height:3rem;display:flex;padding:0 1rem;align-items:center;cursor:pointer;font-size:14px;box-sizing:border-box}.post-detail .main .call-list .call-item .select[data-v-d39217d8],.post-detail .main .call-list .call-item[data-v-d39217d8]:hover,.post-detail .main .call-list .call-item.select[data-v-d39217d8]{background:var(--color-main-bg);text-decoration:none}.post-detail .main .call-list .call-item[data-v-d39217d8]:nth-child(1){border-top:1px solid transparent}@media screen and (max-width: 1280px){.post-detail .main-wrapper[data-v-d39217d8]{width:60vw!important}}.post-detail .v2next-scroll-top[data-v-d39217d8]{cursor:pointer;position:fixed;border-radius:.6rem;display:flex;align-items:center;justify-content:center;bottom:10rem;z-index:99;padding:.8rem 0;gap:1rem;width:4.2rem;transform:translate(6rem);font-size:2rem;background:var(--color-sp-btn-bg);color:var(--color-font-3)}.post-detail .v2next-scroll-top svg[data-v-d39217d8]{font-size:2.4rem}.post-detail .refresh[data-v-d39217d8]{cursor:pointer;position:fixed;border-radius:.6rem;display:flex;align-items:center;justify-content:center;bottom:10rem;z-index:99;padding:.8rem 0;gap:1rem;width:4.2rem;transform:translate(6rem);font-size:2rem;background:var(--color-sp-btn-bg);color:var(--color-font-3);bottom:23.5rem}.post-detail .refresh svg[data-v-d39217d8]{font-size:2.4rem}.post-detail .scroll-to[data-v-d39217d8]{cursor:pointer;position:fixed;border-radius:.6rem;align-items:center;justify-content:center;bottom:10rem;z-index:99;padding:.8rem 0;gap:1rem;width:4.2rem;transform:translate(6rem);font-size:2rem;background:var(--color-sp-btn-bg);color:var(--color-font-3);bottom:15rem;display:flex;flex-direction:column}.post-detail .scroll-to svg[data-v-d39217d8]{font-size:2.4rem}.post-detail .scroll-to input[data-v-d39217d8]{height:2.6rem;width:3.6rem;font-size:1.4rem;text-align:center;color:gray}.post-detail .msg[data-v-d39217d8]{cursor:pointer;position:fixed;border-radius:.6rem;display:flex;align-items:center;justify-content:center;bottom:10rem;z-index:99;padding:.8rem 0;gap:1rem;width:4.2rem;transform:translate(6rem);font-size:2rem;background:var(--color-sp-btn-bg);color:var(--color-font-3);bottom:5rem}.post-detail .msg svg[data-v-d39217d8]{font-size:2.4rem}.post-detail .close-btn[data-v-d39217d8]{color:var(--color-font-3);cursor:pointer;position:fixed;top:3rem;transform:translate(4rem);font-size:2.4rem}.post-detail .top-reply[data-v-d39217d8]{color:var(--color-font-3);cursor:pointer;font-size:2rem;display:flex}.post-detail .open-new-tab[data-v-d39217d8]{color:var(--color-font-3);cursor:pointer;position:fixed;top:3rem;transform:translate(4rem);font-size:2.4rem;top:8rem}.specific-area[data-v-d39217d8]{--color-line: #6a6868;--color-floor: rgba(71, 71, 71, .48);--color-top-reply-wrap-bg: rgba(71, 71, 71, .48);--color-sp-btn-bg: rgba(71, 71, 71, .48);--color-editor-toolbar: #303e64;--color-font-pure: white;--color-main-bg: #545454;--box-background-color: rgba(0, 0, 0, .5);--box-background-hover-color: rgba(0, 0, 0, .5)}.specific-area .my-box[data-v-d39217d8]{color:#fff;border-bottom:2px solid rgba(0,0,0,.4);-webkit-backdrop-filter:blur(15px);backdrop-filter:blur(15px)}.base64_tooltip[data-v-06429e70]{box-shadow:0 3px 6px -4px #0000001f,0 6px 16px #00000014,0 9px 28px 8px #0000000d;background:var(--color-third-bg);min-height:2.2rem;max-width:20rem;padding:1rem;position:fixed;z-index:9998;display:flex;align-items:center;border-radius:.5rem;cursor:pointer;line-break:anywhere;font-size:1.4rem;color:var(--color-font-8)}.base64_tooltip svg[data-v-06429e70]{margin-left:1rem;font-size:3rem;color:var(--color-gray)}.base64_tooltip[data-v-06429e70] .base-button{margin-left:1rem;margin-top:1rem}.msg[data-v-8bf692ea]{cursor:default;margin-bottom:2rem;display:flex;font-size:1.4rem;box-sizing:border-box;border-radius:var(--box-border-radius);color:var(--color-font-8);background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow)}.msg.success .left[data-v-8bf692ea]{background:var(--color-active)}.msg.warning .left[data-v-8bf692ea]{background:#c8c002}.msg.error .left[data-v-8bf692ea]{background:red}.msg .left[data-v-8bf692ea]{border-radius:var(--box-border-radius) 0 0 var(--box-border-radius);display:flex;align-items:center;background:var(--color-active);color:#fff;width:3.6rem;font-size:2.4rem;justify-content:center}.msg .left svg[data-v-8bf692ea]{cursor:pointer}.msg .right[data-v-8bf692ea]{flex:1;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}.tag-modal[data-v-0f1f99f7]{z-index:1003}.tag-modal .wrapper[data-v-0f1f99f7]{z-index:9;background:var(--color-main-bg);color:var(--color-font-8);border-radius:1rem;font-size:1.4rem;padding:2rem 4rem;width:25rem}.tag-modal .wrapper .title[data-v-0f1f99f7]{font-weight:700}.tag-modal .wrapper .btns[data-v-0f1f99f7]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1.5rem;font-size:1.4rem}.msgs[data-v-b73f4332]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.NotificationModal .modal-root[data-v-77aa374e]{z-index:9;background:var(--color-second-bg);color:var(--color-font-8);border-radius:1rem;font-size:1.4rem;width:50vw;height:80vh;display:flex;flex-direction:column;padding:1.4rem;gap:1rem}.NotificationModal .modal-root .modal-header[data-v-77aa374e]{display:flex;justify-content:space-between}.NotificationModal .modal-root .modal-header .title[data-v-77aa374e]{font-size:2.6rem;font-weight:700;text-align:left;margin-bottom:0}.NotificationModal .modal-root .modal-header i[data-v-77aa374e]{cursor:pointer;font-size:2.2rem}.NotificationModal .modal-root .modal-body[data-v-77aa374e]{padding-top:0;flex:1;gap:1rem;display:flex;flex-direction:column;overflow:hidden}.NotificationModal .modal-root .modal-body .filter[data-v-77aa374e]{display:flex;gap:1rem}.NotificationModal .modal-root .modal-body .filter div[data-v-77aa374e]{border-radius:.4rem;padding:.4rem 1rem;background:gainsboro;cursor:pointer}.NotificationModal .modal-root .modal-body .filter div.active[data-v-77aa374e]{background:#445;color:#fff}.NotificationModal .modal-root .modal-body .list-wrap[data-v-77aa374e]{flex:1;position:relative;overflow:hidden}.NotificationModal .modal-root .modal-body .list-wrap .loading-wrap[data-v-77aa374e]{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:rgba(255,255,255,.7)}.NotificationModal .modal-root .modal-body .list-wrap .notify-wrap[data-v-77aa374e]{overflow:auto;height:100%}.NotificationModal .modal-root .modal-body .list-wrap #notifications[data-v-77aa374e] .cell{display:none;padding:1.2rem 0}.NotificationModal .modal-root .modal-body .list-wrap #notifications[data-v-77aa374e] .cell a.node{padding:.6rem 1rem;border-radius:.4rem}.NotificationModal .modal-root .modal-body .list-wrap #notifications[data-v-77aa374e] .cell .payload{margin-top:.4rem;font-size:1.7rem}.NotificationModal .modal-root .modal-body #notifications.all[data-v-77aa374e] .cell,.NotificationModal .modal-root .modal-body #notifications.reply[data-v-77aa374e] .reply,.NotificationModal .modal-root .modal-body #notifications.star[data-v-77aa374e] .star,.NotificationModal .modal-root .modal-body #notifications.collect[data-v-77aa374e] .collect{display:block}.NotificationModal .modal-root .modal-body .footer[data-v-77aa374e]{width:100%;display:flex;align-items:center;gap:2rem}.NotificationModal .modal-root .modal-body .footer .pages[data-v-77aa374e]{flex:1}.NotificationModal .modal-root .modal-body .footer .total[data-v-77aa374e]{font-weight:700}.NotificationModal .modal-root .modal-body .footer .total span[data-v-77aa374e]{color:#d3d3d3;font-weight:400;margin-right:.4rem}.NotificationModal .modal-root .modal-body[data-v-77aa374e] .super.button{padding:0;background:unset;height:26px;width:37px}.NotificationModal .modal-root .modal-body[data-v-77aa374e] .super.button a{display:block}.NotificationModal .modal-root .modal-body[data-v-77aa374e] .super.button a:hover{text-decoration:none}.v-enter-active,.v-leave-active{transition:opacity .3s ease}.v-enter-from,.v-leave-to{opacity:0}.username{font-weight:700;font-size:1.4rem;margin-right:1rem}.link-num{font-size:1.2rem;font-weight:700;color:#e02a2a}.owner{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove{display:inline}.my-tag .remove{cursor:pointer;margin-left:.5rem;display:none}.add-tag{font-size:2.4rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;cursor:pointer;position:absolute;display:none}.floor{margin-left:.5rem;font-size:1.1rem;line-height:1rem;border-radius:.5rem;display:inline-block;background-color:var(--color-floor);color:var(--color-floor-font);padding:3px 9px;cursor:default}:root{--color-main-bg: #e2e2e2;--color-second-bg: white;--color-third-bg: #e2e2e2;--color-item-bg: white;--color-swtich-bg: #dcdfe6;--color-active: #409eff;--color-font: #999;--color-font-8: rgba(0, 0, 0, .8);--color-font-3: rgba(0, 0, 0, .3);--color-font-pure: black;--color-input-bg: white;--color-input-border: #e2e2e2;--color-input-border-hover: #a3a6ad;--color-radio-border: #e2e2e2;--color-tooltip-bg: white;--color-tooltip-shadow: #bbbbbb;--color-scrollbar: #93ade3;--color-line: #e2e2e2;--color-loading-1: #00000033;--color-loading-2: #000;--color-floor: #f0f0f0;--color-floor-font: #bdbdbd;--color-editor-toolbar: #f6f7f8;--color-sp-btn-bg: #f1f1f1;--color-call-list-bg: white;--color-top-reply-wrap-bg: #f2f3f5;--color-top-reply-wrap-line: #d2d2d2}html.dark{--color-main-bg: #22303f;--color-second-bg: #18222d;--color-third-bg: #31475e;--color-item-bg: #18222d;--color-swtich-bg: #4c4d4f;--color-active: #409eff;--color-font: rgba(255, 255, 255, .5);--color-font-8: rgba(255, 255, 255, .8);--color-font-3: rgba(255, 255, 255, .3);--color-font-pure: white;--color-input-bg: #333333;--color-input-border: #6c6e72;--color-input-border-hover: #a3a6ad;--color-radio-border: #454847;--color-tooltip-bg: #31475e;--color-tooltip-shadow: #3b3b3b;--color-scrollbar: #5c5d5e;--color-line: var(--box-border-color);--color-loading-1: rgba(178, 177, 177, .2);--color-loading-2: #ffffff;--color-floor: #293b4d;--color-floor-font: rgba(255, 255, 255, .3);--color-editor-toolbar: var(--box-background-hover-color);--color-sp-btn-bg: #31475e;--color-call-list-bg: #31475e;--color-top-reply-wrap-bg: #212f3e;--color-top-reply-wrap-line: #3b536d}html,body{font-size:62.5%}.flex{display:flex;align-items:center;justify-content:space-between}.flex-end{justify-content:flex-end}.flex-center{justify-content:center}.p1{padding:1rem}.p2{padding:2rem}.p0{padding:0!important}body :is(.topic_content,.reply_content) a[href^=http]{text-underline-offset:.7ex;text-decoration:underline 1px}a{text-decoration:none;cursor:pointer}a:hover{text-decoration:underline}.tool{position:relative;display:flex;align-items:center;border-radius:.3rem;cursor:pointer;height:2.6rem;padding:0 .5rem;gap:.2rem}.tool>svg{width:1.6rem!important;height:1.6rem!important}.tool:hover{background:var(--color-third-bg)}.tool.no-hover{cursor:default}.tool.no-hover:hover{background:unset!important}.tool.disabled{cursor:not-allowed}.tool.disabled:hover{background:unset!important}.my-node{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node:hover{text-decoration:none;background:#e2e2e2}.msgs{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.my-box{box-shadow:0 2px 3px #0000001a;box-shadow:#00000014 0 4px 12px;border-radius:var(--box-border-radius);background:var(--box-background-color);margin-bottom:2rem;width:100%;box-sizing:border-box;transition:background-color .3s}.my-cell{color:var(--color-font);padding:.8rem 1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid var(--color-line)}.modal{position:fixed;z-index:1001;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option{display:flex;align-items:center;padding:.6rem 0}.modal .option>span{position:relative}.modal .mask{position:fixed;width:100vw;height:100vh;left:0;top:0;background-color:#1d1c1c47}.radio-group2{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid var(--color-radio-border);background:var(--box-background-alt-color)}.radio-group2 .radio{cursor:pointer;background:transparent;padding:.5rem 1.2rem;border-left:1px solid var(--color-radio-border);font-size:1.3rem;color:var(--color-gray)}.radio-group2 .radio:first-child{border-left:none}.radio-group2 .active{background:var(--color-third-bg);color:var(--color-font)}.pop-confirm{position:relative;display:inline-flex;justify-content:center}input{height:3rem;outline:unset;border:1px solid var(--color-input-border);padding:0 .5rem;border-radius:5px;box-sizing:border-box;transition:all .3s;background:var(--color-input-bg);color:var(--color-font)}input:hover{border:1px solid var(--color-input-border-hover)}input:focus{border:1px solid var(--color-active)}.danger{color:red!important}.pop-confirm-content{position:fixed;background:var(--color-tooltip-bg);box-shadow:0 0 6px 1px var(--color-tooltip-shadow);color:var(--color-font-8);padding:1.5rem;border-radius:.8rem;transform:translate(-50%,calc(-100% - 1rem));z-index:1003}.pop-confirm-content .text{text-align:start;font-size:1.6rem;width:15rem;min-width:15rem}.pop-confirm-content .options{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1rem}img{max-width:100%}.target-user-tags[data-v-a73f564c]{background:var(--color-second-bg);color:var(--color-font);word-break:break-all;text-align:start;font-size:1.4rem;box-shadow:0 2px 3px #0000001a;border-bottom-left-radius:3px;border-bottom-right-radius:3px}.target-user-tags .add-tag[data-v-a73f564c]{display:inline-block}.loaded[data-v-a73f564c]{font-size:1.4rem;display:flex;align-items:center;gap:1rem;color:var(--color-font-pure)}.calender[data-v-a73f564c]{padding:10px;font-size:14px;color:var(--link-color)}.calender .month[data-v-a73f564c]{height:30px;display:flex;justify-content:space-between;align-items:center}.calender .month .ca-title[data-v-a73f564c]{flex:1;display:flex;justify-content:flex-end;align-items:center;gap:10px}.calender .month i[data-v-a73f564c]{height:100%;width:30px;cursor:pointer;color:#a9a9a9}.calender .calender-header[data-v-a73f564c]{display:flex;height:30px;align-items:center}.calender .calender-header div[data-v-a73f564c]{flex:1}.calender .days[data-v-a73f564c]{display:grid;grid-template-columns:repeat(7,1fr)}.calender .days .day[data-v-a73f564c]{height:30px}.calender .days .day a[data-v-a73f564c]{display:inline-flex;height:100%;width:100%;justify-content:center;align-items:center}.calender .days .active[data-v-a73f564c]{background:#40a9ff;border-radius:4px}.calender .days .active a[data-v-a73f564c]{color:#fff!important} ');
+
     console.log("V2EX PC端");
     run();
     let vueApp = vue.createApp(App);
     vueApp.config.unwrapInjectedRef = true;
     vueApp.mount($section);
-    let s = `
-// ==UserScript==
-// @name         v2新帖挂件
-// @namespace    http://tampermonkey.net/
-// @version      0.11
-// @description  v2右侧挂件，展示最近发表的帖子
-// @author       HeyWeGo
-// @match         *://*.v2ex.com/*
-// @icon         https://www.v2ex.com/static/favicon.ico
-// @grant        GM_xmlhttpRequest
-// @connect *
-// @license MIT
-// ==/UserScript==
- 
-(function() {
- 
-    function htmlToElement(html) {
-        var template = document.createElement('template');
-        html = html.trim();
-        template.innerHTML = html;
-        return template.content.firstChild;
-    }
- 
- 
-    function htmlToElements(html) {
-        var template = document.createElement('template');
-        template.innerHTML = html;
-        return template.content.childNodes;
-    }
- 
-    let div_wrap = htmlToElements('<div class="box" id="sb_v2" style="position:relative;max-height:500px;overflow-x:hidden;overflow-y:scroll"><div id="new_head" class="cell" style="background: var(--box-background-color);top: 0;position: sticky;z-index: 999;margin-bottom:14px;"><span class="fade" >最近发布主题</span><span><a class="fade refresh_new" style="margin-left:9px;color:var(--link-color);cursor:pointer">刷新</a></span></div></div>')
-    let list_wrap = div_wrap[0];
-    let refresh_new_btn = list_wrap.getElementsByClassName("refresh_new")[0];
-    // let auto_refresh = list_wrap.getElementsByClassName("autorefresh")[0];
-    var loop;
- 
-    let widget_target = document.getElementById("Rightbar").getElementsByClassName("box")[0];
-    widget_target.append(list_wrap)
- 
-    let from_refresh = false;
- 
-    refresh_new_btn.addEventListener("click",function(){
-          from_refresh = true;
-              console.log("刷新列表")
-        let el = document.createElement("div")
-            el.id = "loading_frame"
-            el.innerHTML = "loading";
-            el.style="height:3000px;position: absolute;background: #ffffffd6;width: 100%;vertical-align: middle;z-index: 999;top:47px;padding-top:200px;"
-            list_wrap.appendChild(el)
- 
-        new_widget();
- 
-    })
- 
- 
-    function frag_generate(in_titles,in_links){
-            let frag = document.createDocumentFragment();
-            let element = document.createElement('div');
-            element.id = 'new_list'
-            for (let index = 1; index < in_titles.length; index++) {
-                var nodeText;
-                var puretitle = in_titles[index].textContent.replace(/^\\[.*?\\]/,'');
- 
-                nodeText = in_titles[index].textContent.match(/^\\[.*?\\]/)[0];
- 
-                let tr_head = '<div class="cell" style="position:relative"><table cellpadding="0" cellspacing="0" border="0" width="100%"> <tbody><tr><td class="topic_type" width="24" valign="middle" align="center" style="color: var(--color-fade);padding: 0 13px;white-space: nowrap;min-width: 66px;position: absolute;transform: scale(0.8);top: -12px;right: 4px;background: var(--box-background-color);">'
-                let tr_head_wrap = tr_head + nodeText + '</td><td width="10"></td><td width="auto" valign="middle"><span class="item_rss_new_topic_title"><a style="text-overflow: -o-ellipsis-lastline;overflow: hidden;text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2;-webkit-box-orient: vertical; " target="_blank" href="';
-                let row_string = tr_head_wrap + in_links[index+1].getAttribute('href') + '">' + puretitle +'</a></span></td></tr></tbody></table></div>'
-                element.appendChild(htmlToElements(row_string)[0]);
-            }
-                return frag.appendChild(element);
-        }
- 
- 
- 
-    function new_widget(){
- 
-        GM_xmlhttpRequest({
-        url: "https://www.v2ex.com/index.xml",
-        method :"GET",
-        onload:function(xhr){
-            console.log(xhr.responseText);
-            var   data = xhr.responseText
-            let xmlDoc = new DOMParser().parseFromString(data, "text/xml");
-            let titles=xmlDoc.getElementsByTagName('title')
-            let links=xmlDoc.getElementsByTagName('link')
-            console.log("请求成功")
- 
-            let el = document.getElementById("new_list")
-            if(!!el === true){
-                el.remove();
-            }
-            list_wrap.append(frag_generate(titles,links));
- 
-            if(from_refresh === true){
-                document.getElementById("loading_frame").remove();
-                 from_refresh = false;
-            }
-        }
- 
-        })
- 
-    }
- 
-    new_widget()
- 
- 
-    })();
-  `;
-    s = s.replaceAll("GM_xmlhttpRequest", "GM_xmlhttpRequestMY");
-    eval(s);
+    functions.loadAndRunScript("https://update.greasyfork.org/scripts/448472/1074290/v2%E6%96%B0%E5%B8%96%E6%8C%82%E4%BB%B6.user.js");
   }
 
 })(Vue, dayjs);
