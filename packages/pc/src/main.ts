@@ -215,13 +215,15 @@ function run() {
       // console.log('body', body)
 
       let boxs = body.find(`#Main .box`)
-      let box = boxs[1]
+      let box = findReplyBox(boxs)
 
       // console.log('box', box)
 
       let cells: any = box.querySelectorAll('.cell')
       if (cells && cells.length) {
-        post.fr = cells[0].querySelector('.cell .fr')!.innerHTML
+        // 安全获取回复统计信息
+        const frElement = cells[0].querySelector('.cell .fr')
+        post.fr = frElement ? frElement.innerHTML : ''
 
         cells = Array.from(cells)
         //获取最后一次回复时间
@@ -266,7 +268,9 @@ function run() {
       return new Promise(resolve => {
         $.get(href).then(res => {
           let s = res.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-          let box = $(s[0]).find('#Main .box')[1]
+          let $body = $(s[0])
+          let boxs = $body.find('#Main .box')
+          let box = findReplyBox(boxs)
           let cells: any = box!.querySelectorAll('.cell')
           cells = Array.from(cells)
           resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
@@ -1128,6 +1132,30 @@ function run() {
         dom.parentNode!.replaceChild(a, dom)
       }
     }, true)
+  }
+
+  function findReplyBox(boxs: any) {
+    // 根据内容的元素属性特征定位回复区域
+    for (let i = 1; i < boxs.length; i++) {
+      const box = boxs[i];
+      const cells = box.querySelectorAll ? box.querySelectorAll('.cell') : [];
+      
+      if (cells && cells.length > 0) {
+        const firstCell = cells[0];
+
+        if (firstCell.querySelector?.('.snow')) {
+          return box;
+        }
+
+        if (firstCell.querySelector?.('.fa-tag')) {
+          return box;
+        }
+      }
+    }
+    
+    // 回退逻辑
+    console.warn('[V2Next] 无法智能检测回复区域，使用默认位置');
+    return boxs[1];
   }
 
   window.canParseV2exPage = !window.location.search.includes('script')
