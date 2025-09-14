@@ -7,6 +7,25 @@ import {DefaultUser, functions, getDefaultConfig, getDefaultPost} from "@v2next/
 
 let isMobile = !document.querySelector('#Rightbar');
 
+function findReplyBoxMobile(boxs: any) {
+  // 根据内容的元素属性特征定位回复区域
+  for (let i = 1; i < boxs.length; i++) {
+    const box = boxs[i];
+    const cells = box.querySelectorAll ? box.querySelectorAll('.cell') : [];
+    
+    if (cells && cells.length > 0) {
+      const firstCell = cells[0];
+        if (firstCell.querySelector?.('.snow')) {
+          return box;
+        }
+    }
+  }
+  
+  // 回退逻辑
+  console.warn('[V2Next] 无法智能检测回复区域，使用默认位置');
+  return boxs[1];
+}
+
 let $section = document.createElement('section')
 $section.id = 'app'
 
@@ -200,15 +219,12 @@ function run() {
         body.each(function () {
           if (this.id === wrapperClass) {
             boxs = this.querySelectorAll('.box')
-            box = boxs[1]
+            box = findReplyBoxMobile(boxs)
           }
         })
       } else {
         boxs = body.find(`#${wrapperClass} .box`)
-        box = boxs[1]
-        if (box.querySelector('.fa-tags')) {
-          box = boxs[2]
-        }
+        box = findReplyBoxMobile(boxs)
       }
 
       let cells: any = box.querySelectorAll('.cell')
@@ -278,10 +294,8 @@ function run() {
           let box: any
           $(s[0]).each(function () {
             if (this.id === wrapperClass) {
-              box = this.querySelectorAll('.box')[1]
-              if (box.querySelector('.fa-tags')) {
-                box = this.querySelectorAll('.box')[2]
-              }
+              let boxs = this.querySelectorAll('.box')
+              box = findReplyBoxMobile(boxs)
             }
           })
           let cells: any = box!.querySelectorAll('.cell')
