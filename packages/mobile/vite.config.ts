@@ -51,6 +51,18 @@ export default defineConfig({
       },
       build: {
         fileName:'V2Next-Mobile.user.js',
+        cssSideEffects: (css: string) => `
+          (() => {
+            if (document.querySelector('#Rightbar')) return;
+            if (typeof GM_addStyle === 'function') {
+              GM_addStyle(${JSON.stringify(css)});
+              return;
+            }
+            const style = document.createElement('style');
+            style.textContent = ${JSON.stringify(css)};
+            document.head.append(style);
+          })();
+        `,
         externalGlobals: {
           vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js'),
         },
