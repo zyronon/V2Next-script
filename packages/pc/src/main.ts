@@ -64,6 +64,13 @@ function run() {
   window.postList = []
   window.isDeadline = dayjs().isAfter(dayjs('2024-11-26'))
   // window.isDeadline = true
+  function hasV2pConflict() {
+    if (window.user.username) {
+      return $(window.atob('LnYycC1ob3Zlci1idG4=')).length !== 0
+    }
+    return $(window.atob('LnYycC1mb290ZXI=')).length !== 0
+  }
+
   window.parse = {
     //解析主题内容
     async parsePostContent(post: Post, body: JQuery, htmlText: string) {
@@ -418,13 +425,7 @@ function run() {
       //检测
       if (window.pageType === PageType.Home) {
         const a = () => {
-          let d
-          if (window.user.username) {
-            d = $(window.atob('LnYycC1ob3Zlci1idG4=')).length
-          } else {
-            d = $(window.atob('LnYycC1mb290ZXI=')).length
-          }
-          if (d !== 0) {
+          if (hasV2pConflict()) {
             window.stopMe = true
             localStorage.setItem('d', '1')
             functions.cbChecker({type: 'syncData'})
@@ -996,12 +997,14 @@ function run() {
         window.parse.parsePagePostList(list, box)
         break
       case  PageType.Post:
-        let d: string = localStorage.getItem('d')
-        if (d) {
+        if (hasV2pConflict()) {
           window.stopMe = true
+          localStorage.setItem('d', '1')
           functions.cbChecker({type: 'syncData'})
           return
         }
+        localStorage.setItem('d', '')
+
         box = document.querySelector('#Wrapper #Main .box')
         // @ts-ignore
         box.after($section)
