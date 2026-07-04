@@ -7,23 +7,50 @@ import {DefaultUser, functions, getDefaultConfig, getDefaultPost} from "@v2next/
 
 let isMobile = !document.querySelector('#Rightbar');
 
+function isReplyCell(cell: Element) {
+  return /^r_\d+$/.test(cell.id)
+}
+
 function findReplyBoxMobile(boxs: any) {
-  // 根据内容的元素属性特征定位回复区域
+  let fallbackBox
+
+  // 根据回复 cell 的稳定 id 特征定位回复区域
   for (let i = 1; i < boxs.length; i++) {
     const box = boxs[i];
     const cells = box.querySelectorAll ? box.querySelectorAll('.cell') : [];
-    
-    if (cells && cells.length > 0) {
+
+    if (!cells || !cells.length || box.id === 'topic-tip-box' || box.id === 'reply-box') {
+      continue
+    }
+
+    if (Array.from(cells).some((cell: any) => isReplyCell(cell))) {
+      return box;
+    }
+
+    if (!fallbackBox) {
       const firstCell = cells[0];
-        if (firstCell.querySelector?.('.snow')) {
-          return box;
-        }
+      if (firstCell.querySelector?.('.snow')) {
+        fallbackBox = box;
+      } else if (box.querySelector?.('.page_normal')) {
+        fallbackBox = box;
+      }
     }
   }
-  
+
   // 回退逻辑
   console.warn('[V2Next] 无法智能检测回复区域，使用默认位置');
-  return boxs[1];
+  return fallbackBox;
+}
+
+function applyNestedReplyCounts(post: Post) {
+  const replyByFloor = new Map(post.replyList.map(reply => [Number(reply.floor), reply]))
+
+  post.nestedReplies.forEach((nestedReply) => {
+    const reply = replyByFloor.get(Number(nestedReply.floor))
+    if (reply) {
+      reply.replyCount = nestedReply.replyCount
+    }
+  })
 }
 
 let $section = document.createElement('section')
@@ -227,7 +254,7 @@ function run() {
         box = findReplyBoxMobile(boxs)
       }
 
-      let cells: any = box.querySelectorAll('.cell')
+      let cells: any = box?.querySelectorAll('.cell')
 
       if (cells && cells.length) {
         // post.fr = boxs[1].querySelector('.inner')!.innerHTML
@@ -239,15 +266,17 @@ function run() {
 
         let repliesMap: any[] = []
         //如果第二条有id，就说明是第二条是回复。只有一页回复
-        if (cells[1].id) {
+        if (cells[1] && isReplyCell(cells[1])) {
           repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
           let replyList = functions.getAllReply(repliesMap)
           functions.createList(post, replyList)
-          post.nestedReplies.map((v) => {
-            post.replyList[Number(v.floor) - 1].replyCount = v.replyCount
-          })
+          applyNestedReplyCounts(post)
           return post
         } else {
+          if (!cells[1]) {
+            return post
+          }
+
           let promiseList: any = []
           // console.log(this.current.repliesMap)
           return new Promise((resolve, reject) => {
@@ -267,15 +296,14 @@ function run() {
                 results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
                 let replyList = functions.getAllReply(repliesMap)
                 functions.createList(post, replyList)
-                post.nestedReplies.map((v) => {
-                  post.replyList[Number(v.floor) - 1].replyCount = v.replyCount
-                })
+                applyNestedReplyCounts(post)
                 resolve(post)
               }
             )
           })
         }
       }
+      return post
     },
     //请求帖子其他页的回复
     fetchPostOtherPageReplies(href: string, pageNo: number) {
@@ -290,7 +318,11 @@ function run() {
               box = findReplyBoxMobile(boxs)
             }
           })
-          let cells: any = box!.querySelectorAll('.cell')
+          let cells: any = box?.querySelectorAll('.cell')
+          if (!cells || !cells.length) {
+            resolve({i: pageNo, replyList: []})
+            return
+          }
           cells = Array.from(cells)
           resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
         }).catch((r: any) => {

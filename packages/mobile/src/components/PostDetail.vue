@@ -77,6 +77,8 @@
         <Toolbar @reply="isSticky = !isSticky;currentComment = null"></Toolbar>
       </div>
 
+      <div ref="topicTipBox" class="native-topic-tip"></div>
+
       <div class="my-box" v-if="topReply.length && config.showTopReply">
         <div class="my-cell flex " @click="collapseTopReplyList">
           <span class=" ">高赞回复</span>
@@ -305,10 +307,7 @@ export default {
       return []
     },
     topReply() {
-      return this.post.replyList
-          .filter(v => v.thankCount >= this.config.topReplyLoveMinCount)
-          .sort((a, b) => b.thankCount - a.thankCount)
-          .slice(0, this.config.topReplyCount)
+      return this.post.topReplyList
     },
     replyList() {
       // console.log('this.post.nestedReplies', this.post.nestedReplies)
@@ -358,6 +357,7 @@ export default {
       }
     },
     'post.headerTemplate'(n, o) {
+      nextTick(this.mountTopicTipBox)
       let mountEl = document.querySelector('.main-wrapper .post-wrapper .html-wrapper .header')
       if (mountEl) {
         this.showOpTag = true
@@ -394,6 +394,7 @@ export default {
   },
   mounted() {
     this.debounceScroll = debounce(this.scroll, 300, false)
+    this.mountTopicTipBox()
     if (this.isLogin) {
       const observer = new IntersectionObserver(
           ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1),
@@ -542,6 +543,16 @@ export default {
     collapseTopReplyList() {
       $(this.$refs.topReply).slideToggle('fast')
     },
+    mountTopicTipBox() {
+      if (!this.isPost) return
+
+      const mountEl = this.$refs.topicTipBox
+      const tipBox = document.querySelector('#topic-tip-box')
+      if (!mountEl || !tipBox) return
+
+      mountEl.append(tipBox)
+      tipBox.style.display = ''
+    },
     goBottom() {
       this.isSticky = false
       setTimeout(() => {
@@ -672,6 +683,16 @@ export default {
         display: flex;
         align-items: center;
       }
+    }
+  }
+
+  .native-topic-tip {
+    width: 100%;
+
+    :deep(#topic-tip-box) {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
     }
   }
 

@@ -388,17 +388,10 @@ export default {
     regenerateReplyList() {
       // console.log('重新生成列表')
       if (this.current.replyList.length) {
-        this.current.replyCount = this.current.replyList.length
-        let res = functions.createNestedList(this.current.replyList)
-        if (res) {
-          this.current.nestedReplies = res
-        }
-        let dup_res = functions.createNestedRedundantList(this.current.replyList)
-        if (dup_res) {
-          this.current.nestedRedundReplies = dup_res
-        }
+        functions.createList(this.current, this.current.replyList)
       } else {
         this.current.replyCount = 0
+        this.current.topReplyList = []
         this.current.nestedReplies = []
         this.current.nestedRedundReplies = []
       }
@@ -679,4 +672,3 @@ export default {
   gap: 1rem;
 }
 </style>
-
