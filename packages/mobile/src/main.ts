@@ -1,5 +1,3 @@
-import {createApp} from 'vue';
-import App from './pages/App.vue';
 import {GM_notification} from "gmApi"
 import './global.d.ts'
 import {PageType, Post, Reply} from "@v2next/core/types"
@@ -1031,7 +1029,12 @@ if (isMobile) {
   })();
 
   run()
-  let vueApp = createApp(App)
-  vueApp.config.unwrapInjectedRef = true
-  vueApp.mount($section);
+  Promise.all([
+    import('vue'),
+    import('./pages/App.vue'),
+  ]).then(([{createApp}, {default: App}]) => {
+    let vueApp = createApp(App)
+    vueApp.config.unwrapInjectedRef = true
+    vueApp.mount($section);
+  })
 }

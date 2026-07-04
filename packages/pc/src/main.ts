@@ -1,5 +1,3 @@
-import {createApp} from 'vue';
-import App from './App.vue';
 import './global.d.ts'
 import {
   GM_registerMenuCommand,
@@ -1181,9 +1179,14 @@ function run() {
 if (!isMobile) {
   console.log('V2EX PC端')
   run()
-  let vueApp = createApp(App)
-  vueApp.config.unwrapInjectedRef = true
-  vueApp.mount($section);
+  Promise.all([
+    import('vue'),
+    import('./App.vue'),
+  ]).then(([{createApp}, {default: App}]) => {
+    let vueApp = createApp(App)
+    vueApp.config.unwrapInjectedRef = true
+    vueApp.mount($section);
+  })
 
   // functions.loadAndRunScript("https://update.greasyfork.org/scripts/448472/v2%E6%96%B0%E5%B8%96%E6%8C%82%E4%BB%B6.user.js")
   functions.loadAndRunScript("https://update.greasyfork.org/scripts/448472/1074290/v2%E6%96%B0%E5%B8%96%E6%8C%82%E4%BB%B6.user.js")
