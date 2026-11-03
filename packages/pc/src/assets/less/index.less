@@ -7,6 +7,7 @@
   --color-main-bg: rgb(226, 226, 226);
   --color-second-bg: white;
   --color-third-bg: rgb(226, 226, 226);
+  --color-setting-active-bg: #E6F4FF;
 
   --color-item-bg: white;
 
@@ -50,6 +51,7 @@ html.dark {
   --color-main-bg: #22303f;
   --color-second-bg: rgb(24, 34, 45);
   --color-third-bg: rgb(49, 71, 94);
+  --color-setting-active-bg: var(--color-third-bg);
 
   --color-item-bg: rgb(24, 34, 45);
 
@@ -70,7 +72,7 @@ html.dark {
   --color-tooltip-bg: rgb(49, 71, 94);
   --color-tooltip-shadow: #3b3b3b;
 
-  --color-scrollbar: rgb(92, 93, 94);
+  --color-scrollbar: rgb(118, 136, 154);
 
   --color-line: var(--box-border-color);
   //--color-line: white;
@@ -88,6 +90,35 @@ html.dark {
   --color-call-list-bg: rgb(49, 71, 94);
   --color-top-reply-wrap-bg: rgb(33, 47, 62);
   --color-top-reply-wrap-line: #3b536d;
+
+  // 同步原生控件及页面、侧栏、弹窗内的滚动条配色。
+  color-scheme: dark;
+  scrollbar-color: var(--color-scrollbar) var(--color-second-bg);
+
+  &::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  &::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-corner,
+  *::-webkit-scrollbar-corner {
+    background: var(--color-second-bg);
+  }
+
+  &::-webkit-scrollbar-thumb,
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar);
+    border: 3px solid var(--color-second-bg);
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-button,
+  *::-webkit-scrollbar-button {
+    display: none;
+  }
 }
 
 html, body {

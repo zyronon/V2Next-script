@@ -624,7 +624,7 @@ export default {
   .modal-root {
     z-index: 9;
     //background: var(--color-main-bg);
-    background: white;
+    background: var(--color-second-bg);
     border-radius: 2rem;
     font-size: 1.6rem;
     overflow: hidden;
@@ -683,8 +683,7 @@ export default {
             }
 
             &.active {
-              background: var(--color-active);
-              background: #E6F4FF;
+              background: var(--color-setting-active-bg);
               color: var(--color-font-pure);
             }
           }
