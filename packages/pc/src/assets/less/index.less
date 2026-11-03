@@ -91,6 +91,12 @@ html.dark {
   --color-top-reply-wrap-bg: rgb(33, 47, 62);
   --color-top-reply-wrap-line: #3b536d;
 
+  // 新帖挂件使用内联白色遮罩，深色模式下单独覆盖。
+  #sb_v2 #loading_frame {
+    background: rgba(24, 34, 45, 0.84) !important;
+    color: var(--color-font-8);
+  }
+
   // 同步原生控件及页面、侧栏、弹窗内的滚动条配色。
   color-scheme: dark;
   scrollbar-color: var(--color-scrollbar) var(--color-second-bg);
