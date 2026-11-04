@@ -1183,5 +1183,9 @@ if (!isMobile) {
   vueApp.mount($section);
 
   // functions.loadAndRunScript("https://update.greasyfork.org/scripts/448472/v2%E6%96%B0%E5%B8%96%E6%8C%82%E4%BB%B6.user.js")
-  functions.loadAndRunScript("https://update.greasyfork.org/scripts/448472/1074290/v2%E6%96%B0%E5%B8%96%E6%8C%82%E4%BB%B6.user.js")
+  // 单独安装的挂件可能在下载期间初始化，执行前也要检查容器。
+  functions.loadAndRunScript(
+    "https://update.greasyfork.org/scripts/448472/1074290/v2%E6%96%B0%E5%B8%96%E6%8C%82%E4%BB%B6.user.js",
+    () => !document.getElementById('sb_v2')
+  )
 }
