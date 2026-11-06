@@ -340,6 +340,12 @@ export default {
       if (e.currentTarget.getAttribute('script')) return
       if (that.stopMe) return true
 
+      // 操作按钮和页内锚点由自身处理，只接管正常网页链接。
+      const link = e.currentTarget
+      const rawHref = link.getAttribute('href')?.trim()
+      if (!rawHref || rawHref.startsWith('#')) return
+      if (!['http:', 'https:'].includes(link.protocol)) return
+
       let {pageType} = functions.checkPageType(e.currentTarget)
       let {href, id, title} = functions.parseA(e.currentTarget)
 

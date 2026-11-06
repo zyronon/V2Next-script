@@ -524,11 +524,13 @@ export const functions = {
     e.preventDefault()
     e.stopPropagation()
   },
-  loadAndRunScript(url: string) {
+  loadAndRunScript(url: string, shouldRun: () => boolean = () => true) {
+    if (!shouldRun()) return
     GM_xmlhttpRequest({
       method: "GET",
       url,
       onload: function (response) {
+        if (!shouldRun()) return
         const code = response.responseText;
         eval(code);
       }

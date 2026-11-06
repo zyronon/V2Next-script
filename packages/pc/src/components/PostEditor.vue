@@ -174,7 +174,20 @@ async function upload(file) {
 async function submit() {
   if (disabled.value || loading.value) return
   loading.value = true
+  try {
+    let item = createReplyItem()
+    let url = `${location.origin}/t/${post.value.id}`
+    let res = await $.post(url, {content: getSubmitContent(), once: post.value.once})
+    handleSubmitResponse(res, item)
+  } catch (err) {
+    console.error('回复结果确认失败', err)
+    eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复结果确认失败，请刷新页面确认，避免重复发送'})
+  } finally {
+    loading.value = false
+  }
+}
 
+function getSubmitContent() {
   let submit_content = content.value.replace(/\[((?!\[).)+\]/g, function (match) {
     let item = classicsEmoticons.find(v => v.name === match)
     if (item) {
@@ -182,8 +195,14 @@ async function submit() {
     }
     return match
   })
+  return submit_content
+}
 
-
+/**
+ * 将回复中的图片、表情和提及用户转换为展示内容。
+ * @returns 回复的 HTML 内容。
+ */
+function getReplyContent() {
   //转换上传的图片
   let show_content = content.value.replace(/https?:\/\/(i\.)?imgur\.com\/((?!http).)+\.(gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG)/g, function (match) {
     return `<img src="${match}" data-originUrl="${match}" data-notice="这个img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`
@@ -208,9 +227,14 @@ async function submit() {
 
   show_content = show_content.replaceAll('\n', '<br/>')
 
-  // loading.value = false
-  // console.log('show_content', show_content)
+  return show_content
+}
 
+/**
+ * 根据编辑器内容创建用于即时展示的回复。
+ * @returns 保留被回复用户及楼层信息的回复对象。
+ */
+function createReplyItem() {
   let item = {
     thankCount: 0,
     isThanked: false,
@@ -221,7 +245,7 @@ async function submit() {
     avatar: window.user.avatar,
     date: '几秒前',
     floor: post.value.replyCount + 1,
-    reply_content: show_content ?? '',
+    reply_content: getReplyContent(),
     children: [],
     replyUsers: replyUser ? [replyUser] : [],
     replyFloor: replyFloor || -1,
@@ -232,65 +256,56 @@ async function submit() {
   if (item.replyUsers.length === 1) {
     item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(?:<ul [\s\S]+<\/ul>)?(\s#[\d]+)?\s(<br>)?/, () => '')
   }
-  // console.log('回复', item)
-  // loading.value = false
-  // return
+  return item
+}
 
-  // loading.value = false
-  // content.value = replyInfo
-  // eventBus.emit(CMD.REFRESH_ONCE,)
-  // eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
-  // eventBus.emit(CMD.ADD_REPLY, item)
-  // emits('close')
-  // return console.log('item', item)
+function handleSubmitResponse(res, item) {
+  if (res && typeof res === 'object') {
+    if (res.once) eventBus.emit(CMD.REFRESH_ONCE, Number(res.once))
+    if (!res.success) {
+      eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: res.message || '回复失败'})
+      return
+    }
+    if (res.reply_id) item.id = String(res.reply_id)
+    if (!res.once) eventBus.emit(CMD.REFRESH_ONCE)
+  } else {
+    if (!handleHtmlResponse(res)) return
+    eventBus.emit(CMD.REFRESH_ONCE, res)
+  }
+  content.value = replyInfo
+  emits('close')
+  eventBus.emit(CMD.ADD_REPLY, item)
+  eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
+}
 
-  let url = `${location.origin}/t/${post.value.id}`
-  $.post(url, {content: submit_content, once: post.value.once}).then(
-      // $.post(url, {content: submit_content, once: 123}).then(
-      res => {
-        // console.log('回复', res)
-        loading.value = false
-        let r = res.search('你上一条回复的内容和这条相同')
-        if (r > -1) return eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '你上一条回复的内容和这条相同'})
+function handleHtmlResponse(res) {
+  const message = ['你上一条回复的内容和这条相同', '请不要在每一个回复中都包括外链，这看起来像是在 spamming']
+      .find(text => res.includes(text))
+  if (message) {
+    eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: message})
+    return false
+  }
+  if (res.includes('创建新回复')) {
+    eventBus.emit(CMD.REFRESH_ONCE, res)
+    eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复出现了问题，请使用原版进行回复'})
+    openReplyPage(res)
+    return false
+  }
+  return true
+}
 
-        r = res.search('请不要在每一个回复中都包括外链，这看起来像是在 spamming')
-        if (r > -1) return eventBus.emit(CMD.SHOW_MSG, {
-          type: 'error',
-          text: '请不要在每一个回复中都包括外链，这看起来像是在 spamming'
-        })
-
-        let r2 = res.search('创建新回复')
-        if (r2 > -1) {
-          eventBus.emit(CMD.REFRESH_ONCE, res)
-          eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复出现了问题，请使用原版进行回复'})
-          let clientWidth = window.document.body.clientWidth
-          let windowWidth = 1200
-          let left = clientWidth / 2 - windowWidth / 2
-          let newWin = window.open("创建新回复", "", `width=${windowWidth},height=600,left=${left},top=100`);
-          newWin.document.write(res);
-
-          let loop = setInterval(function () {//监听子页面关闭事件,轮询时间1000毫秒
-            if (newWin.closed) {
-              clearInterval(loop);
-              eventBus.emit(CMD.REFRESH_POST)
-            }
-          }, 1000);
-          return
-        }
-        content.value = replyInfo
-        emits('close')
-        eventBus.emit(CMD.REFRESH_ONCE, res)
-        eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
-        eventBus.emit(CMD.ADD_REPLY, item)
-      },
-      err => {
-        console.log('err', err)
-        loading.value = false
-        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
-      }
-  ).catch(r => {
-    console.log('catch', r)
-  })
+function openReplyPage(res) {
+  let windowWidth = 1200
+  let left = window.document.body.clientWidth / 2 - windowWidth / 2
+  let newWin = window.open('创建新回复', '', `width=${windowWidth},height=600,left=${left},top=100`)
+  if (!newWin) return
+  newWin.document.write(res)
+  let loop = setInterval(function () {
+    if (newWin.closed) {
+      clearInterval(loop)
+      eventBus.emit(CMD.REFRESH_POST)
+    }
+  }, 1000)
 }
 
 function getEmojiSrc(url) {
