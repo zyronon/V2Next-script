@@ -252,7 +252,7 @@ export const functions = {
   checkPhotoLink2Img(dom: Element) {
     let replaceImgur = window.config.replaceImgur;
     let is_add = false;
-    let prefix_img = replaceImgur ? DefaultVal.imgurProxy : '';
+    let prefix_img = replaceImgur ? (window.config.imgurProxy || DefaultVal.imgurProxy) : '';
     let imgList = dom.querySelectorAll('img')
     imgList.forEach((img) => {
       let href = img.src
@@ -649,6 +649,7 @@ export function getDefaultConfig(val: any = {}): Config {
       loopCheckNoticeInterval: 5,
     },
     replaceImgur: false,
+    imgurProxy: '',
     maxReplyCountLimit: 400,
   }, val)
 }

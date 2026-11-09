@@ -86,6 +86,8 @@ export interface Config {
   },
   //替换imgur源
   replaceImgur:boolean
+  //自定义imgur代理地址，留空则使用默认代理
+  imgurProxy: string
   //最大回复限制，超出脚本停止运行
   maxReplyCountLimit:number
 }

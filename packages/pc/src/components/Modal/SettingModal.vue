@@ -133,6 +133,17 @@
                 </div>
                 <div class="border">
                   <div class="row">
+                    <label class="item-title">Imgur代理地址</label>
+                    <div class="wrapper">
+                      <input type="text" v-model="config.imgurProxy" placeholder="留空则使用默认代理">
+                    </div>
+                  </div>
+                  <div class="desc">
+                    自定义 Imgur 图片代理地址，留空则使用默认代理。例如 DuckDuckGo 图片代理：https://external-content.duckduckgo.com/iu/?u=
+                  </div>
+                </div>
+                <div class="border">
+                  <div class="row">
                     <label class="item-title">单独打开主题时默认显示楼中楼</label>
                     <div class="wrapper">
                       <BaseSwitch v-model="config.autoOpenDetail"/>
