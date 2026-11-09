@@ -294,7 +294,7 @@ async function submit() {
 }
 
 function getEmojiSrc(url) {
-  return window.config.replaceImgur ? DefaultVal.imgurProxy + url : url;
+  return window.config.replaceImgur ? (window.config.imgurProxy || DefaultVal.imgurProxy) + url : url;
 }
 
 function showEmoticons(e) {
